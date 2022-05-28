@@ -35,12 +35,16 @@ export class ErrorInterceptor implements HttpInterceptor {
             this.toastr.error('Not Found!', response.error.exception);
             //this.router.navigateByUrl('/not-found');
             break;
+          case 410:
+            this.toastr.error('Gone!', response.error.exception);
+            //this.router.navigateByUrl('/not-found');
+            break;
           case 500:
             this.toastr.error('Something Went Wrong', response.error.exception);
             break;
           default:
             if (response.status === 0) {
-              this.toastr.error('Unable to Connect to fluentPOS Server.', response.error.exception);
+              this.toastr.error('Unable to Connect to E Smart Solution Server.', response.error.exception);
               break;
             }
             this.toastr.error('Something Went Wrong', response.error.exception);

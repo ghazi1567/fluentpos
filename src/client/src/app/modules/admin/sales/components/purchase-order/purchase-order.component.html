@@ -1,0 +1,123 @@
+<mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+    <mat-card-header>
+        <mat-card-title> Purchase Order </mat-card-title>
+        <mat-card-subtitle>Manage, Register, Update or Remove PO here.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-divider inset></mat-divider>
+    <div class="row">
+        <div style="margin: 0 26px 0 16px">
+            <div class="left">
+                <a mat-raised-button (click)="savePurchaseOrder()" color="primary" [disabled]="!orderForm.valid"> <mat-icon>save</mat-icon> Save </a>
+            </div>
+        </div>
+    </div>
+    <mat-divider inset></mat-divider>
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <form (ngSubmit)="onSubmit()" [formGroup]="orderForm">
+                <div class="row">
+                    <div class="col-xs-12 col-md-2">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Reference Number</mat-label>
+                            <input autocomplete="off" formControlName="referenceNumber" matInput placeholder="Comments" required />
+                            <mat-error>Please provide a Reference Number</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-xs-12 col-md-8">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Comments</mat-label>
+                            <input autocomplete="off" formControlName="comments" matInput placeholder="Comments" />
+                            <mat-error>Please provide a valid Comments</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Warehouse</mat-label>
+                            <mat-select formControlName="warehouseId" name="warehouse" required>
+                                <mat-option *ngFor="let warehouse of warehouseLookups" [value]="warehouse.id">
+                                    {{ warehouse.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <mat-form-field class="example-form-field" appearance="fill">
+                        <mat-label>Product</mat-label>
+                        <input matInput placeholder="Product Name" [matAutocomplete]="auto" name="product" [(ngModel)]="selectedProduct.productName" (keyup)="filterProduct($event)" />
+                    </mat-form-field>
+
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProduct" (optionSelected)="onProductSelection($event.option.value)">
+                        <mat-option *ngFor="let product of filteredproducts" [value]="product">
+                            {{ product.name }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <mat-form-field class="example-form-field" appearance="fill">
+                        <mat-label>Qty</mat-label>
+                        <input matInput type="text" [(ngModel)]="selectedProduct.quantity" (keyup)="calculateRowTotal()" />
+                    </mat-form-field>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <mat-form-field class="example-form-field" appearance="fill">
+                        <mat-label>Price</mat-label>
+                        <input matInput placeholder="price" name="price" [(ngModel)]="selectedProduct.price" />
+                    </mat-form-field>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <mat-form-field class="example-form-field" appearance="fill">
+                        <mat-label>Total</mat-label>
+                        <input matInput placeholder="total" name="total" [(ngModel)]="selectedProduct.total" />
+                    </mat-form-field>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                    <button matTooltip="Delete" mat-raised-button color="primary" (click)="addProduct(selectedProduct)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="products" [hidden]="!products">
+        <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="barcodeSymbology">
+                <th mat-header-cell *matHeaderCellDef>Barcode</th>
+                <td mat-cell *matCellDef="let element">{{ element.barcodeSymbology }}</td>
+            </ng-container>
+            <ng-container matColumnDef="productName">
+                <th mat-header-cell *matHeaderCellDef>Product Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.productName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Qty</th>
+                <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>Price</th>
+                <td mat-cell *matCellDef="let element">{{ element.price }}</td>
+            </ng-container>
+            <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef>Total</th>
+                <td mat-cell *matCellDef="let element">{{ element.total }}</td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element; let j = index">
+                    <button matTooltip="Delete" mat-raised-button color="danger" (click)="removeProduct(element)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+    </div>
+</mat-card>

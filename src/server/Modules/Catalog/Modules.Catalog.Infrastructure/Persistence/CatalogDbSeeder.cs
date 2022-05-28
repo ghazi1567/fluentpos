@@ -39,10 +39,10 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence
         {
             try
             {
-                AddBrands();
-                AddCategories();
-                AddProducts();
-                _db.SaveChanges();
+                //AddBrands();
+                //AddCategories();
+                //AddProducts();
+                //_db.SaveChanges();
             }
             catch (Exception)
             {

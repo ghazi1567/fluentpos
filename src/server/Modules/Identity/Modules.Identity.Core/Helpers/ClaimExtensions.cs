@@ -20,6 +20,23 @@ namespace FluentPOS.Modules.Identity.Core.Helpers
 {
     public static class ClaimsHelper
     {
+        static List<string> ExxludeList = new List<string>()
+        {
+            "Users Extended Attributes",
+            "Roles Extended Attributes",
+            "Brands",
+            "Brands Extended Attributes",
+            "Customers",
+            "Customers Extended Attributes",
+            "Categories",
+            "Categories Extended Attributes",
+            "Products Extended Attributes",
+            "Carts",
+            "Carts Extended Attributes",
+            "Cart Items",
+            "Cart Items Extended Attributes"
+        };
+
         public static void GetAllPermissions(this List<RoleClaimModel> allPermissions)
         {
             foreach (var module in typeof(Permissions).GetNestedTypes())
@@ -31,6 +48,10 @@ namespace FluentPOS.Modules.Identity.Core.Helpers
                     .FirstOrDefault() is DisplayNameAttribute displayNameAttribute)
                 {
                     moduleName = displayNameAttribute.DisplayName;
+                }
+                if (ExxludeList.Contains(moduleName))
+                {
+                    continue;
                 }
 
                 if (module.GetCustomAttributes(typeof(DescriptionAttribute), true)

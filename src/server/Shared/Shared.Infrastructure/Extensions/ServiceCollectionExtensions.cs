@@ -91,7 +91,8 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
                 {
                     options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor((value, propertyName) =>
                         throw new CustomException($"{propertyName}: value '{value}' is invalid.", statusCode: HttpStatusCode.BadRequest));
-                });
+                })
+                .AddNewtonsoftJson();
             services.AddTransient<IValidatorInterceptor, ValidatorInterceptor>();
             services.AddApplicationLayer(config);
             services.AddLocalization(options =>

@@ -6,7 +6,11 @@ import { MaterialModule } from './core/material/material.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { PosLayoutComponent } from './layouts/pos-layout/pos-layout.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
@@ -18,20 +22,18 @@ import { SharedModule } from './core/shared/shared.module';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import {AuthGuard} from './core/guards/auth.guard';
-import {AuthService} from './core/services/auth.service';
-import {LocalStorageService} from './core/services/local-storage.service';
-import {MultilingualService} from './core/services/multilingual.service';
+import { AuthGuard } from './core/guards/auth.guard';
+import { AuthService } from './core/services/auth.service';
+import { LocalStorageService } from './core/services/local-storage.service';
+import { MultilingualService } from './core/services/multilingual.service';
 import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { BusyService } from './core/services/busy.service';
 import { PermissionGuard } from './core/guards/permission.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { DatePipe } from '@angular/common';
 import { CustomerService } from './modules/admin/people/services/customer.service';
-
-export function rootLoaderFactory(http: HttpClient)
-{
-  return new TranslateHttpLoader(http,'assets/i18n/','.json');
+export function rootLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -41,7 +43,7 @@ export function rootLoaderFactory(http: HttpClient)
     PosLayoutComponent,
     ToolbarComponent,
     HomeLayoutComponent,
-    AdminLayoutComponent
+    AdminLayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,12 +54,12 @@ export function rootLoaderFactory(http: HttpClient)
     HttpClientModule,
     CatalogRoutingModule,
     TranslateModule.forRoot({
-      loader:{
-        provide:TranslateLoader,
-        useFactory:rootLoaderFactory,
-        deps:[HttpClient]
-      }
-    })
+      loader: {
+        provide: TranslateLoader,
+        useFactory: rootLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
   ],
   providers: [
     AuthGuard,
@@ -70,8 +72,8 @@ export function rootLoaderFactory(http: HttpClient)
     DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

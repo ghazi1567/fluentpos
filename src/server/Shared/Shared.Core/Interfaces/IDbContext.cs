@@ -6,6 +6,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,5 +17,13 @@ namespace FluentPOS.Shared.Core.Interfaces
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
         int SaveChanges();
+
+        System.Threading.Tasks.Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string query, object parms = null);
+
+        System.Threading.Tasks.Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string conStr, string query, object parms);
+
+        Task<List<TResponse>> ExecuteQueryAsync<TResponse>(string query, object parms = null);
+        public string OperationName { get; set; }
+
     }
 }

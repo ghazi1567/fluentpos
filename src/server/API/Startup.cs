@@ -10,7 +10,7 @@ using FluentPOS.Modules.Catalog.Extensions;
 using FluentPOS.Modules.Identity.Extensions;
 using FluentPOS.Modules.Inventory.Extensions;
 using FluentPOS.Modules.People.Extensions;
-using FluentPOS.Modules.Sales.Extensions;
+using FluentPOS.Modules.Invoicing.Extensions;
 using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -39,7 +39,7 @@ namespace FluentPOS.Bootstrapper
                 .AddSharedApplication(_config)
                 .AddCatalogModule(_config)
                 .AddPeopleModule(_config)
-                .AddSalesModule(_config)
+                .AddInvoicingModule(_config)
                 .AddInventoryModule(_config);
         }
 

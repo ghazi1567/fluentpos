@@ -41,7 +41,10 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Events
         public decimal AlertQuantity { get; }
 
         public string Detail { get; }
-
+        public string productCode { get; }
+        public int quantity { get; }
+        public string location { get; }
+        public decimal discountFactor { get; }
         public ProductUpdatedEvent(Product product)
         {
             Id = product.Id;
@@ -60,6 +63,10 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Events
             Detail = product.Detail;
             AggregateId = product.Id;
             RelatedEntities = new[] { typeof(Product) };
+            productCode = product.productCode;
+            quantity = product.quantity;
+            location = product.location;
+            discountFactor = product.discountFactor;
         }
     }
 }

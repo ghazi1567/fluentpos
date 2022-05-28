@@ -6,7 +6,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using FluentPOS.Shared.DTOs.Inventory;
+using FluentPOS.Shared.DTOs.Sales.Enums;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
@@ -25,5 +28,12 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
         /// <param name="isSale">Is Sale.</param>
         /// <returns>Task Completed.</returns>
         public Task RecordTransaction(Guid productId, decimal quantity, string referenceNumber, bool isSale = true);
+
+        public Task RecordTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType transactionType, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId);
+
+        public Task ReverseTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType orderType, Guid WarehouseId);
+
+        public Task UpdateFactor(List<ProductFactorDto> productFactorDtos, DateTime updateFrom);
+
     }
 }

@@ -12,6 +12,8 @@ namespace FluentPOS.Modules.Inventory.Core.Enums
     {
         Sale,
 
-        Purchase
+        StockIn,
+
+        SaleReturn
     }
 }

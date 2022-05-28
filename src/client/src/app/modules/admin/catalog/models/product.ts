@@ -1,4 +1,4 @@
-import { Upload } from "src/app/core/models/uploads/upload";
+import { Upload } from 'src/app/core/models/uploads/upload';
 
 export interface Product {
   id: string;
@@ -18,4 +18,9 @@ export interface Product {
   alertQuantity: number;
   detail: string;
   uploadRequest?: Upload;
+  productCode: string;
+  quantity: number;
+  orderedQuantity: number;
+  location: string;
+  discountFactor: number;
 }

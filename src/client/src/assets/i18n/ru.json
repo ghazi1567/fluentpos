@@ -1,8 +1,8 @@
 {
     "site": {
-        "title": "fluentpos",
+        "title": "E Smart Solution",
         "fork": "Сделать Fork репозитория!",
-        "support": "Поддержать fluentpos"
+        "support": "Поддержать E Smart Solution"
     },
     "layouts": {
         "admin": {
@@ -30,7 +30,7 @@
     },
     "about": {
         "title": "О проекте",
-        "subtitle": "Всё о fluentpos.",
+        "subtitle": "Всё о E Smart Solution.",
         "header": "Основная команда"
     },
     "settings": {

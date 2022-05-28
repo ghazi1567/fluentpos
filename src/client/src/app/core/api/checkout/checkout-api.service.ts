@@ -8,7 +8,7 @@ import { Result } from '../../models/wrappers/Result';
 })
 export class CheckoutApiService {
 
-  baseUrl = environment.apiUrl + 'sales/orders/';
+  baseUrl = environment.apiUrl + 'invoicing/orders/';
 
   constructor(private http: HttpClient) {
   }

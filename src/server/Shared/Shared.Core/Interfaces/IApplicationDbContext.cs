@@ -17,5 +17,7 @@ namespace FluentPOS.Shared.Core.Interfaces
         public DbSet<EventLog> EventLogs { get; set; }
 
         public DbSet<EntityReference> EntityReferences { get; set; }
+
+        public DbSet<RemoteClient> RemoteClients { get; set; }
     }
 }

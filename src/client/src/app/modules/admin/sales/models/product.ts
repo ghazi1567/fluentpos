@@ -1,6 +1,7 @@
 export interface Product {
   orderId: string;
   productId: string;
+  productName?: string;
   quantity: number;
   category: string;
   brand: string;
@@ -8,4 +9,5 @@ export interface Product {
   tax: number;
   discount: number;
   total: number;
+  barcodeSymbology?:string;
 }

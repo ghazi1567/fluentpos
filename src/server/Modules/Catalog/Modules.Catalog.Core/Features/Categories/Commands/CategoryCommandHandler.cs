@@ -114,6 +114,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
             if (!isCategoryUsed)
             {
                 var category = await _context.Categories.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
+                // TODO null check
                 category.AddDomainEvent(new CategoryRemovedEvent(category.Id));
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync(cancellationToken);

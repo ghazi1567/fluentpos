@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import { PermissionGuard } from 'src/app/core/guards/permission.guard';
 import {BrandComponent} from './components/brand/brand.component';
 import {CategoryComponent} from './components/category/category.component';
+import { ProductImportComponent } from './components/product-import/product-import.component';
 import {ProductComponent} from './components/product/product.component';
 
 const routes: Routes = [
@@ -25,6 +26,14 @@ const routes: Routes = [
   {
     path: 'products',
     component: ProductComponent,
+    canActivate: [PermissionGuard],
+    data: {
+      allowedPermissions: ['Permissions.Products.View']
+    }
+  },
+  {
+    path: 'products-import',
+    component: ProductImportComponent,
     canActivate: [PermissionGuard],
     data: {
       allowedPermissions: ['Permissions.Products.View']

@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -17,6 +18,8 @@ using FluentPOS.Modules.Catalog.Core.Entities;
 using FluentPOS.Modules.Catalog.Core.Exceptions;
 using FluentPOS.Modules.Catalog.Core.Features.Products.Events;
 using FluentPOS.Shared.Core.Constants;
+using FluentPOS.Shared.Core.Extensions;
+using FluentPOS.Shared.Core.IntegrationServices.Inventory;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
@@ -29,26 +32,31 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
     internal class ProductCommandHandler :
         IRequestHandler<RegisterProductCommand, Result<Guid>>,
         IRequestHandler<RemoveProductCommand, Result<Guid>>,
-        IRequestHandler<UpdateProductCommand, Result<Guid>>
+        IRequestHandler<UpdateProductCommand, Result<Guid>>,
+        IRequestHandler<ImportProductCommand, Result<Guid>>,
+        IRequestHandler<UpdateFactorCommand, Result<Guid>>
+
     {
         private readonly IDistributedCache _cache;
         private readonly ICatalogDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
         private readonly IStringLocalizer<ProductCommandHandler> _localizer;
-
+        private readonly IStockService _stockService;
         public ProductCommandHandler(
             ICatalogDbContext context,
             IMapper mapper,
             IUploadService uploadService,
             IStringLocalizer<ProductCommandHandler> localizer,
-            IDistributedCache cache)
+            IDistributedCache cache,
+            IStockService stockService)
         {
             _context = context;
             _mapper = mapper;
             _uploadService = uploadService;
             _localizer = localizer;
             _cache = cache;
+            _stockService = stockService;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -125,5 +133,53 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
                 throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
             }
         }
+
+#pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
+        public async Task<Result<Guid>> Handle(ImportProductCommand command, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+            Guid productId = Guid.Empty;
+            if (command.products.Count > 0)
+            {
+                var barcodes = command.products.Select(x => x.BarcodeSymbology).Distinct();
+                var existingProducts = await _context.Products.Where(p => barcodes.Contains(p.BarcodeSymbology)).ToListAsync(cancellationToken);
+                var importProducts = _mapper.Map<List<Product>>(command.products);
+
+                var differenceQuery = importProducts.Where(x => !existingProducts.Any(z => z.BarcodeSymbology == x.BarcodeSymbology)).ToList();
+                if (differenceQuery.Count > 0)
+                {
+                    _context.OperationName = "ProductImport";
+                    _context.Products.AddRange(differenceQuery);
+                    _context.SaveChanges();
+                }
+            }
+
+            return await Result<Guid>.SuccessAsync(productId, _localizer["Product Saved"]);
+        }
+
+#pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
+        public async Task<Result<Guid>> Handle(UpdateFactorCommand command, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+            Guid productId = Guid.Empty;
+
+            foreach (var item in command.Products)
+            {
+                var product = await _context.Products.SingleOrDefaultAsync(p => p.Id == item.ProductId);
+                if (product != null)
+                {
+                    product.discountFactor = item.FactorAmount;
+                    product.FactorUpdateOn = DateTime.Now;
+                    _context.Products.Update(product);
+                }
+            }
+            
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await _stockService.UpdateFactor(command.Products, command.updateFrom);
+            return await Result<Guid>.SuccessAsync(productId, _localizer["Product Saved"]);
+        }
+
+
     }
 }

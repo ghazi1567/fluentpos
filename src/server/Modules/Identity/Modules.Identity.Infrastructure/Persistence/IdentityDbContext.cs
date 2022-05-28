@@ -40,6 +40,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
         private readonly IJsonSerializer _json;
 
         internal string Schema => "Identity";
+        public string OperationName { get; set; }
 
         public IdentityDbContext(
             DbContextOptions<IdentityDbContext> options,
@@ -133,6 +134,21 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
         DbSet<UserExtendedAttribute> IExtendedAttributeDbContext<string, FluentUser, UserExtendedAttribute>.ExtendedAttributes { get; set; }
 
         DbSet<FluentRole> IExtendedAttributeDbContext<string, FluentRole, RoleExtendedAttribute>.GetEntities() => Roles;
+
+        public Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string query, object parms = null)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string conStr, string query, object parms)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<List<TResponse>> ExecuteQueryAsync<TResponse>(string query, object parms = null)
+        {
+            throw new System.NotImplementedException();
+        }
 
         DbSet<RoleExtendedAttribute> IExtendedAttributeDbContext<string, FluentRole, RoleExtendedAttribute>.ExtendedAttributes { get; set; }
     }

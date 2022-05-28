@@ -45,10 +45,10 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
 
         public void Initialize()
         {
-            AddDefaultRoles();
-            AddSuperAdmin();
-            AddStaff();
-            _db.SaveChanges();
+            //AddDefaultRoles();
+            //AddSuperAdmin();
+            //AddStaff();
+            //_db.SaveChanges();
         }
 
         private void AddDefaultRoles()
@@ -85,9 +85,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
                 // Check if User Exists
                 var superUser = new FluentUser
                 {
-                    FirstName = "Mukesh",
-                    LastName = "Murugan",
-                    Email = "superadmin@fluentpos.com",
+                    FirstName = "Inam",
+                    LastName = "Ul Haq",
+                    Email = "superadmin@esmart.com",
                     UserName = "superadmin",
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true,
@@ -134,9 +134,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
                 // Check if User Exists
                 var basicUser = new FluentUser
                 {
-                    FirstName = "John",
-                    LastName = "Doe",
-                    Email = "staff@fluentpos.com",
+                    FirstName = "Sultan",
+                    LastName = "Ghazi",
+                    Email = "staff@esmart.com",
                     UserName = "staff",
                     EmailConfirmed = true,
                     PhoneNumberConfirmed = true,

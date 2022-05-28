@@ -13,6 +13,8 @@ using FluentPOS.Shared.Core.Settings;
 using FluentPOS.Shared.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Shared.Infrastructure.Persistence
 {
@@ -34,11 +36,30 @@ namespace FluentPOS.Shared.Infrastructure.Persistence
 
         public DbSet<EntityReference> EntityReferences { get; set; }
 
+        public DbSet<RemoteClient> RemoteClients { get; set; }
+
+        public string OperationName { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(Schema);
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyApplicationConfiguration(_persistenceOptions);
+        }
+
+        public Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string query, object parms = null)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string conStr, string query, object parms)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<List<TResponse>> ExecuteQueryAsync<TResponse>(string query, object parms = null)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

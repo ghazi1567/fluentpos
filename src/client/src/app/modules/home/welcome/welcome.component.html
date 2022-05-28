@@ -4,14 +4,14 @@
             <div class="c-card background-color-primary" style="color: white;">
                 <div>
                     <h1>Hi, {{fullName}}</h1>
-                    <p style="opacity: 75%;">Welcome to fluentPOS. Choose a Module to continue.</p>
+                    <p style="opacity: 75%;">Welcome to E Smart Solution. Choose a Module to continue.</p>
                     <button mat-raised-button color="accent" (click)="onClickLogout()">Logout</button>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 col-xl-6 u-mr-auto">
+        <!-- <div class="col-md-6 col-xl-6 u-mr-auto">
             <div class="c-card is-animated background-color-primary" style="color: white;">
                 <div>
                     <h1>POS</h1>
@@ -19,8 +19,8 @@
                     <button mat-raised-button color="accent" routerLink="/pos">POS</button>
                 </div>
             </div>
-        </div>
-        <div *appHasRole='["SuperAdmin"]' class="col-md-6 col-xl-6 u-ml-auto">
+        </div> -->
+        <div *appHasRole='["SuperAdmin"]' class="col-md-6 col-xl-6 ">
             <div class="c-card is-animated">
                 <div>
                     <h1>Dashboard</h1>
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <div *appHasRole='["SuperAdmin"]' class="row " style="place-content: center;">
+    <!-- <div *appHasRole='["SuperAdmin"]' class="row " style="place-content: center;">
         <div class="col-md-6 col-xl-6 u-ml-auto">
             <div class="c-card is-animated">
                 <div>
@@ -49,6 +49,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
 </div>

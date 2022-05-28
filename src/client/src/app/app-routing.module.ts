@@ -12,7 +12,7 @@ import { PosLayoutComponent } from './layouts/pos-layout/pos-layout.component';
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'home', pathMatch: 'full'
+    path: '', redirectTo: 'admin', pathMatch: 'full'
   },
   {
     path: '',

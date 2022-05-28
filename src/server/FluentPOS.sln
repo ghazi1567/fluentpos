@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31313.79
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8A1C0C20-91EE-4348-A8EA-114D09DE05E0}"
 EndProject
@@ -71,11 +71,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.People.Core", "Modu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.People.Infrastructure", "Modules\People\Modules.People.Infrastructure\Modules.People.Infrastructure.csproj", "{0F1C5782-2723-4D1E-B9EE-065F56453AF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Sales", "Modules\Sales\Modules.Sales\Modules.Sales.csproj", "{B8A4A54A-880A-453C-B374-EDFE4D9EEB2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Invoicing", "Modules\Invoicing\Modules.Invoicing\Modules.Invoicing.csproj", "{B8A4A54A-880A-453C-B374-EDFE4D9EEB2F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Sales.Core", "Modules\Sales\Modules.Sales.Core\Modules.Sales.Core.csproj", "{A3C0007D-3F25-4F74-A9F0-46CE6043DB06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Invoicing.Core", "Modules\Invoicing\Modules.Invoicing.Core\Modules.Invoicing.Core.csproj", "{A3C0007D-3F25-4F74-A9F0-46CE6043DB06}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Sales.Infrastructure", "Modules\Sales\Modules.Sales.Infrastructure\Modules.Sales.Infrastructure.csproj", "{BB029E74-D559-494F-B742-A8EBD3F9821E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Invoicing.Infrastructure", "Modules\Invoicing\Modules.Invoicing.Infrastructure\Modules.Invoicing.Infrastructure.csproj", "{BB029E74-D559-494F-B742-A8EBD3F9821E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.Accounting", "Modules\Accounting\Modules.Accounting\Modules.Accounting.csproj", "{6DA1C2C7-1674-4F25-951E-EC6159D6DB38}"
 EndProject

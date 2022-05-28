@@ -45,6 +45,16 @@ namespace FluentPOS.Modules.Catalog.Core.Entities
 
         public string Detail { get; set; }
 
+        public string productCode { get; set; }
+
+        public int quantity { get; set; }
+
+        public string location { get; set; }
+
+        public decimal discountFactor { get; set; }
+
+        public DateTime? FactorUpdateOn { get; set; }
+
         public virtual ICollection<ProductExtendedAttribute> ExtendedAttributes { get; set; }
 
         public Product()

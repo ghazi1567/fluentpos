@@ -6,6 +6,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+
 namespace FluentPOS.Shared.Core.Settings
 {
     public class PersistenceSettings
@@ -13,7 +15,8 @@ namespace FluentPOS.Shared.Core.Settings
         public bool UseMsSql { get; set; }
 
         public bool UsePostgres { get; set; }
-
+        public bool EnableTracking { get; set; }
+        public List<string> IgnoreTracking { get; set; }
         public PersistenceConnectionStrings ConnectionStrings { get; set; }
 
         public class PersistenceConnectionStrings

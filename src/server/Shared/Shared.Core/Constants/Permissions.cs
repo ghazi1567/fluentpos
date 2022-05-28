@@ -213,5 +213,41 @@ namespace FluentPOS.Shared.Core.Constants
             public const string Update = "Permissions.Sales.Update";
             public const string Remove = "Permissions.Sales.Remove";
         }
+
+        [DisplayName("StockIn")]
+        [Description("Stock In Permissions")]
+        public static class StockIn
+        {
+            public const string View = "Permissions.StockIn.View";
+            public const string ViewAll = "Permissions.StockIn.ViewAll";
+            public const string Register = "Permissions.StockIn.Register";
+            public const string Update = "Permissions.StockIn.Update";
+            public const string Remove = "Permissions.StockIn.Remove";
+            public const string Approval = "Permissions.StockIn.Approval";
+
+        }
+
+        [DisplayName("StockOut")]
+        [Description("Stock Out Permissions")]
+        public static class StockOut
+        {
+            public const string View = "Permissions.StockOut.View";
+            public const string ViewAll = "Permissions.StockOut.ViewAll";
+            public const string Register = "Permissions.StockOut.Register";
+            public const string Update = "Permissions.StockOut.Update";
+            public const string Remove = "Permissions.StockOut.Remove";
+        }
+
+        [DisplayName("PurchaseOrder")]
+        [Description("Purchase Order Permissions")]
+        public static class PurchaseOrder
+        {
+            public const string View = "Permissions.PurchaseOrder.View";
+            public const string ViewAll = "Permissions.PurchaseOrder.ViewAll";
+            public const string Register = "Permissions.PurchaseOrder.Register";
+            public const string Update = "Permissions.PurchaseOrder.Update";
+            public const string Remove = "Permissions.PurchaseOrder.Remove";
+        }
+
     }
 }

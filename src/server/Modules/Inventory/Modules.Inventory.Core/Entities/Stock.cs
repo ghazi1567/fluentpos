@@ -23,11 +23,20 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             LastUpdatedOn = DateTime.Now;
         }
 
+        public Stock(Guid productId, Guid warehouseId)
+        {
+            ProductId = productId;
+            LastUpdatedOn = DateTime.Now;
+            WarehouseId = warehouseId;
+        }
+
         public Guid ProductId { get; private set; }
 
         public decimal AvailableQuantity { get; private set; }
 
         public DateTime LastUpdatedOn { get; private set; }
+
+        public Guid WarehouseId { get; set; }
 
         public void IncreaseQuantity(decimal quantity)
         {
