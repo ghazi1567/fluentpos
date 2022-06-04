@@ -15,6 +15,7 @@ import {BrandService} from './services/brand.service';
 import {CategoryService} from './services/category.service';
 import {ProductService} from './services/product.service';
 import { ProductImportComponent } from './components/product-import/product-import.component';
+import { ProductViewComponent } from './components/product/product-view/product-view.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { ProductImportComponent } from './components/product-import/product-impo
     BrandFormComponent,
     CategoryFormComponent,
     ProductFormComponent,
-    ProductImportComponent
+    ProductImportComponent,
+    ProductViewComponent
   ],
   imports: [
     CommonModule,

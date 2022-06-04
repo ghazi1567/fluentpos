@@ -36,9 +36,13 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
         public async Task<Result<List<StockDto>>> Handle(StockReportQuery request, CancellationToken cancellationToken)
         {
 
-            var productId = Guid.Parse(request.ProductId);
 
-            var query = _context.Stocks.Where(x => x.ProductId == productId);
+            var query = _context.Stocks.AsQueryable();
+            if (!string.IsNullOrEmpty(request.ProductId))
+            {
+                var productId = Guid.Parse(request.ProductId);
+                query = query.Where(x => x.ProductId == productId);
+            }
 
             if (!string.IsNullOrEmpty(request.WarehouseId))
             {

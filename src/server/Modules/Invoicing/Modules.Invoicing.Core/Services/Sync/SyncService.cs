@@ -1,12 +1,13 @@
-﻿using AutoMapper;
-using FluentPOS.Modules.Invoicing.Core.Abstractions;
-using FluentPOS.Modules.Invoicing.Core.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using FluentPOS.Modules.Invoicing.Core.Abstractions;
+using FluentPOS.Modules.Invoicing.Core.Entities;
+using FluentPOS.Shared.DTOs.Sales.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace FluentPOS.Modules.Invoicing.Core.Services
 {
@@ -37,7 +38,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         public async Task<List<Order>> GetPendingStockInAsync(Guid clientId)
         {
             return await _context.Orders
-                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockIn") == false)
+                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockIn") == false
+                 && x.Status == OrderStatus.PendingApproval && x.OrderType == OrderType.StockIn)
                 .AsNoTracking()
                 .Include(x => x.Products)
                 .OrderBy(x => x.TimeStamp)
@@ -47,7 +49,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         public async Task<List<Order>> GetPendingStockOutAsync(Guid clientId)
         {
             return await _context.Orders
-                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false)
+                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false
+                && x.OrderType == OrderType.StockOut)
                 .AsNoTracking()
                 .Include(x => x.Products)
                 .OrderBy(x => x.TimeStamp)
@@ -70,6 +73,21 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
 
             }
             await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateLogStatus(Guid entryId, string entryType, string status)
+        {
+
+            var log = _context.SyncLogs.SingleOrDefault(x => x.EntryId == entryId && x.EntryType == entryType);
+            if (log != null)
+            {
+                log.UpdatedAt = DateTime.Now;
+                log.LastUpdateOn = DateTime.Now;
+                log.Status = status;
+                _context.SyncLogs.Update(log);
+                await _context.SaveChangesAsync();
+            }
             return true;
         }
     }

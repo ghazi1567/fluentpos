@@ -35,5 +35,6 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
 
         public Task UpdateFactor(List<ProductFactorDto> productFactorDtos, DateTime updateFrom);
 
+        Task RecordOpeningTransaction(Guid productId, decimal quantity, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId);
     }
 }

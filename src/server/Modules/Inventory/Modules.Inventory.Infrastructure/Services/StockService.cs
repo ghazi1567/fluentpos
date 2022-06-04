@@ -135,7 +135,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             // TODO - Move this to MediatR, maybe? - Important, DO NOT make an API endpoint for this.
 
             var stockTransaction = _context.StockTransactions.FirstOrDefault(s => s.ProductId == productId && s.WarehouseId == WarehouseId && s.ReferenceNumber == referenceNumber && s.Type == orderType);
-            if(stockTransaction != null)
+            if (stockTransaction != null)
             {
                 _context.StockTransactions.Remove(stockTransaction);
             }
@@ -199,5 +199,86 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             _context.StockTransactions.UpdateRange(stockRecord);
             await _context.SaveChangesAsync();
         }
+
+        public async Task RecordOpeningTransaction(Guid productId, decimal quantity, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId)
+        {
+            // TODO - Move this to MediatR, maybe? - Important, DO NOT make an API endpoint for this.
+            OrderType transactionType = OrderType.OpeningStock;
+            decimal lastQuantity = 0;
+            Guid lastWarehouse = Guid.Empty;
+            bool isAlreadyExist = false;
+            bool isWarehouseChanged = false;
+
+            var stockTransaction = _context.StockTransactions.FirstOrDefault(s => s.ProductId == productId && s.Type == transactionType);
+            if (stockTransaction == null)
+            {
+                stockTransaction = new StockTransaction(productId, quantity, transactionType, referenceNumber, discountFactor, purchasePrice, factorDate);
+                stockTransaction.WarehouseId = WarehouseId;
+                await _context.StockTransactions.AddAsync(stockTransaction);
+            }
+            else
+            {
+                isAlreadyExist = true;
+                isWarehouseChanged = stockTransaction.WarehouseId != WarehouseId;
+                lastQuantity = stockTransaction.Quantity;
+                lastWarehouse = stockTransaction.WarehouseId;
+
+                stockTransaction.Quantity = quantity;
+                stockTransaction.WarehouseId = WarehouseId;
+                _context.StockTransactions.Update(stockTransaction);
+            }
+
+            if (isWarehouseChanged)
+            {
+                var stockRecord = _context.Stocks.FirstOrDefault(s => s.ProductId == productId && s.WarehouseId == lastWarehouse);
+                if (stockRecord != null)
+                {
+                    stockRecord.ReduceQuantity(lastQuantity);
+                    _context.Stocks.Update(stockRecord);
+                }
+
+                var newStockRecord = new Stock(productId, WarehouseId);
+                newStockRecord.IncreaseQuantity(quantity);
+                _context.Stocks.Add(newStockRecord);
+
+            }
+            else
+            {
+                var stockRecord = _context.Stocks.FirstOrDefault(s => s.ProductId == productId && s.WarehouseId == WarehouseId);
+
+                if (stockRecord != null)
+                {
+                    if (isAlreadyExist)
+                    {
+                        if (quantity == 0)
+                        {
+                            stockRecord.ReduceQuantity(lastQuantity);
+
+                        }
+                        else if (quantity > lastQuantity)
+                        {
+                            decimal dif = quantity - lastQuantity;
+                            stockRecord.IncreaseQuantity(dif);
+
+                        }
+                        else if (quantity < lastQuantity)
+                        {
+                            decimal dif = lastQuantity - quantity;
+                            stockRecord.ReduceQuantity(dif);
+                        }
+                    }
+
+                    _context.Stocks.Update(stockRecord);
+                }
+                else
+                {
+                    stockRecord = new Stock(productId, WarehouseId);
+                    stockRecord.IncreaseQuantity(quantity);
+                    _context.Stocks.Add(stockRecord);
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

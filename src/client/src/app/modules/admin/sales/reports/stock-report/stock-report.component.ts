@@ -114,10 +114,10 @@ export class StockReportComponent implements OnInit {
         this.getOrders();
     }
     search(): void {
-        if (!this.selectedProduct.productName || typeof this.selectedProduct.productName !== "object") {
-            this.toastr.error("Select valid product.");
-            return;
-        }
+        // if (!this.selectedProduct.productName || typeof this.selectedProduct.productName !== "object") {
+        //     this.toastr.error("Select valid product.");
+        //     return;
+        // }
         this.orderParams = {};
         this.orderParams.productId = this.selectedProduct.productName.id;
         this.orderParams.warehouseId = this.selectedProduct.warehouseId;

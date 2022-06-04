@@ -9,6 +9,8 @@
 using System.Reflection;
 using FluentPOS.Modules.Invoicing.Core.Abstractions;
 using FluentPOS.Modules.Invoicing.Core.Features.PO.Service;
+using FluentPOS.Modules.Invoicing.Core.Services;
+using FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob;
 using FluentPOS.Modules.Invoicing.Infrastructure.Persistence;
 using FluentPOS.Shared.Infrastructure.Extensions;
 using FluentPOS.Shared.Infrastructure.Persistence;
@@ -26,6 +28,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Extensions
             services.AddExtendedAttributeDbContextsFromAssembly(typeof(SalesDbContext), Assembly.GetAssembly(typeof(ISalesDbContext)));
 
             services.AddTransient<IPOService, POService>();
+            services.AddTransient<ISyncService, SyncService>();
+            services.AddHostedService<DataMigrationJob>();
             return services;
         }
 

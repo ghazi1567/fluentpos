@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { Upload } from "src/app/core/models/uploads/upload";
 import { UploadType } from "src/app/core/models/uploads/upload-type";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
+import { WarehouseService } from "src/app/modules/admin/sales/services/warehouse.service";
 import { Brand } from "../../../models/brand";
 import { BrandParams } from "../../../models/brandParams";
 import { Category } from "../../../models/category";
@@ -29,6 +30,7 @@ export class ProductFormComponent implements OnInit {
 
     url: any = [];
     upload = new Upload();
+    warehouseLookups: any[];
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: Product,
@@ -36,10 +38,12 @@ export class ProductFormComponent implements OnInit {
         private brandService: BrandService,
         private categoryService: CategoryService,
         private toastr: ToastrService,
+        private warehouseService: WarehouseService,
         private fb: FormBuilder
     ) {}
 
     ngOnInit(): void {
+        this.loadLookups();
         this.initializeForm();
         this.brandParams.pageSize = 50;
         this.categoryParams.pageSize = 50;
@@ -47,7 +51,11 @@ export class ProductFormComponent implements OnInit {
         this.getCategories();
         this.loadProductImage();
     }
-
+    loadLookups() {
+        this.warehouseService.getAll().subscribe((res) => {
+            this.warehouseLookups = res.data;
+        });
+    }
     initializeForm() {
         this.productForm = this.fb.group({
             id: [this.data && this.data.id],
@@ -66,6 +74,9 @@ export class ProductFormComponent implements OnInit {
             productCode: [this.data && this.data.productCode],
             location: [this.data && this.data.location],
             discountFactor: [this.data && this.data.discountFactor],
+            imageUrl: [this.data && this.data.imageUrl],
+            warehouseId: [this.data && this.data.warehouseId],
+            openingStock: [this.data && this.data.openingStock],
         });
         if (this.productForm.get("id").value === "" || this.productForm.get("id").value == null) {
             this.formTitle = "Register Product";
@@ -105,13 +116,47 @@ export class ProductFormComponent implements OnInit {
 
         if (this.productForm.valid) {
             if (this.productForm.get("id").value === "" || this.productForm.get("id").value == null) {
-                this.productService.createProduct(this.productForm.value, this.upload).subscribe((response) => {
-                    this.toastr.success(response.messages[0]);
-                });
+                let model = this.productForm.value;
+                model.brandId = "370b8ad8-dfb1-45a4-a04d-e60d0ca97060";
+                model.categoryId = "c553786e-b8c5-4ff8-823d-120b35210a29";
+
+                this.productService.createProduct(model, this.upload).subscribe(
+                    (response) => {
+                        if (response.succeeded) {
+                            this.toastr.success(response.messages[0]);
+                        } else {
+                            response.messages.forEach((element) => {
+                                this.toastr.error(element);
+                            });
+                        }
+                    },
+                    (error) => {
+                        error.messages.forEach((element) => {
+                            this.toastr.error(element);
+                        });
+                    }
+                );
             } else {
-                this.productService.updateProduct(this.productForm.value, this.upload).subscribe((response) => {
-                    this.toastr.success(response.messages[0]);
-                });
+                let model = this.productForm.value;
+                model.brandId = "370b8ad8-dfb1-45a4-a04d-e60d0ca97060";
+                model.categoryId = "c553786e-b8c5-4ff8-823d-120b35210a29";
+
+                this.productService.updateProduct(model, this.upload).subscribe(
+                    (response) => {
+                        if (response.succeeded) {
+                            this.toastr.success(response.messages[0]);
+                        } else {
+                            response.messages.forEach((element) => {
+                                this.toastr.error(element);
+                            });
+                        }
+                    },
+                    (error) => {
+                        error.messages.forEach((element) => {
+                            this.toastr.error(element);
+                        });
+                    }
+                );
             }
         }
     }
@@ -127,5 +172,8 @@ export class ProductFormComponent implements OnInit {
             "i"
         ); // fragment locator
         return !!pattern.test(str);
+    }
+    onUrlChange(url) {
+        this.url = url;
     }
 }

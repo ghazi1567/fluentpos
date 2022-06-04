@@ -32,7 +32,8 @@ export class StockOutComponent implements OnInit {
         discount: 0,
         orderId: "",
         tax: 0,
-        productName: ""
+        productName: "",
+        barcodeSymbology: ""
     };
     selectedProduct: Product = {
         productId: "",
@@ -44,18 +45,21 @@ export class StockOutComponent implements OnInit {
         discount: 0,
         orderId: "",
         tax: 0,
-        productName: ""
+        productName: "",
+        barcodeSymbology: ""
     };
     productLookups: any[];
     poLookups: any[];
     warehouseLookups: any[];
     poFilteredOptions: Observable<any[]>;
     filteredproducts: any[];
-    constructor(private toastr: ToastrService, 
-        private fb: FormBuilder, 
-        private stockInService: StockOutService, 
+    constructor(
+        private toastr: ToastrService,
+        private fb: FormBuilder,
+        private stockInService: StockOutService,
         private purchaseOrderApi: PurchaseOrderService,
-        private warehouseService : WarehouseService) {}
+        private warehouseService: WarehouseService
+    ) {}
 
     ngOnInit(): void {
         this.initializeForm();
@@ -75,17 +79,18 @@ export class StockOutComponent implements OnInit {
                 map((value) => (typeof value === "object" ? this._filter(value.value) : this._filter(value)))
             );
         });
-        this.warehouseService.getAll().subscribe(res=>{
-            this.warehouseLookups =res.data;
+        this.warehouseService.getAll().subscribe((res) => {
+            this.warehouseLookups = res.data;
         });
+
+        this.orderForm.patchValue({ warehouseId: this.warehouseLookups[0].id });
     }
     initializeForm() {
         this.orderForm = this.fb.group({
             id: [""],
             timeStamp: [new Date(), Validators.required],
             note: [""],
-            warehouseId: ["",Validators.required],
-
+            warehouseId: [""]
         });
     }
     private _filter(value: string): any[] {
@@ -123,7 +128,10 @@ export class StockOutComponent implements OnInit {
         }
         return "";
     }
-
+    getProduct(keyword) {
+        let product = this.productLookups.find((option) => option.barcodeSymbology.toLowerCase().includes(keyword) || option.productCode.toLowerCase().includes(keyword));
+        return product;
+    }
     getProductBarcode(id) {
         console.log(this.productLookups);
         let product = this.productLookups.find((x) => x.id == id);
@@ -160,6 +168,40 @@ export class StockOutComponent implements OnInit {
             }
         }
     }
+    addProductByBarcode(Barcode) {
+        if (!this.products) {
+            this.products = [];
+        }
+        let product = this.getProduct(Barcode);
+
+        if (product) {
+            var exist = this.dataSource.data.filter((x) => x.productId == product.id);
+            if (exist.length == 0) {
+                let newProduct = <Product>{
+                    brand: "",
+                    category: "",
+                    discount: product.discount,
+                    price: product.price,
+                    quantity: 1,
+                    total: product.price * 1,
+                    productId: product.id,
+                    productName: product.name,
+                    barcodeSymbology: product.barcodeSymbology
+                };
+                this.dataSource.data.push(newProduct);
+            } else {
+                this.dataSource.data.forEach((p) => {
+                    if (p.productId == product.id) {
+                        p.quantity = p.quantity + 1;
+                        this.calculateGridRowTotal(p);
+                    }
+                });
+            }
+            this.dataSource._updateChangeSubscription();
+        } else {
+            this.toastr.error("Product not found");
+        }
+    }
 
     removeProduct1(item: any) {
         const index = this.dataSource.data.indexOf(item.barcodeSymbology);
@@ -174,16 +216,25 @@ export class StockOutComponent implements OnInit {
     }
     savePurchaseOrder() {
         var formValues = this.orderForm.value;
-        console.log(formValues);
+        if (!formValues.warehouseId) {
+            
+            if (this.warehouseLookups.length > 0) {
+                formValues.warehouseId = this.warehouseLookups[0].id;
+            } else {
+                this.toastr.error("Please select valid warehouse");
+                return;
+            }
+        }
+
         let order = <Order>{
             id: "",
             products: this.dataSource.data,
             note: formValues.note,
             timeStamp: new Date(formValues.timeStamp),
-            warehouseId:formValues.warehouseId
+            warehouseId: formValues.warehouseId
         };
-        if(order.products.length == 0){
-            this.toastr.error('Please select valid products');
+        if (order.products.length == 0) {
+            this.toastr.error("Please select valid products");
             return;
         }
         this.stockInService.create(order).subscribe((res) => {

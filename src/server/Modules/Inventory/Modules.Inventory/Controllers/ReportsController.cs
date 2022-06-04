@@ -12,7 +12,7 @@ namespace FluentPOS.Modules.Inventory.Controllers
     internal sealed class ReportsController : BaseController
     {
         [HttpPost("StockReport")]
-        public async Task<IActionResult> GetVarianceReportAsync(StockReportQuery command)
+        public async Task<IActionResult> GetStockReport(StockReportQuery command)
         {
             return Ok(await Mediator.Send(command));
         }

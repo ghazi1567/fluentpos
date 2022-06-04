@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 
         public DateTime Timestamp { get; private set; }
 
-        public decimal Quantity { get; private set; }
+        public decimal Quantity { get;  set; }
 
         public OrderType Type { get; private set; }
 

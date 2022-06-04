@@ -30,12 +30,17 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public static PurchaseOrder InitializeOrder()
         {
-            return new PurchaseOrder { TimeStamp = DateTime.Now };
+            return new PurchaseOrder { TimeStamp = DateTime.Now, CreateaAt = DateTime.Now };
+        }
+
+        public static PurchaseOrder InitializeOrder(Guid _id)
+        {
+            return new PurchaseOrder { Id = _id, TimeStamp = DateTime.Now, CreateaAt = DateTime.Now };
         }
 
         public static PurchaseOrder InitializeOrder(DateTime dateTime)
         {
-            return new PurchaseOrder { TimeStamp = dateTime };
+            return new PurchaseOrder { TimeStamp = dateTime, UpdatedAt = DateTime.Now };
         }
 
         public void SetReferenceNumber(string referenceNumber)

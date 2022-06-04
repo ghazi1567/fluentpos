@@ -29,11 +29,17 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("AvailableQuantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("LastUpdatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
@@ -48,6 +54,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("DiscountFactor")
                         .HasColumnType("decimal(18,2)");
@@ -72,6 +81,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");

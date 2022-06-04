@@ -16,12 +16,5 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
     {
     }
 
-    public class StockReportValidator : AbstractValidator<StockReportQuery>
-    {
-        public StockReportValidator(IStringLocalizer<StockReportValidator> localizer)
-        {
-            RuleFor(c => c.ProductId)
-               .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."]);
-        }
-    }
+    
 }

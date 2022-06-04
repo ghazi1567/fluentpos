@@ -10,6 +10,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Enums
     {
         StockIn = 1,
         StockOut = 2,
-        StockReturn = 3
+        StockReturn = 3,
+        OpeningStock = 4
     }
 }

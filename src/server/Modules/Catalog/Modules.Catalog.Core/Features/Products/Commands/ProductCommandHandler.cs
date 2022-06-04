@@ -19,6 +19,7 @@ using FluentPOS.Modules.Catalog.Core.Exceptions;
 using FluentPOS.Modules.Catalog.Core.Features.Products.Events;
 using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.Core.Extensions;
+using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Wrapper;
@@ -43,13 +44,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
         private readonly IUploadService _uploadService;
         private readonly IStringLocalizer<ProductCommandHandler> _localizer;
         private readonly IStockService _stockService;
+        private readonly IEntityReferenceService _referenceService;
+
         public ProductCommandHandler(
             ICatalogDbContext context,
             IMapper mapper,
             IUploadService uploadService,
             IStringLocalizer<ProductCommandHandler> localizer,
             IDistributedCache cache,
-            IStockService stockService)
+            IStockService stockService,
+            IEntityReferenceService referenceService)
         {
             _context = context;
             _mapper = mapper;
@@ -57,6 +61,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             _localizer = localizer;
             _cache = cache;
             _stockService = stockService;
+            _referenceService = referenceService;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -69,6 +74,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             }
 
             var product = _mapper.Map<Product>(command);
+            product.ReferenceNumber = await _referenceService.TrackAsync(product.GetType().Name);
             var uploadRequest = command.UploadRequest;
             if (uploadRequest != null)
             {
@@ -79,6 +85,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             product.AddDomainEvent(new ProductRegisteredEvent(product));
             await _context.Products.AddAsync(product, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+
+            if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            {
+                await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber,  product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+            }
+
             return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Saved"]);
         }
 
@@ -106,6 +118,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
                 product.AddDomainEvent(new ProductUpdatedEvent(product));
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync(cancellationToken);
+
+                if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+                {
+                    await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+                }
+
                 await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
                 return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Updated"]);
             }
@@ -126,6 +144,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
+
+                if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+                {
+                    await _stockService.RecordOpeningTransaction(product.Id, 0, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+                }
+
                 return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Deleted"]);
             }
             else

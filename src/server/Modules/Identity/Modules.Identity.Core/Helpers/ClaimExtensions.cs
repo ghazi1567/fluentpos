@@ -24,11 +24,9 @@ namespace FluentPOS.Modules.Identity.Core.Helpers
         {
             "Users Extended Attributes",
             "Roles Extended Attributes",
-            "Brands",
             "Brands Extended Attributes",
             "Customers",
             "Customers Extended Attributes",
-            "Categories",
             "Categories Extended Attributes",
             "Products Extended Attributes",
             "Carts",

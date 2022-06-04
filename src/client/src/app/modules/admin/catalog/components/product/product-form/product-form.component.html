@@ -12,6 +12,7 @@
                 <input formControlName="id" type="hidden" />
                 <div class="col-xs-12 col-md-3">
                     <app-uploader [url]="this.url" (onLoadFile)="onSelectFile($event)"></app-uploader>
+                    <input autocomplete="off" formControlName="imageUrl" matInput placeholder="Image url" (input)="onUrlChange($event.target.value)" required />
                 </div>
                 <div class="col-xs-12 col-md-9">
                     <div class="row">
@@ -32,7 +33,7 @@
                         <div class="col-xs-12 col-md-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Product Code</mat-label>
-                                <input autocomplete="off" formControlName="productCode" matInput placeholder="Product Code"  />
+                                <input autocomplete="off" formControlName="productCode" matInput placeholder="Product Code" required />
                                 <mat-error>Please provide a valid product code</mat-error>
                             </mat-form-field>
                         </div>
@@ -50,21 +51,38 @@
                                 <mat-error>Please provide a valid Location</mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xs-12 col-md-6">
+                        <div class="col-xs-12 col-md-3">
                             <mat-form-field appearance="outline">
                                 <mat-label>Price</mat-label>
                                 <input autocomplete="off" formControlName="price" matInput placeholder="Price" required type="number" />
                                 <mat-error>Please provide a valid Price value</mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xs-12 col-md-6">
+                        <div class="col-xs-12 col-md-3">
                             <mat-form-field appearance="outline">
                                 <mat-label>Cost Price</mat-label>
                                 <input autocomplete="off" formControlName="cost" matInput placeholder="Cost Price" required type="number" />
                                 <mat-error>Please provide a valid Cost Price value</mat-error>
                             </mat-form-field>
                         </div>
-                       <!--   <div class="col-xs-12 col-md-6">
+                        <div class="col-xs-12 col-md-6">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Warehouse</mat-label>
+                                <mat-select formControlName="warehouseId" name="warehouse">
+                                    <mat-option *ngFor="let warehouse of warehouseLookups" [value]="warehouse.id">
+                                        {{ warehouse.name }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Opening Stock</mat-label>
+                                <input autocomplete="off" formControlName="openingStock" matInput placeholder="Opening Stock"  type="number" />
+                                <mat-error>Please provide a valid Opening Stock value</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <!--   <div class="col-xs-12 col-md-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Discount Factor</mat-label>
                                 <input autocomplete="off" formControlName="discountFactor" matInput placeholder="Discount Factor" required type="number" />
@@ -117,15 +135,18 @@
                                 </div>
                             </div>
                         </div> -->
-                        
-                        
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-9">
+                    <div class="row">
+                       
                     </div>
                 </div>
             </div>
         </mat-dialog-content>
         <mat-dialog-actions align="end">
             <button mat-dialog-close mat-raised-button>Cancel</button>
-            <button [disabled]="!productForm.dirty || !productForm.valid" [mat-dialog-close]="true" cdkFocusInitial color="primary" mat-raised-button type="submit">Save</button>
+            <button [disabled]="!productForm.dirty || !productForm.valid" cdkFocusInitial color="primary" mat-raised-button type="submit">Save</button>
         </mat-dialog-actions>
     </form>
 </div>

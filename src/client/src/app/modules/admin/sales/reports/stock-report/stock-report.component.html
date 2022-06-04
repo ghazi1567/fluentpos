@@ -10,7 +10,7 @@
                     <div class="col-xs-12 col-md-4">
                         <mat-form-field class="example-form-field" appearance="fill">
                             <mat-label>Product</mat-label>
-                            <input matInput placeholder="Product Name" [matAutocomplete]="auto" name="product" required [(ngModel)]="selectedProduct.productName" (keyup)="filterProduct($event)" />
+                            <input matInput placeholder="Product Name" [matAutocomplete]="auto" name="product"  [(ngModel)]="selectedProduct.productName" (keyup)="filterProduct($event)" />
                         </mat-form-field>
 
                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProduct">

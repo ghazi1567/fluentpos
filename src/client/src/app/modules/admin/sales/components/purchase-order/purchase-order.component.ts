@@ -120,7 +120,7 @@ export class PurchaseOrderComponent implements OnInit {
         var formValues = this.orderForm.value;
         console.log(formValues);
         let order = <Order>{
-            id: "",
+            id: "00000000-0000-0000-0000-000000000000",
             products: this.dataSource.data,
             referenceNumber: formValues.referenceNumber,
             note: formValues.comments,

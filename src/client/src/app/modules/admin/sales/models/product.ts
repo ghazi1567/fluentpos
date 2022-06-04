@@ -10,4 +10,5 @@ export interface Product {
   discount: number;
   total: number;
   barcodeSymbology?:string;
+  productCode?:string;
 }

@@ -62,5 +62,11 @@ namespace FluentPOS.Modules.Catalog.Core.Entities
         {
             ExtendedAttributes = new HashSet<ProductExtendedAttribute>();
         }
+
+        public string ReferenceNumber { get; set; }
+
+        public Guid WarehouseId { get; set; }
+
+        public int OpeningStock { get; set; }
     }
 }

@@ -12,5 +12,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public string EntryType { get;  set; }
 
         public DateTime LastUpdateOn { get;  set; }
+
+        public string Status { get; set; } = "C";
+
+
     }
 }

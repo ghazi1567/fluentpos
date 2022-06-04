@@ -40,14 +40,14 @@ export class LoginComponent implements OnInit {
 
   fillSuperAdminCredentials() {
     this.loginForm = new FormGroup({
-      email: new FormControl('superadmin@fluentpos.com', Validators.required && Validators.email),
+      email: new FormControl('superadmin@e-smart.com', Validators.required && Validators.email),
       password: new FormControl('123Pa$$word!', Validators.required)
     });
   }
 
   fillStaffCredentials() {
     this.loginForm = new FormGroup({
-      email: new FormControl('staff@fluentpos.com', Validators.required && Validators.email),
+      email: new FormControl('staff@e-smart.com', Validators.required && Validators.email),
       password: new FormControl('123Pa$$word!', Validators.required)
     });
   }

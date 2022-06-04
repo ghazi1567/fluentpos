@@ -29,6 +29,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -66,6 +69,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -83,6 +89,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -120,6 +129,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

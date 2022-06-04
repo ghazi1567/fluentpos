@@ -44,9 +44,32 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             _referenceService = referenceService;
         }
 
-        public async Task<Result<Guid>> Save(RegisterPOCommand command, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Save(RegisterPOCommand command, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var order = PurchaseOrder.InitializeOrder();
+            PurchaseOrder order = null;
+            if (command.Id == Guid.Empty)
+            {
+                order = PurchaseOrder.InitializeOrder();
+            }
+            else
+            {
+                order = PurchaseOrder.InitializeOrder(command.Id);
+                if (command.TimeStamp.HasValue)
+                {
+                    order.TimeStamp = command.TimeStamp.Value;
+                }
+
+                if (command.CreateaAt.HasValue)
+                {
+                    order.CreateaAt = command.CreateaAt.Value;
+                }
+
+                if (command.UpdatedAt.HasValue)
+                {
+                    order.UpdatedAt = command.UpdatedAt.Value;
+                }
+            }
+
             if (string.IsNullOrEmpty(command.ReferenceNumber))
             {
                 string referenceNumber = await _referenceService.TrackAsync(order.GetType().Name);
@@ -72,13 +95,23 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 }
             }
 
-            await _salesContext.PurchaseOrders.AddAsync(order, cancellationToken);
-            await _salesContext.SaveChangesAsync(cancellationToken);
-
+            bool result = await SavePurchaseOrder(order);
             return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
         }
 
-        public async Task<Result<Guid>> Delete(RemovePOCommand request, CancellationToken cancellationToken)
+        public async Task<bool> SavePurchaseOrder(PurchaseOrder purchaseOrder, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await _salesContext.PurchaseOrders.AddAsync(purchaseOrder, cancellationToken);
+            await _salesContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+        public async Task<bool> AlreadyExist(Guid id)
+        {
+            return await _salesContext.PurchaseOrders.AnyAsync(x => x.Id == id);
+        }
+
+        public async Task<Result<Guid>> Delete(RemovePOCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var purchaseOrder = await _salesContext.PurchaseOrders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (purchaseOrder != null)
@@ -100,7 +133,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             }
         }
 
-        public async Task<Result<Guid>> Update(UpdatePOCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Update(UpdatePOCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
             var purchaseOrder = await _salesContext.PurchaseOrders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (purchaseOrder != null)
@@ -111,7 +144,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 order.Status = OrderStatus.Pending;
                 order.SetNotes(request.Note);
                 order.IsApproved = false;
-
+                order.CreateaAt = purchaseOrder.CreateaAt;
                 foreach (var item in request.Products)
                 {
                     var productResponse = await _productService.GetDetailsAsync(item.ProductId);

@@ -26,10 +26,16 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -48,11 +54,17 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CartId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -66,6 +78,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -82,6 +97,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
@@ -95,6 +113,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
@@ -132,6 +153,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -149,6 +173,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -185,6 +212,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -202,6 +232,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
@@ -238,6 +271,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

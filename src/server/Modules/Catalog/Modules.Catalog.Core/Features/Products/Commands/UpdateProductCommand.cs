@@ -44,5 +44,17 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
         public string Detail { get; set; }
 
         public UploadRequest UploadRequest { get; set; }
+
+        public string productCode { get; set; }
+
+        public int quantity { get; set; } = 0;
+
+        public string location { get; set; }
+
+        public decimal? discountFactor { get; set; } = 0;
+
+        public int OpeningStock { get; set; }
+
+        public Guid WarehouseId { get; set; }
     }
 }

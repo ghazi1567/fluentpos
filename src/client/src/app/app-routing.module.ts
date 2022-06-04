@@ -31,7 +31,7 @@ const routes: Routes = [
     component: AdminLayoutComponent,
     loadChildren: () => import('./modules/admin/admin.module').then(mod => mod.AdminModule),
     data: {
-      allowedRoles: ['SuperAdmin']
+      allowedRoles: ['SuperAdmin','Staff']
     }
   },
   {
