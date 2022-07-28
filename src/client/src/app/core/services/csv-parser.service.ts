@@ -206,6 +206,13 @@ export class CsvParserService {
         });
         return data;
     }
+
+    exportXls(data : any[],fileName, sheetName){
+        var worksheet = XLSX.utils.json_to_sheet(data);
+        const wb: XLSX.WorkBook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, worksheet, sheetName);
+        XLSX.writeFile(wb, fileName);
+    }
 }
 
 class CSVParserConfig {

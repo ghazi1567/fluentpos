@@ -51,14 +51,21 @@
                                 <mat-error>Please provide a valid Location</mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xs-12 col-md-3">
+                        <div class="col-xs-12 col-md-6">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Location 2</mat-label>
+                                <input autocomplete="off" formControlName="location2" matInput placeholder="location2"  />
+                                <mat-error>Please provide a valid Location 2</mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Price</mat-label>
                                 <input autocomplete="off" formControlName="price" matInput placeholder="Price" required type="number" />
                                 <mat-error>Please provide a valid Price value</mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-xs-12 col-md-3">
+                        <div class="col-xs-12 col-md-6">
                             <mat-form-field appearance="outline">
                                 <mat-label>Cost Price</mat-label>
                                 <input autocomplete="off" formControlName="cost" matInput placeholder="Cost Price" required type="number" />

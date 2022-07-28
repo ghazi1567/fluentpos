@@ -1,5 +1,5 @@
 <div [hidden]="!roles">
-  <app-table [title]="'Roles'" [subtitle]="'Manage, Register, Update or Remove Roles here.'"
+  <app-table [permissions]="['Permissions.Roles.Create']" [title]="'Roles'" [subtitle]="'Manage, Register, Update or Remove Roles here.'"
     [data]="roles && roles.data" [columns]="roleColumns" (onFilter)="filter($event)" (onReload)="reload()"
     (onCreateForm)="openForm()" (onEditForm)="openForm($event)" (onSort)="sort($event)" (onDelete)="remove($event)"
     [customActionOneData]="permissionActionData" (onCustomActionOne)="openPermissionsForm($event)"

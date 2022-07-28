@@ -29,8 +29,8 @@ export class StockOutService {
     getStockInOrders(orderParams: OrderParams): Observable<PaginatedResult<Order>> {
         let params = new HttpParams();
         if (orderParams.searchString) params = params.append("searchString", orderParams.searchString);
-        if (orderParams.pageNumber) params = params.append("pageNumber", orderParams.pageNumber.toString());
-        if (orderParams.pageSize) params = params.append("pageSize", orderParams.pageSize.toString());
+        if (orderParams.pageNumber) params = params.append("pageNumber", orderParams.pageNumber);
+        if (orderParams.pageSize) params = params.append("pageSize", orderParams.pageSize);
         if (orderParams.orderBy) params = params.append("orderBy", orderParams.orderBy.toString());
         if (orderParams.orderType != null) params = params.append("orderType", orderParams.orderType.toString());
         if (orderParams.status != null) params = params.append("status", orderParams.status.toString());

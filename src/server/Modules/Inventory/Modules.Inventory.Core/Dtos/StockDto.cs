@@ -8,11 +8,11 @@ namespace FluentPOS.Modules.Inventory.Core.Dtos
 {
     public class StockDto
     {
-        public Guid ProductId { get; private set; }
+        public Guid ProductId { get;  set; }
 
-        public decimal AvailableQuantity { get; private set; }
+        public decimal AvailableQuantity { get;  set; }
 
-        public DateTime LastUpdatedOn { get; private set; }
+        public DateTime LastUpdatedOn { get;  set; }
 
         public Guid WarehouseId { get; set; }
     }

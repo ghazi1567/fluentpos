@@ -16,5 +16,11 @@ namespace FluentPOS.Modules.Inventory.Controllers
         {
             return Ok(await Mediator.Send(command));
         }
+
+        [HttpPost("StockOutReport")]
+        public async Task<IActionResult> GetStockOutReport(StockOutReportQuery command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
     }
 }

@@ -26,7 +26,7 @@ export class StockOutListComponent implements OnInit {
     orderParams = new OrderParams();
     searchString: string;
 
-    displayedColumns: string[] = ["id", "referenceNumber", "timeStamp", "orderType", "action"];
+    displayedColumns: string[] = ["id", "referenceNumber", "note", "timeStamp", "orderType", "action"];
     dataSource: PaginatedResult<Order>;
 
     constructor(public stockInService: StockOutService, private route: Router, public dialog: MatDialog, public toastr: ToastrService) {}
@@ -53,7 +53,7 @@ export class StockOutListComponent implements OnInit {
     }
 
     pageChanged(event: PaginatedFilter): void {
-        this.orderParams.pageNumber = event.pageNumber;
+        this.orderParams.pageNumber = event.pageIndex;
         this.orderParams.pageSize = event.pageSize;
         this.getOrders();
     }
@@ -65,7 +65,7 @@ export class StockOutListComponent implements OnInit {
     }
 
     filter($event: string): void {
-        this.orderParams.searchString = $event.trim().toLocaleLowerCase();
+        this.orderParams.searchString = this.searchString;
         this.orderParams.pageNumber = 0;
         this.orderParams.pageSize = 0;
         this.getOrders();

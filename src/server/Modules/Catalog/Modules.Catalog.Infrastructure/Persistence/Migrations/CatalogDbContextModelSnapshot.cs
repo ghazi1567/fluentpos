@@ -318,6 +318,9 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("location")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("location2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("productCode")
                         .HasColumnType("nvarchar(max)");
 

@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.ReferenceNumber.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%") || x.Note.Contains(request.SearchString));
             }
 
             if (request.OrderType != null)

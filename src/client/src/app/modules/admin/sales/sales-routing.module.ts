@@ -13,6 +13,7 @@ import { StockOutListComponent } from './components/stockout/stock-out-list/stoc
 import { StockOutEditComponent } from './components/stockout/stock-out-edit/stock-out-edit.component';
 import { VarianceReportComponent } from './reports/variance-report/variance-report.component';
 import { StockReportComponent } from './reports/stock-report/stock-report.component';
+import { StockOutReportComponent } from './reports/stock-out-report/stock-out-report.component';
 
 const routes: Routes = [
   {
@@ -66,7 +67,11 @@ const routes: Routes = [
   {
     path: 'stock-report',
     component: StockReportComponent
-  }
+  },
+  {
+    path: 'stock-out-report',
+    component: StockOutReportComponent
+  },
 ];
 
 @NgModule({

@@ -9,13 +9,17 @@
                             <div class="col-6">Reference Number</div>
                             <div class="col-6" style="text-align: right">{{ this.order.referenceNumber }}</div>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-6">PO Ref No.</div>
                             <div class="col-6" style="text-align: right">{{ this.order.poReferenceNo }}</div>
+                        </div> -->
+                        <div class="row">
+                            <div class="col-5">Date Time</div>
+                            <div class="col-7" style="text-align: right">{{ this.order.timeStamp  | date :'dd/MM/yyyy, h:mm a'}}</div>
                         </div>
                         <div class="row">
-                            <div class="col-6">Order Date Time</div>
-                            <div class="col-6" style="text-align: right">{{ this.order.timeStamp  | date :'dd/MM/yyyy, h:mm a'}}</div>
+                            <div class="col-3">Comments</div>
+                            <div class="col-9" style="text-align: right">{{ this.order.note}}</div>
                         </div>
                     </mat-card-content>
                 </mat-card>

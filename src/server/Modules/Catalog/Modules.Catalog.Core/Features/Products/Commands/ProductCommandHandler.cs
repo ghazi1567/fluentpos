@@ -175,6 +175,14 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
                     _context.OperationName = "ProductImport";
                     _context.Products.AddRange(differenceQuery);
                     _context.SaveChanges();
+
+                    foreach (var product in differenceQuery)
+                    {
+                        if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+                        {
+                            await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.Id.ToString(), product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+                        }
+                    }
                 }
             }
 
@@ -197,7 +205,6 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
                     _context.Products.Update(product);
                 }
             }
-            
             await _context.SaveChangesAsync(cancellationToken);
 
             await _stockService.UpdateFactor(command.Products, command.updateFrom);

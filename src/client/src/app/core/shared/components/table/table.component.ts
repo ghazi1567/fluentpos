@@ -34,6 +34,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     @Input() set data(data: any[]) {
         this.setTableDataSource(data);
     }
+    @Input() permissions:any[] = [];
 
     @Output() onFilter: EventEmitter<string> = new EventEmitter<string>();
     @Output() onReload: EventEmitter<any> = new EventEmitter<any>();
@@ -44,6 +45,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     @Output() onEditForm: EventEmitter<any> = new EventEmitter();
     @Output() onView: EventEmitter<any> = new EventEmitter();
     @Output() onDelete: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onExport: EventEmitter<string> = new EventEmitter<string>();
 
     constructor(public dialog: MatDialog) {}
     gold: EventEmitter<{ data: CustomAction }>[];
@@ -85,6 +87,9 @@ export class TableComponent implements OnInit, AfterViewInit {
 
     handleFilter() {
         this.onFilter.emit(this.searchString);
+    }
+    handleExport() {
+        this.onExport.emit('');
     }
 
     handleSort(sortParams: Sort) {

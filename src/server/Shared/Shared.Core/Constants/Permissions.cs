@@ -139,6 +139,7 @@ namespace FluentPOS.Shared.Core.Constants
             public const string Register = "Permissions.Products.Register";
             public const string Update = "Permissions.Products.Update";
             public const string Remove = "Permissions.Products.Remove";
+            public const string Import = "Permissions.Products.Import";
         }
 
         [DisplayName("Products Extended Attributes")]

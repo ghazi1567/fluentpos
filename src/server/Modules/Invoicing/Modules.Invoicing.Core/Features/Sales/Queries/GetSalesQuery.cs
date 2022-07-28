@@ -18,11 +18,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetSalesQuery : IRequest<PaginatedResult<GetSalesResponse>>
     {
-        public int PageNumber { get; private set; }
+        public int PageNumber { get;  set; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get;  set; }
 
-        public string[] OrderBy { get; private set; }
+        public string[] OrderBy { get;  set; }
 
         public string SearchString { get;  set; }
 

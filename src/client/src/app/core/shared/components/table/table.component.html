@@ -7,11 +7,12 @@
     </mat-card-header>
     <div style="margin: 0 26px 0 16px">
         <div class="left">
-            <a **appHasPermission="['Permissions.Products.Register']" mat-raised-button color="primary" (click)="openCreateForm()">
+            <a *appHasPermission="permissions" mat-raised-button color="primary" (click)="openCreateForm()">
                 <mat-icon>add</mat-icon> {{ "components.table.register" | translate }}
                 {{ title }}
             </a>
             <a *ngIf="onReload.observers.length > 0" mat-raised-button color="accent" (click)="handleReload()"> <mat-icon>refresh</mat-icon> {{ "components.table.reload" | translate }} </a>
+            <a *ngIf="onExport.observers.length > 0" mat-raised-button color="primary" (click)="handleExport()"> <mat-icon>cloud_download</mat-icon> Export </a>
         </div>
         <div *ngIf="customActionData" class="right">
             <a mat-raised-button color="{{ customActionData.color }}" (click)="handleCustomAction()">
@@ -80,7 +81,7 @@
                     <ng-container *ngIf="tableColumn.dataKey === 'selected'">
                         <mat-checkbox (click)="$event.stopPropagation()" (change)="element.selected = !element.selected" [checked]="element.selected"> </mat-checkbox>
                     </ng-container>
-                    <ng-container *ngIf="tableColumn.dataKey === 'action'">
+                    <ng-container *ngIf="tableColumn.dataKey === 'action'" sticky>
                         <button
                             *ngIf="customActionOneData"
                             mat-raised-button

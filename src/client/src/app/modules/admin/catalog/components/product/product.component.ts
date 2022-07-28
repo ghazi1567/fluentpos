@@ -12,6 +12,7 @@ import { TableColumn } from "src/app/core/shared/components/table/table-column";
 import { ProductViewComponent } from "./product-view/product-view.component";
 import { ReportService } from "../../../sales/services/report.service";
 import { WarehouseService } from "../../../sales/services/warehouse.service";
+import { CsvParserService } from "src/app/core/services/csv-parser.service";
 
 @Component({
     selector: "app-product",
@@ -24,9 +25,18 @@ export class ProductComponent implements OnInit {
     productParams = new ProductParams();
     searchString: string;
     warehouseLookups: any[];
+    productData: Product[];
+    availableStock: any[];
     stockReport: Map<any, any>;
 
-    constructor(public productService: ProductService, public dialog: MatDialog, public toastr: ToastrService, public reportService: ReportService, private warehouseService: WarehouseService) {}
+    constructor(
+        public productService: ProductService,
+        public dialog: MatDialog,
+        public toastr: ToastrService,
+        public reportService: ReportService,
+        private warehouseService: WarehouseService,
+        private csvParserService: CsvParserService
+    ) {}
 
     ngOnInit(): void {
         this.loadLookups();
@@ -45,6 +55,7 @@ export class ProductComponent implements OnInit {
                 p.availableStock = this.stockReport.get(p.id);
             });
             this.products = result;
+            this.productData = result.data;
         });
     }
 
@@ -55,6 +66,7 @@ export class ProductComponent implements OnInit {
             { name: "Product Code", dataKey: "productCode", isSortable: true, isShowable: true },
             { name: "Barcode", dataKey: "barcodeSymbology", isSortable: true, isShowable: true },
             { name: "Location", dataKey: "location", isSortable: true, isShowable: true },
+            { name: "Location2", dataKey: "location2", isSortable: true, isShowable: true },
             { name: "Detail", dataKey: "detail", isSortable: true, isShowable: true },
             { name: "Price", dataKey: "price", isSortable: true, isShowable: true },
             { name: "Available Stock", dataKey: "availableStock", isSortable: true, isShowable: true },
@@ -133,6 +145,7 @@ export class ProductComponent implements OnInit {
                     x.warehouseName = warehouse.name;
                 }
             });
+            this.availableStock = result.data;
             this.stockReport = this.groupBy(result.data, (x) => x.productId);
             this.getProducts();
         });
@@ -153,4 +166,36 @@ export class ProductComponent implements OnInit {
     }
 
     getAvailableStock() {}
+
+    onExport($event) {
+        let exportProductParams = new ProductParams();
+        exportProductParams.pageNumber = 0;
+        exportProductParams.pageSize = this.products.totalCount;
+        this.productService.getProducts(exportProductParams).subscribe((result) => {
+            result.data.forEach((p) => {
+                var productStock = this.availableStock.filter((obj) => {
+                    return obj.productId === p.id;
+                });
+                productStock.forEach((ps) => {
+                    p[ps.warehouseName] = ps.availableQuantity;
+                });
+                delete p.localeName;
+                delete p.categoryName;
+                delete p.categoryId;
+                delete p.taxMethod;
+                delete p.tax;
+                delete p.isAlert;
+                delete p.alertQuantity;
+                delete p.discountFactor;
+                delete p.id;
+                delete p.detail;
+                delete p.brandId;
+                delete p.brandName;
+                delete p.warehouseId;
+                delete p.openingStock;
+
+            });
+            this.csvParserService.exportXls(result.data, "products.xlsx", "Products");
+        });
+    }
 }

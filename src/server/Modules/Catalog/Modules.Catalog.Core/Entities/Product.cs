@@ -51,6 +51,8 @@ namespace FluentPOS.Modules.Catalog.Core.Entities
 
         public string location { get; set; }
 
+        public string location2 { get; set; }
+
         public decimal discountFactor { get; set; }
 
         public DateTime? FactorUpdateOn { get; set; }

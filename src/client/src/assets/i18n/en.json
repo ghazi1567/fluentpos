@@ -25,7 +25,9 @@
             "stockIn": "Stock In",
             "stockOut": "Stock Out",
             "approvalList": "Approval List",
-            "stockReport": "Stock Report"
+            "stockReport": "Stock Report",
+            "stockOutReport": "Stock Out Report",
+            "varianceReport": "Variance Report"
         }
     },
     "dashboard": {

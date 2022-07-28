@@ -24,7 +24,7 @@
                 <a *appHasPermission="['Permissions.Products.View']" mat-list-item routerLink="catalog/products" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">free_breakfast</mat-icon> {{ "layouts.admin.products" | translate }}
                 </a>
-                <a *appHasPermission="['Permissions.Products.View']" mat-list-item routerLink="catalog/products-import" (click)="sidenav.close()">
+                <a *appHasPermission="['Permissions.Products.Import']" mat-list-item routerLink="catalog/products-import" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">free_breakfast</mat-icon> {{ "layouts.admin.productsImport" | translate }}
                 </a>
                 <!-- <div class="nav-subheading">
@@ -36,20 +36,26 @@
                 <div class="nav-subheading">
                     {{ "layouts.admin.salesSubhead" | translate }}
                 </div>
-                <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/purchase-order-list" (click)="sidenav.close()">
+                <a *appHasPermission="['Permissions.PurchaseOrder.ViewAll']" mat-list-item routerLink="sales/purchase-order-list" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.purchaseOrder" | translate }}
                 </a>
-                <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/stock-in-list" (click)="sidenav.close()">
+                <a *appHasPermission="['Permissions.StockIn.ViewAll']" mat-list-item routerLink="sales/stock-in-list" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.stockIn" | translate }}
                 </a>
-                <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/approval-list" (click)="sidenav.close()">
+                <a *appHasPermission="['Permissions.StockIn.Approval']" mat-list-item routerLink="sales/approval-list" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.approvalList" | translate }}
                 </a>
-                <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/stock-out-list" (click)="sidenav.close()">
+                <a *appHasPermission="['Permissions.StockOut.ViewAll']" mat-list-item routerLink="sales/stock-out-list" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.stockOut" | translate }}
                 </a>
                 <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/stock-report" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.stockReport" | translate }}
+                </a>
+                <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/stock-out-report" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.stockOutReport" | translate }}
+                </a>
+                <a *appHasPermission="['Permissions.Sales.View']" mat-list-item routerLink="sales/variance-report" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">attach_money</mat-icon> {{ "layouts.admin.varianceReport" | translate }}
                 </a>
                 <div class="nav-subheading">
                     {{ "layouts.admin.accSubhead" | translate }}

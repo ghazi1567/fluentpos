@@ -22,6 +22,7 @@ export interface Product {
   quantity: number;
   orderedQuantity: number;
   location: string;
+  location2?: string;
   discountFactor: number;
   availableStock?: string;
   warehouseId?: string;

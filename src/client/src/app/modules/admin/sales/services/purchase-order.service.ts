@@ -7,10 +7,10 @@ import { PurchaseOrderApiService } from "src/app/core/api/sales/purchase-order-a
 import { IResult } from "src/app/core/models/wrappers/IResult";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { Result } from "src/app/core/models/wrappers/Result";
+import { Product } from "../../catalog/models/product";
 import { ProductParams } from "../../catalog/models/productParams";
 import { Order } from "../models/order";
 import { OrderParams } from "../models/orderParams";
-import { Product } from "../models/product";
 
 @Injectable({
     providedIn: "root"
@@ -25,6 +25,11 @@ export class PurchaseOrderService {
         }
         return this.productApi.getAlls(params).pipe(map((response: PaginatedResult<Product>) => response));
     }
+   
+    getProductById(id: string): Observable<Result<Product>> {
+        return this.productApi.getById(id).pipe(map((response: Result<Product>) => response));
+    }
+
     getById(id: string): Observable<Result<Order>> {
         return this.api.getById(id)
           .pipe(map((response: Result<Order>) => response));

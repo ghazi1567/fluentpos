@@ -129,6 +129,10 @@ export class StockOutComponent implements OnInit {
         return "";
     }
     getProduct(keyword) {
+        if(!this.productLookups){
+            this.toastr.error('Please wait products are loading.')
+            return;
+        }
         let product = this.productLookups.find((option) => option.barcodeSymbology.toLowerCase().includes(keyword) || option.productCode.toLowerCase().includes(keyword));
         return product;
     }

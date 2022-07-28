@@ -73,10 +73,12 @@ export class UserComponent implements OnInit {
   }
 
   remove($event: string): void {
-    this.userService.deleteUser($event).subscribe(() => {
-      this.getUsers();
-      this.toastr.info('User Removed');
-    });
+    this.toastr.info('You can not remove user.');
+    
+    // this.userService.deleteUser($event).subscribe(() => {
+    //   this.getUsers();
+    //   this.toastr.info('User Removed');
+    // });
   }
 
   sort($event: Sort): void {

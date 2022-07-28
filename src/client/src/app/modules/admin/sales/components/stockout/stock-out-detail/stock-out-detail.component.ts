@@ -6,6 +6,7 @@ import { ProductParams } from 'src/app/modules/admin/catalog/models/productParam
 import { ProductService } from 'src/app/modules/admin/catalog/services/product.service';
 import { Order } from '../../../models/order';
 import { StockInService } from '../../../services/stock-in.service';
+import { StockOutService } from '../../../services/stock-out.service';
 
 @Component({
   selector: 'app-stock-out-detail',
@@ -16,7 +17,7 @@ export class StockOutDetailComponent implements OnInit {
   order: Order;
   products: Product[];
   displayedColumns: string[] = ["barcodeSymbology", "productName",  "quantity"];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Order, public stockInService: StockInService, private toastr: ToastrService, private productApi: ProductService) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Order, public stockInService: StockOutService, private toastr: ToastrService, private productApi: ProductService) {}
 
   ngOnInit(): void {
       this.getOrder();

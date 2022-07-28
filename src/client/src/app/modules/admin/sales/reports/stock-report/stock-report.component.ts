@@ -2,21 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Sort } from "@angular/material/sort";
 import { ToastrService } from "ngx-toastr";
-import { OrderStatus } from "src/app/core/enums/OrderStatus";
-import { OrderType } from "src/app/core/enums/OrderType";
 import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
-import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { Result } from "src/app/core/models/wrappers/Result";
 import { TableColumn } from "src/app/core/shared/components/table/table-column";
 import { ProductParams } from "../../../catalog/models/productParams";
 import { StockReport } from "../../../catalog/models/stockReport";
-import { DeleteDialogComponent } from "../../../shared/components/delete-dialog/delete-dialog.component";
-import { StockInDetailComponent } from "../../components/stock/stock-in-detail/stock-in-detail.component";
-import { Order } from "../../models/order";
-import { OrderParams } from "../../models/orderParams";
 import { PurchaseOrderService } from "../../services/purchase-order.service";
 import { ReportService } from "../../services/report.service";
-import { StockInService } from "../../services/stock-in.service";
 import { WarehouseService } from "../../services/warehouse.service";
 
 @Component({
@@ -74,9 +66,15 @@ export class StockReportComponent implements OnInit {
     }
     getOrders(): void {
         this.reportService.getStockReport(this.orderParams).subscribe((result) => {
-            var product = this.selectedProduct.productName.name;
+         
             result.data.forEach((x) => {
-                x.productName = product;
+                var product = this.productLookups.find((obj) => {
+                    return obj.id === x.productId;
+                });
+                if(product){
+                    x.productName = product.name;
+                }
+
                 var warehouse = this.warehouseLookups.find((obj) => {
                     return obj.id === x.warehouseId;
                 });

@@ -22,6 +22,7 @@ import { StockOutEditComponent } from './components/stockout/stock-out-edit/stoc
 import { VarianceReportComponent } from './reports/variance-report/variance-report.component';
 import { UpdatePromotionComponent } from './reports/variance-report/update-promotion/update-promotion.component';
 import { StockReportComponent } from './reports/stock-report/stock-report.component';
+import { StockOutReportComponent } from './reports/stock-out-report/stock-out-report.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { StockReportComponent } from './reports/stock-report/stock-report.compon
     StockOutEditComponent,
     VarianceReportComponent,
     UpdatePromotionComponent,
-    StockReportComponent
+    StockReportComponent,
+    StockOutReportComponent
   ],
   imports: [
     CommonModule,

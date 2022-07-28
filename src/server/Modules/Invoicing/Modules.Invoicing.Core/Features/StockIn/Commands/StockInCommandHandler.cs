@@ -90,6 +90,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             order.Status = OrderStatus.PendingApproval;
             order.OrderType = OrderType.StockIn;
             order.WarehouseId = command.WarehouseId;
+            order.SetNote(command.Note);
 
             foreach (var item in command.Products)
             {
@@ -126,7 +127,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             order.Status = request.Status;
             order.ApprovedDate = DateTime.Now;
             order.ApprovedBy = _user.GetUserEmail();
-
             po.Status = request.Status;
             po.ApproveDate = DateTime.Now;
             po.ApproveBy = _user.GetUserId();

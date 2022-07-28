@@ -77,7 +77,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             order.Status = OrderStatus.PendingApproval;
             order.OrderType = OrderType.StockIn;
             order.WarehouseId = command.WarehouseId;
-
+            order.SetNote(command.Note);
             foreach (var item in command.Products)
             {
                 var productResponse = await _productService.GetDetailsAsync(item.ProductId);

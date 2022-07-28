@@ -28,5 +28,8 @@ export class ReportService {
     getStockReport(model: any) : Observable<Result<StockReport[]>> {
         return this.reportsApiService.getStockReport(model).pipe(map((response: any) => response));
     }
+    getStockOutReport(model: any) : Observable<Result<StockReport[]>> {
+        return this.reportsApiService.getStockOutReport(model).pipe(map((response: any) => response));
+    }
     
 }

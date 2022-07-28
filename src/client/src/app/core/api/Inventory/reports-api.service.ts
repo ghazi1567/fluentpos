@@ -13,5 +13,8 @@ export class ReportsApiService {
     getStockReport(model: any) {
         return this.http.post(this.baseUrl + "stockreport", model);
     }
+    getStockOutReport(model: any) {
+        return this.http.post(this.baseUrl + "stockOutReport", model);
+    }
     
 }

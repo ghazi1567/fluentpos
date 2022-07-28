@@ -1,9 +1,13 @@
 export interface StockReport {
     productName: string;
     warehouseName: string;
-    AvailableQuantity: number;
+    availableQuantity: number;
     lastUpdatedOn: string;
     name: string;
     productId: string;
     warehouseId: string;
+    barcode?:string;
+    productCode?:string;
+    location?:string;
+    location2?:string;
 }

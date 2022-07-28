@@ -67,7 +67,13 @@ export class ProductImportComponent implements OnInit {
             { name: "status", dataKey: "status", isSortable: true, isShowable: true },
             {
                 name: "quantity",
-                dataKey: "quantity",
+                dataKey: "openingStock",
+                isSortable: true,
+                isShowable: true
+            },
+            {
+                name: "WarehouseId",
+                dataKey: "warehouseId",
                 isSortable: true,
                 isShowable: true
             },
@@ -119,7 +125,7 @@ export class ProductImportComponent implements OnInit {
             },
             {
                 csvColumn: "Variant Inventory Qty",
-                gridColumn: "quantity"
+                gridColumn: "openingStock"
             },
             {
                 csvColumn: "Variant SKU",
@@ -136,6 +142,10 @@ export class ProductImportComponent implements OnInit {
             {
                 csvColumn: "Image Src",
                 gridColumn: "imageUrl"
+            },
+            {
+                csvColumn: "WarehouseId",
+                gridColumn: "warehouseId"
             }
         ];
     }

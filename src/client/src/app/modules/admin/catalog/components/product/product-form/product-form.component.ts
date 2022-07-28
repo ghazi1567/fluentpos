@@ -73,6 +73,7 @@ export class ProductFormComponent implements OnInit {
             detail: [this.data && this.data.detail],
             productCode: [this.data && this.data.productCode],
             location: [this.data && this.data.location],
+            location2: [this.data && this.data.location2],
             discountFactor: [this.data && this.data.discountFactor],
             imageUrl: [this.data && this.data.imageUrl],
             warehouseId: [this.data && this.data.warehouseId],

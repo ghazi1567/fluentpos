@@ -51,6 +51,8 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 
         public string location { get; set; }
 
+        public string location2 { get; set; }
+
         public decimal? discountFactor { get; set; } = 0;
 
         public int OpeningStock { get; set; }
