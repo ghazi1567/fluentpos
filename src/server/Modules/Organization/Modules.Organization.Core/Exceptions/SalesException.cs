@@ -1,30 +1,21 @@
 ﻿// --------------------------------------------------------------------------------------------------
-// <copyright file="UploadType.cs" company="FluentPOS">
+// <copyright file="SalesException.cs" company="FluentPOS">
 // Copyright (c) FluentPOS. All rights reserved.
 // The core team: Mukesh Murugan (iammukeshm), Chhin Sras (chhinsras), Nikolay Chebotov (unchase).
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System.ComponentModel;
+using System.Net;
+using FluentPOS.Shared.Core.Exceptions;
 
-namespace FluentPOS.Shared.DTOs.Upload
+namespace FluentPOS.Modules.Catalog.Core.Exceptions
 {
-    public enum UploadType
+    public class SalesException : CustomException
     {
-        [Description(@"Images\Catalog\Products")]
-        Product,
-
-        [Description(@"Images\Catalog\Brands")]
-        Brand,
-
-        [Description(@"Images\Catalog\Categories")]
-        Category,
-
-        [Description(@"Images\People\Customers")]
-        Customer,
-
-        [Description(@"Images\People\Employees")]
-        Employee
+        public SalesException(string message, HttpStatusCode statusCode = HttpStatusCode.InternalServerError)
+            : base(message, statusCode: statusCode)
+        {
+        }
     }
 }

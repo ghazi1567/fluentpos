@@ -36,6 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Catalog\Modules.Catalog\Modules.Catalog.csproj" />
     <ProjectReference Include="..\Modules\Identity\Modules.Identity\Modules.Identity.csproj" />
+    <ProjectReference Include="..\Modules\Organization\Modules.Organization\Modules.Organization.csproj" />
     <ProjectReference Include="..\Modules\People\Modules.People\Modules.People.csproj" />
     <ProjectReference Include="..\Modules\Invoicing\Modules.Invoicing\Modules.Invoicing.csproj" />
      <ProjectReference Include="..\Modules\Inventory\Modules.Inventory\Modules.Inventory.csproj" />

@@ -19,5 +19,7 @@ namespace FluentPOS.Modules.People.Core.Abstractions
         public DbSet<Cart> Carts { get; set; }
 
         public DbSet<CartItem> CartItems { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }

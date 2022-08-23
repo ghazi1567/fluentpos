@@ -20,6 +20,10 @@ namespace FluentPOS.Shared.Core.Domain
 
         public DateTime? UpdatedAt { get; set; }
 
+        public Guid OrganizationId { get; set; }
+
+        public Guid BranchId { get; set; }
+
         protected BaseEntity()
         {
             Id = Guid.NewGuid();

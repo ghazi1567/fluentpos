@@ -56,50 +56,43 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
         public async Task<Result<Guid>> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var customer = _mapper.Map<Customer>(command);
-            if (customer.Type != CustomerTypes.General || customer.Type != CustomerTypes.VIP)
-            {
-                customer.Type = CustomerTypes.General;
-            }
+            var employee = _mapper.Map<Employee>(command);
 
             var uploadRequest = command.UploadRequest;
             if (uploadRequest != null)
             {
                 uploadRequest.FileName = $"C-{command.FullName}{uploadRequest.Extension}";
-                customer.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
+                employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
             }
 
-            customer.AddDomainEvent(new CustomerRegisteredEvent(customer));
-            await _context.Customers.AddAsync(customer, cancellationToken);
+            // customer.AddDomainEvent(new EmployeeRegisteredEvent(customer));
+
+            await _context.Employees.AddAsync(employee, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Saved"]);
+            return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var customer = await _context.Customers.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
-            if (customer != null)
+            var employee = await _context.Employees.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            if (employee != null)
             {
-                customer = _mapper.Map<Customer>(command);
-                if (customer.Type != CustomerTypes.General && customer.Type != CustomerTypes.VIP)
-                {
-                    customer.Type = CustomerTypes.General;
-                }
+                employee = _mapper.Map<Employee>(command);
 
                 var uploadRequest = command.UploadRequest;
                 if (uploadRequest != null)
                 {
                     uploadRequest.FileName = $"C-{command.FullName}{uploadRequest.Extension}";
-                    customer.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
+                    employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
                 }
 
-                customer.AddDomainEvent(new CustomerUpdatedEvent(customer));
-                _context.Customers.Update(customer);
+                //employee.AddDomainEvent(new CustomerUpdatedEvent(employee));
+                _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Updated"]);
+                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Customer Updated"]);
             }
             else
             {

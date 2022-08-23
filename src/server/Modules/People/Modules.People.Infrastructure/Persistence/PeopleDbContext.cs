@@ -50,6 +50,8 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence
 
         public DbSet<CartItem> CartItems { get; set; }
 
+        public DbSet<Employee> Employees { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
