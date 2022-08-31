@@ -6,29 +6,30 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using Dapper;
 using FluentPOS.Modules.Organization.Core.Abstractions;
+using FluentPOS.Modules.Organization.Core.Entities;
 using FluentPOS.Shared.Core.EventLogging;
+using FluentPOS.Shared.Core.Interfaces.Serialization;
 using FluentPOS.Shared.Core.Settings;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using FluentPOS.Shared.Core.Interfaces.Serialization;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
-using System.Data;
-using Dapper;
-using System.Linq;
 
 namespace FluentPOS.Modules.Organization.Infrastructure.Persistence
 {
-    public sealed class OrganizationDbContext : ModuleDbContext, ISalesDbContext
+    public sealed class OrganizationDbContext : ModuleDbContext, IOrganizationDbContext
     {
         private readonly PersistenceSettings _persistenceOptions;
         private readonly IJsonSerializer _json;
 
-        protected override string Schema => "Invoicing";
+        protected override string Schema => "Org";
 
         public OrganizationDbContext(
             DbContextOptions<OrganizationDbContext> options,
@@ -42,19 +43,15 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence
             _json = json;
         }
 
-        //public DbSet<Order> Orders { get; set; }
+        public DbSet<Branch> Branchs { get; set; }
 
-        //public DbSet<Product> Products { get; set; }
+        public DbSet<Department> Departments { get; set; }
 
-        //public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Designation> Designations { get; set; }
 
-        //public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<Organisation> Organisations { get; set; }
 
-        //public DbSet<POProduct> POProducts { get; set; }
-
-        //public DbSet<Warehouse> Warehouses { get; set; }
-
-        //public DbSet<SyncLog> SyncLogs { get; set; }
+        public DbSet<Policy> Policies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

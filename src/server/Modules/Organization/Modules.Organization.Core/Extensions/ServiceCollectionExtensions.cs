@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.Organization.Core.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddInvoicingCore(this IServiceCollection services)
+        public static IServiceCollection AddOrganizationCore(this IServiceCollection services)
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());

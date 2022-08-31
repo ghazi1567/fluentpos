@@ -10,7 +10,7 @@ using System;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 
-namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
+namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
     public class RemoveEmployeeCommand : IRequest<Result<Guid>>
     {

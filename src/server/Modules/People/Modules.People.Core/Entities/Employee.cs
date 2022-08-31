@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public string EmployeeCode { get; set; }
 
-        public int PunchCode { get; set; }
+        public int? PunchCode { get; set; }
 
         public string MobileNo { get; set; }
 
@@ -78,5 +78,7 @@ namespace FluentPOS.Modules.People.Core.Entities
         public DateTime? ResignDate { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public bool Active { get; set; }
     }
 }

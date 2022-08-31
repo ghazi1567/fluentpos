@@ -23,6 +23,7 @@ namespace FluentPOS.Shared.Core.Interfaces
         System.Threading.Tasks.Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string conStr, string query, object parms);
 
         Task<List<TResponse>> ExecuteQueryAsync<TResponse>(string query, object parms = null);
+
         public string OperationName { get; set; }
 
     }

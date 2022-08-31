@@ -45,10 +45,10 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
 
         public void Initialize()
         {
-            //AddDefaultRoles();
-            //AddSuperAdmin();
-            //AddStaff();
-            //_db.SaveChanges();
+            AddDefaultRoles();
+            AddSuperAdmin();
+            AddStaff();
+            _db.SaveChanges();
         }
 
         private void AddDefaultRoles()

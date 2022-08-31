@@ -36,4 +36,8 @@
         </PackageReference>
         <AdditionalFiles Include="..\..\..\stylecop.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Persistence\Migrations\" />
+    </ItemGroup>
 </Project>

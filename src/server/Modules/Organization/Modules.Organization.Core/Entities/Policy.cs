@@ -1,10 +1,10 @@
-﻿using FluentPOS.Modules.Organization.Core.Enums;
-using FluentPOS.Shared.Core.Domain;
+﻿using FluentPOS.Shared.Core.Domain;
+using FluentPOS.Shared.DTOs.Enums;
 using System;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
-    internal class Policy : BaseEntity
+    public class Policy : BaseEntity
     {
         public string Name { get; set; }
 
@@ -28,9 +28,9 @@ namespace FluentPOS.Modules.Organization.Core.Entities
         /// </summary>
         public int? RequiredWorkingHour { get; set; }
 
-        public DateTime ShiftStartTime { get; set; }
+        public TimeSpan ShiftStartTime { get; set; }
 
-        public DateTime ShiftEndTime { get; set; }
+        public TimeSpan ShiftEndTime { get; set; }
 
         /// <summary>
         /// GRACE PERIOD. ENTER THE NUMBER OF MINUTES THE SYSTEM SHOULD WAIT BEFORE MARKING THE EMPLOYEE LATE.
@@ -73,5 +73,12 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         public OverTime HolidayOverTime { get; set; }
 
+        public LateComersPenaltyType lateComersPenaltyType { get; set; }
+
+        public int lateComersPenalty { get; set; }
+
+        public int DailyOverTimeRate { get; set; }
+
+        public int HolidayOverTimeRate { get; set; }
     }
 }

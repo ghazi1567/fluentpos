@@ -44,6 +44,29 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.ToTable("EntityReferences");
                 });
 
+            modelBuilder.Entity("FluentPOS.Shared.Core.Entities.RemoteClient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ClientLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastUpdateOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RemoteClients");
+                });
+
             modelBuilder.Entity("FluentPOS.Shared.Core.EventLogging.EventLog", b =>
                 {
                     b.Property<Guid>("Id")

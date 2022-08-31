@@ -17,9 +17,9 @@ namespace FluentPOS.Shared.Core.Constants
         public static class Users
         {
             public const string View = "Permissions.Users.View";
-            public const string Create = "Permissions.Users.Create";
-            public const string Edit = "Permissions.Users.Edit";
-            public const string Delete = "Permissions.Users.Delete";
+            public const string Add = "Permissions.Users.Register";
+            public const string Update = "Permissions.Users.Update";
+            public const string Remove = "Permissions.Users.Remove";
         }
 
         [DisplayName("Users Extended Attributes")]
@@ -28,7 +28,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Users.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Users.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Users.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Users.ExtendedAttributes.Register";
             public const string Update = "Permissions.Users.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Users.ExtendedAttributes.Remove";
         }
@@ -38,8 +38,8 @@ namespace FluentPOS.Shared.Core.Constants
         public static class Roles
         {
             public const string View = "Permissions.Roles.View";
-            public const string Create = "Permissions.Roles.Create";
-            public const string Edit = "Permissions.Roles.Edit";
+            public const string Create = "Permissions.Roles.Register";
+            public const string Edit = "Permissions.Roles.Update";
             public const string Delete = "Permissions.Roles.Delete";
         }
 
@@ -49,7 +49,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Roles.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Roles.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Roles.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Roles.ExtendedAttributes.Register";
             public const string Update = "Permissions.Roles.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Roles.ExtendedAttributes.Remove";
         }
@@ -59,8 +59,8 @@ namespace FluentPOS.Shared.Core.Constants
         public static class RoleClaims
         {
             public const string View = "Permissions.RoleClaims.View";
-            public const string Create = "Permissions.RoleClaims.Create";
-            public const string Edit = "Permissions.RoleClaims.Edit";
+            public const string Create = "Permissions.RoleClaims.Register";
+            public const string Edit = "Permissions.RoleClaims.Update";
             public const string Delete = "Permissions.RoleClaims.Delete";
         }
 
@@ -81,7 +81,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Brands.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Brands.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Brands.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Brands.ExtendedAttributes.Register";
             public const string Update = "Permissions.Brands.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Brands.ExtendedAttributes.Remove";
         }
@@ -103,7 +103,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Customers.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Customers.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Customers.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Customers.ExtendedAttributes.Register";
             public const string Update = "Permissions.Customers.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Customers.ExtendedAttributes.Remove";
         }
@@ -125,7 +125,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Categories.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Categories.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Categories.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Categories.ExtendedAttributes.Register";
             public const string Update = "Permissions.Categories.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Categories.ExtendedAttributes.Remove";
         }
@@ -148,7 +148,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Products.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Products.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Products.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Products.ExtendedAttributes.Register";
             public const string Update = "Permissions.Products.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Products.ExtendedAttributes.Remove";
         }
@@ -159,7 +159,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Carts.View";
             public const string ViewAll = "Permissions.Carts.ViewAll";
-            public const string Create = "Permissions.Carts.Create";
+            public const string Create = "Permissions.Carts.Register";
             public const string Remove = "Permissions.Carts.Remove";
         }
 
@@ -169,7 +169,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.Carts.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.Carts.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.Carts.ExtendedAttributes.Add";
+            public const string Add = "Permissions.Carts.ExtendedAttributes.Register";
             public const string Update = "Permissions.Carts.ExtendedAttributes.Update";
             public const string Remove = "Permissions.Carts.ExtendedAttributes.Remove";
         }
@@ -180,7 +180,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.CartItems.View";
             public const string ViewAll = "Permissions.CartItems.ViewAll";
-            public const string Add = "Permissions.CartItems.Add";
+            public const string Add = "Permissions.CartItems.Register";
             public const string Update = "Permissions.CartItems.Update";
             public const string Remove = "Permissions.CartItems.Remove";
         }
@@ -191,7 +191,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string View = "Permissions.CartItems.ExtendedAttributes.View";
             public const string ViewAll = "Permissions.CartItems.ExtendedAttributes.ViewAll";
-            public const string Add = "Permissions.CartItems.ExtendedAttributes.Add";
+            public const string Add = "Permissions.CartItems.ExtendedAttributes.Register";
             public const string Update = "Permissions.CartItems.ExtendedAttributes.Update";
             public const string Remove = "Permissions.CartItems.ExtendedAttributes.Remove";
         }
@@ -201,7 +201,7 @@ namespace FluentPOS.Shared.Core.Constants
         public static class EventLogs
         {
             public const string ViewAll = "Permissions.EventLogs.ViewAll";
-            public const string Create = "Permissions.EventLogs.Create";
+            public const string Create = "Permissions.EventLogs.Register";
         }
 
         [DisplayName("Sales")]
@@ -248,6 +248,72 @@ namespace FluentPOS.Shared.Core.Constants
             public const string Register = "Permissions.PurchaseOrder.Register";
             public const string Update = "Permissions.PurchaseOrder.Update";
             public const string Remove = "Permissions.PurchaseOrder.Remove";
+        }
+
+        [DisplayName("Branchs")]
+        [Description("Branchs Permissions")]
+        public static class Branchs
+        {
+            public const string View = "Permissions.Branchs.View";
+            public const string ViewAll = "Permissions.Branchs.ViewAll";
+            public const string Register = "Permissions.Branchs.Register";
+            public const string Update = "Permissions.Branchs.Update";
+            public const string Remove = "Permissions.Branchs.Remove";
+        }
+
+        [DisplayName("Organizations")]
+        [Description("Organizations Permissions")]
+        public static class Organizations
+        {
+            public const string View = "Permissions.Organizations.View";
+            public const string ViewAll = "Permissions.Organizations.ViewAll";
+            public const string Register = "Permissions.Organizations.Register";
+            public const string Update = "Permissions.Organizations.Update";
+            public const string Remove = "Permissions.Organizations.Remove";
+        }
+
+        [DisplayName("Departments")]
+        [Description("Departments Permissions")]
+        public static class Departments
+        {
+            public const string View = "Permissions.Departments.View";
+            public const string ViewAll = "Permissions.Departments.ViewAll";
+            public const string Register = "Permissions.Departments.Register";
+            public const string Update = "Permissions.Departments.Update";
+            public const string Remove = "Permissions.Departments.Remove";
+        }
+
+        [DisplayName("Designations")]
+        [Description("Designations Permissions")]
+        public static class Designations
+        {
+            public const string View = "Permissions.Designations.View";
+            public const string ViewAll = "Permissions.Designations.ViewAll";
+            public const string Register = "Permissions.Designations.Register";
+            public const string Update = "Permissions.Designations.Update";
+            public const string Remove = "Permissions.Designations.Remove";
+        }
+
+        [DisplayName("Policy")]
+        [Description("Policy Permissions")]
+        public static class Policy
+        {
+            public const string View = "Permissions.Policy.View";
+            public const string ViewAll = "Permissions.Policy.ViewAll";
+            public const string Register = "Permissions.Policy.Register";
+            public const string Update = "Permissions.Policy.Update";
+            public const string Remove = "Permissions.Policy.Remove";
+        }
+
+        [DisplayName("Employees")]
+        [Description("Employees Permissions")]
+        public static class Employees
+        {
+            public const string View = "Permissions.Employees.View";
+            public const string ViewAll = "Permissions.Employees.ViewAll";
+            public const string Register = "Permissions.Employees.Register";
+            public const string Update = "Permissions.Employees.Update";
+            public const string Remove = "Permissions.Employees.Remove";
         }
 
     }

@@ -18,15 +18,18 @@ using System.Threading.Tasks;
 using FluentPOS.Modules.Identity.Core.Entities;
 using FluentPOS.Modules.Identity.Core.Exceptions;
 using FluentPOS.Modules.Identity.Core.Settings;
+using FluentPOS.Modules.Identity.Infrastructure.Persistence;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Interfaces.Services.Identity;
 using FluentPOS.Shared.Core.Settings;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Identity.Tokens;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace FluentPOS.Modules.Identity.Infrastructure.Services
 {
@@ -39,6 +42,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
         private readonly MailSettings _mailSettings;
         private readonly JwtSettings _config;
         private readonly IEventLogService _eventLog;
+        private readonly IdentityDbContext _context;
 
         public TokenService(
             UserManager<FluentUser> userManager,
@@ -47,7 +51,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             IStringLocalizer<TokenService> localizer,
             IOptions<SmsSettings> smsSettings,
             IOptions<MailSettings> mailSettings,
-            IEventLogService eventLog)
+            IEventLogService eventLog,
+            IdentityDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -56,6 +61,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             _mailSettings = mailSettings.Value;
             _config = config.Value;
             _eventLog = eventLog;
+            _context = context;
         }
 
         public async Task<IResult<TokenResponse>> GetTokenAsync(TokenRequest request, string ipAddress)
@@ -135,12 +141,20 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             var roles = await _userManager.GetRolesAsync(user);
             var roleClaims = new List<Claim>();
             var permissionClaims = new List<Claim>();
+            var branchClaims = new List<Claim>();
+
             foreach (string role in roles)
             {
                 roleClaims.Add(new Claim(ClaimTypes.Role, role));
                 var thisRole = await _roleManager.FindByNameAsync(role);
                 var allPermissionsForThisRoles = await _roleManager.GetClaimsAsync(thisRole);
                 permissionClaims.AddRange(allPermissionsForThisRoles);
+            }
+
+            var userBranchs = await _context.UserBranchs.Where(x => x.UserId == Guid.Parse(user.Id)).ToListAsync();
+            foreach (var item in userBranchs)
+            {
+                branchClaims.Add(new("branch", JsonConvert.SerializeObject(item)));
             }
 
             return new List<Claim>
@@ -154,7 +168,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             }
             .Union(userClaims)
             .Union(roleClaims)
-            .Union(permissionClaims);
+            .Union(permissionClaims)
+            .Union(branchClaims);
         }
 
         private string GenerateRefreshToken()

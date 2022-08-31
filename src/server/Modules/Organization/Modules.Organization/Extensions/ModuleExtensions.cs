@@ -17,16 +17,16 @@ namespace FluentPOS.Modules.Organization.Extensions
 {
     public static class ModuleExtensions
     {
-        public static IServiceCollection AddInvoicingModule(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddOrganizationModule(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddInvoicingCore()
-                .AddSalesInfrastructure()
-                .AddSalesValidation();
+                .AddOrganizationCore()
+                .AddOrganizationInfrastructure()
+                .AddOrganizationValidation();
             return services;
         }
 
-        public static IApplicationBuilder UseInvoicingModule(this IApplicationBuilder app)
+        public static IApplicationBuilder UseOrganizationModule(this IApplicationBuilder app)
         {
             return app;
         }

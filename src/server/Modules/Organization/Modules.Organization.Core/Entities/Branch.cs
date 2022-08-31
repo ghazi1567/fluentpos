@@ -1,9 +1,10 @@
 ﻿using System;
+using FluentPOS.Shared.Core.Contracts;
 using FluentPOS.Shared.Core.Domain;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
-    public class Branch
+    public class Branch: IEntity<Guid>
     {
         public Guid Id { get; set; }
 

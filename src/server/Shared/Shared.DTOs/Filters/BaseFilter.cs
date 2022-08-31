@@ -6,9 +6,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace FluentPOS.Shared.DTOs.Filters
 {
     public class BaseFilter
     {
+        public Guid OrganizationId { get; set; }
+
+        public Guid BranchId { get; set; }
     }
 }

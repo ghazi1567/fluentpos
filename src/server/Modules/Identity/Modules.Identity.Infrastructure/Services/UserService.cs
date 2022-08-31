@@ -6,14 +6,17 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.Identity.Core.Abstractions;
+using FluentPOS.Modules.Identity.Core.Dtos;
 using FluentPOS.Modules.Identity.Core.Entities;
 using FluentPOS.Modules.Identity.Core.Exceptions;
 using FluentPOS.Modules.Identity.Core.Features.Users.Events;
+using FluentPOS.Modules.Identity.Infrastructure.Persistence;
 using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Identity.Users;
@@ -29,17 +32,20 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
         private readonly RoleManager<FluentRole> _roleManager;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<UserService> _localizer;
+        private readonly IdentityDbContext _context;
 
         public UserService(
             UserManager<FluentUser> userManager,
             IMapper mapper,
             RoleManager<FluentRole> roleManager,
-            IStringLocalizer<UserService> localizer)
+            IStringLocalizer<UserService> localizer,
+            IdentityDbContext context)
         {
             _userManager = userManager;
             _mapper = mapper;
             _roleManager = roleManager;
             _localizer = localizer;
+            _context = context;
         }
 
         public async Task<Result<List<UserResponse>>> GetAllAsync()
@@ -103,7 +109,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                return await Result<string>.SuccessAsync(user.Id,  _localizer["User Updated Succesffully."]);
+                return await Result<string>.SuccessAsync(user.Id, _localizer["User Updated Succesffully."]);
             }
             else
             {
@@ -145,5 +151,52 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
             return await Result<string>.SuccessAsync(userId, string.Format(_localizer["User Roles Updated Successfully."]));
         }
+
+        public async Task<IResult<string>> UpdateUserBranchsAsync(string userId, UserBranchModel request)
+        {
+            var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            if (user == null)
+            {
+                return await Result<string>.FailAsync(_localizer["User Not Found."]);
+            }
+
+
+            foreach (var branch in request.UserBranchs)
+            {
+                // Check if Role Exists
+                if (branch.Selected)
+                {
+                    if (_context.UserBranchs.Any(x => x.OrganizationId == branch.OrganizationId && x.BranchId == branch.BranchId && x.UserId == branch.UserId) == false)
+                    {
+                        _context.UserBranchs.Add(branch);
+                        _context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    var userBranch = _context.UserBranchs.FirstOrDefault(x => x.OrganizationId == branch.OrganizationId && x.BranchId == branch.BranchId && x.UserId == branch.UserId);
+                    if (userBranch != null)
+                    {
+                        _context.UserBranchs.Remove(userBranch);
+                        _context.SaveChanges();
+                    }
+                }
+            }
+
+            return await Result<string>.SuccessAsync(userId, string.Format(_localizer["User Branchs Updated Successfully."]));
+        }
+
+        public async Task<IResult<UserBranchModel>> GetUserBranchsAsync(Guid userId)
+        {
+            var userBranchs = await _context.UserBranchs.Where(x => x.UserId == userId).ToListAsync();
+            foreach (var item in userBranchs)
+            {
+                item.Selected = true;
+            }
+
+            var result = new UserBranchModel { UserBranchs = userBranchs };
+            return await Result<UserBranchModel>.SuccessAsync(result);
+        }
+
     }
 }

@@ -15,9 +15,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Extensions
 {
     internal static class MvcBuilderExtensions
     {
-        internal static IMvcBuilder AddSalesValidation(this IMvcBuilder builder)
+        internal static IMvcBuilder AddOrganizationValidation(this IMvcBuilder builder)
         {
-            return builder.AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(ISalesDbContext))));
+            return builder.AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetAssembly(typeof(IOrganizationDbContext))));
         }
     }
 }

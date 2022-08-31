@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentPOS.Modules.Organization.Core.Entities;
+using FluentPOS.Modules.Organization.Core.Features.Organizations.Commands;
+using FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries;
+using FluentPOS.Shared.Core.Constants;
+using FluentPOS.Shared.Core.Features.Common.Filters;
+using FluentPOS.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Organization.Controllers
@@ -10,10 +14,43 @@ namespace FluentPOS.Modules.Organization.Controllers
     [ApiVersion("1")]
     internal class SetupController : BaseController
     {
-        [HttpPost("Setup")]
-        public async Task<IActionResult> GetSetup()
+        [HttpGet("{id}")]
+        [Authorize(Policy = Permissions.Organizations.View)]
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Organisation> filter)
         {
-            return Ok(true);
+            var request = Mapper.Map<GetOrganizationByIdQuery>(filter);
+            var brand = await Mediator.Send(request);
+            return Ok(brand);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Permissions.Organizations.ViewAll)]
+        public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedOrganizationFilter filter)
+        {
+            var request = Mapper.Map<GetOrganizationsQuery>(filter);
+            var brands = await Mediator.Send(request);
+            return Ok(brands);
+        }
+
+        [HttpPost]
+        [Authorize(Policy = Permissions.Organizations.Register)]
+        public async Task<IActionResult> RegisterAsync(RegisterOrganizationCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPut]
+        [Authorize(Policy = Permissions.Organizations.Update)]
+        public async Task<IActionResult> UpdateAsync(UpdateOrganizationCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = Permissions.Organizations.Remove)]
+        public async Task<IActionResult> RemoveAsync(Guid id)
+        {
+            return Ok(await Mediator.Send(new RemoveOrganizationCommand(id)));
         }
     }
 }

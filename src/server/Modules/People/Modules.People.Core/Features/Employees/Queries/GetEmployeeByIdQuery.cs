@@ -10,11 +10,12 @@ using System;
 using FluentPOS.Shared.Core.Queries;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.People.Customers;
+using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
-    public class GetEmployeeByIdQuery : IRequest<Result<GetCustomerByIdResponse>>, ICacheable
+    public class GetEmployeeByIdQuery : IRequest<Result<GetEmployeeByIdResponse>>, ICacheable
     {
         public Guid Id { get; protected set; }
 

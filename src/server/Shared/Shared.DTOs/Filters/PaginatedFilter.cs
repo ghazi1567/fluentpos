@@ -10,6 +10,8 @@ namespace FluentPOS.Shared.DTOs.Filters
 {
     public class PaginatedFilter : BaseFilter
     {
+        public string SearchString { get; set; }
+
         public int PageNumber { get; set; }
 
         public int PageSize { get; set; }

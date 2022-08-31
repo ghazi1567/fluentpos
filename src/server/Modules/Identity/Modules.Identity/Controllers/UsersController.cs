@@ -6,8 +6,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
 using System.Threading.Tasks;
 using FluentPOS.Modules.Identity.Core.Abstractions;
+using FluentPOS.Modules.Identity.Core.Dtos;
 using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.DTOs.Identity.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +44,7 @@ namespace FluentPOS.Modules.Identity.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = Permissions.Users.Edit)]
+        [Authorize(Policy = Permissions.Users.Update)]
         public async Task<IActionResult> UpdateAsync(UpdateUserRequest request)
         {
             var user = await _userService.UpdateAsync(request);
@@ -58,10 +60,26 @@ namespace FluentPOS.Modules.Identity.Controllers
         }
 
         [HttpPut("roles/{id}")]
-        [Authorize(Policy = Permissions.Users.Edit)]
+        [Authorize(Policy = Permissions.Users.Update)]
         public async Task<IActionResult> UpdateUserRolesAsync(string id, UserRolesRequest request)
         {
             var result = await _userService.UpdateUserRolesAsync(id, request);
+            return Ok(result);
+        }
+
+        [HttpGet("branchs/{id}")]
+        [Authorize(Policy = Permissions.Users.View)]
+        public async Task<IActionResult> GetUserBranchsAsync(Guid id)
+        {
+            var userRoles = await _userService.GetUserBranchsAsync(id);
+            return Ok(userRoles);
+        }
+
+        [HttpPut("branchs/{id}")]
+        [Authorize(Policy = Permissions.Users.Update)]
+        public async Task<IActionResult> UpdateUserBranchsAsync(string id, UserBranchModel request)
+        {
+            var result = await _userService.UpdateUserBranchsAsync(id, request);
             return Ok(result);
         }
     }

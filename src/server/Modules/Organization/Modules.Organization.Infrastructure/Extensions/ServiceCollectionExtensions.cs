@@ -17,20 +17,19 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSalesInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddOrganizationInfrastructure(this IServiceCollection services)
         {
             services
                  .AddDatabaseContext<OrganizationDbContext>()
-                 .AddScoped<ISalesDbContext>(provider => provider.GetService<OrganizationDbContext>());
-            services.AddExtendedAttributeDbContextsFromAssembly(typeof(OrganizationDbContext), Assembly.GetAssembly(typeof(ISalesDbContext)));
+                 .AddScoped<IOrganizationDbContext>(provider => provider.GetService<OrganizationDbContext>());
+            services.AddExtendedAttributeDbContextsFromAssembly(typeof(OrganizationDbContext), Assembly.GetAssembly(typeof(IOrganizationDbContext)));
 
-           
             return services;
         }
 
-        public static IServiceCollection AddSalesValidation(this IServiceCollection services)
+        public static IServiceCollection AddOrganizationValidation(this IServiceCollection services)
         {
-            services.AddControllers().AddSalesValidation();
+            services.AddControllers().AddOrganizationValidation();
             return services;
         }
     }

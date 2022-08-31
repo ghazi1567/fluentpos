@@ -3,7 +3,7 @@ using FluentPOS.Shared.Core.Domain;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
-    internal class Department : BaseEntity
+    public class Department : BaseEntity
     {
         public string Name { get; set; }
 

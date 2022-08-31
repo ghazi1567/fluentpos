@@ -1,8 +1,9 @@
-﻿using System;
+﻿using FluentPOS.Shared.Core.Contracts;
+using System;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
-    public class Organization
+    public class Organisation : IEntity<Guid>
     {
         public Guid Id { get; set; }
 
@@ -22,7 +23,7 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         public string Country { get; set; }
 
-        protected Organization()
+        protected Organisation()
         {
             Id = Guid.NewGuid();
         }

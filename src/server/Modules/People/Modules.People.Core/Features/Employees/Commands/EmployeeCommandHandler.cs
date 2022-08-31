@@ -25,7 +25,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 
-namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
+namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
     internal class EmployeeCommandHandler :
         IRequestHandler<RegisterEmployeeCommand, Result<Guid>>,
@@ -36,13 +36,13 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
         private readonly IPeopleDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
-        private readonly IStringLocalizer<CustomerCommandHandler> _localizer;
+        private readonly IStringLocalizer<EmployeeCommandHandler> _localizer;
 
         public EmployeeCommandHandler(
             IPeopleDbContext context,
             IMapper mapper,
             IUploadService uploadService,
-            IStringLocalizer<CustomerCommandHandler> localizer,
+            IStringLocalizer<EmployeeCommandHandler> localizer,
             IDistributedCache cache)
         {
             _context = context;
@@ -61,7 +61,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
             var uploadRequest = command.UploadRequest;
             if (uploadRequest != null)
             {
-                uploadRequest.FileName = $"C-{command.FullName}{uploadRequest.Extension}";
+                uploadRequest.FileName = $"E-{command.FullName}{uploadRequest.Extension}";
                 employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
             }
 
@@ -84,19 +84,17 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
                 var uploadRequest = command.UploadRequest;
                 if (uploadRequest != null)
                 {
-                    uploadRequest.FileName = $"C-{command.FullName}{uploadRequest.Extension}";
+                    uploadRequest.FileName = $"E-{command.FullName}{uploadRequest.Extension}";
                     employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
                 }
 
-                //employee.AddDomainEvent(new CustomerUpdatedEvent(employee));
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
-                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Customer Updated"]);
+                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated"]);
             }
             else
             {
-                throw new PeopleException(_localizer["Customer Not Found!"], HttpStatusCode.NotFound);
+                throw new PeopleException(_localizer["Employee Not Found!"], HttpStatusCode.NotFound);
             }
         }
 
@@ -104,12 +102,18 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
         public async Task<Result<Guid>> Handle(RemoveEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var customer = await _context.Customers.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
-            customer.AddDomainEvent(new CustomerRemovedEvent(customer.Id));
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync(cancellationToken);
-            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Deleted"]);
+            var employee = await _context.Employees.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            if (employee != null)
+            {
+                employee.Active = false;
+                _context.Employees.Update(employee);
+                await _context.SaveChangesAsync(cancellationToken);
+                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated to InActive"]);
+            }
+            else
+            {
+                throw new PeopleException(_localizer["Employee Not Found!"], HttpStatusCode.NotFound);
+            }
         }
     }
 }

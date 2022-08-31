@@ -9,22 +9,15 @@
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace FluentPOS.Modules.People.Core.Features.Customers.Commands.Validators
+namespace FluentPOS.Modules.People.Core.Features.Employees.Commands.Validators
 {
-    public class RegisterEmployeeCommandValidator : AbstractValidator<RegisterCustomerCommand>
+    public class RegisterEmployeeCommandValidator : AbstractValidator<RegisterEmployeeCommand>
     {
-        public RegisterEmployeeCommandValidator(IStringLocalizer<RegisterCustomerCommandValidator> localizer)
+        public RegisterEmployeeCommandValidator(IStringLocalizer<RegisterEmployeeCommandValidator> localizer)
         {
-            RuleFor(c => c.Name)
+            RuleFor(c => c.FullName)
                 .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."])
                 .Length(2, 150).WithMessage(localizer["The {PropertyName} property must have between 2 and 150 characters."]);
-            RuleFor(c => c.Phone)
-                .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."])
-                .Length(2, 30).WithMessage(localizer["The {PropertyName} property must have between 2 and 30 characters."]);
-            RuleFor(c => c.Email)
-                .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."]);
-            RuleFor(c => c.Type)
-                .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."]);
         }
     }
 }

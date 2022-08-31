@@ -56,6 +56,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence
             _json = json;
         }
 
+        public DbSet<UserBranch> UserBranchs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(Schema);

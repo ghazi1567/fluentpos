@@ -6,8 +6,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentPOS.Modules.Identity.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Identity.Users;
 
@@ -24,5 +26,9 @@ namespace FluentPOS.Modules.Identity.Core.Abstractions
         Task<IResult<string>> UpdateAsync(UpdateUserRequest request);
 
         Task<IResult<string>> UpdateUserRolesAsync(string userId, UserRolesRequest request);
+
+        Task<IResult<string>> UpdateUserBranchsAsync(string userId, UserBranchModel request);
+
+        Task<IResult<UserBranchModel>> GetUserBranchsAsync(Guid userId);
     }
 }

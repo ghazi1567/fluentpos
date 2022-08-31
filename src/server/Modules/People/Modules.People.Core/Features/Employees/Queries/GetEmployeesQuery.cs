@@ -8,11 +8,12 @@
 
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.People.Customers;
+using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
-    public class GetEmployeesQuery : IRequest<PaginatedResult<GetCustomersResponse>>
+    public class GetEmployeesQuery : IRequest<PaginatedResult<GetEmployeesResponse>>
     {
         public int PageNumber { get; private set; }
 
