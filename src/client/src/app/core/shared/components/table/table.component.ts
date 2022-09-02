@@ -17,6 +17,8 @@ export class TableComponent implements OnInit, AfterViewInit {
     public tableDataSource = new MatTableDataSource([]);
     public displayedColumns: string[];
     @Input() customActionOneData: CustomAction;
+    @Input() customActionButtons: CustomAction[];
+
     @Input() customActionData: CustomAction;
     searchString: string;
     @Input() totalCount: number;
@@ -34,12 +36,14 @@ export class TableComponent implements OnInit, AfterViewInit {
     @Input() set data(data: any[]) {
         this.setTableDataSource(data);
     }
-    @Input() permissions:any[] = [];
+    @Input() permissions: any[] = [];
+    @Input() moduleName: string = '';
 
     @Output() onFilter: EventEmitter<string> = new EventEmitter<string>();
     @Output() onReload: EventEmitter<any> = new EventEmitter<any>();
     @Output() onSort: EventEmitter<Sort> = new EventEmitter<Sort>();
     @Output() onCustomActionOne: EventEmitter<any> = new EventEmitter();
+    @Output() onCustomActionButton: EventEmitter<any> = new EventEmitter();
     @Output() onCustomAction: EventEmitter<any> = new EventEmitter();
     @Output() onCreateForm: EventEmitter<any> = new EventEmitter();
     @Output() onEditForm: EventEmitter<any> = new EventEmitter();
@@ -64,7 +68,12 @@ export class TableComponent implements OnInit, AfterViewInit {
     openCustomActionOne($event: any) {
         this.onCustomActionOne.emit($event);
     }
-
+    openCustomActionButton($event: any, button: CustomAction) {
+        this.onCustomActionButton.emit({
+            event: $event,
+            button: button
+        });
+    }
     handleCustomAction() {
         this.onCustomAction.emit(this.tableDataSource.data);
     }
@@ -89,7 +98,7 @@ export class TableComponent implements OnInit, AfterViewInit {
         this.onFilter.emit(this.searchString);
     }
     handleExport() {
-        this.onExport.emit('');
+        this.onExport.emit("");
     }
 
     handleSort(sortParams: Sort) {

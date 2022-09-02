@@ -7,7 +7,7 @@
     </mat-card-header>
     <div style="margin: 0 26px 0 16px">
         <div class="left">
-            <a *appHasPermission="permissions" mat-raised-button color="primary" (click)="openCreateForm()">
+            <a *appHasRights="{ module: moduleName, action: 'Register' }" mat-raised-button color="primary" (click)="openCreateForm()">
                 <mat-icon>add</mat-icon> {{ "components.table.register" | translate }}
                 {{ title }}
             </a>
@@ -82,24 +82,37 @@
                         <mat-checkbox (click)="$event.stopPropagation()" (change)="element.selected = !element.selected" [checked]="element.selected"> </mat-checkbox>
                     </ng-container>
                     <ng-container *ngIf="tableColumn.dataKey === 'action'" sticky>
-                        <button
-                            *ngIf="customActionOneData"
-                            mat-raised-button
-                            matTooltip="{{ customActionOneData.title }}"
-                            color="{{ customActionOneData.color }}"
-                            (click)="openCustomActionOne(element)"
-                        >
-                            <mat-icon>{{ customActionOneData.icon }}</mat-icon>
-                        </button>
-                        <button *appHasPermission="['Permissions.Products.View']" mat-raised-button color="primary" (click)="openViewForm(element)">
+                        <button *appHasRights="{ module: moduleName, action: 'View' }" mat-raised-button color="primary" (click)="openViewForm(element)">
                             <mat-icon>remove_red_eye</mat-icon>
                         </button>
-                        <button  *appHasPermission="['Permissions.Products.Update']"  matTooltip="Edit" mat-raised-button color="accent" (click)="openEditForm(element)">
+                        <button *appHasRights="{ module: moduleName, action: 'Update' }" matTooltip="Edit" mat-raised-button color="accent" (click)="openEditForm(element)">
                             <mat-icon>mode_edit</mat-icon>
                         </button>
-                        <button *appHasPermission="['Permissions.Products.Remove']" matTooltip="Delete" mat-raised-button color="danger" (click)="openDeleteConfirmationDialog(element.id)">
+                        <button *appHasRights="{ module: moduleName, action: 'Remove' }" matTooltip="Delete" mat-raised-button color="danger" (click)="openDeleteConfirmationDialog(element.id)">
                             <mat-icon>delete</mat-icon>
                         </button>
+                        <span *ngFor="let button of customActionButtons">
+                            <button
+                                mat-raised-button
+                                matTooltip="{{ button.title }}"
+                                color="{{ button.color }}"
+                                *appHasRights="{ module: moduleName, action: button.rights }"
+                                (click)="openCustomActionButton(element, button)"
+                            >
+                                <mat-icon>{{ button.icon }}</mat-icon>
+                            </button>
+                        </span>
+                        <span *ngIf="customActionOneData">
+                            <button
+                                mat-raised-button
+                                matTooltip="{{ customActionOneData.title }}"
+                                color="{{ customActionOneData.color }}"
+                                *appHasRights="{ module: moduleName, action: customActionOneData.rights }"
+                                (click)="openCustomActionOne(element)"
+                            >
+                                <mat-icon>{{ customActionOneData.icon }}</mat-icon>
+                            </button>
+                        </span>
                     </ng-container>
                 </td>
             </ng-container>

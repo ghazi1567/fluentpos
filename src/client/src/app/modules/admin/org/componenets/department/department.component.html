@@ -1,0 +1,10 @@
+<div [hidden]="!departments">
+    <app-table  [title]="'Departments'" [subtitle]="'Manage, Register, Update or Remove Departments here.'"
+        [data]="departments && departments.data" [columns]="departmentColumns" (onFilter)="filter($event)"
+        (onReload)="reload()" (onCreateForm)="openForm()" (onEditForm)="openForm($event)" (onSort)="sort($event)"
+        (onDelete)="remove($event)" [totalCount]="departments && departments.totalCount" [pageSize]="departments && departments.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'Departments'"
+        >
+    </app-table>
+</div>

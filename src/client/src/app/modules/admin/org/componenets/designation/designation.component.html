@@ -1,0 +1,10 @@
+<div [hidden]="!designations">
+    <app-table  [title]="'Designations'" [subtitle]="'Manage, Register, Update or Remove Designations here.'"
+        [data]="designations && designations.data" [columns]="designationColumns" (onFilter)="filter($event)"
+        (onReload)="reload()" (onCreateForm)="openForm()" (onEditForm)="openForm($event)" (onSort)="sort($event)"
+        (onDelete)="remove($event)" [totalCount]="designations && designations.totalCount" [pageSize]="designations && designations.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'Designations'"
+        >
+    </app-table>
+</div>

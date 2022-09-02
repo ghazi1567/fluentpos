@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class HasPermissionDirective implements OnInit{
   @Input() appHasPermission: string[];
+  @Input() defaultColor: string;
 
   constructor(private viewContainerRef: ViewContainerRef, 
     private templateRef: TemplateRef<any>, 

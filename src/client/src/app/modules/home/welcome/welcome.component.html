@@ -1,10 +1,10 @@
 <div class="home-center-screen">
     <div class="row">
         <div class="col-md-12 col-xl-12">
-            <div class="c-card background-color-primary" style="color: white;">
+            <div class="c-card background-color-primary" style="color: white">
                 <div>
-                    <h1>Hi, {{fullName}}</h1>
-                    <p style="opacity: 75%;">Welcome to E Smart Solution. Choose a Module to continue.</p>
+                    <h1>Hi, {{ fullName }}</h1>
+                    <p style="opacity: 75%">Welcome to E Smart Solution. Choose a Module to continue.</p>
                     <button mat-raised-button color="accent" (click)="onClickLogout()">Logout</button>
                 </div>
             </div>
@@ -20,12 +20,38 @@
                 </div>
             </div>
         </div> -->
-        <div *appHasRole='["SuperAdmin","Staff"]' class="col-md-6 col-xl-6 ">
+        <div *appHasRole="['SuperAdmin', 'Staff']" class="col-md-6 col-xl-6">
             <div class="c-card is-animated">
                 <div>
                     <h1>Dashboard</h1>
-                    <p style="opacity: 50%;">Management of products, stock and configuration of POS.</p>
-                    <button mat-raised-button color="primary" routerLink="/admin">Dashboard</button>
+                    <p style="opacity: 50%">Management of products, stock and configuration of POS.</p>
+
+                    <button *ngIf="isSelectedBranch" mat-raised-button color="primary" routerLink="/admin">Dashboard</button>
+                    <br />
+                    <div *ngIf="isSelectedBranch" class="col-xs-12 col-md-6">
+                        <mat-label>Selected Branch: <strong> {{ selectedBranch.name }} </strong></mat-label>
+                        
+                        <br />
+                        <a *ngIf="isMultipleBranch" href="javascript: void(0)" (click)="onChangeBranch()">
+                            Change
+                        </a>
+                    </div>
+                    <br />
+
+                    <div *ngIf="isMultipleBranch && showBranch" class="col-xs-12 col-md-6">
+                        <mat-label>Select Your Branch</mat-label>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Branch</mat-label>
+                            <mat-select [(ngModel)]="branchId" name="Branch">
+                                <mat-option *ngFor="let branch of branchs" [value]="branch.id">
+                                    {{ branch.name }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error> Please provide a valid detail </mat-error>
+                        </mat-form-field>
+                        <button mat-raised-button color="primary" (click)="onSelectBranch()">Select Branch</button>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -50,5 +76,4 @@
             </div>
         </div>
     </div> -->
-
 </div>

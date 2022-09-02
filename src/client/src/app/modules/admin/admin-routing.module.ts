@@ -10,6 +10,7 @@ import { AboutComponent } from './about/about.component';
 import { IdentityComponent } from './identity/identity.component';
 import { PermissionGuard } from 'src/app/core/guards/permission.guard';
 import { EventLogsComponent } from './event-logs/event-logs.component';
+import { OrgComponent } from './org/componenets/org/org.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     component: SalesComponent,
     loadChildren: () => import('./sales/sales.module').then(mod => mod.SalesModule),
+  },
+  {
+    path: 'org',
+    // canActivate: [AuthGuard],
+    component: OrgComponent,
+    loadChildren: () => import('./org/org.module').then(mod => mod.OrgModule),
   }
 ];
 

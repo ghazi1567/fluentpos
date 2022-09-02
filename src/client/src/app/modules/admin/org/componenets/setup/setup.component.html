@@ -1,0 +1,56 @@
+<mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+    <mat-card-header>
+        <mat-card-title>Organization</mat-card-title>
+        <mat-card-subtitle>Manage, Register, Update or Remove Organization here.</mat-card-subtitle>
+    </mat-card-header>
+    <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <input formControlName="id" type="hidden" />
+            <div class="col-xs-12 col-md-12">
+                <mat-form-field appearance="outline">
+                    <mat-label>Organization Name</mat-label>
+                    <input  autocomplete="off" formControlName="name" matInput placeholder="Organization Name" required />
+                    <mat-error>Please provide a valid Name</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-12">
+                <mat-form-field appearance="outline">
+                    <mat-label>Organization Address</mat-label>
+                    <input autocomplete="off" formControlName="address" matInput placeholder="Organization Address" required />
+                    <mat-error>Please provide a valid Address</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-xs-12 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Organization Phone Number</mat-label>
+                    <input autocomplete="off" formControlName="phoneNo" matInput placeholder="Organization Phone Number"  />
+                    <mat-error>Please provide a valid phone number</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Organization Email</mat-label>
+                    <input autocomplete="off" formControlName="emailAddress" matInput placeholder="Organization Email"  type="email" />
+                    <mat-error>Please provide a valid email</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-6" >
+                <mat-form-field appearance="outline">
+                    <mat-label>Currency</mat-label>
+                    <input autocomplete="off" formControlName="currency" matInput placeholder="Currency" />
+                    <mat-error>Please provide a valid current Currency</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <mat-form-field appearance="outline">
+                    <mat-label>Country</mat-label>
+                    <input autocomplete="off" formControlName="country" matInput placeholder="Country" />
+                    <mat-error>Please provide a valid Country</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <button mat-raised-button cdkFocusInitial color="primary" [disabled]="!form.dirty || !form.valid" type="submit">Save</button>
+    </form>
+</mat-card>

@@ -15,6 +15,7 @@ import { RoleService } from './services/role.service';
 import { IdentityService } from './services/identity.service';
 import { UserRoleFormComponent } from './components/user/user-role-form/user-role-form.component';
 import { RolePermissionFormComponent } from './components/role/role-permission-form/role-permission-form.component';
+import { UserBranchFormComponent } from './components/user/user-branch-form/user-branch-form.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { RolePermissionFormComponent } from './components/role/role-permission-f
     UserFormComponent,
     RoleFormComponent,
     RolePermissionFormComponent,
-    UserRoleFormComponent
+    UserRoleFormComponent,
+    UserBranchFormComponent
   ],
   imports: [
     CommonModule,

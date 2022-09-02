@@ -22,7 +22,7 @@ export class RoleComponent implements OnInit {
   roleColumns: TableColumn[];
   roleParams = new RoleParams();
   searchString: string;
-  permissionActionData: CustomAction = new CustomAction('Manage Permissions');
+  permissionActionData: CustomAction = new CustomAction('Manage Permissions','permissions','Edit');
 
   constructor(
     public roleService: RoleService,

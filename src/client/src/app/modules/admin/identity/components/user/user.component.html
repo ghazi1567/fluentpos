@@ -4,8 +4,9 @@
     (onReload)="reload()" (onCreateForm)="openForm()" (onEditForm)="openForm($event)" (onSort)="sort($event)"
     (onDelete)="remove($event)" [totalCount]="users && users.totalCount" [pageSize]="users && users.pageSize"
     (onPageChanged)="pageChanged($event)"
-    [customActionOneData]="userRoleActionData" (onCustomActionOne)="openUserRolesForm($event)"
-
+   
+    [customActionButtons]="actionButtons" (onCustomActionButton)="openCustomActionButton($event)"
+    [moduleName]="'Users'"
     >
   </app-table>
 </div>

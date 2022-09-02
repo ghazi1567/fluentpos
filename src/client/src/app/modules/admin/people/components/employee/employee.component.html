@@ -1,0 +1,19 @@
+<div [hidden]="!employees">
+    <app-table
+        [title]="'Employees'"
+        [subtitle]="'Manage, Register, Update or Remove Employees here.'"
+        [data]="employees && employees.data"
+        [columns]="employeeColumns"
+        (onFilter)="filter($event)"
+        (onReload)="reload()"
+        (onCreateForm)="openForm()"
+        (onEditForm)="openForm($event)"
+        (onSort)="sort($event)"
+        (onDelete)="remove($event)"
+        [totalCount]="employees && employees.totalCount"
+        [pageSize]="employees && employees.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'Employees'"
+    >
+    </app-table>
+</div>

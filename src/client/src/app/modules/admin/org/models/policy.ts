@@ -1,0 +1,44 @@
+import { EarlyArrivalPolicy } from "src/app/core/enums/EarlyArrivalPolicy";
+import { LateComersPenaltyType } from "src/app/core/enums/LateComersPenaltyType";
+import { OverTime } from "src/app/core/enums/OverTime";
+import { PayPeriod } from "src/app/core/enums/PayPeriod";
+import { PayslipType } from "src/app/core/enums/PayslipType";
+import { TimeoutPolicy } from "src/app/core/enums/TimeoutPolicy";
+
+export interface Policy {
+    id: string;
+    createaAt: string;
+    updatedAt: string;
+    organizationId: string;
+    branchId: string;
+    name: string;
+    departmentId: string;
+    payslipType: PayslipType;
+    payPeriod: PayPeriod;
+    allowedOffDays: string;
+    requiredWorkingHour: string;
+    shiftStartTime: string;
+    shiftEndTime: string;
+    allowedLateMinutes: string;
+    allowedLateMinInMonth: string;
+    earlyArrivalPolicy: EarlyArrivalPolicy;
+    forceTimeout: string;
+    timeoutPolicy: TimeoutPolicy;
+    isMonday: string;
+    isTuesday: string;
+    isWednesday: string;
+    isThursday: string;
+    isFriday: string;
+    isSaturday: string;
+    isSunday: string;
+    dailyOverTime: OverTime;
+    holidayOverTime: OverTime;
+    departmentName: string;
+    lateComersPenalty: string;
+    lateComersPenaltyType: LateComersPenaltyType;
+    dailyOverTimeRate: number;
+    holidayOverTimeRate: number;
+    timings: string;
+    payslipTypeName: string;
+    overTimeTypeName: string;
+}

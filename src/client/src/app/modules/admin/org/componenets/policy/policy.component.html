@@ -1,0 +1,10 @@
+<div [hidden]="!policies">
+    <app-table  [title]="'Policies'" [subtitle]="'Manage, Register, Update or Remove Policies here.'"
+        [data]="policies && policies.data" [columns]="policiesColumns" (onFilter)="filter($event)"
+        (onReload)="reload()" (onCreateForm)="openForm()" (onEditForm)="openForm($event)" (onSort)="sort($event)"
+        (onDelete)="remove($event)" [totalCount]="policies && policies.totalCount" [pageSize]="policies && policies.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'Policy'"
+        >
+    </app-table>
+</div>

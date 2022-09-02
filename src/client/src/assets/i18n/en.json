@@ -27,7 +27,14 @@
             "approvalList": "Approval List",
             "stockReport": "Stock Report",
             "stockOutReport": "Stock Out Report",
-            "varianceReport": "Variance Report"
+            "varianceReport": "Variance Report",
+            "organization": "Organization",
+            "organizationSetup": "Setup",
+            "branchs": "Branchs",
+            "departments": "Departments",
+            "designations": "Designations",
+            "policies": "Policies",
+            "employees": "Employees"
         }
     },
     "dashboard": {
