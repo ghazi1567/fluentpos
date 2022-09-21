@@ -10,6 +10,7 @@ using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.People.Customers;
 using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
+using System;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
@@ -22,5 +23,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public string[] OrderBy { get; private set; }
 
         public string SearchString { get; private set; }
+
+       
     }
 }

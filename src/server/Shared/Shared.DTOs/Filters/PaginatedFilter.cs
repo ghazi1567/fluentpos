@@ -6,6 +6,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using FluentPOS.Shared.DTOs.Enums;
+using System;
+
 namespace FluentPOS.Shared.DTOs.Filters
 {
     public class PaginatedFilter : BaseFilter
@@ -17,6 +20,10 @@ namespace FluentPOS.Shared.DTOs.Filters
         public int PageSize { get; set; }
 
         public string OrderBy { get; set; }
+
+        public Guid? EmployeeId { get; set; }
+
+        public RequestType? RequestType { get; set; }
 
         public PaginatedFilter()
         {

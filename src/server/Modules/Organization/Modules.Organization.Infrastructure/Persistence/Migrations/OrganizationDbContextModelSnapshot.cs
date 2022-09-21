@@ -190,6 +190,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("EarlyArrivalPolicy")
                         .HasColumnType("int");
 
+                    b.Property<int>("EarnedHourPolicy")
+                        .HasColumnType("int");
+
                     b.Property<int>("ForceTimeout")
                         .HasColumnType("int");
 

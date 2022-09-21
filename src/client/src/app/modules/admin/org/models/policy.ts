@@ -1,4 +1,5 @@
 import { EarlyArrivalPolicy } from "src/app/core/enums/EarlyArrivalPolicy";
+import { EarnedHourPolicy } from "src/app/core/enums/EarnedHourPolicy";
 import { LateComersPenaltyType } from "src/app/core/enums/LateComersPenaltyType";
 import { OverTime } from "src/app/core/enums/OverTime";
 import { PayPeriod } from "src/app/core/enums/PayPeriod";
@@ -24,6 +25,7 @@ export interface Policy {
     earlyArrivalPolicy: EarlyArrivalPolicy;
     forceTimeout: string;
     timeoutPolicy: TimeoutPolicy;
+    earnedHourPolicy: EarnedHourPolicy;
     isMonday: string;
     isTuesday: string;
     isWednesday: string;

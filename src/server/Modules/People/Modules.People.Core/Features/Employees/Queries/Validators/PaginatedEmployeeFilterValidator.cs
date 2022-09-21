@@ -14,13 +14,13 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries.Validators
 {
-    public class PaginatedEmployeeFilterValidator : PaginatedFilterValidator<Guid, Customer, PaginatedCustomerFilter>
-    {
-        public PaginatedEmployeeFilterValidator(IStringLocalizer<PaginatedCustomerFilterValidator> localizer)
+    //public class PaginatedEmployeeFilterValidator : PaginatedFilterValidator<Guid, Customer, PaginatedCustomerFilter>
+    //{
+    //    public PaginatedEmployeeFilterValidator(IStringLocalizer<PaginatedCustomerFilterValidator> localizer)
 
-            : base(localizer)
-        {
-            // you can override the validation rules here
-        }
-    }
+    //        : base(localizer)
+    //    {
+    //        // you can override the validation rules here
+    //    }
+    //}
 }

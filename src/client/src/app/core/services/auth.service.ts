@@ -32,6 +32,11 @@ export class AuthService {
         return decodedToken?.fullName ?? "";
     }
 
+    public get getEmployeeId(): string {
+        const decodedToken = this.getDecodedToken();
+        return decodedToken?.LoggedInEmpId ?? "";
+    }
+
     public get getBranchId(): string {
         return this.localStorage.getItem("branchId");
     }

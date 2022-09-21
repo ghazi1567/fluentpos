@@ -52,6 +52,14 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence
 
         public DbSet<Employee> Employees { get; set; }
 
+        public DbSet<Attendance> Attendances { get; set; }
+
+        public DbSet<EmployeeRequest> EmployeeRequests { get; set; }
+
+        public DbSet<RequestApproval> RequestApprovals { get; set; }
+
+        public DbSet<ApprovalFlow> ApprovalFlows { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

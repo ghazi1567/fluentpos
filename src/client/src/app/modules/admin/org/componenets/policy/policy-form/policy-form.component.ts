@@ -3,6 +3,7 @@ import { Validators, FormBuilder, FormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { EarlyArrivalPolicy, EarlyArrivalPolicyMapping } from "src/app/core/enums/EarlyArrivalPolicy";
+import { EarnedHourPolicy, EarnedHourPolicyMapping } from "src/app/core/enums/EarnedHourPolicy";
 import { LateComersPenaltyType, LateComersPenaltyTypeMapping } from "src/app/core/enums/LateComersPenaltyType";
 import { OverTime, OverTimeMapping } from "src/app/core/enums/OverTime";
 import { PayPeriod, PayPeriodMapping } from "src/app/core/enums/PayPeriod";
@@ -40,6 +41,9 @@ export class PolicyFormComponent implements OnInit {
     public OverTimeMapping = OverTimeMapping;
     public overTimes = Object.values(OverTime).filter((value) => typeof value === "number");
 
+    public EarnedHourPolicyMapping = EarnedHourPolicyMapping;
+    public earnedHourPolicy = Object.values(EarnedHourPolicy).filter((value) => typeof value === "number");
+
     constructor(@Inject(MAT_DIALOG_DATA) public data: Policy, private dialogRef: MatDialog, private fb: FormBuilder, public policyService: PolicyService, private toastr: ToastrService) {}
 
     ngOnInit(): void {
@@ -74,7 +78,8 @@ export class PolicyFormComponent implements OnInit {
             isSaturday: [(this.data && this.data.isSaturday) || false],
             isSunday: [(this.data && this.data.isSunday) || false],
             lateComersPenalty: [(this.data && this.data.lateComersPenalty) || 0],
-            lateComersPenaltyType: [this.data && this.data.lateComersPenaltyType, Validators.required]
+            lateComersPenaltyType: [this.data && this.data.lateComersPenaltyType, Validators.required],
+            earnedHourPolicy: [this.data && this.data.earnedHourPolicy, Validators.required],
         });
         this.forthFormGroup = this.fb.group({
             dailyOverTime: [this.data && this.data.dailyOverTime, Validators.required],

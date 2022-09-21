@@ -34,7 +34,11 @@
             "departments": "Departments",
             "designations": "Designations",
             "policies": "Policies",
-            "employees": "Employees"
+            "employees": "Employees",
+            "attendances": "Attendances",
+            "myQueue": "My Queue",
+            "overtimes": "Overtimes"
+
         }
     },
     "dashboard": {

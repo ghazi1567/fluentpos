@@ -22,6 +22,15 @@ namespace FluentPOS.Modules.People.Controllers
     [ApiVersion("1")]
     internal sealed class EmployeesController : BaseController
     {
+        [HttpGet("Lookup")]
+        [Authorize(Policy = Permissions.Employees.ViewAll)]
+        public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedFilter filter)
+        {
+            var request = Mapper.Map<GetEmployeesQuery>(filter);
+            var customers = await Mediator.Send(request);
+            return Ok(customers);
+        }
+
         [HttpGet]
         [Authorize(Policy = Permissions.Employees.ViewAll)]
         public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedFilter filter)

@@ -29,6 +29,8 @@ namespace FluentPOS.Modules.Identity.Core.Entities
 
         public string RefreshToken { get; set; }
 
+        public Guid? EmployeeId { get; set; }
+
         public DateTime RefreshTokenExpiryTime { get; set; }
 
         public virtual ICollection<UserExtendedAttribute> ExtendedAttributes { get; set; }

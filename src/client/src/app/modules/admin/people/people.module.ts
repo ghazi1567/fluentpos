@@ -11,6 +11,11 @@ import { CustomerFormComponent } from './components/customer/customer-form/custo
 import { PeopleComponent } from './people.component';
 import { EmployeeComponent } from './components/employee/employee.component';
 import { EmployeeFormComponent } from './components/employee/employee-form/employee-form.component';
+import { AttendanceComponent } from './components/attendance/attendance.component';
+import { AttendanceFormComponent } from './components/attendance/attendance-form/attendance-form.component';
+import { MyQueueComponent } from './components/my-queue/my-queue.component';
+import { OvertimeComponent } from './components/overtime/overtime.component';
+import { OvertimeFormComponent } from './components/overtime/overtime-form/overtime-form.component';
 
 
 @NgModule({
@@ -20,7 +25,12 @@ import { EmployeeFormComponent } from './components/employee/employee-form/emplo
     CustomerFormComponent,
     PeopleComponent,
     EmployeeComponent,
-    EmployeeFormComponent
+    EmployeeFormComponent,
+    AttendanceComponent,
+    AttendanceFormComponent,
+    MyQueueComponent,
+    OvertimeComponent,
+    OvertimeFormComponent
   ],
   imports: [
     CommonModule,

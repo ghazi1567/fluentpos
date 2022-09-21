@@ -7,10 +7,13 @@
     </mat-card-header>
     <div style="margin: 0 26px 0 16px">
         <div class="left">
-            <a *appHasRights="{ module: moduleName, action: 'Register' }" mat-raised-button color="primary" (click)="openCreateForm()">
-                <mat-icon>add</mat-icon> {{ "components.table.register" | translate }}
-                {{ title }}
-            </a>
+           
+            <span *ngIf="isDisplayButton('Register',null)">
+                <a *appHasRights="{ module: moduleName, action: 'Register' }" mat-raised-button color="primary" (click)="openCreateForm()">
+                    <mat-icon>add</mat-icon> {{ "components.table.register" | translate }}
+                    {{ title }}
+                </a>
+            </span>
             <a *ngIf="onReload.observers.length > 0" mat-raised-button color="accent" (click)="handleReload()"> <mat-icon>refresh</mat-icon> {{ "components.table.reload" | translate }} </a>
             <a *ngIf="onExport.observers.length > 0" mat-raised-button color="primary" (click)="handleExport()"> <mat-icon>cloud_download</mat-icon> Export </a>
         </div>
@@ -69,8 +72,9 @@
                 <td mat-cell *matCellDef="let element" [class.text-right]="tableColumn.position == 'right'" [ngClass]="{ 'text-right': tableColumn.dataKey === 'action' }">
                     <ng-container *ngIf="tableColumn.isShowable && tableColumn.dataKey !== 'selected'">
                         <span *ngIf="tableColumn.dataKey !== 'isAlert' && tableColumn.dataKey !== 'imageUrl'">
-                            {{ element | dataPropertyGetter: tableColumn.dataKey }}
+                            {{ element | dataPropertyGetter: tableColumn }}
                         </span>
+
                         <span *ngIf="tableColumn.dataKey === 'tax'"> ({{ element.taxMethod }})</span>
                         <span *ngIf="tableColumn.dataKey === 'isAlert'">{{ element.isAlert ? "&#10060;" : "&#9989;" }} ({{ element.alertQuantity }})</span>
                         <span *ngIf="tableColumn.dataKey === 'imageUrl'">
@@ -82,15 +86,21 @@
                         <mat-checkbox (click)="$event.stopPropagation()" (change)="element.selected = !element.selected" [checked]="element.selected"> </mat-checkbox>
                     </ng-container>
                     <ng-container *ngIf="tableColumn.dataKey === 'action'" sticky>
-                        <button *appHasRights="{ module: moduleName, action: 'View' }" mat-raised-button color="primary" (click)="openViewForm(element)">
-                            <mat-icon>remove_red_eye</mat-icon>
-                        </button>
-                        <button *appHasRights="{ module: moduleName, action: 'Update' }" matTooltip="Edit" mat-raised-button color="accent" (click)="openEditForm(element)">
-                            <mat-icon>mode_edit</mat-icon>
-                        </button>
-                        <button *appHasRights="{ module: moduleName, action: 'Remove' }" matTooltip="Delete" mat-raised-button color="danger" (click)="openDeleteConfirmationDialog(element.id)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
+                        <span *ngIf="isDisplayButton('View', element)">
+                            <button *appHasRights="{ module: moduleName, action: 'View' }" mat-raised-button color="primary" (click)="openViewForm(element)">
+                                <mat-icon>remove_red_eye</mat-icon>
+                            </button>
+                        </span>
+                        <span *ngIf="isDisplayButton('Update', element)">
+                            <button *appHasRights="{ module: moduleName, action: 'Update' }" matTooltip="Edit" mat-raised-button color="accent" (click)="openEditForm(element)">
+                                <mat-icon>mode_edit</mat-icon>
+                            </button>
+                        </span>
+                        <span *ngIf="isDisplayButton('Remove', element)">
+                            <button *appHasRights="{ module: moduleName, action: 'Remove' }" matTooltip="Delete" mat-raised-button color="danger" (click)="openDeleteConfirmationDialog(element.id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </span>
                         <span *ngFor="let button of customActionButtons">
                             <button
                                 mat-raised-button

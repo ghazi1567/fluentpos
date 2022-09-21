@@ -41,5 +41,6 @@ OverTime HolidayOverTime,
 LateComersPenaltyType lateComersPenaltyType,
 int lateComersPenalty,
 int DailyOverTimeRate,
-int HolidayOverTimeRate);
+int HolidayOverTimeRate,
+EarnedHourPolicy earnedHourPolicy);
 }

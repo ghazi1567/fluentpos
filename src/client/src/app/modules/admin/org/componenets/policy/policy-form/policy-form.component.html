@@ -129,6 +129,15 @@
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <mat-form-field appearance="outline">
+                        <mat-label>Daily Earned Hour Policy</mat-label>
+                        <mat-select formControlName="earnedHourPolicy" name="earnedHourPolicy">
+                            <mat-option *ngFor="let earnedHour of earnedHourPolicy" [value]="earnedHour">{{ EarnedHourPolicyMapping[earnedHour] }}</mat-option>
+                        </mat-select>
+                        <mat-error> Please provide a valid Daily Earned Hour Policy </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <mat-form-field appearance="outline">
                         <mat-label>Late Comers Penalty Type</mat-label>
                         <mat-select formControlName="lateComersPenaltyType" name="lateComersPenaltyType">
                             <mat-option *ngFor="let lateComersPenalty of lateComersPenaltyTypes" [value]="lateComersPenalty">{{ LateComersPenaltyTypeMapping[lateComersPenalty] }}</mat-option>
@@ -136,6 +145,7 @@
                         <mat-error> Please provide a valid Department </mat-error>
                     </mat-form-field>
                 </div>
+                
                 <div class="col-xs-12 col-md-4">
                     <mat-form-field appearance="fill">
                         <mat-label>Late Comers Penalty</mat-label>

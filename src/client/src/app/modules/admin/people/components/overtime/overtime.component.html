@@ -1,0 +1,20 @@
+<div [hidden]="!overtimes">
+    <app-table
+        [title]="'Overtimes'"
+        [subtitle]="'Manage, Register, Update or Remove Overtimes here.'"
+        [data]="overtimes && overtimes.data"
+        [columns]="overtimesColumns"
+        (onFilter)="filter($event)"
+        (onReload)="reload()"
+        (onCreateForm)="openForm()"
+        (onEditForm)="openForm($event)"
+        (onSort)="sort($event)"
+        (onDelete)="remove($event)"
+        [totalCount]="overtimes && overtimes.totalCount"
+        [pageSize]="overtimes && overtimes.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'OvertimeRequests'"
+    >
+    </app-table>
+</div>
+

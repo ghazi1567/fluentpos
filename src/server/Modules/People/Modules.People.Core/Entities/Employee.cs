@@ -80,5 +80,9 @@ namespace FluentPOS.Modules.People.Core.Entities
         public string ImageUrl { get; set; }
 
         public bool Active { get; set; }
+
+        public Guid? ReportingTo { get; set; }
+
+         
     }
 }

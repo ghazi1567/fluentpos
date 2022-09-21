@@ -28,6 +28,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Extensions
             services.AddExtendedAttributeDbContextsFromAssembly(typeof(PeopleDbContext), Assembly.GetAssembly(typeof(IPeopleDbContext)));
             services.AddTransient<IDatabaseSeeder, PeopleDbSeeder>();
             services.AddTransient<ICartService, CartService>();
+            services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<IWorkFlowService, WorkFlowService>();
+            services.AddTransient<IAttendanceService, AttendanceService>();
+
             return services;
         }
 

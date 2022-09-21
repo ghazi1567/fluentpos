@@ -80,5 +80,7 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
         public int DailyOverTimeRate { get; set; }
 
         public int HolidayOverTimeRate { get; set; }
+
+        public EarnedHourPolicy EarnedHourPolicy { get; set; }
     }
 }

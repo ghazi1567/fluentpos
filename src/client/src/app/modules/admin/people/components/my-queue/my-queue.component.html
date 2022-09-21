@@ -1,0 +1,48 @@
+<!-- <div *ngIf="!attendances" class="d-flex justify-center p-4">
+    <mat-icon>
+        <mat-spinner diameter="20"> </mat-spinner>
+    </mat-icon>
+    Loading ...
+</div> -->
+<div>
+    <mat-tab-group>
+        <mat-tab label="Attendance Requests" *appHasPermission="['Permissions.AttendanceRequests.MyQueue']">
+            <ng-template matTabLabel>
+                <span mat matBadgeOverlap="false">Attendance Requests</span>
+            </ng-template>
+            <app-table
+                [data]="attendances && attendances.data"
+                [columns]="attendanceColumns"
+                (onFilter)="filterAttendance($event)"
+                (onReload)="reloadAttendance()"
+                (onSort)="sortAttendance($event)"
+                [totalCount]="attendances && attendances.totalCount"
+                [pageSize]="attendances && attendances.pageSize"
+                (onPageChanged)="pageChangedAttendance($event)"
+                [moduleName]="'AttendanceRequests'"
+                [customActionButtons]="actionButtons"
+                (onCustomActionButton)="openCustomActionButton($event)"
+            >
+            </app-table>
+        </mat-tab>
+        <mat-tab label="Ovetime Requests" *appHasPermission="['Permissions.OvertimeRequests.MyQueue']">
+            <ng-template matTabLabel>
+                <span mat matBadgeOverlap="false">Ovetime Requests</span>
+            </ng-template>
+            <app-table
+                [data]="overtimes && overtimes.data"
+                [columns]="overtimeColumns"
+                (onFilter)="filterOvertime($event)"
+                (onReload)="reloadOvertime()"
+                (onSort)="sortOvertime($event)"
+                [totalCount]="overtimes && overtimes.totalCount"
+                [pageSize]="overtimes && overtimes.pageSize"
+                (onPageChanged)="pageChangedOvertime($event)"
+                [moduleName]="'OvertimeRequests'"
+                [customActionButtons]="actionButtons"
+                (onCustomActionButton)="openCustomActionButton($event)"
+            >
+            </app-table>
+        </mat-tab>
+    </mat-tab-group>
+</div>

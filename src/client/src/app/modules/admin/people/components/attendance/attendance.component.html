@@ -1,0 +1,20 @@
+<div [hidden]="!attendances">
+    <app-table
+        [title]="'Attendances'"
+        [subtitle]="'Manage, Register, Update or Remove Attendances here.'"
+        [data]="attendances && attendances.data"
+        [columns]="attendanceColumns"
+        (onFilter)="filter($event)"
+        (onReload)="reload()"
+        (onCreateForm)="openForm()"
+        (onEditForm)="openForm($event)"
+        (onSort)="sort($event)"
+        (onDelete)="remove($event)"
+        [totalCount]="attendances && attendances.totalCount"
+        [pageSize]="attendances && attendances.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'AttendanceRequests'"
+    >
+    </app-table>
+</div>
+

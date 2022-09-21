@@ -164,7 +164,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 new("fullName", $"{user.FirstName} {user.LastName}"),
                 new(ClaimTypes.Name, user.FirstName),
                 new(ClaimTypes.Surname, user.LastName),
-                new("ipAddress", ipAddress)
+                new("ipAddress", ipAddress),
+                new("LoggedInEmpId", $"{user.EmployeeId}"),
             }
             .Union(userClaims)
             .Union(roleClaims)

@@ -8,12 +8,15 @@
 
 using System;
 using AutoMapper;
+using FluentPOS.Modules.People.Core.Dtos;
 using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Modules.People.Core.Features.Customers.Queries;
 using FluentPOS.Modules.People.Core.Features.Employees.Commands;
 using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.Core.Mappings.Converters;
+using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Filters;
+using FluentPOS.Shared.DTOs.People.EmployeeRequests;
 using FluentPOS.Shared.DTOs.People.Employees;
 
 namespace FluentPOS.Modules.People.Core.Mappings
@@ -22,6 +25,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
     {
         public EmployeeProfile()
         {
+            CreateMap<Shared.DTOs.Dtos.Peoples.EmployeeDto, Employee>().ReverseMap();
             CreateMap<RegisterEmployeeCommand, Employee>().ReverseMap();
             CreateMap<UpdateEmployeeCommand, Employee>().ReverseMap();
             CreateMap<GetByIdCacheableFilter<Guid, Employee>, GetEmployeeByIdQuery>();
@@ -29,6 +33,21 @@ namespace FluentPOS.Modules.People.Core.Mappings
             CreateMap<GetEmployeesResponse, Employee>().ReverseMap();
             CreateMap<PaginatedFilter, GetEmployeesQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+
+
+            CreateMap<PaginatedResult<EmployeeRequestDto>, PaginatedResult<EmployeeRequest>>().ReverseMap();
+            CreateMap<EmployeeRequestDto, EmployeeRequest>().ReverseMap();
+            CreateMap<RegisterEmployeeRequestCommand, EmployeeRequest>().ReverseMap();
+            CreateMap<UpdateEmployeeRequestCommand, EmployeeRequest>().ReverseMap();
+            CreateMap<GetByIdCacheableFilter<Guid, EmployeeRequest>, GetEmployeeRequestByIdQuery>();
+            CreateMap<GetEmployeeRequestByIdResponse, EmployeeRequest>().ReverseMap();
+            CreateMap<GetEmployeeRequestsResponse, EmployeeRequest>().ReverseMap();
+            CreateMap<PaginatedFilter, GetEmployeeRequestsQuery>()
+                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+            CreateMap<PaginatedFilter, GetMyQueueQuery>()
+               .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+            CreateMap<PaginatedFilter, GetRequestApproverListQuery>()
+              .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
         }
     }
 }

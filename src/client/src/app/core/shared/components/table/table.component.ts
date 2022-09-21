@@ -16,6 +16,7 @@ import { CustomAction } from "./custom-action";
 export class TableComponent implements OnInit, AfterViewInit {
     public tableDataSource = new MatTableDataSource([]);
     public displayedColumns: string[];
+    public displayedButtons: string[];
     @Input() customActionOneData: CustomAction;
     @Input() customActionButtons: CustomAction[];
 
@@ -37,7 +38,7 @@ export class TableComponent implements OnInit, AfterViewInit {
         this.setTableDataSource(data);
     }
     @Input() permissions: any[] = [];
-    @Input() moduleName: string = '';
+    @Input() moduleName: string = "";
 
     @Output() onFilter: EventEmitter<string> = new EventEmitter<string>();
     @Output() onReload: EventEmitter<any> = new EventEmitter<any>();
@@ -56,6 +57,13 @@ export class TableComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         const columnNames = this.columns.map((tableColumn: TableColumn) => tableColumn.name);
         this.displayedColumns = columnNames;
+
+        const actionColumn = this.columns.find((x) => x.dataKey === "action");
+        if (actionColumn && actionColumn.buttons && actionColumn.buttons.length > 0) {
+            this.displayedButtons = actionColumn.buttons;
+        } else {
+            this.displayedButtons = ["View", "Update", "Remove", "Register"];
+        }
     }
 
     ngAfterViewInit(): void {
@@ -114,7 +122,7 @@ export class TableComponent implements OnInit, AfterViewInit {
             data: "Do you confirm the removal of this brand?"
         });
         dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
+            if (result.confirmed) {
                 this.onDelete.emit($event);
             }
         });
@@ -144,5 +152,13 @@ export class TableComponent implements OnInit, AfterViewInit {
     masterToggle() {
         console.log(this.isAllSelected());
         this.isAllSelected() ? this.toggleTableDataSourceChecking(false) : this.toggleTableDataSourceChecking(true);
+    }
+
+    isDisplayButton(button: string, row: any) {
+        if (row && row[button] && row[button] == true) {
+            return false;
+        }
+        var btn = this.displayedButtons.find((x) => x == button);
+        return btn != null;
     }
 }

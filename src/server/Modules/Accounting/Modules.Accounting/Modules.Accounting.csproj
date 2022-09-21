@@ -28,4 +28,9 @@
     <AdditionalFiles Include="..\..\..\stylecop.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modules.Accounting.Core\Modules.Accounting.Core.csproj" />
+    <ProjectReference Include="..\Modules.Accounting.Infrastructure\Modules.Accounting.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

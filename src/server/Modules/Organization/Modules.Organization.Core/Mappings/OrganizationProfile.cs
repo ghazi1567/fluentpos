@@ -10,6 +10,7 @@ using FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries;
 using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.Core.Mappings.Converters;
 using FluentPOS.Shared.DTOs;
+using FluentPOS.Shared.DTOs.Dtos.Organizations;
 using FluentPOS.Shared.DTOs.Filters;
 using FluentPOS.Shared.DTOs.Organizations.Branchs;
 using FluentPOS.Shared.DTOs.Organizations.Departments;
@@ -62,6 +63,8 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
             CreateMap<GetPolicyResponse, Policy>().ReverseMap();
             CreateMap<PaginatedFilter, GetPoliciesQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+
+            CreateMap<PolicyDto, Policy>().ReverseMap();
         }
     }
 }
