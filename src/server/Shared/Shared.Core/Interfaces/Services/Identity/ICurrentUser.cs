@@ -28,5 +28,6 @@ namespace FluentPOS.Shared.Core.Interfaces.Services.Identity
         IEnumerable<Claim> GetUserClaims();
 
         HttpContext GetHttpContext();
+
     }
 }

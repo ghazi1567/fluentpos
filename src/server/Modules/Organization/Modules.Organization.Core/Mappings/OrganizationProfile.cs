@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentPOS.Modules.Catalog.Core.Features;
 using FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries;
+using FluentPOS.Modules.Organization.Core.Dtos;
 using FluentPOS.Modules.Organization.Core.Entities;
 using FluentPOS.Modules.Organization.Core.Features;
 using FluentPOS.Modules.Organization.Core.Features.Branchs.Commands;
@@ -9,6 +10,7 @@ using FluentPOS.Modules.Organizations.Core.Features;
 using FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries;
 using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.Core.Mappings.Converters;
+using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs;
 using FluentPOS.Shared.DTOs.Dtos.Organizations;
 using FluentPOS.Shared.DTOs.Filters;
@@ -64,7 +66,14 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
             CreateMap<PaginatedFilter, GetPoliciesQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
 
-            CreateMap<PolicyDto, Policy>().ReverseMap();
+            CreateMap<Shared.DTOs.Dtos.Organizations.PolicyDto, Policy>().ReverseMap();
+
+            CreateMap<JobDto, Job>().ReverseMap();
+            CreateMap<PaginatedResult<JobDto>, PaginatedResult<Job>>().ReverseMap();
+            CreateMap<RegisterJobCommand, Job>().ReverseMap();
+            CreateMap<UpdateJobCommand, Job>().ReverseMap();
+            CreateMap<PaginatedFilter, GetJobsQuery>()
+                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
         }
     }
 }

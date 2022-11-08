@@ -32,9 +32,12 @@ export class LoadingInterceptor implements HttpInterceptor {
                 }
             }
             if (request.method.toLowerCase() === "get") {
-                request = request.clone({
-                    params: request.params.set("branchId", this.authService.getBranchId)
-                });
+                if(!request.params.get('branchId')){
+                    request = request.clone({
+                        params: request.params.set("branchId", this.authService.getBranchId)
+                    });
+                }
+                
                 request = request.clone({
                     params: request.params.set("organizationId", this.authService.getOrganizationId)
                 });

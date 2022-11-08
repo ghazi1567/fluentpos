@@ -14,6 +14,8 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using FluentPOS.Modules.Accounting.Core.Abstractions;
 using FluentPOS.Modules.Accounting.Infrastructure.Persistence;
+using FluentPOS.Modules.Accounting.Infrastructure.Services;
+using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 
 namespace FluentPOS.Modules.Accounting.Infrastructure.Extensions
 {
@@ -26,7 +28,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Extensions
                 .AddScoped<IAccountingDbContext>(provider => provider.GetService<AccountingDbContext>());
             services.AddExtendedAttributeDbContextsFromAssembly(typeof(AccountingDbContext), Assembly.GetAssembly(typeof(IAccountingDbContext)));
             services.AddMediatR(Assembly.GetExecutingAssembly());
-
+            services.AddTransient<IPayrollService, PayrollService>();
             return services;
         }
 

@@ -7,5 +7,5 @@ export interface TableColumn {
   columnType?: string;
   format?: string;
   buttons?: string[];
-
+  isClass?: boolean;
 }

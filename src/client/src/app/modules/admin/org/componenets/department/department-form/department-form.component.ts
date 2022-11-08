@@ -44,6 +44,7 @@ export class DepartmentFormComponent implements OnInit {
             name: [this.data && this.data.name, Validators.required],
             description: [this.data && this.data.description],
             headOfDepartment: [this.data && this.data.headOfDepartment],
+            production: [this.data && this.data.production],
         });
         if (this.departmentForm.get("id").value === "" || this.departmentForm.get("id").value == null) {
             this.formTitle = "Register Department";

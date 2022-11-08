@@ -83,5 +83,9 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         public EarnedHourPolicy EarnedHourPolicy { get; set; }
 
+        public int SandwichLeaveCount { get; set; }
+
+        public int DailyWorkingHour { get; set; }
+
     }
 }

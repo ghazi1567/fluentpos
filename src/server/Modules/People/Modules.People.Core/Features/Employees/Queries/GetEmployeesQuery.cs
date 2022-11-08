@@ -7,7 +7,6 @@
 // --------------------------------------------------------------------------------------------------
 
 using FluentPOS.Shared.Core.Wrapper;
-using FluentPOS.Shared.DTOs.People.Customers;
 using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
 using System;
@@ -24,6 +23,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public string SearchString { get; private set; }
 
-       
+        public Guid? OrganizationId { get; set; }
+
+        public Guid? BranchId { get; set; }
+
     }
 }

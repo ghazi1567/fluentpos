@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentPOS.Shared.DTOs.Enums;
+using System;
 
 namespace FluentPOS.Shared.DTOs.People.Employees
 {
@@ -89,5 +90,8 @@ DateTime? ResignDate,
 
 string ImageUrl,
 
-bool Active);
+bool Active,
+decimal BasicSalary,
+Guid? ReportingTo,
+PaymentMode PaymentMode);
 }

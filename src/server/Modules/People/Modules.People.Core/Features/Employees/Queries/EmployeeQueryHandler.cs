@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<PaginatedResult<GetEmployeesResponse>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<Employee, GetEmployeesResponse>> expression = e => new GetEmployeesResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, String.Empty, e.Prefix, e.FirstName, e.LastName, e.FullName, e.FatherName, e.EmployeeCode, e.PunchCode, e.MobileNo, e.PhoneNo, e.Email, e.AllowManualAttendance, e.UserName, e.Password, e.MaritalStatus, e.Gender, e.DateOfBirth, e.PlaceOfBirth, e.FamilyCode, e.Religion, e.BankAccountNo, e.BankAccountTitle, e.BankName, e.BankBranchCode, e.Address, e.CnicNo, e.CnicIssueDate, e.CnicExpireDate, e.DepartmentId, e.DesignationId, e.PolicyId, e.EmployeeStatus, e.JoiningDate, e.ConfirmationDate, e.ContractStartDate, e.ContractEndDate, e.ResignDate, e.ImageUrl,e.Active);
+            Expression<Func<Employee, GetEmployeesResponse>> expression = e => new GetEmployeesResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, String.Empty, e.Prefix, e.FirstName, e.LastName, e.FullName, e.FatherName, e.EmployeeCode, e.PunchCode, e.MobileNo, e.PhoneNo, e.Email, e.AllowManualAttendance, e.UserName, e.Password, e.MaritalStatus, e.Gender, e.DateOfBirth, e.PlaceOfBirth, e.FamilyCode, e.Religion, e.BankAccountNo, e.BankAccountTitle, e.BankName, e.BankBranchCode, e.Address, e.CnicNo, e.CnicIssueDate, e.CnicExpireDate, e.DepartmentId, e.DesignationId, e.PolicyId, e.EmployeeStatus, e.JoiningDate, e.ConfirmationDate, e.ContractStartDate, e.ContractEndDate, e.ResignDate, e.ImageUrl,e.Active,e.BasicSalary,e.ReportingTo,e.PaymentMode);
 
             var queryable = _context.Employees.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
@@ -60,6 +60,16 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(c => c.FullName.Contains(request.SearchString) || c.PhoneNo.Contains(request.SearchString) || c.Email.Contains(request.SearchString));
+            }
+
+            if (request.OrganizationId.HasValue)
+            {
+                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            }
+
+            if (request.BranchId.HasValue)
+            {
+                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
             }
 
             var customerList = await queryable

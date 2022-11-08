@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public int OvertimeHours { get; set; }
 
-        public string OverTimeType { get; set; }
+        public OverTimeType OverTimeType { get; set; }
 
         public string Reason { get; set; }
 
@@ -41,5 +41,9 @@ namespace FluentPOS.Modules.People.Core.Entities
         public Guid? AssignedTo { get; set; }
 
         public DateTime? AssignedOn { get; set; }
+
+        public int Production { get; set; }
+
+        public int RequiredProduction { get; set; }
     }
 }

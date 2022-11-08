@@ -41,7 +41,8 @@ export class DepartmentComponent implements OnInit {
             { name: "Id", dataKey: "id", isSortable: true, isShowable: true },
             { name: "Name", dataKey: "name", isSortable: true, isShowable: true },
             { name: "Description", dataKey: "description", isSortable: true, isShowable: true },
-            { name: "HOD", dataKey: "headOfDepartment", isSortable: true, isShowable: true },
+            // { name: "HOD", dataKey: "headOfDepartment", isSortable: true, isShowable: true },
+            { name: "Production", dataKey: "production", isSortable: true, isShowable: true },
             { name: "Action", dataKey: "action", position: "right" }
         ];
     }

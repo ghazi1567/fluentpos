@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FluentPOS.Modules.Organization.Extensions;
+using FluentPOS.Modules.Accounting.Extensions;
 
 namespace FluentPOS.Bootstrapper
 {
@@ -42,7 +43,8 @@ namespace FluentPOS.Bootstrapper
                 .AddPeopleModule(_config)
                 .AddInvoicingModule(_config)
                 .AddInventoryModule(_config)
-                .AddOrganizationModule(_config);
+                .AddOrganizationModule(_config)
+                .AddAccountingModule(_config);
 
         }
 

@@ -1,0 +1,50 @@
+<mat-tab-group>
+    <mat-tab label="Payroll Requests">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Payroll Requests</span>
+        </ng-template>
+        <app-table
+            [title]="'Payroll Requests'"
+            [subtitle]="'Manage, Register, Update or Remove Payroll Requests here.'"
+            [data]="payrollRequests && payrollRequests.data"
+            [columns]="payrollRequestsColumns"
+            (onFilter)="filter($event)"
+            (onReload)="reload()"
+            (onCreateForm)="openForm()"
+            (onEditForm)="openForm($event)"
+            (onSort)="sort($event)"
+            (onDelete)="remove($event)"
+            [totalCount]="payrollRequests && payrollRequests.totalCount"
+            [pageSize]="payrollRequests && payrollRequests.pageSize"
+            (onPageChanged)="pageChanged($event)"
+            [moduleName]="'Payroll'"
+            [customActionButtons]="actionButtons"
+            (onCustomActionButton)="openCustomActionButton($event)"
+        >
+        </app-table>
+    </mat-tab>
+    <mat-tab label="Pay Slips">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Pay Slips</span>
+        </ng-template>
+        <app-table
+            [title]="'Payslips'"
+            [subtitle]="'Manage, Register, Update or Remove Payslips here.'"
+            [data]="paySlips && paySlips.data"
+            [columns]="payrollSlipsColumns"
+            (onFilter)="filter($event)"
+            (onReload)="reload()"
+            (onCreateForm)="openForm()"
+            (onEditForm)="openForm($event)"
+            (onSort)="sort($event)"
+            (onDelete)="remove($event)"
+            [totalCount]="paySlips && paySlips.totalCount"
+            [pageSize]="paySlips && paySlips.pageSize"
+            (onPageChanged)="pageChanged($event)"
+            [moduleName]="'Payroll'"
+            [customActionButtons]="payslipActionButtons"
+            (onCustomActionButton)="openPayslipCustomActionButton($event)"
+        >
+        </app-table>
+    </mat-tab>
+</mat-tab-group>

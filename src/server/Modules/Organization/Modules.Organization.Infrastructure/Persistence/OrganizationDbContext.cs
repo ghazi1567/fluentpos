@@ -53,6 +53,11 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence
 
         public DbSet<Policy> Policies { get; set; }
 
+        public DbSet<Job> Jobs { get; set; }
+
+        public DbSet<JobHistory> JobHistory { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

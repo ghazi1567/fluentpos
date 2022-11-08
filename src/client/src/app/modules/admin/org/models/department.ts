@@ -7,4 +7,5 @@ export interface Department {
     name: string;
     description: string;
     headOfDepartment: boolean;
+    production: number;
 }

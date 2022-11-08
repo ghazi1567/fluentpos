@@ -62,7 +62,9 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Reporting Manager</mat-label>
                         <mat-select formControlName="reportingTo" name="reportingTo">
-                            <mat-option value="1">Manager</mat-option>
+                            <mat-option *ngFor="let org of employeesLookup" [value]="org.id">
+                                {{ org.fullName }}
+                            </mat-option>
                         </mat-select>
                         <mat-error> Please provide a valid Reporting Manager </mat-error>
                     </mat-form-field>
@@ -85,8 +87,8 @@
                 </div>
                 <div class="col-xs-12 col-md-3">
                     <mat-form-field appearance="fill">
-                        <mat-label>Email</mat-label>
-                        <input matInput formControlName="email" placeholder="Email" />
+                        <mat-label>Basic Salary</mat-label>
+                        <input matInput type="number" formControlName="basicSalary" placeholder="Basic Salary" />
                     </mat-form-field>
                 </div>
 
@@ -103,7 +105,7 @@
     <mat-step [stepControl]="secondFormGroup">
         <form [formGroup]="secondFormGroup">
             <ng-template matStepLabel>Additional Information</ng-template>
-
+            
             <div class="row">
                 <div class="col-xs-12 col-md-3">
                     <mat-form-field appearance="fill">
@@ -151,10 +153,16 @@
                         <input matInput type="date" formControlName="dateOfBirth" placeholder="Date Of Birth" />
                     </mat-form-field>
                 </div>
-                <div class="col-xs-12 col-md-3">
+                <!-- <div class="col-xs-12 col-md-3">
                     <mat-form-field appearance="fill">
                         <mat-label>Place Of Birth</mat-label>
                         <input matInput formControlName="placeOfBirth" placeholder="Place Of Birth" />
+                    </mat-form-field>
+                </div> -->
+                <div class="col-xs-12 col-md-3">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Email</mat-label>
+                        <input matInput formControlName="email" placeholder="Email" />
                     </mat-form-field>
                 </div>
                 <div class="col-xs-12 col-md-12">
@@ -176,6 +184,15 @@
             <ng-template matStepLabel>Bank Details</ng-template>
 
             <div class="row">
+                <div class="col-xs-12 col-md-3">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Payment Mode</mat-label>
+                        <mat-select formControlName="paymentMode" name="paymentMode">
+                            <mat-option *ngFor="let mode of paymentModes" [value]="mode">{{ PaymentModeMapping[mode] }}</mat-option>
+                        </mat-select>
+                        <mat-error> Please provide a valid Gender </mat-error>
+                    </mat-form-field>
+                </div>
                 <div class="col-xs-12 col-md-3">
                     <mat-form-field appearance="fill">
                         <mat-label>Bank Name</mat-label>

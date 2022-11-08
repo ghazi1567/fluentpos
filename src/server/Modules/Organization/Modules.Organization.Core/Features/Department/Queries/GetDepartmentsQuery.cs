@@ -11,6 +11,7 @@ using FluentPOS.Shared.DTOs.Catalogs.Brands;
 using FluentPOS.Shared.DTOs.Organizations.Branchs;
 using FluentPOS.Shared.DTOs.Organizations.Departments;
 using MediatR;
+using System;
 
 namespace FluentPOS.Modules.Organizations.Core.Features
 {
@@ -23,5 +24,9 @@ namespace FluentPOS.Modules.Organizations.Core.Features
         public string[] OrderBy { get; private set; }
 
         public string SearchString { get; private set; }
+
+        public Guid? OrganizationId { get; set; }
+
+        public Guid? BranchId { get; set; }
     }
 }

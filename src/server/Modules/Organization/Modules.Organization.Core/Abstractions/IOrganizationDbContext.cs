@@ -23,5 +23,9 @@ namespace FluentPOS.Modules.Organization.Core.Abstractions
         public DbSet<Organisation> Organisations { get; set; }
 
         public DbSet<Policy> Policies { get; set; }
+
+        public DbSet<Job> Jobs { get; set; }
+
+        public DbSet<JobHistory> JobHistory { get; set; }
     }
 }

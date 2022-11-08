@@ -30,5 +30,7 @@ namespace FluentPOS.Modules.People.Core.Abstractions
 
         public DbSet<ApprovalFlow> ApprovalFlows { get; set; }
 
+        public DbSet<BioAttendanceLog> AttendanceLogs { get; set; }
+
     }
 }

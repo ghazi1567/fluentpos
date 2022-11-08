@@ -5,26 +5,23 @@
             <input mat type="hidden" formControlName="id" />
             <div class="col-xs-12 col-md-3">
                 <mat-form-field appearance="outline">
-                    <mat-label>Employee</mat-label>
-                    <mat-select formControlName="employeeId" name="employeeId" required>
-                        <mat-option *ngFor="let org of employeesLookup" [value]="org.id">
-                            {{ org.fullName }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error> Please provide a valid Employee </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="col-xs-12 col-md-3">
-                <mat-form-field appearance="outline">
                     <mat-label>Attendance Date</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="attendanceDate" required >
+                    <input matInput [matDatepicker]="picker" disabled formControlName="attendanceDate" required >
                     <mat-hint>MM/DD/YYYY</mat-hint>
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-error> Please provide a valid Attendance Date </mat-error>
                   </mat-form-field>
             </div>
-            
+            <div class="col-xs-12 col-md-3">
+                <mat-form-field appearance="outline">
+                    <mat-label>Attendance</mat-label>
+                    <mat-select formControlName="attendanceStatus" name="attendanceStatus">
+                        <mat-option *ngFor="let earnedHour of attendanceStatus" [value]="earnedHour">{{ AttendanceStatusMapping[earnedHour] }}</mat-option>
+                    </mat-select>
+                    <mat-error> Please provide a valid Daily Earned Hour Policy </mat-error>
+                </mat-form-field>
+            </div>
             <div class="col-xs-12 col-md-3">
                 <mat-form-field appearance="outline">
                     <mat-label>In Time</mat-label>

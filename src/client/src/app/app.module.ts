@@ -30,7 +30,7 @@ import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
 import { BusyService } from './core/services/busy.service';
 import { PermissionGuard } from './core/guards/permission.guard';
 import { RoleGuard } from './core/guards/role.guard';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { CustomerService } from './modules/admin/people/services/customer.service';
 export function rootLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -70,6 +70,7 @@ export function rootLoaderFactory(http: HttpClient) {
     MultilingualService,
     BusyService,
     DatePipe,
+    CurrencyPipe,
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },

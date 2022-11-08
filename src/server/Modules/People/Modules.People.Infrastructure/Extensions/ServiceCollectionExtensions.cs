@@ -31,6 +31,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Extensions
             services.AddTransient<IEmployeeService, EmployeeService>();
             services.AddTransient<IWorkFlowService, WorkFlowService>();
             services.AddTransient<IAttendanceService, AttendanceService>();
+            
 
             return services;
         }

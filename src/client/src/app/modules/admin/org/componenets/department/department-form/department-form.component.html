@@ -3,14 +3,14 @@
     <mat-dialog-content class="mat-typography">
         <div class="row">
             <input mat type="hidden" formControlName="id" />
-            <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-4">
                 <mat-form-field appearance="outline">
                     <mat-label>Name</mat-label>
                     <input matInput autocomplete="off" placeholder="Name" formControlName="name" required />
                     <mat-error> Please provide a valid name </mat-error>
                 </mat-form-field>
             </div>
-            <div class="col-xs-12 col-md-6">
+            <div class="col-xs-12 col-md-4">
                 <mat-form-field appearance="outline">
                     <mat-label>HOD</mat-label>
                     <mat-select formControlName="headOfDepartment" name="headOfDepartment">
@@ -19,6 +19,13 @@
                         </mat-option>
                     </mat-select>
                     <mat-error> Please provide a valid Head Of Department </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <mat-form-field appearance="outline">
+                    <mat-label>Production/Day</mat-label>
+                    <input matInput autocomplete="off" placeholder="Production" formControlName="production" required />
+                    <mat-error> Please provide a valid production qty. </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-xs-12 col-md-12">

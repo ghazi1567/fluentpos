@@ -32,6 +32,7 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Features\Branchs\Events\" />
+    <Folder Include="Features\Jobs\Events\" />
     <Folder Include="Features\Policy\Events\" />
     <Folder Include="Features\Designation\Events\" />
     <Folder Include="Features\Department\Events\" />

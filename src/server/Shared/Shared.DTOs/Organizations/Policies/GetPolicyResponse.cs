@@ -34,6 +34,8 @@ LateComersPenaltyType lateComersPenaltyType,
 int lateComersPenalty,
 int DailyOverTimeRate,
 int HolidayOverTimeRate,
-EarnedHourPolicy earnedHourPolicy
+EarnedHourPolicy earnedHourPolicy,
+int SandwichLeaveCount,
+int DailyWorkingHour
 );
 }

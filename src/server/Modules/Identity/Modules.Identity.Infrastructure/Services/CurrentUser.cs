@@ -8,8 +8,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using FluentPOS.Modules.Identity.Infrastructure.Extensions;
+using FluentPOS.Modules.Identity.Infrastructure.Persistence;
 using FluentPOS.Shared.Core.Interfaces.Services.Identity;
 using Microsoft.AspNetCore.Http;
 
@@ -18,7 +20,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
     public class CurrentUser : ICurrentUser
     {
         private readonly IHttpContextAccessor _accessor;
-
         public CurrentUser(IHttpContextAccessor accessor)
         {
             _accessor = accessor;
@@ -55,5 +56,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
         {
             return _accessor.HttpContext;
         }
+
     }
 }

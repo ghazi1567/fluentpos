@@ -279,3 +279,64 @@ th.mat-header-cell{
 {
   min-width: 0px!important;
 }
+
+.cls-absent {
+    color: white;
+    background: #ff5e5e;
+    border-radius: 54px;
+    padding: 7px;
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+.cls-present {
+    color: white;
+    background: #0acf97;
+    border-radius: 82;
+    border-radius: 54px;
+    padding: 7px;
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+.cls-off {
+    color: white;
+    background: #f8c038;
+    border-radius: 54px;
+    padding: 7px;
+    padding-left: 22px;
+    padding-right: 21px;
+}
+
+.cls-leave {
+    color: white;
+    background: #864bff;
+    border-radius: 54px;
+    padding: 7px;
+    padding-left: 23px;
+    padding-right: 30px;
+}
+
+.cls-holiday {
+    color: white;
+    background: #eb0dbc;
+    border-radius: 54px;
+    padding: 7px;
+    padding-left: 22px;
+    padding-right: 21px;
+}
+
+
+.custom.table td, .custom.table th {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.custom .font-weight-bold {
+    font-weight: 700!important;
+}
+
+.custom .bdt {
+    border-top: none!important;
+}

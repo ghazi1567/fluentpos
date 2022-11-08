@@ -2,9 +2,11 @@
 using FluentPOS.Modules.Organization.Core.Abstractions;
 using FluentPOS.Shared.Core.Interfaces.Services.Organization;
 using FluentPOS.Shared.DTOs.Dtos.Organizations;
+using FluentPOS.Shared.DTOs.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,6 +54,15 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             }
 
             return orgDetailsDto;
+        }
+
+        public async Task<List<PolicyDto>> GetPolicyDetailsAsync(PayPeriod payPeriod)
+        {
+            var policy = await _context.Policies.AsNoTracking()
+                .Where(b => b.PayPeriod == payPeriod)
+                .ToListAsync(default(CancellationToken));
+
+            return _mapper.Map<List<PolicyDto>>(policy);
         }
 
         private async Task<OrganizationDto> GetOrgnizationDetailsAsync(Guid Id)

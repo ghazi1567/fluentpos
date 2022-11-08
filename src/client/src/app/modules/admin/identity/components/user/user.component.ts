@@ -48,7 +48,7 @@ export class UserComponent implements OnInit {
             { name: "IsActive", dataKey: "isActive", isSortable: true, isShowable: true },
             { name: "EmailConfirmed", dataKey: "emailConfirmed", isSortable: true, isShowable: true },
             { name: "PhoneNumber", dataKey: "phoneNumber", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right" }
+            { name: "Action", dataKey: "action", position: "right", buttons:['Register','Update','Remove','user_branch','user_role'] }
         ];
     }
 

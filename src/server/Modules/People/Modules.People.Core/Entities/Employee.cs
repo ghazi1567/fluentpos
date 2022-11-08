@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentPOS.Shared.Core.Domain;
+using FluentPOS.Shared.DTOs.Enums;
 
 namespace FluentPOS.Modules.People.Core.Entities
 {
@@ -43,6 +44,8 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public string Religion { get; set; }
 
+        public PaymentMode PaymentMode { get; set; }
+
         public string BankAccountNo { get; set; }
 
         public string BankAccountTitle { get; set; }
@@ -83,6 +86,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public Guid? ReportingTo { get; set; }
 
-         
+        public decimal BasicSalary { get; set; }
+
     }
 }

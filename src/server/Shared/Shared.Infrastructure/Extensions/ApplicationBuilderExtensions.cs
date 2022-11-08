@@ -38,12 +38,14 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Files")),
                 RequestPath = "/files"
             });
+            app.UseMiddleware<RequestResponseTimeZoneConverter>();
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseHangfireDashboard("/jobs", new DashboardOptions
             {
-                DashboardTitle = "FluentPOS Jobs"
+                DashboardTitle = "FluentPOS Jobs",
+                AppPath = "http://localhost:4200/admin/org/jobs"
             });
             app.UseEndpoints(endpoints =>
             {

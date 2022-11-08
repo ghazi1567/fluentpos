@@ -59,6 +59,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features
                 || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
+            if (request.OrganizationId.HasValue)
+            {
+                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            }
+
+            if (request.BranchId.HasValue)
+            {
+                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
+            }
+
             var brandList = await queryable
             .Select(expression)
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);

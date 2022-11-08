@@ -1,3 +1,5 @@
+import { PaymentMode } from "src/app/core/enums/PaymentMode";
+
 export interface Employee {
     id: string;
     prefix: string;
@@ -39,4 +41,6 @@ export interface Employee {
     imageUrl: string;
     active: boolean;
     reportingTo: string;
+    basicSalary: number;
+    paymentMode: PaymentMode;
 }

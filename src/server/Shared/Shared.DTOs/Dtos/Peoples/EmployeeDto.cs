@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentPOS.Shared.DTOs.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -97,5 +98,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
         public string ImageUrl { get; set; }
 
         public bool Active { get; set; }
+
+        public PaymentMode PaymentMode { get; set; }
     }
 }

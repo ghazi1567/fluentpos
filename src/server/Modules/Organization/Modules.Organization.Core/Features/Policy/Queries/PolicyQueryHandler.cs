@@ -47,7 +47,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features
 
         public async Task<PaginatedResult<GetPolicyResponse>> Handle(GetPoliciesQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Policy, GetPolicyResponse>> expression = e => new GetPolicyResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.DepartmentId, e.PayslipType, e.PayPeriod, e.AllowedOffDays, e.RequiredWorkingHour, e.ShiftStartTime, e.ShiftEndTime, e.AllowedLateMinutes, e.AllowedLateMinInMonth, e.EarlyArrivalPolicy, e.ForceTimeout, e.TimeoutPolicy, e.IsMonday, e.IsTuesday, e.IsWednesday, e.IsThursday, e.IsFriday, e.IsSaturday, e.IsSunday, e.DailyOverTime, e.HolidayOverTime,e.lateComersPenaltyType,e.lateComersPenalty,e.DailyOverTimeRate,e.HolidayOverTimeRate,e.EarnedHourPolicy);
+            Expression<Func<Policy, GetPolicyResponse>> expression = e => new GetPolicyResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.DepartmentId, e.PayslipType, e.PayPeriod, e.AllowedOffDays, e.RequiredWorkingHour, e.ShiftStartTime, e.ShiftEndTime, e.AllowedLateMinutes, e.AllowedLateMinInMonth, e.EarlyArrivalPolicy, e.ForceTimeout, e.TimeoutPolicy, e.IsMonday, e.IsTuesday, e.IsWednesday, e.IsThursday, e.IsFriday, e.IsSaturday, e.IsSunday, e.DailyOverTime, e.HolidayOverTime,e.lateComersPenaltyType,e.lateComersPenalty,e.DailyOverTimeRate,e.HolidayOverTimeRate,e.EarnedHourPolicy,e.SandwichLeaveCount,e.DailyWorkingHour);
             var queryable = _context.Policies.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
@@ -57,6 +57,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
                 || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+            }
+
+            if (request.OrganizationId.HasValue)
+            {
+                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            }
+
+            if (request.BranchId.HasValue)
+            {
+                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
             }
 
             var brandList = await queryable

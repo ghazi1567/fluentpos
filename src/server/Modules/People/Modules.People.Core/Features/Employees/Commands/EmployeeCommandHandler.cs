@@ -19,6 +19,7 @@ using FluentPOS.Modules.People.Core.Exceptions;
 using FluentPOS.Modules.People.Core.Features.Customers.Events;
 using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.Core.Interfaces.Services;
+using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +37,9 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         private readonly IPeopleDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
+        private readonly IPayrollService _payrollService;
+
+
         private readonly IStringLocalizer<EmployeeCommandHandler> _localizer;
 
         public EmployeeCommandHandler(
@@ -43,13 +47,15 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             IMapper mapper,
             IUploadService uploadService,
             IStringLocalizer<EmployeeCommandHandler> localizer,
-            IDistributedCache cache)
+            IDistributedCache cache,
+            IPayrollService payrollService)
         {
             _context = context;
             _mapper = mapper;
             _uploadService = uploadService;
             _localizer = localizer;
             _cache = cache;
+            _payrollService = payrollService;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -69,6 +75,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             await _context.Employees.AddAsync(employee, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+            await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
             return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Saved"]);
         }
 
@@ -90,6 +97,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
+                await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
                 return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated"]);
             }
             else

@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
+using FluentPOS.Modules.Accounting.Core.Abstractions;
 using FluentPOS.Modules.Accounting.Core.Dtos;
 using FluentPOS.Modules.Accounting.Core.Entities;
+using FluentPOS.Modules.Accounting.Core.Exceptions;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 using FluentPOS.Shared.Core.Interfaces.Services.Organization;
 using FluentPOS.Shared.DTOs.Dtos.Organizations;
 using FluentPOS.Shared.DTOs.Dtos.Peoples;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.Accounting.Infrastructure.Services
 {
@@ -17,55 +23,160 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
         private readonly IAttendanceService _attendanceService;
         private readonly IOrgService _orgService;
         private readonly IEmployeeService _employeeService;
+        private readonly IAccountingDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IStringLocalizer<PayrollService> _localizer;
 
-        public PayrollService(IAttendanceService attendanceService, IOrgService orgService, IEmployeeService employeeService)
+        public PayrollService(IAttendanceService attendanceService, IOrgService orgService, IEmployeeService employeeService, IAccountingDbContext context, IMapper mapper, IStringLocalizer<PayrollService> localizer)
         {
             _attendanceService = attendanceService;
             _orgService = orgService;
             _employeeService = employeeService;
+            _context = context;
+            _mapper = mapper;
+            _localizer = localizer;
         }
 
+        public async Task<bool> IsPayrollGenerated(DateTime dateTime)
+        {
+            return await _context.PayrollRequests.AnyAsync(x => x.Month == dateTime.Date.Month);
+        }
+
+        public async Task<bool> IsPayrollGenerated(Guid employeeId, DateTime dateTime)
+        {
+            dateTime = dateTime.AddHours(2);
+            return await _context.Payrolls.AnyAsync(x => x.EmployeeId == employeeId && x.StartDate.Date.Month == dateTime.Month && x.StartDate.Date <= dateTime.Date && x.EndDate.Date >= dateTime.Date);
+        }
 
         public async Task GeneratePayroll(Shared.DTOs.Dtos.Accounting.PayrollRequestDto payrollRequest)
         {
-            DateTime startDate = DateTime.Now;
-            DateTime endDate = DateTime.Now;
+            var payrollRequestEntry = await _context.PayrollRequests.Where(c => c.Id == payrollRequest.Id).AsNoTracking().FirstOrDefaultAsync();
 
-            switch (payrollRequest.PayPeriod)
+            if (payrollRequestEntry == null)
             {
-                case Shared.DTOs.Enums.PayPeriod.Daily:
-                    break;
-                case Shared.DTOs.Enums.PayPeriod.Weekly:
-                    break;
-                case Shared.DTOs.Enums.PayPeriod.HalfMonth:
-                    break;
-                case Shared.DTOs.Enums.PayPeriod.Monthly:
-                    var firstDayOfMonth = new DateTime(startDate.Year, payrollRequest.Month, 1, 0, 1, 1);
-                    var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
-                    startDate = new DateTime(firstDayOfMonth.Year, firstDayOfMonth.Month, firstDayOfMonth.Day, 0, 1, 1);
-                    endDate = new DateTime(lastDayOfMonth.Year, lastDayOfMonth.Month, lastDayOfMonth.Day, 23, 59, 59);
-                    break;
-                case Shared.DTOs.Enums.PayPeriod.DateRange:
-                    startDate = new DateTime(payrollRequest.StartDate.Year, payrollRequest.StartDate.Month, payrollRequest.StartDate.Day, 0, 1, 1);
-                    endDate = new DateTime(payrollRequest.EndDate.Year, payrollRequest.EndDate.Month, payrollRequest.EndDate.Day, 23, 59, 59);
-                    break;
-                default:
-                    break;
+                throw new AccountingException(_localizer["Payroll Request Not Found!"], HttpStatusCode.NotFound);
             }
 
-            if (startDate == endDate)
+            if (payrollRequestEntry.Status == "Completed")
             {
-                return;
+                throw new AccountingException(_localizer["Payroll Request Already Completed!"], HttpStatusCode.Conflict);
             }
 
-            payrollRequest.StartDate = startDate;
-            payrollRequest.EndDate = endDate;
-
-            var attendances = await _attendanceService.GetEmployeeAttendance(payrollRequest.EmployeeIds, payrollRequest.StartDate, payrollRequest.EndDate);
-
-            if (attendances.Count > 0)
+            // await _attendanceService.TiggerAutoAbsentJob(null);
+            // return;
+            try
             {
-                await CalculatePayroll(payrollRequest, attendances);
+                DateTime startDate = DateTime.Now;
+                DateTime endDate = DateTime.Now;
+
+                switch (payrollRequest.PayPeriod)
+                {
+                    case Shared.DTOs.Enums.PayPeriod.Daily:
+                        break;
+                    case Shared.DTOs.Enums.PayPeriod.Weekly:
+                        break;
+                    case Shared.DTOs.Enums.PayPeriod.HalfMonth:
+                        startDate = new DateTime(payrollRequest.StartDate.Year, payrollRequest.StartDate.Month, payrollRequest.StartDate.Day, 0, 1, 1);
+                        endDate = new DateTime(payrollRequest.EndDate.Year, payrollRequest.EndDate.Month, payrollRequest.EndDate.Day, 23, 59, 59);
+                        break;
+                    case Shared.DTOs.Enums.PayPeriod.Monthly:
+                        var firstDayOfMonth = new DateTime(startDate.Year, payrollRequest.Month, 1, 0, 1, 1);
+                        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                        startDate = new DateTime(firstDayOfMonth.Year, firstDayOfMonth.Month, firstDayOfMonth.Day, 0, 1, 1);
+                        endDate = new DateTime(lastDayOfMonth.Year, lastDayOfMonth.Month, lastDayOfMonth.Day, 23, 59, 59);
+                        break;
+                    case Shared.DTOs.Enums.PayPeriod.DateRange:
+                        startDate = new DateTime(payrollRequest.StartDate.Year, payrollRequest.StartDate.Month, payrollRequest.StartDate.Day, 0, 1, 1);
+                        endDate = new DateTime(payrollRequest.EndDate.Year, payrollRequest.EndDate.Month, payrollRequest.EndDate.Day, 23, 59, 59);
+                        break;
+                    default:
+                        break;
+                }
+
+                if (startDate == endDate)
+                {
+                    return;
+                }
+
+                payrollRequest.StartDate = startDate;
+                payrollRequest.EndDate = endDate;
+                payrollRequest.Logs = new List<string>();
+                var plocies = await _orgService.GetPolicyDetailsAsync(payrollRequest.PayPeriod);
+                var plociesIds = plocies.Select(x => x.Id.Value).ToList();
+                var employees = await _employeeService.GetEmployeeDetailsByPolicyAsync(plociesIds);
+                payrollRequest.EmployeeIds = employees.Select(x => x.Id.Value).ToList();
+                var attendances = await _attendanceService.GetEmployeeAttendance(payrollRequest.EmployeeIds, payrollRequest.StartDate, payrollRequest.EndDate);
+
+                // if (employees.Count > 0)
+                // {
+                //     await CalculatePayroll(payrollRequest, attendances);
+                // }
+                List<Payroll> payrollList = new List<Payroll>();
+                var results = attendances.GroupBy(p => p.EmployeeId, (key, g) => new { EmployeeId = key, Attendances = g.ToList() });
+
+                foreach (var item in results)
+                {
+                    payrollRequest.EmployeeInfo = employees.FirstOrDefault(x => x.Id == item.EmployeeId);
+                    if (payrollRequest.EmployeeInfo != null)
+                    {
+                        var salary = _context.Salaries.FirstOrDefault(x => x.EmployeeId == item.EmployeeId);
+                        if (salary != null)
+                        {
+                            payrollRequest.EmployeeSalary = _mapper.Map<SalaryDto>(salary);
+                        }
+                        else
+                        {
+                            payrollRequest.Logs.Add($"{payrollRequest.EmployeeInfo.FullName}'s Salary Information Not Found!!");
+                        }
+
+                        var policy = plocies.FirstOrDefault(x => x.Id == payrollRequest.EmployeeInfo.PolicyId);
+                        if (policy != null)
+                        {
+                            payrollRequest.Policy = policy;
+                        }
+                        else
+                        {
+                            payrollRequest.Logs.Add($"{payrollRequest.EmployeeInfo.FullName}'sPolicy Information Not Found!!");
+                        }
+
+                        if (payrollRequest.Policy != null && payrollRequest.EmployeeSalary != null)
+                        {
+                            var payRoll = CalculateSalary(payrollRequest, item.Attendances);
+                            payRoll.PaymentMode = payrollRequest.EmployeeInfo.PaymentMode;
+                            if (payRoll.PaymentMode == Shared.DTOs.Enums.PaymentMode.Bank)
+                            {
+                                payRoll.BankAccountNo = payrollRequest.EmployeeInfo.BankAccountNo;
+                                payRoll.BankAccountTitle = payrollRequest.EmployeeInfo.BankAccountTitle;
+                                payRoll.BankBranchCode = payrollRequest.EmployeeInfo.BankBranchCode;
+                                payRoll.BankName = payrollRequest.EmployeeInfo.BankName;
+                            }
+
+                            payrollList.Add(payRoll);
+                        }
+                    } else
+                    {
+                        payrollRequest.Logs.Add($"{item.EmployeeId}'s Employee Information Not Found!!");
+                    }
+                }
+
+                if (payrollList.Count > 0)
+                {
+                    _context.Payrolls.AddRange(payrollList);
+                    payrollRequestEntry.Message = $"{payrollList.Count} Of {employees.Count} Employees Salaries Generated!";
+                }
+
+                payrollRequestEntry.Logs = string.Join(",", payrollRequest.Logs);
+                payrollRequestEntry.Status = "Completed";
+                _context.PayrollRequests.Update(payrollRequestEntry);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                payrollRequestEntry.Logs = string.Join(",", payrollRequest.Logs);
+                payrollRequestEntry.Status = "Failed";
+                _context.PayrollRequests.Update(payrollRequestEntry);
+                _context.SaveChanges();
+                throw;
             }
         }
 
@@ -110,11 +221,13 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 TotalDays = 0,
                 TotalDeduction = 0,
                 TotalEarned = 0,
-                Transactions = new List<PayrollTransaction>()
+                Transactions = new List<PayrollTransaction>(),
+                TotalIncentive = 0,
+                TotalOvertime = 0,
             };
 
             List<PayrollTransaction> transactions = new List<PayrollTransaction>();
-            var presentList = attendances.Where(x => x.AttendanceType == Shared.DTOs.Enums.AttendanceType.Bio || x.AttendanceType == Shared.DTOs.Enums.AttendanceType.Manual).ToList();
+            var presentList = attendances.Where(x => x.AttendanceType == Shared.DTOs.Enums.AttendanceType.Bio || x.AttendanceType == Shared.DTOs.Enums.AttendanceType.Manual || x.AttendanceType == Shared.DTOs.Enums.AttendanceType.System).ToList();
             payroll = CalculateAttendance(payroll, presentList, payrollRequest);
 
             if (!payrollRequest.IgnoreOvertime)
@@ -137,14 +250,23 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             List<PayrollTransaction> transactions = new List<PayrollTransaction>();
             double totalEarnedHours = 0;
             int totalRequiredDays = 0;
+            int totalMonthDays = 0;
             int totalAbsent = 0;
             int totalPresent = 0;
             int totalLeaves = 0;
             int totalHolidays = 0;
+            int totalOffDays = 0;
             int totalDeductedHours = 0;
 
-            foreach (var item in attendances)
+            if (!payrollRequest.IgnoreAttendance && attendances.Count == 0)
             {
+                payrollRequest.Logs.Add("Attendance Information Not Found!!");
+                return payroll;
+            }
+
+            foreach (var item in attendances.OrderBy(x=>x.AttendanceDate))
+            {
+                totalMonthDays++;
                 if (IsWorkingDay(item.AttendanceDate, payrollRequest.Policy))
                 {
                     totalRequiredDays++;
@@ -174,27 +296,27 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 }
                 else
                 {
-                    totalHolidays++;
+                    totalOffDays++;
                 }
             }
 
-            if (payrollRequest.IgnoreAttendance)
+            if (payrollRequest.PayPeriod == Shared.DTOs.Enums.PayPeriod.HalfMonth)
             {
                 transactions.Add(new PayrollTransaction
                 {
                     TransactionType = Shared.DTOs.Enums.TransactionType.Earning,
-                    Earning = payrollRequest.EmployeeSalary.BasicSalary,
-                    TransactionName = $"Base Salary)",
+                    Earning = payrollRequest.EmployeeSalary.BasicSalary / 2,
+                    TransactionName = $"Base Salary (15 Days)",
                     DaysOrHours = totalEarnedHours,
                 });
             }
-            else if (totalEarnedHours > 0)
+            else if (payrollRequest.PayPeriod == Shared.DTOs.Enums.PayPeriod.Monthly)
             {
                 transactions.Add(new PayrollTransaction
                 {
                     TransactionType = Shared.DTOs.Enums.TransactionType.Earning,
                     Earning = payrollRequest.EmployeeSalary.BasicSalary,
-                    TransactionName = $"Base Salary)",
+                    TransactionName = $"Base Salary",
                     DaysOrHours = totalEarnedHours,
                 });
             }
@@ -213,7 +335,12 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
 
             if (payrollRequest.Policy.AllowedOffDays < totalAbsent && !payrollRequest.IgnoreDeductionForAbsents)
             {
-                int absents = totalAbsent - payrollRequest.Policy.AllowedOffDays;
+                int absents = totalAbsent;
+                if (totalRequiredDays == totalAbsent)
+                {
+                   // absents = totalAbsent + totalOffDays + totalHolidays;
+                }
+
                 transactions.Add(new PayrollTransaction
                 {
                     TransactionType = Shared.DTOs.Enums.TransactionType.Deduction,
@@ -230,6 +357,10 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             payroll.leaves = totalLeaves;
             payroll.PresentDays = totalPresent;
             payroll.EarnedDays = totalPresent;
+            payroll.TotalDays = totalMonthDays;
+            payroll.TotalOffDays = totalOffDays;
+            payroll.TotalHoliDays = totalHolidays;
+
             payroll.Transactions.AddRange(transactions);
             return payroll;
         }
@@ -314,6 +445,60 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             }
 
             return isWorkingDay;
+        }
+
+        public async Task InsertBasicSalary(Guid employeeId, decimal basicSalary)
+        {
+            bool exists = _context.Salaries.AsNoTracking().Any(x => x.EmployeeId == employeeId);
+            if (!exists)
+            {
+                var salary = new Salary
+                {
+                    EmployeeId = employeeId,
+                    Active = true,
+                    BasicSalary = basicSalary,
+                    CurrentSalary = basicSalary,
+                    Deduction = 0,
+                    Incentive = 0,
+                    PayableSalary = basicSalary,
+                    TotalDaysInMonth = 30,
+                    PerDaySalary = basicSalary / 30, // TODO - get from policy
+                    PerHourSalary = (basicSalary / 30) / 8 // TODO - get from policy
+                };
+
+                _context.Salaries.Add(salary);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task SalaryIncrement(Guid employeeId, decimal increment)
+        {
+            var salary = _context.Salaries.AsNoTracking().FirstOrDefault(x => x.EmployeeId == employeeId);
+            if (salary != null)
+            {
+                salary.CurrentSalary += increment;
+                salary.PayableSalary = salary.CurrentSalary + salary.Incentive - salary.Deduction;
+                salary.PerDaySalary = salary.CurrentSalary / 30; // TODO - get from policy
+                salary.PerHourSalary = (salary.CurrentSalary / 30) / 8; // TODO - get from policy
+
+                _context.Salaries.Update(salary);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task SalaryDecrement(Guid employeeId, decimal decrement)
+        {
+            var salary = _context.Salaries.AsNoTracking().FirstOrDefault(x => x.EmployeeId == employeeId);
+            if (salary != null)
+            {
+                salary.CurrentSalary -= decrement;
+                salary.PayableSalary = salary.CurrentSalary + salary.Incentive - salary.Deduction;
+                salary.PerDaySalary = salary.CurrentSalary / 30; // TODO - get from policy
+                salary.PerHourSalary = (salary.CurrentSalary / 30) / 8; // TODO - get from policy
+
+                _context.Salaries.Update(salary);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

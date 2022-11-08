@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>{{ formTitle }}</h2>
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <mat-dialog-content class="mat-typography">
+        <div class="row">
+            <input mat type="hidden" formControlName="id" />
+            <div class="col-xs-12 col-md-2">
+                <mat-form-field appearance="outline">
+                    <mat-label> Current Salary </mat-label>
+                    <input matInput placeholder="Current Salary" formControlName="currentSalary" disabled="true" />
+                    <mat-error> Please provide a valid In Time </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-3">
+                <mat-form-field appearance="outline">
+                    <mat-label> % Percent </mat-label>
+                    <input matInput (keyup)="onPercentageChange($event)" type="number" placeholder="% Percentage" formControlName="percentage" required />
+                    <mat-error> Please provide a valid In Time </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-3">
+                <mat-form-field appearance="outline">
+                    <mat-label> Amount </mat-label>
+                    <input matInput (keyup)="onAmountChange($event)"  type="number" placeholder="Amount" formControlName="amount" required />
+                    <mat-error> Please provide a valid In Time </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <mat-form-field appearance="outline">
+                    <mat-label> New Expected Salary </mat-label>
+                    <input matInput placeholder="Current Salary" formControlName="expectedSalary" disabled="true" />
+                    <mat-error> Please provide a valid In Time </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <mat-form-field appearance="outline">
+                    <mat-label>Effecitve From</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="effecitveFrom" required />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error> Please provide a valid Effecitve From </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-xs-12 col-md-12">
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description"></textarea>
+                    <mat-error> Please provide a valid Description </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button mat-dialog-close>Cancel</button>
+        <button mat-raised-button cdkFocusInitial color="primary" [disabled]="!formGroup.dirty || !formGroup.valid" type="submit">Save</button>
+    </mat-dialog-actions>
+</form>

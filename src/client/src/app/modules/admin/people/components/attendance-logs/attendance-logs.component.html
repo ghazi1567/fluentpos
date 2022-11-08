@@ -1,0 +1,50 @@
+<mat-tab-group>
+    <mat-tab label="Payroll Requests">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Manual </span>
+        </ng-template>
+        <div [hidden]="!attendances">
+            <app-table
+                [title]="'Manual Attendances'"
+                [subtitle]="'Manage, Register, Update or Remove Manual Attendances here.'"
+                [data]="attendances && attendances.data"
+                [columns]="attendanceColumns"
+                (onFilter)="filter($event)"
+                (onReload)="reload()"
+                (onCreateForm)="openForm()"
+                (onEditForm)="openForm($event)"
+                (onSort)="sort($event)"
+                (onDelete)="remove($event)"
+                [totalCount]="attendances && attendances.totalCount"
+                [pageSize]="attendances && attendances.pageSize"
+                (onPageChanged)="pageChanged($event)"
+                [moduleName]="'AttendanceRequests'"
+            >
+            </app-table>
+        </div>
+    </mat-tab>
+    <mat-tab label="Pay Slips">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Bio Matric</span>
+        </ng-template>
+        <div [hidden]="!bioAttendances">
+            <input #file type="file" accept=".csv" hidden (change)="handleFileSelect($event)" />
+            <app-table
+                [title]="'Bio Matric'"
+                [subtitle]="'Manage, Register, Update or Remove Bio Matric here.'"
+                [data]="bioAttendances && bioAttendances.data"
+                [columns]="bioAttendanceColumns"
+                (onCreateForm)="openFormBioMatric()"
+                (onSort)="sort($event)"
+                (onDelete)="remove($event)"
+                [totalCount]="bioAttendances && bioAttendances.totalCount"
+                [pageSize]="bioAttendances && bioAttendances.pageSize"
+                (onPageChanged)="pageChanged($event)"
+                [moduleName]="'AttendanceRequests'"
+                [customActionData]="customActionData"
+                (onCustomAction)="onImportFile($event)"
+            >
+            </app-table>
+        </div>
+    </mat-tab>
+</mat-tab-group>

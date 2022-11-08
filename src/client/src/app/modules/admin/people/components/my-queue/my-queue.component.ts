@@ -12,6 +12,7 @@ import { TableColumn } from "src/app/core/shared/components/table/table-column";
 import { DeleteDialogComponent } from "../../../shared/components/delete-dialog/delete-dialog.component";
 import { EmployeeRequest } from "../../models/employeeRequest";
 import { PeopleSearchParams } from "../../models/peopleSearchParams";
+import { AttendanceRequestService } from "../../services/attendance-request.service";
 import { AttendanceService } from "../../services/attendance.service";
 import { OvertimeService } from "../../services/overtime.service";
 
@@ -32,7 +33,7 @@ export class MyQueueComponent implements OnInit {
     actionButtons: CustomAction[] = [new CustomAction("Approve", "approved", "Update", "check"), new CustomAction("Reject", "rejected", "Update", "close", "warn")];
     attendanceRequestPermission = ["Permissions.AttendanceRequests.MyQueue"];
     overtimeRequestPermission = ["Permissions.OvertimeRequests.MyQueue"];
-    constructor(public attendanceService: AttendanceService, public overtimeService: OvertimeService, public dialog: MatDialog, public toastr: ToastrService, public authService: AuthService) {}
+    constructor(public attendanceService: AttendanceRequestService, public overtimeService: OvertimeService, public dialog: MatDialog, public toastr: ToastrService, public authService: AuthService) {}
 
     ngOnInit(): void {
         this.getAttendanceMyQueue();
@@ -85,7 +86,7 @@ export class MyQueueComponent implements OnInit {
             { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true },
             { name: "Status", dataKey: "statusName", isSortable: true, isShowable: true },
             { name: "Comments", dataKey: "reason", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right", buttons: [""] }
+            { name: "Action", dataKey: "action", position: "right", buttons: ["approved","rejected"] }
         ];
     }
     initOvertimeColumns(): void {
@@ -97,7 +98,7 @@ export class MyQueueComponent implements OnInit {
             { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true },
             { name: "Status", dataKey: "statusName", isSortable: true, isShowable: true },
             { name: "Comments", dataKey: "reason", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right", buttons: [""] }
+            { name: "Action", dataKey: "action", position: "right", buttons: ["approved","rejected"] }
         ];
     }
 

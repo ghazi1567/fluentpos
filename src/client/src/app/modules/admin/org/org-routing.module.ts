@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { BranchComponent } from "./componenets/branch/branch.component";
 import { DepartmentComponent } from "./componenets/department/department.component";
 import { DesignationComponent } from "./componenets/designation/designation.component";
+import { JobsComponent } from "./componenets/jobs/jobs.component";
 import { PolicyComponent } from "./componenets/policy/policy.component";
 import { SetupComponent } from "./componenets/setup/setup.component";
 
@@ -26,6 +27,10 @@ const routes: Routes = [
     {
         path: "policies",
         component: PolicyComponent
+    },
+    {
+        path: "jobs",
+        component: JobsComponent
     },
 ];
 

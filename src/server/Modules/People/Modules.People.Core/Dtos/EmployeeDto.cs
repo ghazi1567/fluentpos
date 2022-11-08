@@ -1,4 +1,5 @@
 ﻿using FluentPOS.Shared.DTOs.Dtos;
+using FluentPOS.Shared.DTOs.Enums;
 using System;
 
 namespace FluentPOS.Modules.People.Core.Dtos
@@ -81,5 +82,10 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public bool Active { get; set; }
 
+        public decimal BasicSalary { get; set; }
+
+        public Guid? ReportingTo { get; set; }
+
+        public PaymentMode PaymentMode { get; set; }
     }
 }

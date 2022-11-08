@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
+import { PaymentMode, PaymentModeMapping } from "src/app/core/enums/PaymentMode";
 import { Policy } from "src/app/modules/admin/org/models/policy";
 import { SearchParams } from "src/app/modules/admin/org/models/SearchParams";
 import { PolicyService } from "src/app/modules/admin/org/services/policy.service";
@@ -24,6 +25,9 @@ export class EmployeeFormComponent implements OnInit {
     departments: any[];
     designations: any[];
     filteredDesignations: any[];
+    employeesLookup: Employee[];
+    public PaymentModeMapping = PaymentModeMapping;
+    public paymentModes = Object.values(PaymentMode).filter((value) => typeof value === "number");
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: Employee, private dialogRef: MatDialog, private fb: FormBuilder, public employeeService: EmployeeService, private toastr: ToastrService) {}
 
@@ -44,6 +48,9 @@ export class EmployeeFormComponent implements OnInit {
             this.designations = res.data;
             this.filteredDesignations = this.designations.filter((x) => x.departmentId == this.data.departmentId);
         });
+        this.employeeService.getEmployees(parms).subscribe((res) => {
+            this.employeesLookup = res.data.filter((x) => x.id != this.data.id);
+        });
     }
 
     initializeForm() {
@@ -58,7 +65,7 @@ export class EmployeeFormComponent implements OnInit {
             policyId: [this.data && this.data.policyId, Validators.required],
             allowManualAttendance: [(this.data && this.data.allowManualAttendance) || true],
             mobileNo: [this.data && this.data.mobileNo],
-            email: [this.data && this.data.email],
+            basicSalary: [this.data && this.data.basicSalary],
             reportingTo: [this.data && this.data.reportingTo],
             employeeStatus: [(this.data && this.data.employeeStatus) || "Permanent"]
         });
@@ -71,9 +78,11 @@ export class EmployeeFormComponent implements OnInit {
             placeOfBirth: [this.data && this.data.placeOfBirth],
             cnicNo: [this.data && this.data.cnicNo],
             cnicIssueDate: [this.data && this.data.cnicIssueDate],
-            cnicExpireDate: [this.data && this.data.cnicExpireDate]
+            cnicExpireDate: [this.data && this.data.cnicExpireDate],
+            email: [this.data && this.data.email]
         });
         this.thirdFormGroup = this.fb.group({
+            paymentMode: [this.data && this.data.paymentMode],
             bankAccountNo: [this.data && this.data.bankAccountNo],
             bankAccountTitle: [this.data && this.data.bankAccountTitle],
             bankBranchCode: [this.data && this.data.bankBranchCode],
@@ -94,6 +103,12 @@ export class EmployeeFormComponent implements OnInit {
         if (this.firstFormGroup.valid) {
             var formData = { ...this.firstFormGroup.value, ...this.secondFormGroup?.value, ...this.thirdFormGroup?.value, ...this.forthFormGroup?.value };
             formData.fullName = `${formData.firstName} ${formData.lastName}`;
+
+            if (formData.paymentMode == PaymentMode.Bank && (formData.bankAccountNo == null || formData.bankAccountNo == "")) {
+                this.toastr.error("Please enter bank account no");
+                return;
+            }
+
             if (this.firstFormGroup.get("id").value === "" || this.firstFormGroup.get("id").value == null) {
                 this.employeeService.createEmployee(formData).subscribe((response) => {
                     this.toastr.success(response.messages[0]);

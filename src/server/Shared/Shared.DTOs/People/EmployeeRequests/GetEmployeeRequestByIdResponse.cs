@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentPOS.Shared.DTOs.Enums;
+using System;
 
 namespace FluentPOS.Shared.DTOs.People.EmployeeRequests
 {
@@ -35,7 +36,7 @@ DateTime? CheckOut,
 
 int OvertimeHours,
 
-string OverTimeType,
+OverTimeType OverTimeType,
 
 string Reason);
 }

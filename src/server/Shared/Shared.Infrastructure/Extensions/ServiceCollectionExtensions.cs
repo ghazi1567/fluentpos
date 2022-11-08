@@ -100,6 +100,17 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
                 options.ResourcesPath = "Resources";
             });
             services.AddRouting(options => options.LowercaseUrls = true);
+            //var setting = config.GetSection(nameof(PersistenceSettings));
+
+            //if (setting != null)
+            //{
+            //    string conStr = setting.GetValue<string>("ConnectionStrings:MSSQL");
+            //    if (conStr != null)
+            //    {
+            //        services.AddHangfire(x => x.UseSqlServerStorage(conStr));
+            //    }
+            //}
+
             services.AddHangfireServer();
             services.AddSingleton<GlobalExceptionHandler>();
             services.AddSwaggerDocumentation();
@@ -116,6 +127,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.AddScoped<IJobService, HangfireService>();
             services.Configure<MailSettings>(config.GetSection(nameof(MailSettings)));
             services.Configure<SmsSettings>(config.GetSection(nameof(SmsSettings)));
+            services.Configure<TimeZoneSettings>(config.GetSection(nameof(TimeZoneSettings)));
             services.AddTransient<IEventLogService, EventLogService>();
             services.AddTransient<IEntityReferenceService, EntityReferenceService>();
             return services;

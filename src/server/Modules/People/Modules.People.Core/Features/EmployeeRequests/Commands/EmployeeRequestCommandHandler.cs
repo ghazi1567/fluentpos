@@ -13,12 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
-using FluentPOS.Modules.People.Core.Constants;
 using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Modules.People.Core.Exceptions;
-using FluentPOS.Modules.People.Core.Features.Customers.Events;
-using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.Core.Interfaces.Services;
+using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +38,8 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         private readonly IStringLocalizer<EmployeeCommandHandler> _localizer;
         private readonly IEmployeeService _employeeService;
         private readonly IWorkFlowService _workFlowService;
+        private readonly IAttendanceService _attendanceService;
+        private readonly IPayrollService _payrollService;
 
         public EmployeeRequestCommandHandler(
             IPeopleDbContext context,
@@ -48,7 +48,9 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             IStringLocalizer<EmployeeCommandHandler> localizer,
             IDistributedCache cache,
             IEmployeeService employeeService,
-            IWorkFlowService workFlowService)
+            IWorkFlowService workFlowService,
+            IAttendanceService attendanceService,
+            IPayrollService payrollService)
         {
             _context = context;
             _mapper = mapper;
@@ -57,12 +59,37 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             _cache = cache;
             _employeeService = employeeService;
             _workFlowService = workFlowService;
+            _attendanceService = attendanceService;
+            _payrollService = payrollService;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(RegisterEmployeeRequestCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
+            bool isPayrollGenerated = await _payrollService.IsPayrollGenerated(command.EmployeeId, command.AttendanceDate.Date);
+            if (isPayrollGenerated)
+            {
+                throw new PeopleException(_localizer[$"Payroll Already Generated For Month : {command.AttendanceDate.ToString("MMMM")}!"], HttpStatusCode.Ambiguous);
+            }
+
+            if (command.RequestType == Shared.DTOs.Enums.RequestType.OverTime)
+            {
+                bool attendance = await _attendanceService.IsOverTimeExist(command.EmployeeId, command.AttendanceDate.Date);
+                if (attendance)
+                {
+                    throw new PeopleException(_localizer[$"OverTime Already Marked For Date : {command.AttendanceDate}!"], HttpStatusCode.Ambiguous);
+                }
+            }
+            else
+            {
+                bool attendance = await _attendanceService.IsAttendanceExist(command.EmployeeId, command.AttendanceDate.Date);
+                if (attendance)
+                {
+                    throw new PeopleException(_localizer[$"Attendance Already Marked For Date : {command.AttendanceDate}!"], HttpStatusCode.Ambiguous);
+                }
+            }
+
             var employeeRequest = _mapper.Map<EmployeeRequest>(command);
 
             var employeeDetails = await _employeeService.GetEmployeeDetailsAsync(employeeRequest.EmployeeId);
@@ -72,6 +99,21 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 employeeRequest.PolicyId = employeeDetails.PolicyId;
                 employeeRequest.DesignationId = employeeDetails.DesignationId;
             }
+
+            if (command.RequestType == Shared.DTOs.Enums.RequestType.OverTime && command.OverTimeType == Shared.DTOs.Enums.OverTimeType.Production)
+            {
+                int perHourQty = command.RequiredProduction / 8;
+                int overtimeHours = command.Production / perHourQty;
+
+                TimeSpan checkIn = new TimeSpan(09, 00, 00);
+                TimeSpan newSpan = new TimeSpan(0, overtimeHours, 0, 0);
+                TimeSpan checkOut = checkIn.Add(newSpan);
+                command.CheckIn = checkIn;
+                command.CheckIn = checkOut;
+            }
+
+
+
 
             await _context.EmployeeRequests.AddAsync(employeeRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
@@ -84,6 +126,12 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         public async Task<Result<Guid>> Handle(UpdateEmployeeRequestCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
+            bool isPayrollGenerated = await _payrollService.IsPayrollGenerated(command.EmployeeId, command.AttendanceDate.Date);
+            if (isPayrollGenerated)
+            {
+                throw new PeopleException(_localizer[$"Payroll Already Generated For Month : {command.AttendanceDate.ToString("MMMM")}!"], HttpStatusCode.Ambiguous);
+            }
+
             var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (employeeRequest != null)
             {
@@ -106,6 +154,11 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (employeeRequest != null)
             {
+                bool isPayrollGenerated = await _payrollService.IsPayrollGenerated(employeeRequest.AttendanceDate.Date);
+                if (isPayrollGenerated)
+                {
+                    throw new PeopleException(_localizer[$"Payroll Already Generated For Month : {employeeRequest.AttendanceDate.ToString("MMMM")}!"], HttpStatusCode.Ambiguous);
+                }
                 _context.EmployeeRequests.Remove(employeeRequest);
                 await _context.SaveChangesAsync(cancellationToken);
                 return await Result<Guid>.SuccessAsync(employeeRequest.Id, _localizer["Request Deleted"]);
@@ -120,6 +173,16 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         {
             if (command.Status == Shared.DTOs.Enums.RequestStatus.Approved)
             {
+                var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+                if (employeeRequest != null)
+                {
+                    bool isPayrollGenerated = await _payrollService.IsPayrollGenerated(employeeRequest.EmployeeId, employeeRequest.AttendanceDate.Date);
+                    if (isPayrollGenerated)
+                    {
+                        throw new PeopleException(_localizer[$"Payroll Already Generated For Month : {employeeRequest.AttendanceDate.ToString("MMMM")}!"], HttpStatusCode.Ambiguous);
+                    }
+                }
+
                 bool result = await _workFlowService.ApproveRequestAsync(command.Id, command.ApproverId, command.Comments);
                 if (result)
                 {

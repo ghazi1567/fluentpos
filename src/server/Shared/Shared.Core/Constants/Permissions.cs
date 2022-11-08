@@ -340,5 +340,50 @@ namespace FluentPOS.Shared.Core.Constants
             public const string MyQueue = "Permissions.OvertimeRequests.MyQueue";
         }
 
+        [DisplayName("EmployeesSalary")]
+        [Description("Employees Permissions")]
+        public static class EmployeesSalary
+        {
+            public const string View = "Permissions.EmployeesSalary.View";
+            public const string ViewAll = "Permissions.EmployeesSalary.ViewAll";
+            public const string Register = "Permissions.EmployeesSalary.Register";
+            public const string Update = "Permissions.EmployeesSalary.Update";
+            public const string Remove = "Permissions.EmployeesSalary.Remove";
+        }
+
+        [DisplayName("Payroll")]
+        [Description("Payroll Permissions")]
+        public static class Payroll
+        {
+            public const string View = "Permissions.Payroll.View";
+            public const string ViewAll = "Permissions.Payroll.ViewAll";
+            public const string Register = "Permissions.Payroll.Register";
+            public const string Update = "Permissions.Payroll.Update";
+            public const string Remove = "Permissions.Payroll.Remove";
+        }
+
+        [DisplayName("Attendance")]
+        [Description("Attendance Permissions")]
+        public static class Attendance
+        {
+            public const string View = "Permissions.Attendance.View";
+            public const string ViewAll = "Permissions.Attendance.ViewAll";
+            public const string Register = "Permissions.Attendance.Register";
+            public const string Update = "Permissions.Attendance.Update";
+            public const string Remove = "Permissions.Attendance.Remove";
+            public const string MyQueue = "Permissions.Attendance.MyQueue";
+        }
+
+
+        [DisplayName("Jobs")]
+        [Description("Jobs Permissions")]
+        public static class Jobs
+        {
+            public const string View = "Permissions.Jobs.View";
+            public const string ViewAll = "Permissions.Jobs.ViewAll";
+            public const string Register = "Permissions.Jobs.Register";
+            public const string Update = "Permissions.Jobs.Update";
+            public const string Remove = "Permissions.Jobs.Remove";
+        }
     }
 }

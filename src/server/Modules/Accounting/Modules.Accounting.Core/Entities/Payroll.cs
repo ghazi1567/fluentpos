@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentPOS.Shared.Core.Domain;
+using FluentPOS.Shared.DTOs.Enums;
 
 namespace FluentPOS.Modules.Accounting.Core.Entities
 {
@@ -13,6 +14,10 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
         public DateTime StartDate { get; set; }
 
         public DateTime EndDate { get; set; }
+
+        public int Month { get; set; }
+
+        public PayPeriod PayPeriod { get; set; }
 
         public double EmployeeSalary { get; set; }
 
@@ -30,7 +35,7 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
 
         public int AllowedOffDays { get; set; }
 
-        public int PaymentMode { get; set; }
+        public PaymentMode PaymentMode { get; set; }
 
         public double TotalEarned { get; set; }
 
@@ -43,5 +48,17 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
         public double NetPay { get; set; }
 
         public List<PayrollTransaction> Transactions { get; set; }
+
+        public string BankAccountNo { get; set; }
+
+        public string BankAccountTitle { get; set; }
+
+        public string BankName { get; set; }
+
+        public string BankBranchCode { get; set; }
+
+        public int TotalOffDays { get; set; }
+
+        public int TotalHoliDays { get; set; }
     }
 }

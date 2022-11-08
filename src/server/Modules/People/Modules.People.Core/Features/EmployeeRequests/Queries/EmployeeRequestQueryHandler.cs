@@ -55,7 +55,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         {
             Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
 
-            var queryable = _context.EmployeeRequests.Where(x => x.EmployeeId == request.EmployeeId).AsNoTracking().OrderBy(x => x.Id).AsQueryable();
+            var queryable = _context.EmployeeRequests.Where(x => x.EmployeeId == request.EmployeeId || x.RequestedBy == request.EmployeeId).AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
@@ -68,6 +68,16 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             if (request.RequestType != null)
             {
                 queryable = queryable.Where(c => c.RequestType == request.RequestType.Value);
+            }
+
+            if (request.OrganizationId.HasValue)
+            {
+                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            }
+
+            if (request.BranchId.HasValue)
+            {
+                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
             }
 
             // var customerList = await queryable
@@ -151,9 +161,15 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                 queryable = queryable.Where(c => c.RequestType == request.RequestType.Value);
             }
 
-            // var customerList = await queryable
-            //   .AsNoTracking()
-            //   .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+            if (request.OrganizationId.HasValue)
+            {
+                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            }
+
+            if (request.BranchId.HasValue)
+            {
+                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
+            }
 
             var myQueueRequests = await (from r in queryable
                                 join e in _context.Employees

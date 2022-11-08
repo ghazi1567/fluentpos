@@ -15,6 +15,9 @@ import { DesignationComponent } from './componenets/designation/designation.comp
 import { DesignationFormComponent } from './componenets/designation/designation-form/designation-form.component';
 import { PolicyComponent } from './componenets/policy/policy.component';
 import { PolicyFormComponent } from './componenets/policy/policy-form/policy-form.component';
+import { JobsComponent } from './componenets/jobs/jobs.component';
+import { JobFormComponent } from './componenets/jobs/job-form/job-form.component';
+import { JobRunFormComponent } from './componenets/jobs/job-run-form/job-run-form.component';
 
 
 @NgModule({
@@ -29,6 +32,9 @@ import { PolicyFormComponent } from './componenets/policy/policy-form/policy-for
     DesignationFormComponent,
     PolicyComponent,
     PolicyFormComponent,
+    JobsComponent,
+    JobFormComponent,
+    JobRunFormComponent,
   ],
   imports: [
     CommonModule,

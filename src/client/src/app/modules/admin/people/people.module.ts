@@ -16,6 +16,9 @@ import { AttendanceFormComponent } from './components/attendance/attendance-form
 import { MyQueueComponent } from './components/my-queue/my-queue.component';
 import { OvertimeComponent } from './components/overtime/overtime.component';
 import { OvertimeFormComponent } from './components/overtime/overtime-form/overtime-form.component';
+import { AttendanceLogsComponent } from './components/attendance-logs/attendance-logs.component';
+import { AttendanceLogFormComponent } from './components/attendance-logs/attendance-log-form/attendance-log-form.component';
+import { IndividualReportComponent } from './components/attendance/individual-report/individual-report.component';
 
 
 @NgModule({
@@ -30,7 +33,10 @@ import { OvertimeFormComponent } from './components/overtime/overtime-form/overt
     AttendanceFormComponent,
     MyQueueComponent,
     OvertimeComponent,
-    OvertimeFormComponent
+    OvertimeFormComponent,
+    AttendanceLogsComponent,
+    AttendanceLogFormComponent,
+    IndividualReportComponent
   ],
   imports: [
     CommonModule,

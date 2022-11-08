@@ -11,6 +11,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AboutComponent } from './about/about.component';
 import { EventLogsComponent } from './event-logs/event-logs.component';
+import { StatComponent } from './dashboard/stat/stat.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { EventLogsComponent } from './event-logs/event-logs.component';
     LogoutDialogComponent,
     SettingsComponent,
     AboutComponent,
-    EventLogsComponent
+    EventLogsComponent,
+    StatComponent
   ],
   imports: [
     CommonModule,

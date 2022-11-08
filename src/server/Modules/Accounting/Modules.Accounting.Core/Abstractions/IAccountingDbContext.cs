@@ -22,6 +22,6 @@ namespace FluentPOS.Modules.Accounting.Core.Abstractions
 
         public DbSet<Salary> Salaries { get; set; }
 
-        public DbSet<SalaryIncentiveDeduction> SalaryIncentiveDeductions { get; set; }
+        public DbSet<SalaryPerks> SalaryPerks { get; set; }
     }
 }

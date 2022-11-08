@@ -49,7 +49,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence
 
         public DbSet<Salary> Salaries { get; set; }
 
-        public DbSet<SalaryIncentiveDeduction> SalaryIncentiveDeductions { get; set; }
+        public DbSet<SalaryPerks> SalaryPerks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

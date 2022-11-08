@@ -17,6 +17,7 @@ namespace FluentPOS.Modules.People.Core.Entities
         public DateTime AttendanceDate { get; set; }
 
         public AttendanceStatus AttendanceStatus { get; set; }
+
         public DateTime AddedOn { get; set; }
 
         /// <summary>
@@ -64,5 +65,6 @@ namespace FluentPOS.Modules.People.Core.Entities
         public double TotalEarnedHours { get; set; }
 
         public double ActualEarnedHours { get; set; }
+
     }
 }

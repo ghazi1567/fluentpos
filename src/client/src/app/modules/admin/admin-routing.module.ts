@@ -64,6 +64,12 @@ const routes: Routes = [
     // canActivate: [AuthGuard],
     component: OrgComponent,
     loadChildren: () => import('./org/org.module').then(mod => mod.OrgModule),
+  },
+  {
+    path: 'payroll',
+    // canActivate: [AuthGuard],
+    component: OrgComponent,
+    loadChildren: () => import('./payroll/payroll.module').then(mod => mod.PayrollModule),
   }
 ];
 

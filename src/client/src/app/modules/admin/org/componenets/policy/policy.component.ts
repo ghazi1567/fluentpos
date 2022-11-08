@@ -53,18 +53,18 @@ export class PolicyComponent implements OnInit {
 
     getPolicies(): void {
         this.policyService.getAlls(this.designationParams).subscribe((result) => {
-            this.policies = result;
-            this.policies.data.forEach((x) => {
+            result.data.forEach((x) => {
                 x.departmentName = this.getPolicyName(x.departmentId);
                 x.timings = `${x.shiftStartTime} - ${x.shiftEndTime}`;
                 x.payslipTypeName = PayslipTypeMapping[x.payslipType];
                 x.overTimeTypeName = x.dailyOverTime == OverTime.UnPaid ? "Un Paid" : "Paid";
             });
+            this.policies = result;
         });
     }
     initColumns(): void {
         this.policiesColumns = [
-            { name: "Id", dataKey: "id", isSortable: true, isShowable: true },
+            { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
             { name: "Policy Name", dataKey: "name", isSortable: true, isShowable: true },
             { name: "Department", dataKey: "departmentName", isSortable: true, isShowable: true },
             { name: "Timings", dataKey: "timings", isSortable: true, isShowable: true },

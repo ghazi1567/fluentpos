@@ -12,5 +12,8 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
         public string Description { get; set; }
 
         public Guid? HeadOfDepartment { get; set; }
+
+        public int Production { get; set; }
+
     }
 }

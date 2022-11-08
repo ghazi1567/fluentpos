@@ -15,6 +15,6 @@ namespace FluentPOS.Modules.Accounting.Controllers
     [Route(BasePath + "/[controller]")]
     internal abstract class BaseController : CommonBaseController
     {
-        protected internal new const string BasePath = CommonBaseController.BasePath + "/catalog";
+        protected internal new const string BasePath = CommonBaseController.BasePath + "/accounting";
     }
 }

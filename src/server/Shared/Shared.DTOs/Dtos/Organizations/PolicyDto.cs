@@ -3,15 +3,11 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Dtos.Organizations
 {
-    public class PolicyDto
+    public class PolicyDto : BaseEntityDto
     {
-        public Guid Id { get; set; }
 
         public string Name { get; set; }
 
-        public Guid OrganizationId { get; set; }
-
-        public Guid BranchId { get; set; }
 
         public Guid? DepartmentId { get; set; }
 
@@ -86,6 +82,11 @@ namespace FluentPOS.Shared.DTOs.Dtos.Organizations
 
         public int HolidayOverTimeRate { get; set; }
 
+        public int SandwichLeaveCount { get; set; }
+
         public EarnedHourPolicy EarnedHourPolicy { get; set; }
+
+        public int DailyWorkingHour { get; set; }
+
     }
 }

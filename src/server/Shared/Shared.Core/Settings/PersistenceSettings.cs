@@ -19,6 +19,7 @@ namespace FluentPOS.Shared.Core.Settings
         public List<string> IgnoreTracking { get; set; }
         public PersistenceConnectionStrings ConnectionStrings { get; set; }
 
+      
         public class PersistenceConnectionStrings
         {
             // ReSharper disable once InconsistentNaming

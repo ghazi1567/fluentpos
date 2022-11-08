@@ -12,6 +12,7 @@
             "products": "Products",
             "productsImport": "Products Import",
             "peopleSubhead": "People Management",
+            "payrollSubhead": "Payroll",
             "customers": "Customers",
             "about": "About",
             "appSubhead": "Application",
@@ -36,9 +37,12 @@
             "policies": "Policies",
             "employees": "Employees",
             "attendances": "Attendances",
+            "attendancesLogs": "Attendances Logs",
             "myQueue": "My Queue",
-            "overtimes": "Overtimes"
-
+            "overtimes": "Overtimes",
+            "employeesSalary": "Employees Salary",
+            "payroll": "Payroll",
+            "Jobs": "Jobs"
         }
     },
     "dashboard": {

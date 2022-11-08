@@ -9,6 +9,7 @@
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Organizations.Policies;
 using MediatR;
+using System;
 
 namespace FluentPOS.Modules.Catalog.Core.Features
 {
@@ -21,5 +22,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features
         public string[] OrderBy { get; private set; }
 
         public string SearchString { get; private set; }
+
+        public Guid? OrganizationId { get; set; }
+
+        public Guid? BranchId { get; set; }
     }
 }

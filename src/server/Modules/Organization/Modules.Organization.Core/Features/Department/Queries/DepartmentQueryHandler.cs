@@ -47,7 +47,7 @@ namespace FluentPOS.Modules.Organizations.Core.Features
 
         public async Task<PaginatedResult<GetDepartmentResponse>> Handle(GetDepartmentsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Department, GetDepartmentResponse>> expression = e => new GetDepartmentResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId,e.Name,e.IsGlobalDepartment,e.Description,e.HeadOfDepartment);
+            Expression<Func<Department, GetDepartmentResponse>> expression = e => new GetDepartmentResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId,e.Name,e.IsGlobalDepartment,e.Description,e.HeadOfDepartment,e.Production);
             var queryable = _context.Departments.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
@@ -57,6 +57,16 @@ namespace FluentPOS.Modules.Organizations.Core.Features
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
                 || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+            }
+
+            if (request.OrganizationId.HasValue)
+            {
+                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            }
+
+            if (request.BranchId.HasValue)
+            {
+                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
             }
 
             var brandList = await queryable

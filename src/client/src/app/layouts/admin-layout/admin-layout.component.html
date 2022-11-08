@@ -22,6 +22,10 @@
                     <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.attendances" | translate }}
                 </a>
 
+                <a *appHasPermission="['Permissions.AttendanceRequests.View']" mat-list-item routerLink="people/attendances-logs" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.attendancesLogs" | translate }}
+                </a>
+
                 <a *appHasPermission="['Permissions.OvertimeRequests.View']" mat-list-item routerLink="people/overtimes" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.overtimes" | translate }}
                 </a>
@@ -29,7 +33,18 @@
                 <a *appHasPermission="['Permissions.AttendanceRequests.MyQueue','Permissions.OvertimeRequests.MyQueue']" mat-list-item routerLink="people/my-queue" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.myQueue" | translate }}
                 </a>
-               
+
+                <div class="nav-subheading">
+                    {{ "layouts.admin.payrollSubhead" | translate }}
+                </div>
+
+                <a *appHasPermission="['Permissions.EmployeesSalary.View']" mat-list-item routerLink="payroll/employee-salaries" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.employeesSalary" | translate }}
+                </a>
+                <a *appHasPermission="['Permissions.Payroll.View']" mat-list-item routerLink="payroll/payroll" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.payroll" | translate }}
+                </a>
+
                 <div class="nav-subheading">
                     {{ "layouts.admin.organization" | translate }}
                 </div>
@@ -45,6 +60,9 @@
                 </a>
                 <a *appHasPermission="['Permissions.Policy.View']" mat-list-item routerLink="org/policies" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.policies" | translate }}
+                </a>
+                <a *appHasPermission="['Permissions.Policy.View']" mat-list-item routerLink="org/jobs" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.Jobs" | translate }}
                 </a>
 
 

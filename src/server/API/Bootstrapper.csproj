@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Modules\Accounting\Modules.Accounting\Modules.Accounting.csproj" />
     <ProjectReference Include="..\Modules\Catalog\Modules.Catalog\Modules.Catalog.csproj" />
     <ProjectReference Include="..\Modules\Identity\Modules.Identity\Modules.Identity.csproj" />
     <ProjectReference Include="..\Modules\Organization\Modules.Organization\Modules.Organization.csproj" />

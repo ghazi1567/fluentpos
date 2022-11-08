@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AttendanceLogsComponent } from "./components/attendance-logs/attendance-logs.component";
 import { AttendanceComponent } from "./components/attendance/attendance.component";
 import { CustomerComponent } from "./components/customer/customer.component";
 import { EmployeeComponent } from "./components/employee/employee.component";
@@ -18,6 +19,10 @@ const routes: Routes = [
     {
         path: "attendances",
         component: AttendanceComponent
+    },
+    {
+        path: "attendances-logs",
+        component: AttendanceLogsComponent
     },
     {
         path: "my-queue",

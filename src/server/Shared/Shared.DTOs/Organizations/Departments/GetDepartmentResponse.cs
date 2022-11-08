@@ -10,5 +10,6 @@ Guid BranchId,
 string Name,
 bool IsGlobalDepartment,
 string Description,
-Guid? HeadOfDepartment);
+Guid? HeadOfDepartment,
+int Production);
 }

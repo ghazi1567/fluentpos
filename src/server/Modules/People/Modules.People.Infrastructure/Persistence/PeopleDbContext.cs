@@ -60,6 +60,8 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence
 
         public DbSet<ApprovalFlow> ApprovalFlows { get; set; }
 
+        public DbSet<BioAttendanceLog> AttendanceLogs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

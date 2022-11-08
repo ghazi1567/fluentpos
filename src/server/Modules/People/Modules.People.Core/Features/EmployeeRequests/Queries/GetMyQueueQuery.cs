@@ -9,9 +9,6 @@
 using FluentPOS.Modules.People.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Enums;
-using FluentPOS.Shared.DTOs.People.Customers;
-using FluentPOS.Shared.DTOs.People.EmployeeRequests;
-using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
 using System;
 
@@ -28,7 +25,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public string SearchString { get; private set; }
 
         public Guid EmployeeId { get; set; }
-         public RequestType? RequestType { get; set; }
+
+        public RequestType? RequestType { get; set; }
+
+        public Guid? OrganizationId { get; set; }
+
+        public Guid? BranchId { get; set; }
 
     }
 }

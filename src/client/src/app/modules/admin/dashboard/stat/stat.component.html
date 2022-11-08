@@ -1,0 +1,11 @@
+<mat-card [ngClass]="bgClass">
+    <mat-card-header>
+        <div mat-card-avatar>
+            <mat-icon class="icon-lg">{{ icon }}</mat-icon>
+        </div>
+        <mat-card-title>{{ count }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-actions class="text-center">
+        <button mat-button class="float-center">{{ label }}</button>
+    </mat-card-actions>
+</mat-card>

@@ -43,4 +43,6 @@ export interface Policy {
     timings: string;
     payslipTypeName: string;
     overTimeTypeName: string;
+    sandwichLeaveCount: number;
+    dailyWorkingHour: number;
 }

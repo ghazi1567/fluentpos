@@ -36,7 +36,7 @@ TimeSpan? CheckOut,
 
 int OvertimeHours,
 
-string OverTimeType,
+OverTimeType OverTimeType,
 
 string Reason);
 }

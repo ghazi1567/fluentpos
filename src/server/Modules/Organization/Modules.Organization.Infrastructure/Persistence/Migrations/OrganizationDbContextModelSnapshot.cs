@@ -85,6 +85,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Production")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -120,6 +123,73 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Designations");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Job", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("JobName")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Schedule")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.JobHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Job")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TriggeredBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobHistory");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Organisation", b =>
@@ -184,6 +254,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("DailyOverTimeRate")
                         .HasColumnType("int");
 
+                    b.Property<int>("DailyWorkingHour")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
@@ -236,6 +309,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("RequiredWorkingHour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SandwichLeaveCount")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("ShiftEndTime")

@@ -9,6 +9,8 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
 
         public decimal BasicSalary { get; set; }
 
+        public decimal CurrentSalary { get; set; }
+
         public decimal Incentive { get; set; }
 
         public decimal Deduction { get; set; }
@@ -20,5 +22,7 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
         public decimal PerHourSalary { get; set; }
 
         public decimal TotalDaysInMonth { get; set; }
+
+        public bool Active { get; set; }
     }
 }

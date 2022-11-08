@@ -80,6 +80,8 @@ export class PolicyFormComponent implements OnInit {
             lateComersPenalty: [(this.data && this.data.lateComersPenalty) || 0],
             lateComersPenaltyType: [this.data && this.data.lateComersPenaltyType, Validators.required],
             earnedHourPolicy: [this.data && this.data.earnedHourPolicy, Validators.required],
+            sandwichLeaveCount: [this.data && this.data.sandwichLeaveCount || 0],
+            dailyWorkingHour: [this.data && this.data.dailyWorkingHour || 0],
         });
         this.forthFormGroup = this.fb.group({
             dailyOverTime: [this.data && this.data.dailyOverTime, Validators.required],

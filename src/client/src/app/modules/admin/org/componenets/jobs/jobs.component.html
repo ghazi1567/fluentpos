@@ -1,0 +1,22 @@
+<div [hidden]="!jobs">
+    <app-table
+        [title]="'Jobs'"
+        [subtitle]="'Manage, Register, Update or Remove jobs here.'"
+        [data]="jobs && jobs.data"
+        [columns]="jobColumns"
+        (onReload)="reload()"
+        (onCreateForm)="openForm()"
+        (onEditForm)="openForm($event)"
+        (onSort)="sort($event)"
+        (onDelete)="remove($event)"
+        [totalCount]="jobs && jobs.totalCount"
+        [pageSize]="jobs && jobs.pageSize"
+        (onPageChanged)="pageChanged($event)"
+        [moduleName]="'Jobs'"
+        [customActionButtons]="actionButtons"
+        (onCustomActionButton)="openCustomActionButton($event)"
+        [customActionData]="customActionData"
+        (onCustomAction)="onDashBoardClick($event)"
+    >
+    </app-table>
+</div>

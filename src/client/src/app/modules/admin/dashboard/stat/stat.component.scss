@@ -1,0 +1,75 @@
+:host ::ng-deep .mat-card-header-text {
+    width: 100%;
+    text-align: right;
+}
+
+.icon-lg {
+    font-size: 40px;
+}
+
+.mat-card {
+    color: #fff;
+    transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: block;
+    position: relative;
+    padding: 16px;
+    border-radius: 4px;
+
+    .mat-card-header {
+        width: 100%;
+    }
+    .mat-card-title {
+        font-size: 40px !important;
+        margin-top: 10px;
+    }
+    .mat-card-subtitle {
+        color: #fff;
+        white-space: nowrap;
+    }
+    &.danger {
+        background: linear-gradient(60deg, #ec407a, #d81b60);
+    }
+    &.warn {
+        background: linear-gradient(60deg, #ffa726, #fb8c00);
+    }
+    &.success {
+        background: linear-gradient(60deg, #66bb6a, #43a047);
+    }
+    &.info {
+        background: linear-gradient(60deg, #26c6da, #00acc1);
+    }
+}
+.text-center {
+    text-align: center;
+}
+.bg_greenish {
+    background-color: #0acf97 !important;
+}
+
+.c_greenish {
+    color: #0acf97 !important;
+}
+
+.bg_blueish {
+    background-color: #3da5f4 !important;
+}
+
+.c_blueish {
+    color: #3da5f4 !important;
+}
+
+.bg_pink {
+    background-color: #ff4979 !important;
+}
+
+.c_pink {
+    color: #ff4979 !important;
+}
+
+.bg_yellow {
+    background-color: #fda006 !important;
+}
+
+.c_yellow {
+    color: #fda006 !important;
+}

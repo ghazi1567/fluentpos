@@ -29,7 +29,7 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public int OvertimeHours { get; set; }
 
-        public string OverTimeType { get; set; }
+        public OverTimeType OverTimeType { get; set; }
 
         public string Reason { get; set; }
 
@@ -48,6 +48,11 @@ namespace FluentPOS.Modules.People.Core.Dtos
         public string RequestedForName { get; set; }
 
         public string RequestedByName { get; set; }
+
+
+        public int Production { get; set; }
+
+        public int RequiredProduction { get; set; }
 
 
     }

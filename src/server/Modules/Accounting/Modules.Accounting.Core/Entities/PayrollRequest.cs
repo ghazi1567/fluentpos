@@ -25,5 +25,14 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
 
         public bool IgnoreOvertime { get; set; }
 
+        public string Status { get; set; }
+
+        public DateTime? StartedAt { get; set; }
+
+        public DateTime? EndedAt { get; set; }
+
+        public string Logs { get; set; }
+
+        public string Message { get; set; }
     }
 }

@@ -2,18 +2,18 @@ import { HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { AttendanceRequestApiService } from "src/app/core/api/people/attendance-request-api.service";
+import { AttendanceServiceApi } from "src/app/core/api/people/attendance-api.service";
 import { IResult } from "src/app/core/models/wrappers/IResult";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { Result } from "src/app/core/models/wrappers/Result";
-import { EmployeeRequest } from "../models/employeeRequest";
+import { Attendance } from "../models/attendance";
 import { PeopleSearchParams } from "../models/peopleSearchParams";
 
 @Injectable({
     providedIn: "root"
 })
 export class AttendanceService {
-    constructor(private api: AttendanceRequestApiService) {}
+    constructor(private api: AttendanceServiceApi) {}
 
     getParams(searchParams: PeopleSearchParams): HttpParams{
         let params = new HttpParams();
@@ -25,34 +25,31 @@ export class AttendanceService {
         if (searchParams.employeeId) params = params.append("employeeId", searchParams.employeeId.toString());
         if (searchParams.requestId) params = params.append("requestId", searchParams.requestId.toString());
         if (searchParams.requestType) params = params.append("requestType", searchParams.requestType);
+        if (searchParams.month) params = params.append("month", searchParams.month);
+        if (searchParams.year) params = params.append("year", searchParams.year);
         return params;
     }
-
-    getMyQueue(searchParams: PeopleSearchParams): Observable<PaginatedResult<EmployeeRequest>> {
-        let params = this.getParams(searchParams);
-        return this.api.getMyQueue(params).pipe(map((response: PaginatedResult<EmployeeRequest>) => response));
-    }
     
-    getApprovarList(searchParams: PeopleSearchParams): Observable<PaginatedResult<EmployeeRequest>> {
+    getAll(searchParams: PeopleSearchParams): Observable<PaginatedResult<Attendance>> {
         let params = this.getParams(searchParams);
-        return this.api.getApprovarList(params).pipe(map((response: PaginatedResult<EmployeeRequest>) => response));
+        return this.api.getAlls(params).pipe(map((response: PaginatedResult<Attendance>) => response));
     }
-    
-    getAll(searchParams: PeopleSearchParams): Observable<PaginatedResult<EmployeeRequest>> {
+
+    getIndividualReport(searchParams: PeopleSearchParams): Observable<PaginatedResult<Attendance>> {
         let params = this.getParams(searchParams);
-        return this.api.getAlls(params).pipe(map((response: PaginatedResult<EmployeeRequest>) => response));
+        return this.api.getIndividualReport(params).pipe(map((response: PaginatedResult<Attendance>) => response));
     }
 
-    getById(id: string): Observable<Result<EmployeeRequest>> {
-        return this.api.getById(id).pipe(map((response: Result<EmployeeRequest>) => response));
+    getById(id: string): Observable<Result<Attendance>> {
+        return this.api.getById(id).pipe(map((response: Result<Attendance>) => response));
     }
 
-    create(model: EmployeeRequest): Observable<IResult<EmployeeRequest>> {
-        return this.api.create(model).pipe(map((response: IResult<EmployeeRequest>) => response));
+    create(model: Attendance): Observable<IResult<Attendance>> {
+        return this.api.create(model).pipe(map((response: IResult<Attendance>) => response));
     }
 
-    update(model: EmployeeRequest): Observable<IResult<EmployeeRequest>> {
-        return this.api.update(model).pipe(map((response: IResult<EmployeeRequest>) => response));
+    update(model: Attendance): Observable<IResult<Attendance>> {
+        return this.api.update(model).pipe(map((response: IResult<Attendance>) => response));
     }
 
     delete(id: string): Observable<IResult<string>> {
