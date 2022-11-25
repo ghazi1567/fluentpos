@@ -49,11 +49,12 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public string RequestedByName { get; set; }
 
-
         public int Production { get; set; }
 
         public int RequiredProduction { get; set; }
 
+        public Guid? ModificationId { get; set; }
 
+        public AttendanceStatus AttendanceStatus { get; set; }
     }
 }

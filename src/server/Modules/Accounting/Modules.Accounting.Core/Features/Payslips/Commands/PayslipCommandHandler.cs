@@ -131,16 +131,21 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         public async Task<Result<Guid>> Handle(RemovePayslipCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var payrollRequest = await _context.PayrollRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
-            if (payrollRequest != null)
+            var paySlip = await _context.Payrolls.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            if (paySlip != null)
             {
-                _context.PayrollRequests.Remove(payrollRequest);
+                if (paySlip.Status == Shared.DTOs.Enums.PayslipStatus.Paid)
+                {
+                    throw new AccountingException(_localizer["Unable to delete. Payslip Already Paid!"], HttpStatusCode.NotFound);
+                }
+
+                _context.Payrolls.Remove(paySlip);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(payrollRequest.Id, _localizer["Payroll Request Deleted"]);
+                return await Result<Guid>.SuccessAsync(paySlip.Id, _localizer["Payslip Deleted"]);
             }
             else
             {
-                throw new AccountingException(_localizer["Payroll Request Not Found!"], HttpStatusCode.NotFound);
+                throw new AccountingException(_localizer["Payslip Not Found!"], HttpStatusCode.NotFound);
             }
         }
 

@@ -26,9 +26,14 @@ import { PayrollRequestFormComponent } from "./payroll-request-form/payroll-requ
     styleUrls: ["./payroll.component.scss"]
 })
 export class PayrollComponent implements OnInit {
-    constructor(public payrollService: PayrollService, public payslipService: PayslipService, 
-        public dialog: MatDialog, public toastr: ToastrService, public authService: AuthService,
-        public router: Router) {}
+    constructor(
+        public payrollService: PayrollService,
+        public payslipService: PayslipService,
+        public dialog: MatDialog,
+        public toastr: ToastrService,
+        public authService: AuthService,
+        public router: Router
+    ) {}
     payrollRequests: PaginatedResult<PayrollRequest>;
     paySlips: PaginatedResult<Payroll>;
     payrollRequestsColumns: TableColumn[];
@@ -52,7 +57,7 @@ export class PayrollComponent implements OnInit {
             this.payrollRequests.data.forEach((x) => {
                 x.monthName = MonthsMapping[x.month];
                 x.payPeriodName = PayPeriodMapping[x.payPeriod];
-                x.run = x.status == 'Pending' || x.status == 'Failed' ? false : true;
+                x.run = x.status == "Pending" || x.status == "Failed" ? false : true;
             });
         });
         this.payslipService.getAll(this.payrollRequestsParams).subscribe((res) => {
@@ -71,7 +76,7 @@ export class PayrollComponent implements OnInit {
             { name: "Ignore late Commer", dataKey: "ignoreDeductionForLateComer", isSortable: true, isShowable: true, columnType: "bool" },
             { name: "Ignore Overtime", dataKey: "ignoreOvertime", isSortable: true, isShowable: true, columnType: "bool" },
             { name: "Status", dataKey: "status", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right", buttons: ["Register","run"] }
+            { name: "Action", dataKey: "action", position: "right", buttons: ["Register"] }
         ];
     }
 
@@ -85,13 +90,13 @@ export class PayrollComponent implements OnInit {
             { name: "Present Days", dataKey: "presentDays", isSortable: true, isShowable: true },
             { name: "Absent Days", dataKey: "absentDays", isSortable: true, isShowable: true },
             { name: "Earned Days", dataKey: "earnedDays", isSortable: true, isShowable: true },
-            { name: "Salary", dataKey: "employeeSalary", isSortable: true, isShowable: true ,columnType: "currency"},
-            { name: "Earned", dataKey: "totalEarned", isSortable: true, isShowable: true,columnType: "currency" },
-            { name: "Incentive", dataKey: "totalIncentive", isSortable: true, isShowable: true,columnType: "currency" },
-            { name: "Deduction", dataKey: "totalDeduction", isSortable: true, isShowable: true,columnType: "currency" },
-            { name: "Overtime", dataKey: "totalOvertime", isSortable: true, isShowable: true,columnType: "currency" },
-            { name: "Payable", dataKey: "netPay", isSortable: true, isShowable: true,columnType: "currency" },
-            { name: "Action", dataKey: "action", position: "right", buttons: ["ViewPayslip"] }
+            { name: "Salary", dataKey: "employeeSalary", isSortable: true, isShowable: true, columnType: "currency" },
+            { name: "Earned", dataKey: "totalEarned", isSortable: true, isShowable: true, columnType: "currency" },
+            { name: "Incentive", dataKey: "totalIncentive", isSortable: true, isShowable: true, columnType: "currency" },
+            { name: "Deduction", dataKey: "totalDeduction", isSortable: true, isShowable: true, columnType: "currency" },
+            { name: "Overtime", dataKey: "totalOvertime", isSortable: true, isShowable: true, columnType: "currency" },
+            { name: "Payable", dataKey: "netPay", isSortable: true, isShowable: true, columnType: "currency" },
+            { name: "Action", dataKey: "action", position: "right", buttons: ["ViewPayslip", "Remove"] }
         ];
     }
     pageChanged(event: PaginatedFilter): void {
@@ -112,9 +117,9 @@ export class PayrollComponent implements OnInit {
     }
 
     remove($event: string): void {
-        this.payrollService.delete($event).subscribe(() => {
+        this.payslipService.delete($event).subscribe((res) => {
             this.getAllpayrollRequests();
-            this.toastr.info("Overtime Removed");
+            this.toastr.info(res.messages[0]);
         });
     }
 
@@ -150,11 +155,9 @@ export class PayrollComponent implements OnInit {
 
         // });
 
-        const url = this.router.serializeUrl(
-            this.router.createUrlTree(['/admin/payroll/payslip',data.event.id])
-          );
-      
-          window.open(url, '_blank');
+        const url = this.router.serializeUrl(this.router.createUrlTree(["/admin/payroll/payslip", data.event.id]));
+
+        window.open(url, "_blank");
 
         // const dialogRef = this.dialog.open(PayrollDetailViewComponent, {
         //     data: data.event
@@ -165,6 +168,4 @@ export class PayrollComponent implements OnInit {
         //     }
         // });
     }
-
-    
 }

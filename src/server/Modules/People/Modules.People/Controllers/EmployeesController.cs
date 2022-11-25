@@ -40,6 +40,14 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(customers);
         }
 
+        [HttpPost("AdvanceSearch")]
+        [Authorize(Policy = Permissions.Employees.ViewAll)]
+        public async Task<IActionResult> GetAllAdvanceSearchAsync(GetEmployeesQuery request)
+        {
+            var customers = await Mediator.Send(request);
+            return Ok(customers);
+        }
+
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Employees.View)]
         public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Customer> filter)
@@ -69,5 +77,13 @@ namespace FluentPOS.Modules.People.Controllers
         {
             return Ok(await Mediator.Send(new RemoveEmployeeCommand(id)));
         }
+
+        [HttpPost("Import")]
+        [Authorize(Policy = Permissions.Employees.Register)]
+        public async Task<IActionResult> RegisterAsync(ImportEmployeeCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
     }
 }

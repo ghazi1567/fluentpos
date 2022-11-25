@@ -81,7 +81,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                     throw new PeopleException(_localizer[$"OverTime Already Marked For Date : {command.AttendanceDate}!"], HttpStatusCode.Ambiguous);
                 }
             }
-            else
+            else if (command.RequestType == Shared.DTOs.Enums.RequestType.Attendance)
             {
                 bool attendance = await _attendanceService.IsAttendanceExist(command.EmployeeId, command.AttendanceDate.Date);
                 if (attendance)
@@ -105,14 +105,12 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 int perHourQty = command.RequiredProduction / 8;
                 int overtimeHours = command.Production / perHourQty;
 
-                TimeSpan checkIn = new TimeSpan(09, 00, 00);
+                TimeSpan checkIn = new TimeSpan(00, 00, 01);
                 TimeSpan newSpan = new TimeSpan(0, overtimeHours, 0, 0);
                 TimeSpan checkOut = checkIn.Add(newSpan);
                 command.CheckIn = checkIn;
                 command.CheckIn = checkOut;
             }
-
-
 
 
             await _context.EmployeeRequests.AddAsync(employeeRequest, cancellationToken);

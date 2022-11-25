@@ -16,6 +16,9 @@ import { EmployeeRequest } from "../../models/employeeRequest";
 import { PeopleSearchParams } from "../../models/peopleSearchParams";
 import { AttendanceService } from "../../services/attendance.service";
 import { AttendanceFormComponent } from "./attendance-form/attendance-form.component";
+import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTerm";
+import { EmployeeService } from "../../services/employee.service";
+import { Employee } from "../../models/employee";
 
 @Component({
     selector: "app-attendance",
@@ -27,22 +30,164 @@ export class AttendanceComponent implements OnInit {
     attendanceColumns: TableColumn[];
     attendanceParams = new PeopleSearchParams();
     searchString: string;
+    employeesLookup: Employee[];
     public RequestStatusMapping = RequestStatusMapping;
     public AttendanceStatusMapping = AttendanceStatusMapping;
     public AttendanceTypeMapping = AttendanceTypeMapping;
-    
+    advanceSearch: NgAsConfig;
     public attendanceStatus = Object.values(AttendanceStatus).filter((value) => typeof value === "number");
-    constructor(public attendanceService: AttendanceService, public dialog: MatDialog, public toastr: ToastrService, public authService: AuthService) {}
+    constructor(public attendanceService: AttendanceService, private employeeService: EmployeeService, public dialog: MatDialog, public toastr: ToastrService, public authService: AuthService) {}
 
     ngOnInit(): void {
+        this.loadLookups();
         this.getAttendances();
         this.initColumns();
     }
-
+    loadLookups() {
+        let employeeParams = new SearchParams();
+        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+            this.employeesLookup = res.data;
+            this.initAdvanceFilters();
+        });
+    }
+    initAdvanceFilters() {
+        var employeesLookupData = this.employeesLookup.map((emp) => ({
+            key: emp.id,
+            value: emp.fullName
+        }));
+        this.advanceSearch = {
+            headers: [
+                { id: "EmployeeId", displayText: "Epmployee", type: "dropdown", data: employeesLookupData },
+                { id: "ApprovedBy", displayText: "Approved By", type: "dropdown", data: employeesLookupData },
+                // { id: "DepartmentId", displayText: "Attendance Date", type: "date" },
+                { id: "AttendanceDate", displayText: "Attendance Date", type: "date" },
+                {
+                    id: "AttendanceStatus",
+                    displayText: "Attendance Status",
+                    type: "dropdown",
+                    data: [
+                        {
+                            key: "0",
+                            value: "None"
+                        },
+                        {
+                            key: "1",
+                            value: "Present"
+                        },
+                        {
+                            key: "2",
+                            value: "Absent"
+                        },
+                        {
+                            key: "3",
+                            value: "Leave"
+                        },
+                        {
+                            key: "4",
+                            value: "Holiday"
+                        },
+                        {
+                            key: "5",
+                            value: "Off"
+                        }
+                    ]
+                },
+                {
+                    id: "AttendanceType",
+                    displayText: "Attendance Type",
+                    type: "dropdown",
+                    data: [
+                        {
+                            key: "0",
+                            value: "Bio"
+                        },
+                        {
+                            key: "1",
+                            value: "Manual"
+                        },
+                        {
+                            key: "2",
+                            value: "OverTime"
+                        },
+                        {
+                            key: "3",
+                            value: "System"
+                        }
+                    ]
+                },
+                { id: "CheckIn", displayText: "Check In", type: "time" },
+                { id: "CheckOut", displayText: "Check Out", type: "time" },
+                { id: "ExpectedIn", displayText: "Expected Check In", type: "time" },
+                { id: "ExpectedOut", displayText: "Expected Check Out", type: "time" },
+                {
+                    id: "Status",
+                    displayText: "Request Status",
+                    type: "dropdown",
+                    data: [
+                        {
+                            key: "0",
+                            value: "Pending"
+                        },
+                        {
+                            key: "1",
+                            value: "Rejected"
+                        },
+                        {
+                            key: "2",
+                            value: "Approved"
+                        },
+                        {
+                            key: "3",
+                            value: "InProgress"
+                        }
+                    ]
+                },
+                {
+                    id: "OverTimeType",
+                    displayText: "OverTime Type",
+                    type: "dropdown",
+                    data: [
+                        {
+                            key: "0",
+                            value: "None"
+                        },
+                        {
+                            key: "1",
+                            value: "Hours"
+                        },
+                        {
+                            key: "2",
+                            value: "Production"
+                        }
+                    ]
+                },
+                {
+                    id: "Production",
+                    displayText: "OverTime Production Hrs",
+                    type: "number"
+                },
+                {
+                    id: "EarnedHours",
+                    displayText: "Atten. Hours",
+                    type: "number"
+                },
+                {
+                    id: "OvertimeHours",
+                    displayText: "Overtime Hours",
+                    type: "number"
+                }
+            ],
+            defaultTerm: null,
+            inputArray: null,
+            savedFilters: [],
+            showFilterSaving: null,
+            simpleFieldLabel: null
+        };
+    }
     getAttendances(): void {
         this.attendanceParams.employeeId = this.authService.getEmployeeId;
         this.attendanceParams.requestType = RequestType.Attendance;
-        
+
         this.attendanceService.getAll(this.attendanceParams).subscribe((result) => {
             this.attendances = result;
             this.attendances.data.forEach((x) => {
@@ -55,28 +200,27 @@ export class AttendanceComponent implements OnInit {
                 // x.Remove = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
             });
         });
-       
     }
 
-    AttendanceClass(status: AttendanceStatus){
-        var className = ''
+    AttendanceClass(status: AttendanceStatus) {
+        var className = "";
         switch (status) {
             case AttendanceStatus.Absent:
-                className ='cls-absent'
+                className = "cls-absent";
                 break;
             case AttendanceStatus.Off:
-                className ='cls-off'
+                className = "cls-off";
                 break;
             case AttendanceStatus.Present:
-                className ='cls-present'
+                className = "cls-present";
                 break;
             case AttendanceStatus.Holiday:
-                className ='cls-holiday'
+                className = "cls-holiday";
                 break;
             case AttendanceStatus.Leave:
-                className ='cls-leave'
+                className = "cls-leave";
                 break;
-        
+
             default:
                 break;
         }
@@ -85,12 +229,14 @@ export class AttendanceComponent implements OnInit {
     initColumns(): void {
         this.attendanceColumns = [
             { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
-            { name: "Employee Name", dataKey: "employeeName", isSortable: true, isShowable: true  },
+            { name: "Employee Name", dataKey: "employeeName", isSortable: true, isShowable: true },
             { name: "Attendance Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "dd MMM yyyy" },
             { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true },
             { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true },
-            { name: "Status", dataKey: "attendanceStatusName", isSortable: true, isShowable: true, isClass:true },
-            { name: "Earned Hours", dataKey: "totalEarnedHours", isSortable: true, isShowable: true },
+            { name: "Actual Earned Hours", dataKey: "actualEarnedHours", isSortable: true, isShowable: true },
+            { name: "Earned Hours", dataKey: "earnedHours", isSortable: true, isShowable: true },
+            { name: "Overtime Hours", dataKey: "overtimeHours", isSortable: true, isShowable: true },
+            { name: "Status", dataKey: "attendanceStatusName", isSortable: true, isShowable: true, isClass: true },
             { name: "Type", dataKey: "attendanceTypeName", isSortable: true, isShowable: true },
             { name: "Comments", dataKey: "reason", isSortable: true, isShowable: true },
             { name: "Action", dataKey: "action", position: "right", buttons: ["Update"] }
@@ -104,7 +250,7 @@ export class AttendanceComponent implements OnInit {
     }
 
     openForm(customer?: Attendance): void {
-        if(customer && customer.attendanceType == AttendanceType.OverTime){
+        if (customer && customer.attendanceType == AttendanceType.OverTime) {
             return;
         }
         const dialogRef = this.dialog.open(AttendanceFormComponent, {
@@ -140,5 +286,28 @@ export class AttendanceComponent implements OnInit {
         this.attendanceParams.pageNumber = 0;
         this.attendanceParams.pageSize = 0;
         this.getAttendances();
+    }
+
+    onAdvanceFilters($event) {
+        if ($event == null) {
+            this.getAttendances();
+        } else {
+            var model = {
+                advanceFilters: $event.advancedTerms,
+                advancedSearchType: $event.advancedSearchType,
+                employeeId: this.authService.getEmployeeId,
+                requestType: RequestType.Attendance
+            };
+
+            this.attendanceService.advanceSearch(model).subscribe((result) => {
+                this.attendances = result;
+                this.attendances.data.forEach((x) => {
+                    x.statusName = RequestStatusMapping[x.status];
+                    x.attendanceStatusName = AttendanceStatusMapping[x.attendanceStatus];
+                    x.attendanceTypeName = AttendanceTypeMapping[x.attendanceType];
+                    x.className = this.AttendanceClass(x.attendanceStatus);
+                });
+            });
+        }
     }
 }

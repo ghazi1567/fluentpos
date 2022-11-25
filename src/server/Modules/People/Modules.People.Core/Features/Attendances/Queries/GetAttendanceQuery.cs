@@ -15,6 +15,7 @@ using FluentPOS.Shared.DTOs.People.EmployeeRequests;
 using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
 using System;
+using System.Collections.Generic;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
@@ -35,6 +36,10 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public Guid? OrganizationId { get; set; }
 
         public Guid? BranchId { get; set; }
+
+        public string AdvancedSearchType { get; set; }
+
+        public List<FilterModel> AdvanceFilters { get; set; }
 
     }
 }

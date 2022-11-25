@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -64,7 +65,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
             if (userWithSameUserName != null)
             {
-                throw new IdentityException(string.Format(_localizer["Username {0} is already taken."], request.UserName));
+                throw new IdentityException(string.Format(_localizer["Username {0} is already taken."], request.UserName), statusCode: HttpStatusCode.Ambiguous);
             }
 
             var user = new FluentUser
@@ -74,7 +75,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 LastName = request.LastName,
                 UserName = request.UserName,
                 PhoneNumber = request.PhoneNumber,
-                IsActive = true
+                IsActive = true,
+                EmployeeId = request.EmployeeId
             };
 
             if (request.EmailConfirmed) user.EmailConfirmed = true;
@@ -85,7 +87,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 var userWithSamePhoneNumber = await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == request.PhoneNumber);
                 if (userWithSamePhoneNumber != null)
                 {
-                    throw new IdentityException(string.Format(_localizer["Phone number {0} is already registered."], request.PhoneNumber));
+                    throw new IdentityException(string.Format(_localizer["Phone number {0} is already registered."], request.PhoneNumber),statusCode: HttpStatusCode.Ambiguous);
                 }
             }
 
@@ -144,12 +146,12 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 }
                 else
                 {
-                    throw new IdentityException(_localizer["Validation Errors Occurred."], result.Errors.Select(a => _localizer[a.Description].ToString()).ToList());
+                    throw new IdentityException(_localizer["Validation Errors Occurred."], result.Errors.Select(a => _localizer[a.Description].ToString()).ToList(), statusCode: HttpStatusCode.Ambiguous);
                 }
             }
             else
             {
-                throw new IdentityException(string.Format(_localizer["Email {0} is already registered."], request.Email));
+                throw new IdentityException(string.Format(_localizer["Email {0} is already registered."], request.Email), statusCode: HttpStatusCode.Ambiguous);
             }
         }
 
@@ -174,7 +176,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new IdentityException(_localizer["An error occurred while confirming E-Mail."]);
+                throw new IdentityException(_localizer["An error occurred while confirming E-Mail."], statusCode: HttpStatusCode.Ambiguous);
             }
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
@@ -192,7 +194,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             }
             else
             {
-                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"], user.Email));
+                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"], user.Email), statusCode: HttpStatusCode.Ambiguous);
             }
         }
 
@@ -201,7 +203,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new IdentityException(_localizer["An error occurred while confirming Mobile Phone."]);
+                throw new IdentityException(_localizer["An error occurred while confirming Mobile Phone."], statusCode: HttpStatusCode.Ambiguous);
             }
 
             var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, code);
@@ -218,7 +220,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             }
             else
             {
-                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"], user.PhoneNumber));
+                throw new IdentityException(string.Format(_localizer["An error occurred while confirming {0}"], user.PhoneNumber), statusCode: HttpStatusCode.Ambiguous);
             }
         }
 
@@ -228,7 +230,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
             {
                 // Don't reveal that the user does not exist or is not confirmed
-                throw new IdentityException(_localizer["An Error has occurred!"]);
+                throw new IdentityException(_localizer["An Error has occurred!"], statusCode: HttpStatusCode.Ambiguous);
             }
 
             // For more information on how to enable account confirmation and password reset please
@@ -255,7 +257,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                throw new IdentityException(_localizer["An Error has occurred!"]);
+                throw new IdentityException(_localizer["An Error has occurred!"], statusCode: HttpStatusCode.Ambiguous);
             }
 
             var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
@@ -265,7 +267,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             }
             else
             {
-                throw new IdentityException(_localizer["An Error has occurred!"]);
+                throw new IdentityException(_localizer["An Error has occurred!"], statusCode: HttpStatusCode.Ambiguous);
             }
         }
     }

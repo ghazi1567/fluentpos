@@ -88,5 +88,24 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public decimal BasicSalary { get; set; }
 
+        public string MotherName { get; set; }
+
+        public string City { get; set; }
+
+        public string Country { get; set; }
+
+        public string EOBINo { get; set; }
+
+        public string Qualification { get; set; }
+
+        public string BloodGroup { get; set; }
+
+        public string Languages { get; set; }
+
+        public string SocialSecurityNo { get; set; }
+
+        public string NICPlace { get; set; }
+
+        public string Domicile { get; set; }
     }
 }

@@ -23,7 +23,31 @@
             </app-table>
         </div>
     </mat-tab>
-    <mat-tab label="Pay Slips">
+    <mat-tab label="Bio Matric Logs">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Bio Matric Logs </span>
+        </ng-template>
+        <div [hidden]="!bioAttendances">
+            <app-table
+                [title]="'Bio Matric Logs'"
+                [subtitle]="'Manage, Register, Update or Remove Bio Matric Logs here.'"
+                [data]="bioAttendances && bioAttendances.data"
+                [columns]="bioAttendanceColumns"
+                (onFilter)="filter($event)"
+                (onReload)="reload()"
+                (onCreateForm)="openForm()"
+                (onEditForm)="openForm($event)"
+                (onSort)="sort($event)"
+                (onDelete)="remove($event)"
+                [totalCount]="bioAttendances && bioAttendances.totalCount"
+                [pageSize]="bioAttendances && bioAttendances.pageSize"
+                (onPageChanged)="pageChanged($event)"
+                [moduleName]="'AttendanceRequests'"
+            >
+            </app-table>
+        </div>
+    </mat-tab>
+    <!-- <mat-tab label="Pay Slips">
         <ng-template matTabLabel>
             <span mat matBadgeOverlap="false">Bio Matric</span>
         </ng-template>
@@ -46,5 +70,5 @@
             >
             </app-table>
         </div>
-    </mat-tab>
+    </mat-tab> -->
 </mat-tab-group>

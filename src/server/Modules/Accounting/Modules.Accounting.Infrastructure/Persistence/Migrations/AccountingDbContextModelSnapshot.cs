@@ -89,6 +89,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<int>("TotalDays")
                         .HasColumnType("int");
 
@@ -294,8 +297,8 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(23,2)");
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
@@ -321,11 +324,14 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsTaxable")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("Percentage")
-                        .HasColumnType("decimal(23,2)");
+                    b.Property<double>("Percentage")
+                        .HasColumnType("float");
 
                     b.Property<DateTime?>("RecursionEndMonth")
                         .HasColumnType("datetime2");

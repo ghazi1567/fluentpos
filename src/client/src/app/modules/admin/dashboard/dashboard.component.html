@@ -7,33 +7,33 @@
 <div class="row">
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_blueish'" [icon]="'groups'" [count]="13" [label]="'Total Employees'"></app-stat>
+            <app-stat [bgClass]="'bg_blueish'" [icon]="'groups'" [count]="attendanceStats && attendanceStats.totalEmployees" [label]="'Total Employees'"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_pink'" [icon]="'person_add'" [count]="13" [label]="'Today Present '"></app-stat>
+            <app-stat [bgClass]="'bg_pink'" [icon]="'person_add'" [count]="attendanceStats && attendanceStats.presents" [label]="'Today Present '"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_yellow'" [icon]="'person_remove'" [count]="13" [label]="'Today Absent '"></app-stat>
+            <app-stat [bgClass]="'bg_yellow'" [icon]="'person_remove'" [count]="attendanceStats && attendanceStats.absents" [label]="'Today Absent '"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'success'" [icon]="'directions_run'" [count]="13" [label]="'Today Late Comers'"></app-stat>
+            <app-stat [bgClass]="'success'" [icon]="'directions_run'" [count]="attendanceStats && attendanceStats.lateComer" [label]="'Today Late Comers'"></app-stat>
         </div>
     </div>
 
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'info'" [icon]="'group_off'" [count]="13" [label]="'Late Comers Last 7 days'"></app-stat>
+            <app-stat [bgClass]="'info'" [icon]="'group_off'" [count]="attendanceStats && attendanceStats.last7DaysLateComer" [label]="'Late Comers Last 7 days'"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_greenish'" [icon]="'people_outline'" [count]="13" [label]="'Absent Last 7 days'"></app-stat>
+            <app-stat [bgClass]="'bg_greenish'" [icon]="'people_outline'" [count]="attendanceStats && attendanceStats.last7DaysAbsents" [label]="'Absent Last 7 days'"></app-stat>
         </div>
     </div>
 </div>

@@ -1,5 +1,5 @@
 <mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
-    <mat-card-header>
+    <mat-card-header *ngIf="title">
         <mat-card-title>
             {{ title | translate }}
         </mat-card-title>
@@ -14,6 +14,7 @@
                 </a>
             </span>
             <a *ngIf="onReload.observers.length > 0" mat-raised-button color="accent" (click)="handleReload()"> <mat-icon>refresh</mat-icon> {{ "components.table.reload" | translate }} </a>
+            <a *ngIf="onImport.observers.length > 0" mat-raised-button color="warn" (click)="handleImport()"> <mat-icon>cloud_upload</mat-icon> Import </a>
             <a *ngIf="onExport.observers.length > 0" mat-raised-button color="primary" (click)="handleExport()"> <mat-icon>cloud_download</mat-icon> Export </a>
         </div>
         <div *ngIf="customActionData" class="right">
@@ -22,7 +23,7 @@
                 {{ customActionData.title }}
             </a>
         </div>
-        <div *ngIf="onFilter.observers.length > 0" class="right">
+        <div *ngIf="onFilter.observers.length > 0 && !advanceFilters" class="right">
             <mat-form-field>
                 <input
                     matInput
@@ -35,9 +36,14 @@
                 />
             </mat-form-field>
         </div>
+        <div *ngIf="advanceFilters" class="right">
+            <a mat-raised-button color="primary" (click)="openAdvanceFilter()">
+                <mat-icon>{{searchIcon}}</mat-icon>
+            </a>
+        </div>
     </div>
     <!-- Table -->
-    <table fixedLayout="true" mat-table mat-table-stripped [dataSource]="tableDataSource" matSort (matSortChange)="handleSort($event)">
+    <table fixedLayout="false" mat-table mat-table-stripped [dataSource]="tableDataSource" matSort (matSortChange)="handleSort($event)">
         <ng-container *ngFor="let tableColumn of columns" [matColumnDef]="tableColumn.name">
             <!-- if showable column header -->
             <ng-container *ngIf="tableColumn.isShowable || tableColumn.dataKey == 'action'; else notShowable">
@@ -96,7 +102,7 @@
                                 <mat-icon>{{ button.icon }}</mat-icon>
                             </button>
                         </span> -->
-                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" type="button">
                             <mat-icon>more_vert</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
@@ -107,7 +113,7 @@
                                 </button>
                             </span>
                             <span *ngIf="isDisplayButton('Update', element)">
-                                <button mat-menu-item *appHasRights="{ module: moduleName, action: 'Update' }" color="accent" (click)="openEditForm(element)">
+                                <button mat-menu-item  *appHasRights="{ module: moduleName, action: 'Update' }" color="accent" (click)="openEditForm(element)">
                                     <mat-icon>mode_edit</mat-icon>
                                     <span>Edit</span>
                                 </button>

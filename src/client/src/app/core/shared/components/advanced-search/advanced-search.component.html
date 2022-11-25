@@ -1,0 +1,73 @@
+<mat-dialog-content class="mat-typography">
+    <div class="container" #container>
+        <!-- Advanced search -->
+        <div class="row search-container advanced-container" *ngIf="searchTerm.searchMode === 'advanced'">
+            <!-- Search link toggle -->
+            <div class="col advanced-search-link-display" (click)="toggleAdvancedLink()" matRipple>
+                <span style="transform: rotate(-90deg)" *ngIf="searchTerm.advancedSearchType === 'and'">AND</span>
+                <span style="transform: rotate(-90deg)" *ngIf="searchTerm.advancedSearchType === 'or'">OR</span>
+            </div>
+
+            <div class="col advanced-termrow-container">
+                <!-- Term rows -->
+                <div class="row advanced-search-termrow" *ngFor="let term of searchTerm.advancedTerms">
+                    <div class="col advanced-search-field advanced-search-column">
+                        <mat-form-field appearance="standard" class="form-field">
+                            <mat-label>Field</mat-label>
+                            <mat-select [(value)]="term.fieldName" (valueChange)="updateTermField(term)">
+                                <mat-option [value]="header.id" *ngFor="let header of headers">
+                                    {{ header.displayText }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col advanced-search-field advanced-search-negate" (click)="termNegate(term)" matRipple>
+                        <span class="advanced-search-negate-label" *ngIf="!term.isNegated">is</span>
+                        <span class="advanced-search-negate-label" *ngIf="term.isNegated">is not</span>
+                    </div>
+
+                    <div class="col advanced-search-field advanced-search-crit">
+                        <mat-form-field appearance="standard" class="form-field">
+                            <mat-label>Criteria</mat-label>
+                            <mat-select [(value)]="term.action" (valueChange)="this.outputUpdate()">
+                                <mat-option [value]="'='">equal to</mat-option>
+                                <mat-option [value]="'!='">not equal to</mat-option>
+                                <mat-option [value]="'>'">greater than</mat-option>
+                                <mat-option [value]="'<'">less than</mat-option>
+                                <mat-option [value]="'like'">containing</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col advanced-search-field advanced-search-term">
+                        <mat-form-field class="form-field" appearance="standard" *ngIf="['text', 'date', 'email', 'number', 'search', 'tel', 'url', 'time'].includes(term.fieldType)">
+                            <mat-label>Search term</mat-label>
+                            <input matInput [type]="term.fieldType" [(ngModel)]="term.searchTerm" (keyup)="this.outputUpdate()" />
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" *ngIf="term.fieldType == 'dropdown'">
+                            <mat-select [(ngModel)]="term.searchTerm">
+                                <mat-option *ngFor="let row of term.data" [value]="row.key">{{ row.value }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col advanced-search-field advanced-search-delrow" (click)="delTermRow(term.id)"><i class="fas fa-trash-alt"></i>&nbsp; Delete</div>
+                </div>
+
+                <!-- New row button -->
+                <div class="row advanced-search-termrow">
+                    <div class="col-3 advanced-search-newrow" (click)="addTermRow()">
+                        <i class="fas fa-plus"></i>
+                        Add new row
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button (click)="resetSearch()">Clear</button>
+    <button mat-raised-button cdkFocusInitial color="primary" (click)="applySearch()">Search</button>
+</mat-dialog-actions>

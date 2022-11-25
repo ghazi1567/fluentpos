@@ -6,12 +6,13 @@ export interface SalaryPerks {
     updatedAt: string;
     organizationId: string;
     branchId: string;
+    name: string;
     employeeId: string;
     type: SalaryPerksType;
     percentage: string;
     amount: string;
-    isRecursion: string;
-    isRecursionUnLimited: string;
+    isRecursion: boolean;
+    isRecursionUnLimited: boolean;
     recursionEndMonth: string;
     description: string;
     effecitveFrom: string;

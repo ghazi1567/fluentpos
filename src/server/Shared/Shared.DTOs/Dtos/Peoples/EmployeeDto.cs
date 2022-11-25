@@ -7,22 +7,8 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 {
-    public class EmployeeDto
+    public class EmployeeDto : BaseEntityDto
     {
-        public Guid? Id { get; set; }
-
-        public DateTime? CreateaAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
-
-        public Guid OrganizationId { get; set; }
-
-        public Guid BranchId { get; set; }
-
-        public Guid UserId { get; set; }
-
-        public string IpAddress { get; set; }
-
         public string Prefix { get; set; }
 
         public string FirstName { get; set; }
@@ -35,7 +21,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public string EmployeeCode { get; set; }
 
-        public int PunchCode { get; set; }
+        public int? PunchCode { get; set; }
 
         public string MobileNo { get; set; }
 
@@ -60,6 +46,8 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
         public string FamilyCode { get; set; }
 
         public string Religion { get; set; }
+
+        public PaymentMode PaymentMode { get; set; }
 
         public string BankAccountNo { get; set; }
 
@@ -99,6 +87,28 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public bool Active { get; set; }
 
-        public PaymentMode PaymentMode { get; set; }
+        public Guid? ReportingTo { get; set; }
+
+        public decimal BasicSalary { get; set; }
+
+        public string MotherName { get; set; }
+
+        public string City { get; set; }
+
+        public string Country { get; set; }
+
+        public string EOBINo { get; set; }
+
+        public string Qualification { get; set; }
+
+        public string BloodGroup { get; set; }
+
+        public string Languages { get; set; }
+
+        public string SocialSecurityNo { get; set; }
+
+        public string NICPlace { get; set; }
+
+        public string Domicile { get; set; }
     }
 }

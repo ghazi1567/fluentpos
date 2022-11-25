@@ -1,3 +1,4 @@
+import { AttendanceStatus } from "src/app/core/enums/AttendanceStatus";
 import { RequestStatus } from "src/app/core/enums/RequestStatus";
 import { RequestType } from "src/app/core/enums/RequestType";
 
@@ -54,5 +55,8 @@ export interface EmployeeRequest {
     Remove: boolean;
     requestedByName: string;
     requestedForName: string;
+    modificationId?: string;
+    attendanceStatus: AttendanceStatus;
+    attendanceStatusName: string;
 
 }

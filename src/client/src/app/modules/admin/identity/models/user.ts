@@ -12,4 +12,5 @@ export interface User {
     phoneNumber: string;
     phoneNumberConfirmed: boolean;
     profilePictureUrl: string;
+    employeeId: string;
 }

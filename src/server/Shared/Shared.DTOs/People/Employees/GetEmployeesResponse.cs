@@ -93,5 +93,24 @@ string ImageUrl,
 bool Active,
 decimal BasicSalary,
 Guid? ReportingTo,
-PaymentMode PaymentMode);
+PaymentMode PaymentMode,
+string MotherName,
+
+string City,
+
+string Country,
+
+string EOBINo,
+
+string Qualification,
+
+string BloodGroup,
+
+string Languages,
+
+string SocialSecurityNo,
+
+string NICPlace,
+
+string Domicile);
 }

@@ -13,23 +13,23 @@ export interface BioAttendance {
 
     branchId: string;
 
-    personId: string;
+    punchCode: string;
 
     name: string;
 
-    department: string;
+    cardNo: string;
 
     attendanceDateTime: Date;
 
-    attendanceStatus: string;
+    attendanceDate: Date;
 
-    customName: string;
+    attendanceTime: Date;
 
-    attendanceCheckPoint: string;
+    direction: string;
 
-    dataSource: string;
+    deviceSerialNo: string;
 
-    handlingType: string;
+    deviceName: string;
 
     temperature: string;
 

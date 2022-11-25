@@ -32,7 +32,7 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
     internal class BioAttendanceQueryHandler :
-        IRequestHandler<GetBioAttendanceQuery, PaginatedResult<AttendanceDto>>
+        IRequestHandler<GetBioAttendanceQuery, PaginatedResult<BioAttendanceLogDto>>
     {
         private readonly IPeopleDbContext _context;
         private readonly IMapper _mapper;
@@ -52,24 +52,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<PaginatedResult<AttendanceDto>> Handle(GetBioAttendanceQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<BioAttendanceLogDto>> Handle(GetBioAttendanceQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-
-            var myEmployees = await _employeeService.GetMyReporterEmployeeListAsync(request.EmployeeId, true);
-            var myEmpIds = myEmployees.Select(x => x.Id.Value).ToList();
-
-            Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
-
-            var queryable = _context.Attendances.Where(x => myEmpIds.Contains(x.EmployeeId)).AsNoTracking().OrderByDescending(x => x.AttendanceDate).AsQueryable();
-
+            var queryable = _context.AttendanceLogs.AsQueryable();
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderByDescending(a => a.AttendanceDate);
-
-            if (request.AttendanceStatus != null)
-            {
-                queryable = queryable.Where(c => c.AttendanceStatus == request.AttendanceStatus);
-            }
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderByDescending(a => a.AttendanceDateTime);
 
             var attendanceList = await queryable
                .AsNoTracking()
@@ -80,12 +68,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                 throw new PeopleException(_localizer["Request Not Found!"], HttpStatusCode.NotFound);
             }
 
-            var response = _mapper.Map<PaginatedResult<AttendanceDto>>(attendanceList);
-
-            foreach (var item in response.Data)
-            {
-                item.EmployeeName = myEmployees.FirstOrDefault(x => x.Id == item.EmployeeId)?.FullName;
-            }
+            var response = _mapper.Map<PaginatedResult<BioAttendanceLogDto>>(attendanceList);
 
             return response;
         }

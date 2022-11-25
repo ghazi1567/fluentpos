@@ -7,6 +7,10 @@ import { MatDialog } from "@angular/material/dialog";
 import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
 import { PageEvent } from "@angular/material/paginator";
 import { CustomAction } from "./custom-action";
+import { AdvanceFilterComponent } from "../advance-filter/advance-filter.component";
+import { AdvanceFilter } from "src/app/core/models/Filters/AdvanceFilter";
+import { AdvancedSearchComponent } from "../advanced-search/advanced-search.component";
+import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTerm";
 
 @Component({
     selector: "app-table",
@@ -51,6 +55,9 @@ export class TableComponent implements OnInit, AfterViewInit {
     @Output() onView: EventEmitter<any> = new EventEmitter();
     @Output() onDelete: EventEmitter<string> = new EventEmitter<string>();
     @Output() onExport: EventEmitter<string> = new EventEmitter<string>();
+    @Output() onImport: EventEmitter<string> = new EventEmitter<string>();
+    @Input() advanceFilters: NgAsConfig;
+    @Output() onAdvanceFilters: EventEmitter<NgAsSearchTerm> = new EventEmitter<NgAsSearchTerm>();
 
     constructor(public dialog: MatDialog) {}
     gold: EventEmitter<{ data: CustomAction }>[];
@@ -108,6 +115,9 @@ export class TableComponent implements OnInit, AfterViewInit {
     handleExport() {
         this.onExport.emit("");
     }
+    handleImport() {
+        this.onImport.emit("");
+    }
 
     handleSort(sortParams: Sort) {
         sortParams.active = this.columns.find((column) => column.name === sortParams.active).dataKey;
@@ -160,5 +170,19 @@ export class TableComponent implements OnInit, AfterViewInit {
         }
         var btn = this.displayedButtons.find((x) => x == button);
         return btn != null;
+    }
+    searchIcon = "filter_list";
+    openAdvanceFilter() {
+        const dialogRef = this.dialog.open(AdvancedSearchComponent, {
+            data: this.advanceFilters
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                this.searchIcon = "grading";
+            } else {
+                this.searchIcon = "filter_list";
+            }
+            this.onAdvanceFilters.emit(result);
+        });
     }
 }

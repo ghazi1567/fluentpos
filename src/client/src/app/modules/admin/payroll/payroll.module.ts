@@ -10,6 +10,7 @@ import { IncrementDecrementFormComponent } from './components/employee-salary/in
 import { PayrollComponent } from './components/payroll/payroll.component';
 import { PayrollRequestFormComponent } from './components/payroll/payroll-request-form/payroll-request-form.component';
 import { PayrollDetailViewComponent } from './components/payroll/payroll-detail-view/payroll-detail-view.component';
+import { PerksComponent } from './components/employee-salary/perks/perks.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { PayrollDetailViewComponent } from './components/payroll/payroll-detail-
     IncrementDecrementFormComponent,
     PayrollComponent,
     PayrollRequestFormComponent,
-    PayrollDetailViewComponent
+    PayrollDetailViewComponent,
+    PerksComponent
   ],
   imports: [
     CommonModule,

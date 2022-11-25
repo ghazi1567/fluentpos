@@ -8,6 +8,8 @@ namespace FluentPOS.Modules.Accounting.Core.Dtos
     {
         public Guid EmployeeId { get; set; }
 
+        public string Name { get; set; }
+
         public SalaryPerksType Type { get; set; }
 
         public decimal Percentage { get; set; }

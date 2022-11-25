@@ -14,6 +14,7 @@ import { OrgService } from "src/app/modules/admin/org/services/org.service";
 import { Attendance } from "../../../models/Attendance";
 import { Employee } from "../../../models/employee";
 import { EmployeeRequest } from "../../../models/employeeRequest";
+import { AttendanceRequestService } from "../../../services/attendance-request.service";
 import { AttendanceService } from "../../../services/attendance.service";
 import { EmployeeService } from "../../../services/employee.service";
 
@@ -36,7 +37,8 @@ export class AttendanceFormComponent implements OnInit {
         private employeeService: EmployeeService,
         private toastr: ToastrService,
         private fb: FormBuilder,
-        private authService: AuthService
+        private authService: AuthService,
+        private attendanceRequestService: AttendanceRequestService
     ) {}
 
     ngOnInit(): void {
@@ -76,7 +78,12 @@ export class AttendanceFormComponent implements OnInit {
                 });
             } else {
                 var data = { ...this.data, ...this.formGroup.value };
-                this.attendanceService.update(data).subscribe(
+                data.modificationId = data.id;
+                data.id = "";
+                data.requestType = RequestType.AttendanceModify;
+                data.requestedBy = this.authService.getEmployeeId;
+                data.requestedBy = this.authService.getEmployeeId;
+                this.attendanceRequestService.create(data).subscribe(
                     (response) => {
                         this.toastr.success(response.messages[0]);
                         this.dialogRef.closeAll();

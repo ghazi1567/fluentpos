@@ -62,44 +62,42 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         {
             var payrollRequest = _mapper.Map<PayrollRequest>(command);
 
-            bool exist = _context.PayrollRequests.Any(x => x.Month == command.Month && x.PayPeriod == command.PayPeriod);
-
-            if (exist)
-            {
-                var exists = await _context.PayrollRequests.Where(x => x.Month == command.Month && x.PayPeriod == command.PayPeriod).AsNoTracking().ToListAsync(cancellationToken);
-                foreach (var item in exists)
-                {
-                    switch (item.PayPeriod)
-                    {
-                        case Shared.DTOs.Enums.PayPeriod.Daily:
-                            break;
-                        case Shared.DTOs.Enums.PayPeriod.Weekly:
-                            break;
-                        case Shared.DTOs.Enums.PayPeriod.HalfMonth:
-                            if (item.StartDate == command.StartDate && item.EndDate == command.EndDate)
-                            {
-                                throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
-                            }
-                            break;
-                        case Shared.DTOs.Enums.PayPeriod.Monthly:
-                            if (command.StartDate <= item.StartDate || command.EndDate >= item.StartDate)
-                            {
-                                throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
-                            }
-                            if (command.StartDate <= item.EndDate || command.EndDate >= item.EndDate)
-                            {
-                                throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
-                            }
-                            throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
-                            break;
-                        case Shared.DTOs.Enums.PayPeriod.DateRange:
-                            break;
-                        default:
-                            break;
-                    }
-                    
-                }
-            }
+            // bool exist = _context.PayrollRequests.Any(x => x.Month == command.Month && x.PayPeriod == command.PayPeriod);
+            // if (exist)
+            // {
+            //     var exists = await _context.PayrollRequests.Where(x => x.Month == command.Month && x.PayPeriod == command.PayPeriod).AsNoTracking().ToListAsync(cancellationToken);
+            //     foreach (var item in exists)
+            //     {
+            //         switch (item.PayPeriod)
+            //         {
+            //             case Shared.DTOs.Enums.PayPeriod.Daily:
+            //                 break;
+            //             case Shared.DTOs.Enums.PayPeriod.Weekly:
+            //                 break;
+            //             case Shared.DTOs.Enums.PayPeriod.HalfMonth:
+            //                 if (item.StartDate == command.StartDate && item.EndDate == command.EndDate)
+            //                 {
+            //                     throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
+            //                 }
+            //                 break;
+            //             case Shared.DTOs.Enums.PayPeriod.Monthly:
+            //                 if (command.StartDate <= item.StartDate || command.EndDate >= item.StartDate)
+            //                 {
+            //                     throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
+            //                 }
+            //                 if (command.StartDate <= item.EndDate || command.EndDate >= item.EndDate)
+            //                 {
+            //                     throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
+            //                 }
+            //                 throw new AccountingException(_localizer["Payroll Request Already Generated For Selected Dates."], HttpStatusCode.Conflict);
+            //                 break;
+            //             case Shared.DTOs.Enums.PayPeriod.DateRange:
+            //                 break;
+            //             default:
+            //                 break;
+            //         }
+            //     }
+            // }
 
             await _context.PayrollRequests.AddAsync(payrollRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);

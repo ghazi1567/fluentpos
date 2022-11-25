@@ -63,30 +63,43 @@ export class EmployeeFormComponent implements OnInit {
             departmentId: [this.data && this.data.departmentId, Validators.required],
             designationId: [this.data && this.data.designationId, Validators.required],
             policyId: [this.data && this.data.policyId, Validators.required],
-            allowManualAttendance: [(this.data && this.data.allowManualAttendance) || true],
             mobileNo: [this.data && this.data.mobileNo],
             basicSalary: [this.data && this.data.basicSalary],
             reportingTo: [this.data && this.data.reportingTo],
-            employeeStatus: [(this.data && this.data.employeeStatus) || "Permanent"]
+            employeeStatus: [(this.data && this.data.employeeStatus) || "Permanent"],
+            gender: [this.data && this.data.gender, Validators.required]
         });
         this.secondFormGroup = this.fb.group({
             fatherName: [this.data && this.data.fatherName],
+            motherName: [this.data && this.data.motherName],
             phoneNo: [this.data && this.data.phoneNo],
             address: [this.data && this.data.address],
-            gender: [this.data && this.data.gender],
+            allowManualAttendance: [(this.data && this.data.allowManualAttendance) || true],
             dateOfBirth: [this.data && this.data.dateOfBirth],
             placeOfBirth: [this.data && this.data.placeOfBirth],
             cnicNo: [this.data && this.data.cnicNo],
             cnicIssueDate: [this.data && this.data.cnicIssueDate],
             cnicExpireDate: [this.data && this.data.cnicExpireDate],
-            email: [this.data && this.data.email]
+            joiningDate: [this.data && this.data.joiningDate],
+            email: [this.data && this.data.email],
+            city: [this.data && this.data.city],
+            country: [this.data && this.data.country],
+            nicPlace: [this.data && this.data.nicPlace],
+            domicile: [this.data && this.data.domicile]
         });
         this.thirdFormGroup = this.fb.group({
             paymentMode: [this.data && this.data.paymentMode],
             bankAccountNo: [this.data && this.data.bankAccountNo],
             bankAccountTitle: [this.data && this.data.bankAccountTitle],
             bankBranchCode: [this.data && this.data.bankBranchCode],
-            bankName: [this.data && this.data.bankName]
+            bankName: [this.data && this.data.bankName],
+            eobiNo: [this.data && this.data.eobiNo],
+            qualification: [this.data && this.data.qualification],
+            bloodGroup: [this.data && this.data.bloodGroup],
+            languages: [this.data && this.data.languages],
+            socialSecurityNo: [this.data && this.data.socialSecurityNo],
+            maritalStatus: [this.data && this.data.maritalStatus],
+            religion: [this.data && this.data.religion],
         });
         if (this.firstFormGroup.get("id").value === "" || this.firstFormGroup.get("id").value == null) {
             this.formTitle = "Register Employee";

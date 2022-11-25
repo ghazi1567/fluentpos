@@ -60,7 +60,7 @@ namespace FluentPOS.Modules.Accounting.Controllers
         [Authorize(Policy = Permissions.Payroll.Remove)]
         public async Task<IActionResult> RemoveAsync(Guid id)
         {
-            return Ok(await Mediator.Send(new RemovePayrollCommand(id)));
+            return Ok(await Mediator.Send(new RemovePayslipCommand(id)));
         }
 
 

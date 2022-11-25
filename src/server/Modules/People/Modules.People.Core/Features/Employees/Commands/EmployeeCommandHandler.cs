@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -30,6 +31,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
     internal class EmployeeCommandHandler :
         IRequestHandler<RegisterEmployeeCommand, Result<Guid>>,
+        IRequestHandler<ImportEmployeeCommand, Result<Guid>>,
         IRequestHandler<RemoveEmployeeCommand, Result<Guid>>,
         IRequestHandler<UpdateEmployeeCommand, Result<Guid>>
     {
@@ -122,6 +124,38 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             {
                 throw new PeopleException(_localizer["Employee Not Found!"], HttpStatusCode.NotFound);
             }
+        }
+
+        public async Task<Result<Guid>> Handle(ImportEmployeeCommand command, CancellationToken cancellationToken)
+        {
+            var employees = _mapper.Map<List<Employee>>(command.Employees);
+            int duplicateCount = 0;
+            List<Employee> filtered = new List<Employee>();
+            foreach (var item in employees)
+            {
+                bool isEists = await _context.Employees.AnyAsync(x => x.EmployeeCode == item.EmployeeCode || x.PunchCode == item.PunchCode);
+                if (!isEists)
+                {
+                    filtered.Add(item);
+                } else
+                {
+                    duplicateCount++;
+                }
+            }
+
+            await _context.Employees.AddRangeAsync(filtered, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            foreach (var item in employees)
+            {
+                await _payrollService.InsertBasicSalary(item.Id, item.BasicSalary);
+            }
+
+            var messages = new List<string>();
+            messages.Add(_localizer[$"{filtered.Count} Employees Imported Successfully."]);
+            messages.Add(_localizer[$"{duplicateCount} Duplicate Employees Found."]);
+
+            return await Result<Guid>.SuccessAsync(Guid.Empty, messages);
         }
     }
 }

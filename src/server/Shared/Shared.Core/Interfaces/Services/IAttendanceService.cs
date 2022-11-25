@@ -23,5 +23,9 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
         Task<bool> IsAttendanceExist(Guid employeeId, DateTime attendanceDate);
 
         Task<bool> IsOverTimeExist(Guid employeeId, DateTime attendanceDate);
+
+        Task<bool> MarkBioAttendance(int punchCode, DateTime attendanceDate);
+
+        Task<bool> UpdateModification(Guid requestId);
     }
 }

@@ -11,6 +11,8 @@ import { ToastrService } from "ngx-toastr";
 import { MatDialog } from "@angular/material/dialog";
 import { AttendanceFormComponent } from "../attendance-form/attendance-form.component";
 import { AttendanceType } from "src/app/core/enums/AttendanceType";
+import { AttendanceRequestService } from "../../../services/attendance-request.service";
+import { AttendanceLogFormComponent } from "../../attendance-logs/attendance-log-form/attendance-log-form.component";
 
 @Component({
     selector: "app-individual-report",
@@ -32,7 +34,13 @@ export class IndividualReportComponent implements OnInit {
         .filter((x) => x != "");
     employeesLookup: Employee[];
     selectedEmployeeId: any;
-    constructor(public attendanceService: AttendanceService, public dialog: MatDialog, private employeeService: EmployeeService, private toastr: ToastrService) {}
+    constructor(
+        public attendanceService: AttendanceService,
+        private sttendanceRequestService: AttendanceRequestService,
+        public dialog: MatDialog,
+        private employeeService: EmployeeService,
+        private toastr: ToastrService
+    ) {}
 
     ngOnInit(): void {
         this.bindCalender(this.currentDate);
@@ -81,7 +89,7 @@ export class IndividualReportComponent implements OnInit {
                     dayClass: "",
                     attendance: null,
                     isOverTime: false,
-                    isWrongMonth: false,
+                    isWrongMonth: false
                 };
 
                 if (day.getMonth() != month) {
@@ -125,9 +133,9 @@ export class IndividualReportComponent implements OnInit {
             this.toastr.error("Select an employee..");
             return;
         }
-        if(dateObj.isWrongMonth){
+        if (dateObj.isWrongMonth) {
             return;
-        }  
+        }
         if (dateObj.attendance) {
             dateObj.attendance.attendanceStatus = status;
 
@@ -138,15 +146,28 @@ export class IndividualReportComponent implements OnInit {
                 this.getData();
             });
         } else {
-            var model = <Attendance>{
-                employeeId: this.selectedEmployeeId,
-                attendanceDate: dateObj.attendanceDate,
-                attendanceStatus: status
-            };
-            this.attendanceService.create(model).subscribe((res) => {
-                this.toastr.success(res.messages[0]);
-                this.getData();
-            });
+            if (status == AttendanceStatus.Present) {
+                const dialogRef = this.dialog.open(AttendanceLogFormComponent, {
+                    data: {
+                        employeeId: this.selectedEmployeeId,
+                        attendanceDate: dateObj.attendanceDate,
+                        attendanceStatus: status
+                    }
+                });
+                dialogRef.afterClosed().subscribe((result) => {
+                    this.getData();
+                });
+            } else {
+                var model = <Attendance>{
+                    employeeId: this.selectedEmployeeId,
+                    attendanceDate: dateObj.attendanceDate,
+                    attendanceStatus: status
+                };
+                this.attendanceService.create(model).subscribe((res) => {
+                    this.toastr.success(res.messages[0]);
+                    this.getData();
+                });
+            }
         }
     }
 

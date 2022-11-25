@@ -6,6 +6,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FluentPOS.Shared.DTOs.Identity.Users
@@ -39,5 +40,7 @@ namespace FluentPOS.Shared.DTOs.Identity.Users
         public string ConfirmPassword { get; set; }
 
         public string PhoneNumber { get; set; }
+
+        public Guid EmployeeId { get; set; }
     }
 }

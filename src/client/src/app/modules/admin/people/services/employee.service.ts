@@ -67,4 +67,12 @@ export class EmployeeService {
     deleteEmployee(id: string): Observable<IResult<string>> {
         return this.api.delete(id).pipe(map((response: IResult<string>) => response));
     }
+
+    importEmployee(Employee: any): Observable<IResult<Employee>> {
+        return this.api.import(Employee).pipe(map((response: IResult<Employee>) => response));
+    }
+
+    advanceSearch(model: any): Observable<PaginatedResult<Employee>> {
+        return this.api.advanceSearch(model).pipe(map((response: PaginatedResult<Employee>) => response));
+    }
 }

@@ -182,10 +182,13 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 {
                     await _attendanceService.MarkManualAttendance(requestId);
                 }
-
-                if (request.RequestType == RequestType.OverTime)
+                else if (request.RequestType == RequestType.OverTime)
                 {
                     await _attendanceService.MarkOverTime(requestId);
+                }
+                else if (request.RequestType == RequestType.OverTimeModify || request.RequestType == RequestType.AttendanceModify)
+                {
+                    await _attendanceService.UpdateModification(requestId);
                 }
             }
 

@@ -9,23 +9,16 @@
 using FluentPOS.Modules.Accounting.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Enums;
+using FluentPOS.Shared.DTOs.Filters;
 using MediatR;
 using System;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
-    public class GetSalaryPerksQuery : IRequest<PaginatedResult<SalaryPerksDto>>
+    public class GetSalaryPerksQuery : PaginatedFilter, IRequest<PaginatedResult<SalaryPerksDto>>
     {
-        public int PageNumber { get; private set; }
+        public string[] OrderBy { get; set; }
 
-        public int PageSize { get; private set; }
-
-        public string[] OrderBy { get; private set; }
-
-        public string SearchString { get; private set; }
-
-        public Guid EmployeeId { get; set; }
-
-        public RequestType? RequestType { get; set; }
+        public SalaryPerksType? Type { get; set; }
     }
 }

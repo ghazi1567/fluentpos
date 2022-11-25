@@ -6,6 +6,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FluentPOS.Shared.DTOs.Identity
@@ -39,5 +40,8 @@ namespace FluentPOS.Shared.DTOs.Identity
         public string PhoneNumber { get; set; }
 
         public bool PhoneNumberConfirmed { get; set; }
+
+        public Guid EmployeeId { get; set; }
+
     }
 }

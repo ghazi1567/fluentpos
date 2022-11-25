@@ -36,7 +36,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
         private readonly IStringLocalizer<EmployeeCommandHandler> _localizer;
-        private readonly IEmployeeService _employeeService;
+        private readonly IAttendanceService _attendanceService;
         private readonly IWorkFlowService _workFlowService;
 
         public BioAttendanceCommandHandler(
@@ -46,22 +46,27 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             IStringLocalizer<EmployeeCommandHandler> localizer,
             IDistributedCache cache,
             IEmployeeService employeeService,
-            IWorkFlowService workFlowService)
+            IWorkFlowService workFlowService,
+            IAttendanceService attendanceService)
         {
             _context = context;
             _mapper = mapper;
             _uploadService = uploadService;
             _localizer = localizer;
             _cache = cache;
-            _employeeService = employeeService;
+            _attendanceService = attendanceService;
             _workFlowService = workFlowService;
         }
 
         public async Task<Result<Guid>> Handle(RegisterBioAttendanceCommand command, CancellationToken cancellationToken)
         {
-            var attendanceLog = _mapper.Map<BioAttendanceLog>(command);
+            var attendanceLog = new BioAttendanceLog();
+            attendanceLog = _mapper.Map<BioAttendanceLog>(command);
 
-            
+            if (!string.IsNullOrEmpty(command.PunchCode))
+            {
+                bool attendance = await _attendanceService.MarkBioAttendance(int.Parse(command.PunchCode), command.AttendanceDateTime);
+            }
 
             await _context.AttendanceLogs.AddAsync(attendanceLog, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);

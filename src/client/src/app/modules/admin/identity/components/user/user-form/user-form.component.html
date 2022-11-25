@@ -10,10 +10,21 @@
             <mat-error>Please provide a valid username</mat-error>
           </mat-form-field>
         </div>
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-12 col-md-6 d-none">
           <mat-checkbox class="checkbox" formControlName="emailConfirmed">Email Confirmed</mat-checkbox>
           <mat-checkbox class="checkbox" formControlName="phoneNumberConfirmed">Phone Number Confirmed</mat-checkbox>
         </div>
+        <div class="col-xs-12 col-md-6">
+          <mat-form-field appearance="outline">
+              <mat-label>Employee</mat-label>
+              <mat-select formControlName="employeeId" name="employeeId" required>
+                  <mat-option *ngFor="let org of employeesLookup" [value]="org.id">
+                      {{ org.fullName }}
+                  </mat-option>
+              </mat-select>
+              <mat-error> Please provide a valid Employee </mat-error>
+          </mat-form-field>
+      </div>
         <div class="col-xs-12 col-md-6">
           <mat-form-field appearance="outline">
             <mat-label>First Name</mat-label>

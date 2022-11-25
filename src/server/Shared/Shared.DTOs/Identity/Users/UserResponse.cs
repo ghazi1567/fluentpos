@@ -6,6 +6,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace FluentPOS.Shared.DTOs.Identity.Users
 {
     public class UserResponse
@@ -29,5 +31,8 @@ namespace FluentPOS.Shared.DTOs.Identity.Users
         public bool PhoneNumberConfirmed { get; set; }
 
         public string ProfilePictureUrl { get; set; }
+
+        public Guid EmployeeId { get; set; }
+
     }
 }

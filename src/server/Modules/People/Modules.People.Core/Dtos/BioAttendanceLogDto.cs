@@ -5,29 +5,23 @@ namespace FluentPOS.Modules.People.Core.Entities
 {
     public class BioAttendanceLogDto : BaseEntityDto
     {
-        public string PersonId { get; set; }
+        public string PunchCode { get; set; }
 
-        public int PunchCode { get; set; }
+        public string CardNo { get; set; }
 
         public string Name { get; set; }
 
-        public string Department { get; set; }
-
         public DateTime AttendanceDateTime { get; set; }
 
-        public string AttendanceStatus { get; set; }
+        public DateTime AttendanceDate { get; set; }
 
-        public string CustomName { get; set; }
+        public DateTime AttendanceTime { get; set; }
 
-        public string AttendanceCheckPoint { get; set; }
+        public string Direction { get; set; }
 
-        public string DataSource { get; set; }
+        public string DeviceSerialNo { get; set; }
 
-        public string HandlingType { get; set; }
-
-        public string Temperature { get; set; }
-
-        public string Abnormal { get; set; }
+        public string DeviceName { get; set; }
 
     }
 }

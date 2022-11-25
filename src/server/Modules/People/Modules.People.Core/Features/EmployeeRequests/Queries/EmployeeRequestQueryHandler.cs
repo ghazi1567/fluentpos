@@ -158,7 +158,14 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             if (request.RequestType != null)
             {
-                queryable = queryable.Where(c => c.RequestType == request.RequestType.Value);
+                if (request.RequestType == Shared.DTOs.Enums.RequestType.Attendance)
+                {
+                    queryable = queryable.Where(c => c.RequestType == Shared.DTOs.Enums.RequestType.Attendance || c.RequestType == Shared.DTOs.Enums.RequestType.AttendanceModify);
+                }
+                if (request.RequestType == Shared.DTOs.Enums.RequestType.OverTime)
+                {
+                    queryable = queryable.Where(c => c.RequestType == Shared.DTOs.Enums.RequestType.OverTime || c.RequestType == Shared.DTOs.Enums.RequestType.OverTimeModify);
+                }
             }
 
             if (request.OrganizationId.HasValue)
@@ -203,7 +210,11 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                                     RequestedOn = r.RequestedOn,
                                     RequestType = r.RequestType,
                                     RequestedForName = e.FullName,
-                                    RequestedByName = b.FullName
+                                    RequestedByName = b.FullName,
+                                    AttendanceStatus =r.AttendanceStatus,
+                                    ModificationId = r.ModificationId,
+                                    Production =r.Production,
+                                    RequiredProduction =r.RequiredProduction
                                 })
                                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 

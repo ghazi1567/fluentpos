@@ -62,6 +62,9 @@ namespace FluentPOS.Modules.Accounting.Core.Mappings
             CreateMap<GetPayslipRequestByIdQuery, Payroll>().ReverseMap();
             CreateMap<PaginatedFilter, GetPayslipRequestQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+
+            CreateMap<PaginatedFilter, GetSalaryPerksQuery>()
+               .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
         }
     }
 }

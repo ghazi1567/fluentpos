@@ -7,7 +7,7 @@ export enum AttendanceStatus {
     Off = 5
 }
 export const AttendanceStatusMapping: Record<AttendanceStatus, string> = {
-    [AttendanceStatus.None]: "",
+    [AttendanceStatus.None]: "-",
     [AttendanceStatus.Present]: "Present",
     [AttendanceStatus.Absent]: "Absent",
     [AttendanceStatus.Leave]: "Leave",

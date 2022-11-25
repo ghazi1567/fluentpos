@@ -13,5 +13,6 @@ namespace FluentPOS.Shared.DTOs.Enums
         Allowance = 2,
         LateDeduction = 3,
         AbsentDeduction = 4,
+        Deductions = 5,
     }
 }

@@ -10,5 +10,7 @@ namespace FluentPOS.Shared.DTOs.Enums
     {
         Attendance = 1,
         OverTime = 2,
+        AttendanceModify = 3,
+        OverTimeModify = 4,
     }
 }

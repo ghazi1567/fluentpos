@@ -47,10 +47,19 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<PaginatedResult<SalaryPerksDto>> Handle(GetSalaryPerksQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var queryable = _context.Salaries.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
+            var queryable = _context.SalaryPerks.AsNoTracking().OrderBy(x => x.EffecitveFrom).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.EffecitveFrom);
+            if (request.EmployeeId != System.Guid.Empty)
+            {
+                queryable = queryable.Where(x => x.EmployeeId == request.EmployeeId);
+            }
+
+            if (request.Type != null)
+            {
+                queryable = queryable.Where(x => x.Type == request.Type.Value);
+            }
 
             var result = await queryable
                .AsNoTracking()

@@ -60,5 +60,7 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
         public int TotalOffDays { get; set; }
 
         public int TotalHoliDays { get; set; }
+
+        public PayslipStatus Status { get; set; }
     }
 }

@@ -63,6 +63,11 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             var queryable = _context.Attendances.Where(x => myEmpIds.Contains(x.EmployeeId)).AsNoTracking().OrderByDescending(x => x.AttendanceDate).AsQueryable();
 
+            if (request.AdvanceFilters?.Count > 0)
+            {
+                queryable = queryable.AdvanceSearch(request.AdvanceFilters, request.AdvancedSearchType);
+            }
+
             if (request.OrganizationId.HasValue)
             {
                 queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);

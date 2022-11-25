@@ -2,6 +2,9 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
+import { SearchParams } from "src/app/core/models/Filters/SearchParams";
+import { Employee } from "src/app/modules/admin/people/models/employee";
+import { EmployeeService } from "src/app/modules/admin/people/services/employee.service";
 import { User } from "../../../models/user";
 import { IdentityService } from "../../../services/identity.service";
 import { UserService } from "../../../services/user.service";
@@ -15,11 +18,28 @@ export class UserFormComponent implements OnInit {
     userForm: FormGroup;
     formTitle: string;
     editMode = false;
-    constructor(@Inject(MAT_DIALOG_DATA) public data: User, private identityService: IdentityService, private userService: UserService, private toastr: ToastrService, private fb: FormBuilder) {}
+    employeesLookup: Employee[];
+
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: User,
+        private employeeService: EmployeeService,
+        private identityService: IdentityService,
+        private userService: UserService,
+        private toastr: ToastrService,
+        private fb: FormBuilder
+    ) {}
 
     ngOnInit(): void {
+        this.loadLookups();
         this.initializeForm();
         console.log(this.userForm.value);
+    }
+
+    loadLookups() {
+        let employeeParams = new SearchParams();
+        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+            this.employeesLookup = res.data;
+        });
     }
 
     initializeForm() {
@@ -33,7 +53,8 @@ export class UserFormComponent implements OnInit {
             password: [this.data && this.data.password],
             confirmPassword: [this.data && this.data.confirmPassword],
             phoneNumber: [this.data && this.data.phoneNumber, Validators.required],
-            phoneNumberConfirmed: [true]
+            phoneNumberConfirmed: [true],
+            employeeId: [this.data && this.data.employeeId],
         });
         if (this.userForm.get("id").value === "" || this.userForm.get("id").value == null) {
             this.formTitle = "Register User";
@@ -47,14 +68,16 @@ export class UserFormComponent implements OnInit {
     onSubmit() {
         if (this.userForm.valid) {
             if (this.userForm.get("id").value === "" || this.userForm.get("id").value == null) {
-                this.identityService.registerUser(this.userForm.value).subscribe((response) => {
-                    this.toastr.success(response.messages[0]);
-                },
-                (error) => {
-                    for(let err in error.errors){
-                      this.toastr.error(error.errors[err][0]);
+                this.identityService.registerUser(this.userForm.value).subscribe(
+                    (response) => {
+                        this.toastr.success(response.messages[0]);
+                    },
+                    (error) => {
+                        for (let err in error.errors) {
+                            this.toastr.error(error.errors[err][0]);
+                        }
                     }
-                });
+                );
             } else {
                 this.userService.updateUser(this.userForm.value).subscribe(
                     (response) => {

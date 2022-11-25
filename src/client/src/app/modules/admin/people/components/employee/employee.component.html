@@ -1,4 +1,5 @@
 <div [hidden]="!employees">
+    <input #file type="file" accept=".csv,.xlsx" hidden (change)="handleFileSelect($event)" />
     <app-table
         [title]="'Employees'"
         [subtitle]="'Manage, Register, Update or Remove Employees here.'"
@@ -14,6 +15,9 @@
         [pageSize]="employees && employees.pageSize"
         (onPageChanged)="pageChanged($event)"
         [moduleName]="'Employees'"
+        (onImport)="onImportFile($event)"
+        (onAdvanceFilters)="onAdvanceFilters($event)"
+        [advanceFilters]="advanceSearch"
     >
     </app-table>
 </div>

@@ -21,6 +21,8 @@ export class SalaryPerksService {
       if (CustomerParams.pageNumber) params = params.append("pageNumber", CustomerParams.pageNumber.toString());
       if (CustomerParams.pageSize) params = params.append("pageSize", CustomerParams.pageSize.toString());
       if (CustomerParams.orderBy) params = params.append("orderBy", CustomerParams.orderBy.toString());
+      if (CustomerParams.employeeId) params = params.append("employeeId", CustomerParams.employeeId.toString());
+      if (CustomerParams.type) params = params.append("type", CustomerParams.type.toString());
       return this.api.getAlls(params).pipe(map((response: PaginatedResult<SalaryPerks>) => response));
   }
 

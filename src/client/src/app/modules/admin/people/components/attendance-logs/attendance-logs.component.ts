@@ -14,6 +14,7 @@ import { SearchParams } from "../../../org/models/SearchParams";
 import { BioAttendance } from "../../models/bioAttendance";
 import { EmployeeRequest } from "../../models/employeeRequest";
 import { PeopleSearchParams } from "../../models/peopleSearchParams";
+import { AttendanceLogService } from "../../services/attendance-log.service";
 import { AttendanceRequestService } from "../../services/attendance-request.service";
 import { AttendanceLogFormComponent } from "./attendance-log-form/attendance-log-form.component";
 
@@ -25,15 +26,18 @@ import { AttendanceLogFormComponent } from "./attendance-log-form/attendance-log
 export class AttendanceLogsComponent implements OnInit {
     attendances: PaginatedResult<EmployeeRequest>;
     bioAttendances: PaginatedResult<BioAttendance>;
+    importAttendances: PaginatedResult<BioAttendance>;
     attendanceColumns: TableColumn[];
     bioAttendanceColumns: TableColumn[];
+    importAttendanceColumns: TableColumn[];
     attendanceParams = new PeopleSearchParams();
     searchString: string;
     @ViewChild("file") fileInput: ElementRef;
     public RequestStatusMapping = RequestStatusMapping;
-    customActionData: CustomAction=  new CustomAction('Save','save','register','save');
+    customActionData: CustomAction = new CustomAction("Save", "save", "register", "save");
     constructor(
         public attendanceRequestService: AttendanceRequestService,
+        public attendanceLogService: AttendanceLogService,
         private csvParser: CsvParserService,
         public dialog: MatDialog,
         public toastr: ToastrService,
@@ -44,13 +48,6 @@ export class AttendanceLogsComponent implements OnInit {
         this.getAttendances();
         this.initColumns();
         this.initBioColumns();
-        this.bioAttendances = <PaginatedResult<BioAttendance>>{
-            currentPage: 0,
-            data: [],
-            pageSize: 5,
-            totalCount: 0,
-            totalPages: 0
-        };
     }
 
     getAttendances(): void {
@@ -65,6 +62,10 @@ export class AttendanceLogsComponent implements OnInit {
                 x.Update = x.status == RequestStatus.Approved || x.status == RequestStatus.Pending || x.status == RequestStatus.Rejected;
                 x.Remove = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
             });
+        });
+
+        this.attendanceLogService.getAll(this.attendanceParams).subscribe((result) => {
+            this.bioAttendances = result;
         });
     }
 
@@ -82,6 +83,20 @@ export class AttendanceLogsComponent implements OnInit {
     }
     initBioColumns(): void {
         this.bioAttendanceColumns = [
+            { name: "Punch Code", dataKey: "punchCode", isSortable: true, isShowable: true },
+            { name: "Employee Name", dataKey: "name", isSortable: true, isShowable: true },
+            { name: "Card No", dataKey: "cardNo", isSortable: true, isShowable: true },
+            { name: "Att. DateTime", dataKey: "attendanceDateTime", isSortable: true, isShowable: true, columnType: "date", format: "short" },
+            { name: "Att. Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "shortDate" },
+            { name: "Att. Time", dataKey: "attendanceTime", isSortable: true, isShowable: true, columnType: "date", format: "shortTime" },
+            { name: "Direction", dataKey: "direction", isSortable: true, isShowable: true },
+            { name: "Device Serial No", dataKey: "deviceSerialNo", isSortable: true, isShowable: false },
+            { name: "Device Name", dataKey: "deviceName", isSortable: true, isShowable: false },
+            { name: "Action", dataKey: "action", position: "right", buttons: [""] }
+        ];
+    }
+    initImportColumns(): void {
+        this.importAttendanceColumns = [
             { name: "Person Id", dataKey: "personid", isSortable: true, isShowable: true },
             { name: "Employee Name", dataKey: "name", isSortable: true, isShowable: true },
             { name: "department", dataKey: "department", isSortable: true, isShowable: true },
@@ -220,7 +235,7 @@ export class AttendanceLogsComponent implements OnInit {
         ];
     }
 
-    onImportFile($event){
+    onImportFile($event) {
         console.log($event);
     }
 }

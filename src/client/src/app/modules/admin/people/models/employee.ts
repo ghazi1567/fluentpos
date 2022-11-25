@@ -43,4 +43,16 @@ export interface Employee {
     reportingTo: string;
     basicSalary: number;
     paymentMode: PaymentMode;
+    motherName: string;
+    city: string;
+    country: string;
+    eobiNo: string;
+    qualification: string;
+    bloodGroup: string;
+    languages: string;
+    socialSecurityNo: string;
+    nicPlace: string;
+    domicile: string;
+    organizationId: string;
+    branchId: string;
 }

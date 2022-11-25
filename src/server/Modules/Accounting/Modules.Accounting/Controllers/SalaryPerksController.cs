@@ -17,9 +17,8 @@ namespace FluentPOS.Modules.Accounting.Controllers
 
         [HttpGet]
         [Authorize(Policy = Permissions.Employees.ViewAll)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedFilter filter)
+        public async Task<IActionResult> GetAllAsync([FromQuery] GetSalaryPerksQuery request)
         {
-            var request = Mapper.Map<GetSalaryPerksQuery>(filter);
             var customers = await Mediator.Send(request);
             return Ok(customers);
         }

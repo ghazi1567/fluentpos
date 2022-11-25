@@ -66,5 +66,13 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public double ActualEarnedHours { get; set; }
 
+
+        public bool IsLateComer { get; set; }
+
+        public bool IsCheckOutMissing { get; set; }
+        public OverTimeType OverTimeType { get; set; }
+        public int Production { get; set; }
+
+        public int RequiredProduction { get; set; }
     }
 }

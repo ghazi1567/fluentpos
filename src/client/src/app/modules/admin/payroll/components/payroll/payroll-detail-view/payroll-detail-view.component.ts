@@ -52,7 +52,7 @@ export class PayrollDetailViewComponent implements OnInit {
     loadPayslip() {
         this.payslipService.getById(this.data.id).subscribe((res) => {
             this.payslip = res.data;
-            this.earnings = res.data.transactions.filter((x) => x.transactionType == TransactionType.Earning);
+            this.earnings = res.data.transactions.filter((x) => x.transactionType == TransactionType.Earning || x.transactionType == TransactionType.Allowances).sort((a,b) => a.transactionType - b.transactionType);;
             this.deductions = res.data.transactions.filter((x) => x.transactionType == TransactionType.Deduction);
         });
     }
@@ -99,7 +99,7 @@ export class PayrollDetailViewComponent implements OnInit {
         return this.payslip ? this.payslip.totalDeduction : 0;
     }
     getTotalEarned() {
-        return this.payslip ? this.payslip.totalEarned : 0;
+        return this.payslip ? this.payslip.totalEarned + this.payslip.totalIncentive : 0;
     }
     getNetPay() {
         return this.payslip ? this.payslip.netPay : 0;

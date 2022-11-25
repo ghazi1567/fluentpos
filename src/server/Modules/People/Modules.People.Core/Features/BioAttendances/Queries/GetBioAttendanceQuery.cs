@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------------
 
 using FluentPOS.Modules.People.Core.Dtos;
+using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Enums;
 using FluentPOS.Shared.DTOs.People.Customers;
@@ -17,7 +18,7 @@ using System;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
-    public class GetBioAttendanceQuery : IRequest<PaginatedResult<AttendanceDto>>
+    public class GetBioAttendanceQuery : IRequest<PaginatedResult<BioAttendanceLogDto>>
     {
         public int PageNumber { get; private set; }
 

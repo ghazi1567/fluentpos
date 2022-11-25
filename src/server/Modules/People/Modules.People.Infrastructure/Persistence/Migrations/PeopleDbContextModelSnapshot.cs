@@ -152,11 +152,20 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<TimeSpan>("ExpectedOut")
                         .HasColumnType("time");
 
+                    b.Property<bool>("IsCheckOutMissing")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsLateComer")
+                        .HasColumnType("bit");
+
                     b.Property<int>("LateMinutes")
                         .HasColumnType("int");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("OverTimeType")
+                        .HasColumnType("int");
 
                     b.Property<double>("OvertimeHours")
                         .HasColumnType("float");
@@ -167,11 +176,17 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("PolicyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Production")
+                        .HasColumnType("int");
+
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("RequestId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RequiredProduction")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -196,34 +211,31 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Abnormal")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AttendanceCheckPoint")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("AttendanceDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("AttendanceDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("AttendanceStatus")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("AttendanceTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CardNo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreateaAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CustomName")
+                    b.Property<string>("DeviceName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DataSource")
+                    b.Property<string>("DeviceSerialNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Department")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HandlingType")
+                    b.Property<string>("Direction")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -232,10 +244,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PersonId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Temperature")
+                    b.Property<string>("PunchCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -379,8 +388,14 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("BasicSalary")
                         .HasColumnType("decimal(23,2)");
 
+                    b.Property<string>("BloodGroup")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CnicExpireDate")
                         .HasColumnType("datetime2");
@@ -400,6 +415,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ContractStartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreateaAt")
                         .HasColumnType("datetime2");
 
@@ -411,6 +429,12 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("DesignationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Domicile")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EOBINo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -442,6 +466,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("JoiningDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Languages")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -449,6 +476,12 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MobileNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MotherName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NICPlace")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrganizationId")
@@ -475,6 +508,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<int?>("PunchCode")
                         .HasColumnType("int");
 
+                    b.Property<string>("Qualification")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Religion")
                         .HasColumnType("nvarchar(max)");
 
@@ -483,6 +519,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("ResignDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("SocialSecurityNo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -510,6 +549,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("AttendanceDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("AttendanceStatus")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
@@ -529,6 +571,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ModificationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("OrganizationId")

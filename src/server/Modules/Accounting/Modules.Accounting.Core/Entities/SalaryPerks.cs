@@ -8,11 +8,13 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
     {
         public Guid EmployeeId { get; set; }
 
+        public string Name { get; set; }
+
         public SalaryPerksType Type { get; set; }
 
-        public decimal Percentage { get; set; }
+        public double Percentage { get; set; }
 
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         public bool IsRecursion { get; set; }
 

@@ -12,6 +12,7 @@ import { Salary } from "../../models/salary";
 import { SearchParams } from "../../models/SearchParams";
 import { SalaryService } from "../../services/salary.service";
 import { IncrementDecrementFormComponent } from "./increment-decrement-form/increment-decrement-form.component";
+import { PerksComponent } from "./perks/perks.component";
 
 @Component({
     selector: "app-employee-salary",
@@ -27,8 +28,8 @@ export class EmployeeSalaryComponent implements OnInit {
     actionButtons: CustomAction[] = [
         new CustomAction("Increament", "Increament", "Update", "trending_up"),
         new CustomAction("Decrement", "Decrement", "Update", "trending_down", "warn"),
-        // new CustomAction("Incentives", "Incentives", "Update", "bolt"),
-        // new CustomAction("Deductions", "Deductions", "Update", "trending_down", "warn")
+         new CustomAction("Incentives", "Incentives", "Update", "bolt"),
+         new CustomAction("Deductions", "Deductions", "Update", "trending_down", "warn")
     ];
 
     ngOnInit(): void {
@@ -52,7 +53,7 @@ export class EmployeeSalaryComponent implements OnInit {
             { name: "Salary/Day", dataKey: "perDaySalary", isSortable: true, isShowable: true },
             { name: "Salary/Hour", dataKey: "perHourSalary", isSortable: true, isShowable: true },
             { name: "Days In Month", dataKey: "totalDaysInMonth", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right", buttons: ["Increament","Decrement"] }
+            { name: "Action", dataKey: "action", position: "right", buttons: ["Increament","Decrement","Incentives","Deductions"] }
         ];
     }
 
@@ -100,11 +101,26 @@ export class EmployeeSalaryComponent implements OnInit {
         } else if (data.button.key == "Deductions") {
             data.type = SalaryPerksType.Deductions;
         }
-        this.openIncreamentForm(data);
+        if(data.type == SalaryPerksType.Increment || data.type == SalaryPerksType.Decrement){
+            this.openIncreamentForm(data);
+        }
+        if(data.type == SalaryPerksType.Incentives || data.type == SalaryPerksType.Deductions){
+            this.openIncentiveForm(data);
+        }
     }
 
     openIncreamentForm(rowData: any) {
         const dialogRef = this.dialog.open(IncrementDecrementFormComponent, {
+            data: rowData
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                this.getAllSalaries();
+            }
+        });
+    }
+    openIncentiveForm(rowData: any) {
+        const dialogRef = this.dialog.open(PerksComponent, {
             data: rowData
         });
         dialogRef.afterClosed().subscribe((result) => {

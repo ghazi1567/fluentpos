@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, Observer } from "rxjs";
+import { Employee } from "src/app/modules/admin/people/models/employee";
 import * as XLSX from "XLSX";
 
 @Injectable({
@@ -100,8 +101,8 @@ export class CsvParserService {
         return file.name.toLowerCase().endsWith(".csv");
     }
     isXlsxFile(file: any) {
-      return file.name.toLowerCase().endsWith(".xlsx");
-  }
+        return file.name.toLowerCase().endsWith(".xlsx");
+    }
     getHeaderMapping(config: any, headerName: any) {
         if (config.mapping && config.mapping.length > 0) {
             var colMap = config.mapping.find((x) => x.csvColumn.toLowerCase() == headerName.toLowerCase());
@@ -112,6 +113,14 @@ export class CsvParserService {
             .replace(/\s/g, "")
             .replace(/[~`!@#$%^&*()+={}\[\];:\'\"<>.,\/\\\?-]/g, "")
             .toLowerCase();
+    }
+    getDefaultValue(config: any, headerName: any) {
+        if (config.mapping && config.mapping.length > 0) {
+            var colMap = config.mapping.find((x) => x.csvColumn.toLowerCase() == headerName.toLowerCase());
+            if (colMap) return colMap.defaultValue;
+            return "";
+        }
+        return "";
     }
 
     getHeaderArray(csvRecordsArr: any) {
@@ -146,7 +155,6 @@ export class CsvParserService {
         return ngcCSVParserError;
     }
 
-   
     parseXlsx(xlsxFile: File, config: CSVParserConfig): Observable<Array<any> | NgxCSVParserError> {
         config = {
             ...this.defaultCSVParserConfig,
@@ -170,8 +178,8 @@ export class CsvParserService {
                         var workbook = XLSX.read(bstr, { type: "binary" });
                         var first_sheet_name = workbook.SheetNames[0];
                         var worksheet = workbook.Sheets[first_sheet_name];
-                        console.log(XLSX.utils.sheet_to_json(worksheet, { raw: true }));
-                        var arraylist = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+                        console.log(XLSX.utils.sheet_to_json(worksheet, { raw: false, dateNF: "yyyy-MM-dd" }));
+                        var arraylist = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: null, dateNF: "yyyy-MM-dd" });
                         var csvRecords = this.renameHeaderKeys(arraylist, config);
                         observer.next(csvRecords);
                         observer.complete();
@@ -190,24 +198,27 @@ export class CsvParserService {
 
         return ngxCSVParserObserver;
     }
-    renameHeaderKeys(data: any[], config) {
+    renameHeaderKeys(data: any[], config: CSVParserConfig) {
         data.forEach((obj) => {
-            for (var key in obj) {
+            config.mapping.forEach((map) => {
+                var key = map.csvColumn;
                 let headerName = this.getHeaderMapping(config, key);
                 if (headerName) {
                     if (obj[key] === undefined || obj[key] === null) {
-                        obj[headerName] = "";
+                        obj[headerName] = this.getDefaultValue(config, key);
                     } else {
                         obj[headerName] = obj[key];
-                        delete obj[key];
+                        if (headerName != key) {
+                            delete obj[key];
+                        }
                     }
                 }
-            }
+            });
         });
         return data;
     }
 
-    exportXls(data : any[],fileName, sheetName){
+    exportXls(data: any[], fileName, sheetName) {
         var worksheet = XLSX.utils.json_to_sheet(data);
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, worksheet, sheetName);

@@ -8,6 +8,7 @@
 
 using FluentPOS.Shared.DTOs.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace FluentPOS.Shared.DTOs.Filters
 {
@@ -24,6 +25,14 @@ namespace FluentPOS.Shared.DTOs.Filters
         public Guid? EmployeeId { get; set; }
 
         public RequestType? RequestType { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
+        public string AdvancedSearchType { get; set; }
+
+        public List<FilterModel> AdvanceFilters { get; set; }
 
         public PaginatedFilter()
         {

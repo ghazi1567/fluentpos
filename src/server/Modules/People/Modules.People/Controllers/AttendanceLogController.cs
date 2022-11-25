@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.People.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = Permissions.Attendance.Register)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterAsync(RegisterBioAttendanceCommand command)
         {
             return Ok(await Mediator.Send(command));

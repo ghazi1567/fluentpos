@@ -63,5 +63,8 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
         public double TotalEarnedHours { get; set; }
 
         public double ActualEarnedHours { get; set; }
+        public bool IsLateComer { get; set; }
+
+        public bool IsCheckOutMissing { get; set; }
     }
 }

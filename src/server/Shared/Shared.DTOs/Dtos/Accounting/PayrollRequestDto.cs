@@ -43,7 +43,10 @@ namespace FluentPOS.Shared.DTOs.Dtos.Accounting
 
         public DateTime? EndedAt { get; set; }
 
-        public List<string> Logs { get; set; }
+        public List<string> LogList { get; set; }
+
+        public string Logs { get; set; }
+
 
     }
 }

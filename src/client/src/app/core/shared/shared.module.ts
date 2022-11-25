@@ -26,6 +26,8 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/materia
 import { CustomMomentDateAdapter } from "../helpers/custom-moment-date-adapter";
 import { CronGenComponent } from "./components/cron-gen/cron-gen.component";
 import { TimePickerComponent } from './components/cron-gen/time-picker/time-picker.component';
+import { AdvanceFilterComponent } from './components/advance-filter/advance-filter.component';
+import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 
 export const MY_FORMATS = {
     parse: {
@@ -51,7 +53,9 @@ export const MY_FORMATS = {
         UploaderComponent,
         HasRightsDirective,
         CronGenComponent,
-        TimePickerComponent
+        TimePickerComponent,
+        AdvanceFilterComponent,
+        AdvancedSearchComponent
     ],
     imports: [
         CommonModule,

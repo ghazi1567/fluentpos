@@ -36,7 +36,6 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             _localizer = localizer;
         }
 
-
         public async Task<bool> IsAttendanceExist(Guid employeeId, DateTime attendanceDate)
         {
             return await _context.Attendances.AnyAsync(x => x.EmployeeId == employeeId && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
@@ -57,41 +56,56 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 if (isExist)
                 {
                     attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
+
+                    if (attendance.IsCheckOutMissing)
+                    {
+                        attendance.CheckOut = attendanceDate.TimeOfDay;
+                        attendance.ActualOut = attendanceDate.TimeOfDay;
+                    }
+                }
+                else
+                {
+                    attendance = new Attendance
+                    {
+                        EmployeeId = employeeInfo.Id,
+                        DepartmentId = employeeInfo.DepartmentId,
+                        DesignationId = employeeInfo.DesignationId,
+                        AttendanceDate = attendanceDate.Date,
+                        CheckIn = attendanceDate.TimeOfDay,
+                        CheckOut = TimeSpan.Zero,
+                        ActualIn = attendanceDate.TimeOfDay,
+                        ActualOut = TimeSpan.Zero,
+                        AttendanceType = Shared.DTOs.Enums.AttendanceType.Bio,
+                        BranchId = employeeInfo.BranchId,
+                        CreateaAt = DateTime.Now,
+                        EarnedHours = 0,
+                        BioMachineId = string.Empty,
+                        EarnedMinutes = 0,
+                        ExpectedIn = TimeSpan.Zero,
+                        ExpectedOut = TimeSpan.Zero,
+                        OrganizationId = employeeInfo.OrganizationId,
+                        OvertimeHours = 0,
+                        OvertimeMinutes = 0,
+                        PolicyId = employeeInfo.PolicyId,
+                        Reason = "Bio Attendance",
+                        AttendanceStatus = Shared.DTOs.Enums.AttendanceStatus.Present
+                    };
                 }
 
-                attendance = new Attendance
-                {
-                    EmployeeId = employeeInfo.Id,
-                    DepartmentId = employeeInfo.DepartmentId,
-                    DesignationId = employeeInfo.DesignationId,
-                    AttendanceDate = attendanceDate.Date,
-                    CheckIn = attendanceDate.TimeOfDay,
-                    CheckOut = TimeSpan.Zero,
-                    ActualIn = attendanceDate.TimeOfDay,
-                    ActualOut = TimeSpan.Zero,
-                    AttendanceType = Shared.DTOs.Enums.AttendanceType.Bio,
-                    BranchId = employeeInfo.BranchId,
-                    CreateaAt = DateTime.Now,
-                    EarnedHours = 0,
-                    BioMachineId = string.Empty,
-                    EarnedMinutes = 0,
-                    ExpectedIn = TimeSpan.Zero,
-                    ExpectedOut = TimeSpan.Zero,
-                    OrganizationId = employeeInfo.OrganizationId,
-                    OvertimeHours = 0,
-                    OvertimeMinutes = 0,
-                    PolicyId = employeeInfo.PolicyId,
-                    Reason = "Bio Attendance",
-                    AttendanceStatus = Shared.DTOs.Enums.AttendanceStatus.Present
-                };
-
+                attendance.IsCheckOutMissing = attendance.CheckOut == TimeSpan.Zero;
                 if (attendance.CheckIn != TimeSpan.Zero && attendance.CheckOut != TimeSpan.Zero)
                 {
                     attendance = await CalculateEarnedHours(attendance);
                 }
+                if (isExist)
+                {
+                    var entity = _context.Attendances.Update(attendance);
+                }
+                else
+                {
+                    var entity = _context.Attendances.Add(attendance);
 
-
-                var entity = _context.Attendances.Add(attendance);
+                }
                 return true;
             }
 
@@ -250,7 +264,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     Reason = request.Reason,
                     RequestId = requestId,
                     Status = request.Status,
-                    StatusUpdateOn = request.StatusUpdateOn
+                    StatusUpdateOn = request.StatusUpdateOn,
+                    OverTimeType = request.OverTimeType,
+                    Production = request.Production,
+                    RequiredProduction = request.RequiredProduction
                 };
 
                 attendance = await CalculateEarnedHours(attendance);
@@ -264,24 +281,32 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<Attendance> CalculateEarnedHours(Attendance attendance, bool IsUpdate = false)
         {
-            if (attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.Manual || attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.Bio || attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.System)
-            {
-                var timeDiffrence = attendance.CheckOut - attendance.CheckIn;
-                attendance.EarnedHours = Math.Round(timeDiffrence.TotalHours, 2);
-                attendance.ActualEarnedHours = attendance.EarnedHours;
-                attendance.EarnedMinutes = timeDiffrence.Minutes;
-            }
-            else if (attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.OverTime)
-            {
-                var overtimeDiffrence = attendance.CheckOut - attendance.CheckIn;
-                attendance.OvertimeHours = Math.Round(overtimeDiffrence.TotalHours, 2);
-                attendance.OvertimeMinutes = overtimeDiffrence.Minutes;
-            }
-
             // apply policy rules
             var policy = await _orgService.GetPolicyDetailsAsync(attendance.PolicyId);
             if (policy.Policy != null)
             {
+                if (attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.Manual || attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.Bio || attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.System)
+                {
+                    var timeDiffrence = attendance.CheckOut - attendance.CheckIn;
+                    attendance.EarnedHours = Math.Round(timeDiffrence.TotalHours, 2);
+                    attendance.ActualEarnedHours = attendance.EarnedHours;
+                    attendance.EarnedMinutes = timeDiffrence.Minutes;
+                }
+                else if (attendance.AttendanceType == Shared.DTOs.Enums.AttendanceType.OverTime)
+                {
+                    if (attendance.OverTimeType == OverTimeType.Production)
+                    {
+                        int perHourQty = attendance.RequiredProduction / policy.Policy.DailyWorkingHour;
+                        int overtimeHours = attendance.Production / perHourQty;
+                        attendance.OvertimeHours = overtimeHours;
+                    }
+                    else if (attendance.OverTimeType == OverTimeType.Hours)
+                    {
+                        var overtimeDiffrence = attendance.CheckOut - attendance.CheckIn;
+                        attendance.OvertimeHours = Math.Round(overtimeDiffrence.TotalHours, 2);
+                    }
+                }
+
                 if (IsOffDay(attendance.AttendanceDate, policy.Policy) && !IsUpdate)
                 {
                     attendance.AttendanceStatus = Shared.DTOs.Enums.AttendanceStatus.Off;
@@ -298,6 +323,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
                         if (timeDiff.TotalMinutes > policy.Policy.AllowedLateMinutes)
                         {
+                            attendance.IsLateComer = true;
                             attendance.DeductedHours = policy.Policy.lateComersPenalty;
                             attendance.EarnedHours -= attendance.DeductedHours;
                             attendance.LateMinutes = timeDiff.Minutes;
@@ -552,6 +578,56 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             }
 
             return absentCount == policy.SandwichLeaveCount;
+        }
+
+        public async Task<bool> UpdateModification(Guid requestId)
+        {
+            bool result = false;
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
+            if (request != null)
+            {
+                if (request.RequestType == RequestType.AttendanceModify)
+                {
+                    result = await AttendanceModification(request);
+                }
+                else if (request.RequestType == RequestType.OverTimeModify)
+                {
+                    result = await OverTimeModification(request);
+                }
+            }
+
+            return result;
+        }
+
+        private async Task<bool> AttendanceModification(EmployeeRequest request)
+        {
+            var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.Id == request.ModificationId.Value);
+            attendance.AttendanceStatus = request.AttendanceStatus;
+            attendance.ActualIn = attendance.CheckIn;
+            attendance.ActualOut = attendance.CheckOut;
+            attendance.CheckIn = request.CheckIn.Value;
+            attendance.CheckOut = request.CheckOut.Value;
+            attendance.Reason = request.Reason;
+            attendance = await CalculateEarnedHours(attendance, true);
+            var entity = _context.Attendances.Update(attendance);
+            return true;
+        }
+
+        private async Task<bool> OverTimeModification(EmployeeRequest request)
+        {
+            var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.Id == request.ModificationId.Value);
+            attendance.AttendanceStatus = request.AttendanceStatus;
+            attendance.ActualIn = attendance.CheckIn;
+            attendance.ActualOut = attendance.CheckOut;
+            attendance.CheckIn = request.CheckIn.Value;
+            attendance.CheckOut = request.CheckOut.Value;
+            attendance.Reason = request.Reason;
+            attendance.Production = request.Production;
+            attendance.RequiredProduction = request.RequiredProduction;
+            attendance.OverTimeType = request.OverTimeType;
+            attendance = await CalculateEarnedHours(attendance, true);
+            var entity = _context.Attendances.Update(attendance);
+            return true;
         }
     }
 }

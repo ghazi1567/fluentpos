@@ -45,5 +45,9 @@ namespace FluentPOS.Modules.People.Core.Entities
         public int Production { get; set; }
 
         public int RequiredProduction { get; set; }
+
+        public Guid? ModificationId { get; set; }
+
+        public AttendanceStatus AttendanceStatus { get; set; }
     }
 }
