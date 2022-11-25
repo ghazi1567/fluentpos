@@ -1,9 +1,0 @@
-{
-    "trailingComma": "none",
-    "tabWidth": 4,
-    "semi": true,
-    "singleQuote": false,
-    "formatOnSave": true,
-    "formatOnPaste": false,
-    "printWidth": 200
-}
