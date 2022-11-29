@@ -21,7 +21,7 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { SharedModule } from './core/shared/shared.module';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AuthService } from './core/services/auth.service';
 import { LocalStorageService } from './core/services/local-storage.service';
@@ -32,10 +32,20 @@ import { PermissionGuard } from './core/guards/permission.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { CustomerService } from './modules/admin/people/services/customer.service';
+import { NgxAdminLayoutComponent } from './layouts/ngx-admin-layout/ngx-admin-layout.component';
+import { ThemeModule } from './theme/theme.module';
 export function rootLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
-
+import {
+  NbChatModule,
+  NbDatepickerModule,
+  NbDialogModule,
+  NbMenuModule,
+  NbSidebarModule,
+  NbToastrModule,
+  NbWindowModule,
+} from '@nebular/theme';
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +54,7 @@ export function rootLoaderFactory(http: HttpClient) {
     ToolbarComponent,
     HomeLayoutComponent,
     AdminLayoutComponent,
+    NgxAdminLayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +64,13 @@ export function rootLoaderFactory(http: HttpClient) {
     SharedModule,
     HttpClientModule,
     CatalogRoutingModule,
+    NbSidebarModule.forRoot(),
+    NbMenuModule.forRoot(),
+    NbDatepickerModule.forRoot(),
+    NbDialogModule.forRoot(),
+    NbWindowModule.forRoot(),
+    NbToastrModule.forRoot(),
+    ThemeModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

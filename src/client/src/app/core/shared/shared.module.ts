@@ -25,10 +25,10 @@ import { HasRightsDirective } from "../directives/has-rights.directive";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { CustomMomentDateAdapter } from "../helpers/custom-moment-date-adapter";
 import { CronGenComponent } from "./components/cron-gen/cron-gen.component";
-import { TimePickerComponent } from './components/cron-gen/time-picker/time-picker.component';
-import { AdvanceFilterComponent } from './components/advance-filter/advance-filter.component';
-import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
-
+import { TimePickerComponent } from "./components/cron-gen/time-picker/time-picker.component";
+import { AdvanceFilterComponent } from "./components/advance-filter/advance-filter.component";
+import { AdvancedSearchComponent } from "./components/advanced-search/advanced-search.component";
+import { AnalyticsService, LayoutService, PlayerService, SeoService, StateService } from "../utils";
 export const MY_FORMATS = {
     parse: {
         dateInput: "LL"
@@ -77,6 +77,11 @@ export const MY_FORMATS = {
         IdentityApiService,
         UserApiService,
         RoleApiService,
+        AnalyticsService,
+        LayoutService,
+        PlayerService,
+        SeoService,
+        StateService,
         { provide: MAT_DATE_LOCALE, useValue: "en-GB" },
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
         { provide: DateAdapter, useClass: CustomMomentDateAdapter },
@@ -85,6 +90,6 @@ export const MY_FORMATS = {
             useValue: "PKR "
         }
     ],
-    exports: [ReactiveFormsModule, FormsModule, TableComponent, TranslateModule, HasPermissionDirective, HasRoleDirective, UploaderComponent, HasRightsDirective,CronGenComponent,TimePickerComponent]
+    exports: [ReactiveFormsModule, FormsModule, TableComponent, TranslateModule, HasPermissionDirective, HasRoleDirective, UploaderComponent, HasRightsDirective, CronGenComponent, TimePickerComponent]
 })
 export class SharedModule {}
