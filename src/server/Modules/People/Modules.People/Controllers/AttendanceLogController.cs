@@ -41,6 +41,14 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(customer);
         }
 
+        [HttpPost("AdvanceSearch")]
+        [Authorize(Policy = Permissions.Attendance.ViewAll)]
+        public async Task<IActionResult> GetAllAdvanceSearchAsync(GetBioAttendanceQuery request)
+        {
+            var customers = await Mediator.Send(request);
+            return Ok(customers);
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> RegisterAsync(RegisterBioAttendanceCommand command)

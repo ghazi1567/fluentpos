@@ -27,5 +27,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
         Task<bool> MarkBioAttendance(int punchCode, DateTime attendanceDate);
 
         Task<bool> UpdateModification(Guid requestId);
+
+        bool TiggerAutoPresentJob(DateTime? datetime, bool isCheckIn = true);
     }
 }

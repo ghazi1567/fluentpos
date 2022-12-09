@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { RequestStatus, RequestStatusMapping } from "src/app/core/enums/RequestStatus";
 import { RequestType } from "src/app/core/enums/RequestType";
 import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
+import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTerm";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CsvMapping, CsvParserService, NgxCSVParserError } from "src/app/core/services/csv-parser.service";
@@ -35,6 +36,9 @@ export class AttendanceLogsComponent implements OnInit {
     @ViewChild("file") fileInput: ElementRef;
     public RequestStatusMapping = RequestStatusMapping;
     customActionData: CustomAction = new CustomAction("Save", "save", "register", "save");
+    advanceSearch: NgAsConfig;
+    savedFilters: NgAsSearchTerm[];
+    isAdvanceFilter = false;
     constructor(
         public attendanceRequestService: AttendanceRequestService,
         public attendanceLogService: AttendanceLogService,
@@ -48,6 +52,7 @@ export class AttendanceLogsComponent implements OnInit {
         this.getAttendances();
         this.initColumns();
         this.initBioColumns();
+        this.initAdvanceFilters();
     }
 
     getAttendances(): void {
@@ -64,9 +69,15 @@ export class AttendanceLogsComponent implements OnInit {
             });
         });
 
-        this.attendanceLogService.getAll(this.attendanceParams).subscribe((result) => {
-            this.bioAttendances = result;
-        });
+        if (this.isAdvanceFilter) {
+            this.attendanceLogService.advanceSearch(this.attendanceParams).subscribe((result) => {
+                this.bioAttendances = result;
+            });
+        } else {
+            this.attendanceLogService.getAll(this.attendanceParams).subscribe((result) => {
+                this.bioAttendances = result;
+            });
+        }
     }
 
     initColumns(): void {
@@ -237,5 +248,37 @@ export class AttendanceLogsComponent implements OnInit {
 
     onImportFile($event) {
         console.log($event);
+    }
+    onAdvanceFilters($event) {
+        if ($event == null) {
+            this.isAdvanceFilter = false;
+            this.getAttendances();
+        } else {
+            this.attendanceParams.advanceFilters = $event.advancedTerms;
+            this.attendanceParams.advancedSearchType = $event.advancedSearchType;
+            this.isAdvanceFilter = true;
+            this.getAttendances();
+        }
+    }
+
+    initAdvanceFilters() {
+        this.savedFilters = [];
+        this.advanceSearch = {
+            headers: [
+                { id: "name", displayText: "Employee Name" },
+                { id: "cardNo", displayText: "Card#" },
+                { id: "PunchCode", displayText: "Punch Code", type: "number" },
+                {
+                    id: "attendanceDate",
+                    displayText: "Attendance Date",
+                    type: "date"
+                }
+            ],
+            defaultTerm: null,
+            inputArray: null,
+            savedFilters: this.savedFilters,
+            showFilterSaving: null,
+            simpleFieldLabel: null
+        };
     }
 }

@@ -9,6 +9,8 @@ export class PeopleSearchParams implements SearchParams {
     employeeId?: string;
     requestId?: string;
     requestType?: RequestType;
-    month?:number;
-    year?:number;
+    month?: number;
+    year?: number;
+    advanceFilters?: any[];
+    advancedSearchType?: string;
 }

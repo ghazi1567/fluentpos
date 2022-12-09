@@ -59,6 +59,15 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderByDescending(a => a.AttendanceDateTime);
 
+            if (request.AdvanceFilters?.Count > 0)
+            {
+                queryable = queryable.AdvanceSearch(request.AdvanceFilters, request.AdvancedSearchType);
+            }
+            else if (!string.IsNullOrEmpty(request.SearchString))
+            {
+                queryable = queryable.Where(c => c.Name.Contains(request.SearchString) || c.PunchCode.Contains(request.SearchString) || c.CardNo.Contains(request.SearchString));
+            }
+
             var attendanceList = await queryable
                .AsNoTracking()
                .ToPaginatedListAsync(request.PageNumber, request.PageSize);

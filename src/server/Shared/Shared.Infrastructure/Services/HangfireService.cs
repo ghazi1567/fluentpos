@@ -49,13 +49,35 @@ namespace FluentPOS.Shared.Infrastructure.Services
             switch (jobName)
             {
                 case JobType.MarkAbsent:
-                    RecurringJob.AddOrUpdate(nameof(jobName), () => _attendanceService.TiggerAutoAbsentJob(null), schdule);
+                    RecurringJob.AddOrUpdate("AbsentJob", () => _attendanceService.TiggerAutoAbsentJob(null), schdule);
                     break;
                 case JobType.MarkOffDay:
                     break;
                 case JobType.FetchCheckIn:
+                    RecurringJob.AddOrUpdate("CheckInJob", () => _attendanceService.TiggerAutoPresentJob(null, true), schdule);
                     break; ;
                 case JobType.FetchCheckOut:
+                    RecurringJob.AddOrUpdate("CheckOutJob", () => _attendanceService.TiggerAutoPresentJob(null, false), schdule);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void RunJob(JobType jobName, DateTime dateTime)
+        {
+            switch (jobName)
+            {
+                case JobType.MarkAbsent:
+                    _attendanceService.TiggerAutoAbsentJob(dateTime);
+                    break;
+                case JobType.MarkOffDay:
+                    break;
+                case JobType.FetchCheckIn:
+                    _attendanceService.TiggerAutoPresentJob(dateTime, true);
+                    break;
+                case JobType.FetchCheckOut:
+                    _attendanceService.TiggerAutoPresentJob(dateTime, false);
                     break;
                 default:
                     break;

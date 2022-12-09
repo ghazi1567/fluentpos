@@ -20,5 +20,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
         void Recurring(string jobName, Expression<Func<Task>> methodCall, string schdule = "");
 
         void ConfigureJob(JobType jobName, string schdule = "");
+
+        void RunJob(JobType jobName, DateTime dateTime);
     }
 }

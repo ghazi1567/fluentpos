@@ -9,6 +9,7 @@ using FluentPOS.Shared.DTOs.Dtos.Peoples;
 using FluentPOS.Shared.DTOs.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         private readonly IOrgService _orgService;
         private readonly ICurrentUser _currentUser;
         private readonly IStringLocalizer<AttendanceService> _localizer;
+        private readonly ILogger<AttendanceService> _logger;
 
-        public AttendanceService(IPeopleDbContext context, IMapper mapper, IEmployeeService employeeService, IOrgService orgService, ICurrentUser currentUser, IStringLocalizer<AttendanceService> localizer)
+        public AttendanceService(IPeopleDbContext context, IMapper mapper, IEmployeeService employeeService, IOrgService orgService, ICurrentUser currentUser, IStringLocalizer<AttendanceService> localizer,
+            ILogger<AttendanceService> logger)
         {
             _context = context;
             _mapper = mapper;
@@ -34,6 +37,8 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             _orgService = orgService;
             _currentUser = currentUser;
             _localizer = localizer;
+            _logger = logger;
+
         }
 
         public async Task<bool> IsAttendanceExist(Guid employeeId, DateTime attendanceDate)
@@ -55,10 +60,13 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 Attendance attendance = null;
                 if (isExist)
                 {
+                    _logger.LogCritical($"Attendance Already Exist : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
                     attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
 
                     if (attendance.IsCheckOutMissing)
                     {
+                        _logger.LogCritical($"Checkout Missing : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+
                         attendance.CheckOut = attendanceDate.TimeOfDay;
                         attendance.ActualOut = attendanceDate.TimeOfDay;
                     }
@@ -90,29 +98,133 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                         Reason = "Bio Attendance",
                         AttendanceStatus = Shared.DTOs.Enums.AttendanceStatus.Present
                     };
+
+                    _logger.LogCritical($"New Attendance Mark : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
                 }
 
                 attendance.IsCheckOutMissing = attendance.CheckOut == TimeSpan.Zero;
                 if (attendance.CheckIn != TimeSpan.Zero && attendance.CheckOut != TimeSpan.Zero)
                 {
+
                     attendance = await CalculateEarnedHours(attendance);
+                    _logger.LogCritical($"Attendance Hours Calculated : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+
                 }
+
                 if (isExist)
                 {
                     var entity = _context.Attendances.Update(attendance);
+                    _logger.LogCritical($"Updating Attendance : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
                 }
                 else
                 {
                     var entity = _context.Attendances.Add(attendance);
-
+                    _logger.LogCritical($"Inserting Attendance : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
                 }
+
                 return true;
+            } else
+            {
+                _logger.LogCritical($"Employee Not Found For Punch Code: {punchCode}");
             }
 
             return false;
         }
 
+        public async Task<bool> MarkBioAttendance(int punchCode, DateTime attendanceDate, bool isCheckIn)
+        {
+            var employeeInfo = _context.Employees.FirstOrDefault(x => x.PunchCode == punchCode);
+            if (employeeInfo != null)
+            {
+                bool isExist = await IsAttendanceExist(employeeInfo.Id, attendanceDate.Date);
+                Attendance attendance = null;
+                if (isExist)
+                {
+                    _logger.LogCritical($"Attendance Already Exist : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+                    attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
 
+                    if (isCheckIn)
+                    {
+                        _logger.LogCritical($"CheckIn Job : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+
+                        attendance.CheckIn = attendanceDate.TimeOfDay;
+                        attendance.ActualIn = attendanceDate.TimeOfDay;
+                    }
+                    else if (attendance.IsCheckOutMissing)
+                    {
+                        _logger.LogCritical($"Checkout Missing : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+
+                        attendance.CheckOut = attendanceDate.TimeOfDay;
+                        attendance.ActualOut = attendanceDate.TimeOfDay;
+                    }
+                    else
+                    {
+                        _logger.LogCritical($"Checkout job : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+
+                        attendance.CheckOut = attendanceDate.TimeOfDay;
+                        attendance.ActualOut = attendanceDate.TimeOfDay;
+                    }
+                }
+                else
+                {
+                    attendance = new Attendance
+                    {
+                        EmployeeId = employeeInfo.Id,
+                        DepartmentId = employeeInfo.DepartmentId,
+                        DesignationId = employeeInfo.DesignationId,
+                        AttendanceDate = attendanceDate.Date,
+                        CheckIn = attendanceDate.TimeOfDay,
+                        CheckOut = TimeSpan.Zero,
+                        ActualIn = attendanceDate.TimeOfDay,
+                        ActualOut = TimeSpan.Zero,
+                        AttendanceType = Shared.DTOs.Enums.AttendanceType.Bio,
+                        BranchId = employeeInfo.BranchId,
+                        CreateaAt = DateTime.Now,
+                        EarnedHours = 0,
+                        BioMachineId = string.Empty,
+                        EarnedMinutes = 0,
+                        ExpectedIn = TimeSpan.Zero,
+                        ExpectedOut = TimeSpan.Zero,
+                        OrganizationId = employeeInfo.OrganizationId,
+                        OvertimeHours = 0,
+                        OvertimeMinutes = 0,
+                        PolicyId = employeeInfo.PolicyId,
+                        Reason = "Bio Attendance",
+                        AttendanceStatus = Shared.DTOs.Enums.AttendanceStatus.Present
+                    };
+
+                    _logger.LogCritical($"New Attendance Mark : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+                }
+
+                attendance.IsCheckOutMissing = attendance.CheckOut == TimeSpan.Zero;
+                if (attendance.CheckIn != TimeSpan.Zero && attendance.CheckOut != TimeSpan.Zero)
+                {
+
+                    attendance = await CalculateEarnedHours(attendance);
+                    _logger.LogCritical($"Attendance Hours Calculated : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+
+                }
+
+                if (isExist)
+                {
+                    var entity = _context.Attendances.Update(attendance);
+                    _logger.LogCritical($"Updating Attendance : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+                }
+                else
+                {
+                    var entity = _context.Attendances.Add(attendance);
+                    _logger.LogCritical($"Inserting Attendance : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
+                }
+
+                return true;
+            }
+            else
+            {
+                _logger.LogCritical($"Employee Not Found For Punch Code: {punchCode}");
+            }
+
+            return false;
+        }
         public async Task<bool> MarkManualAttendance(Guid requestId)
         {
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
@@ -431,6 +543,11 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     continue;
                 }
 
+                if (_context.AttendanceLogs.Any(x => x.PunchCode == item.PunchCode.Value.ToString() && x.AttendanceDate.Date == dateTime.Date))
+                {
+                    continue;
+                }
+
                 if (!policyList.Any(x => x.Id == item.PolicyId))
                 {
                     var policyDetail = await _orgService.GetPolicyDetailsAsync(item.PolicyId);
@@ -496,25 +613,71 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public bool TiggerAutoAbsentJob(DateTime? datetime)
         {
-            var dt = new DateTime(2022, 08, 31, 00, 00, 00);
-            for (int i = 0; i <= 30; i++)
+            // var dt = new DateTime(2022, 08, 31, 00, 00, 00);
+            // for (int i = 0; i <= 30; i++)
+            // {
+            //     dt = dt.AddDays(1);
+            //     bool result = MarkAutoAbsentOrOffDay(dt).Result;
+            // }
+
+            if (datetime == null)
             {
-                dt = dt.AddDays(1);
-                bool result = MarkAutoAbsentOrOffDay(dt).Result;
+                datetime = DateTime.Now;
+            }
+            try
+            {
+                bool result = MarkAutoAbsentOrOffDay(datetime.Value).Result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return true;
+        }
+
+        public bool TiggerAutoPresentJob(DateTime? datetime, bool isCheckIn = true)
+        {
+            if (datetime == null)
+            {
+                datetime = DateTime.Now;
             }
 
-            // if (datetime == null)
-            // {
-            //     datetime = DateTime.Now;
-            // }
-            // try
-            // {
-            //     //bool result = MarkAutoAbsentOrOffDay(datetime.Value).Result;
-            // }
-            // catch (Exception ex)
-            // {
-            //     throw ex;
-            // }
+            _logger.LogCritical($"Auto Present Job Trigger For : {datetime.Value}");
+            try
+            {
+                var events = _context.AttendanceLogs.Where(x => x.AttendanceDate.Date == datetime.Value.Date).OrderBy(x=>x.AttendanceDateTime).ToList();
+                _logger.LogCritical($"{events.Count} Events Found For : {datetime.Value}");
+                var results = events.GroupBy(
+                    p => p.PunchCode,
+                    (key, g) => new { PunchCode = key, Events = g.ToList() });
+
+                foreach (var item in results)
+                {
+                    BioAttendanceLog bioAttendanceLog = null;
+                    if (isCheckIn)
+                    {
+                        bioAttendanceLog = item.Events.OrderBy(x => x.AttendanceDateTime).FirstOrDefault();
+                    }
+                    else
+                    {
+                        bioAttendanceLog = item.Events.OrderByDescending(x => x.AttendanceDateTime).FirstOrDefault();
+                    }
+
+                    bool result = MarkBioAttendance(int.Parse(item.PunchCode), bioAttendanceLog.AttendanceDateTime,isCheckIn).Result;
+                    if (result)
+                    {
+                        _context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                _logger.LogError(ex.StackTrace);
+                _logger.LogError(ex.ToString());
+                throw;
+            }
+
             return true;
         }
 

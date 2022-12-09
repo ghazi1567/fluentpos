@@ -52,7 +52,7 @@ export class JobsComponent implements OnInit {
             { name: "Job Name", dataKey: "job", isSortable: true, isShowable: true },
             { name: "Schedule", dataKey: "schedule", isSortable: true, isShowable: true },
             { name: "Enabled", dataKey: "enabled", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right", buttons: ["configure", "run", "Update"] }
+            { name: "Action", dataKey: "action", position: "right", buttons: ["Register","configure", "run", "Update"] }
         ];
     }
 

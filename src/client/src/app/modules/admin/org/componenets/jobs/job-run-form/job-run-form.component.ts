@@ -27,10 +27,11 @@ export class JobRunFormComponent implements OnInit {
         private orgService: OrgService,
         private toastr: ToastrService,
         private fb: FormBuilder
-    ) {}
+    ) {
+        console.log(data);
+    }
 
     ngOnInit(): void {
-        this.loadLookups();
         this.initializeForm();
     }
     loadLookups() {
@@ -45,6 +46,7 @@ export class JobRunFormComponent implements OnInit {
     initializeForm() {
         this.jobForm = this.fb.group({
             id: [this.data && this.data.event.id],
+            jobName: [this.data && this.data.event.jobName],
             date: [new Date()]
         });
         if (this.jobForm.get("id").value === "" || this.jobForm.get("id").value == null) {

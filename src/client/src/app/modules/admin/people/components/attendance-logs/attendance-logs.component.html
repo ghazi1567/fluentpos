@@ -43,6 +43,8 @@
                 [pageSize]="bioAttendances && bioAttendances.pageSize"
                 (onPageChanged)="pageChanged($event)"
                 [moduleName]="'AttendanceRequests'"
+                (onAdvanceFilters)="onAdvanceFilters($event)"
+                [advanceFilters]="advanceSearch"
             >
             </app-table>
         </div>
