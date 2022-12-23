@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { Department } from "../../../models/department";
@@ -14,7 +14,7 @@ import { OrgService } from "../../../services/org.service";
     styleUrls: ["./department-form.component.scss"]
 })
 export class DepartmentFormComponent implements OnInit {
-    departmentForm: FormGroup;
+    departmentForm: UntypedFormGroup;
     formTitle: string;
     hodLookups: any[];
     constructor(
@@ -23,7 +23,7 @@ export class DepartmentFormComponent implements OnInit {
         private departmentService: DepartmentService,
         private orgService: OrgService,
         private toastr: ToastrService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {}
 
     ngOnInit(): void {

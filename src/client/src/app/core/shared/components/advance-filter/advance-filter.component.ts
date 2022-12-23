@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { AdvanceFilter } from "src/app/core/models/Filters/AdvanceFilter";
 
@@ -11,8 +11,8 @@ import { AdvanceFilter } from "src/app/core/models/Filters/AdvanceFilter";
 export class AdvanceFilterComponent implements OnInit {
     filters: AdvanceFilter[];
     formTitle: string;
-    public formGroup: FormGroup = this.fb.group({});
-    constructor(public dialogRef: MatDialogRef<AdvanceFilterComponent>, @Inject(MAT_DIALOG_DATA) public _data: AdvanceFilter[], private fb: FormBuilder) {
+    public formGroup: UntypedFormGroup = this.fb.group({});
+    constructor(public dialogRef: MatDialogRef<AdvanceFilterComponent>, @Inject(MAT_DIALOG_DATA) public _data: AdvanceFilter[], private fb: UntypedFormBuilder) {
         this.filters =_data;
     }
 

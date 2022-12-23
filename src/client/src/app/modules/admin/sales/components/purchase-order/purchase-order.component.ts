@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { ToastrService } from "ngx-toastr";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
@@ -18,7 +18,7 @@ export class PurchaseOrderComponent implements OnInit {
     displayedColumns: string[] = ["barcodeSymbology", "productName", "quantity", "price", "total", "action"];
     products: Product[];
     dataSource = new MatTableDataSource<Product>();
-    orderForm: FormGroup;
+    orderForm: UntypedFormGroup;
     defaultProduct: Product = {
         productId: "",
         quantity: 1,
@@ -47,7 +47,7 @@ export class PurchaseOrderComponent implements OnInit {
     warehouseLookups: any[];
     filteredproducts: any[];
     constructor(private toastr: ToastrService, 
-        private fb: FormBuilder, 
+        private fb: UntypedFormBuilder, 
         private purchaseOrderApi: PurchaseOrderService,
         private warehouseService : WarehouseService) {}
 

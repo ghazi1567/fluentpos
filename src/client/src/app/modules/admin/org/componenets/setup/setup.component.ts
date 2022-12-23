@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { AuthService } from "src/app/core/services/auth.service";
@@ -13,12 +13,12 @@ import { OrgService } from "../../services/org.service";
     styleUrls: ["./setup.component.scss"]
 })
 export class SetupComponent implements OnInit {
-    form: FormGroup;
+    form: UntypedFormGroup;
     formTitle: string;
     editMode = false;
     data: Organization = null;
     isLoading = true;
-    constructor(private toastr: ToastrService, private fb: FormBuilder, private orgService: OrgService, private busyService: BusyService, private authService: AuthService) {}
+    constructor(private toastr: ToastrService, private fb: UntypedFormBuilder, private orgService: OrgService, private busyService: BusyService, private authService: AuthService) {}
 
     ngOnInit(): void {
         this.isLoading = true;
