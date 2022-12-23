@@ -54,7 +54,7 @@ export class AttendanceLogService {
         return this.api.updateApproval(model).pipe(map((response: IResult<any>) => response));
     }
 
-    advanceSearch(model: any): Observable<PaginatedResult<BioAttendance>> {
+    advanceSearch(model: PeopleSearchParams): Observable<PaginatedResult<BioAttendance>> {
         return this.api.advanceSearch(model).pipe(map((response: PaginatedResult<BioAttendance>) => response));
     }
 }

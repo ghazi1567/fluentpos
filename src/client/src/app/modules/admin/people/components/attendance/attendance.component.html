@@ -21,6 +21,7 @@
                 [moduleName]="'AttendanceRequests'"
                 (onAdvanceFilters)="onAdvanceFilters($event)"
                 [advanceFilters]="advanceSearch"
+                (onExport)="onExportFile($event)"
             >
             </app-table>
         </div>

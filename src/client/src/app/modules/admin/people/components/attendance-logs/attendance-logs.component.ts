@@ -32,6 +32,7 @@ export class AttendanceLogsComponent implements OnInit {
     bioAttendanceColumns: TableColumn[];
     importAttendanceColumns: TableColumn[];
     attendanceParams = new PeopleSearchParams();
+    attendanceLogsParams = new PeopleSearchParams();
     searchString: string;
     @ViewChild("file") fileInput: ElementRef;
     public RequestStatusMapping = RequestStatusMapping;
@@ -50,6 +51,7 @@ export class AttendanceLogsComponent implements OnInit {
 
     ngOnInit(): void {
         this.getAttendances();
+        this.getAttendancesLogs();
         this.initColumns();
         this.initBioColumns();
         this.initAdvanceFilters();
@@ -69,15 +71,14 @@ export class AttendanceLogsComponent implements OnInit {
             });
         });
 
-        if (this.isAdvanceFilter) {
-            this.attendanceLogService.advanceSearch(this.attendanceParams).subscribe((result) => {
-                this.bioAttendances = result;
-            });
-        } else {
-            this.attendanceLogService.getAll(this.attendanceParams).subscribe((result) => {
-                this.bioAttendances = result;
-            });
-        }
+    }
+    getAttendancesLogs(): void {
+        this.attendanceLogsParams.employeeId = this.authService.getEmployeeId;
+        this.attendanceLogsParams.requestType = RequestType.Attendance;
+
+        this.attendanceLogService.advanceSearch(this.attendanceLogsParams).subscribe((result) => {
+            this.bioAttendances = result;
+        });
     }
 
     initColumns(): void {
@@ -128,6 +129,11 @@ export class AttendanceLogsComponent implements OnInit {
         this.attendanceParams.pageSize = event.pageSize;
         this.getAttendances();
     }
+    logsPageChanged(event: PaginatedFilter): void {
+        this.attendanceLogsParams.pageNumber = event.pageNumber;
+        this.attendanceLogsParams.pageSize = event.pageSize;
+        this.getAttendancesLogs();
+    }
 
     openForm(customer?: EmployeeRequest): void {
         const dialogRef = this.dialog.open(AttendanceLogFormComponent, {
@@ -152,6 +158,11 @@ export class AttendanceLogsComponent implements OnInit {
         console.log(this.attendanceParams.orderBy);
         this.getAttendances();
     }
+    logsSort($event: Sort): void {
+        this.attendanceLogsParams.orderBy = $event.active + " " + $event.direction;
+        console.log(this.attendanceLogsParams.orderBy);
+        this.getAttendancesLogs();
+    }
 
     filter($event: string): void {
         this.attendanceParams.searchString = $event.trim().toLocaleLowerCase();
@@ -159,12 +170,24 @@ export class AttendanceLogsComponent implements OnInit {
         this.attendanceParams.pageSize = 0;
         this.getAttendances();
     }
+    logsFilter($event: string): void {
+        this.attendanceLogsParams.searchString = $event.trim().toLocaleLowerCase();
+        this.attendanceLogsParams.pageNumber = 0;
+        this.attendanceLogsParams.pageSize = 0;
+        this.getAttendancesLogs();
+    }
 
     reload(): void {
         this.attendanceParams.searchString = "";
         this.attendanceParams.pageNumber = 0;
         this.attendanceParams.pageSize = 0;
         this.getAttendances();
+    }
+    logsReload(): void {
+        this.attendanceLogsParams.searchString = "";
+        this.attendanceLogsParams.pageNumber = 0;
+        this.attendanceLogsParams.pageSize = 0;
+        this.getAttendancesLogs();
     }
 
     handleFileSelect(evt) {
@@ -250,15 +273,10 @@ export class AttendanceLogsComponent implements OnInit {
         console.log($event);
     }
     onAdvanceFilters($event) {
-        if ($event == null) {
-            this.isAdvanceFilter = false;
-            this.getAttendances();
-        } else {
-            this.attendanceParams.advanceFilters = $event.advancedTerms;
-            this.attendanceParams.advancedSearchType = $event.advancedSearchType;
-            this.isAdvanceFilter = true;
-            this.getAttendances();
-        }
+        this.attendanceLogsParams.advanceFilters = $event.advancedTerms;
+        this.attendanceLogsParams.advancedSearchType = $event.advancedSearchType;
+        this.isAdvanceFilter = true;
+        this.getAttendancesLogs();
     }
 
     initAdvanceFilters() {

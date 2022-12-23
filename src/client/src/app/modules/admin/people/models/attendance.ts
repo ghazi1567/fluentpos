@@ -76,4 +76,6 @@ export interface Attendance {
     Update: boolean;
     Remove: boolean;
     className?:string;
+    isCheckOutMissing:boolean;
+    isLateComer:boolean;
 }

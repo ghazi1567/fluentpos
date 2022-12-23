@@ -487,7 +487,21 @@ export class AdvancedSearchComponent implements OnInit {
 
     applySearch() {
         if (this.searchTerm.advancedTerms[0].fieldName) {
-            this.dialogRef.close(this.searchTerm);
+            var searchTerm = JSON.parse(JSON.stringify(this.searchTerm));
+
+            for (let index = 0; index < searchTerm.advancedTerms.length; index++) {
+                var element = searchTerm.advancedTerms[index];
+                if (element.fieldType == "date" && element.action == "=") {
+                    var newObj = Object.assign({}, element);
+                    element.action = ">=";
+                    element.searchTerm = element.searchTerm + " 00:00:00";
+                    newObj.action = "<=";
+                    newObj.searchTerm = newObj.searchTerm + " 23:59:59";
+                    searchTerm.advancedTerms.push(newObj);
+                }
+            }
+
+            this.dialogRef.close(searchTerm);
             localStorage.setItem("saved-filters", JSON.stringify(this.searchTerm));
         } else {
             this.dialogRef.close(null);

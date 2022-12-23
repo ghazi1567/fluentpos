@@ -165,7 +165,7 @@ namespace FluentPOS.Shared.Core.Extensions
                 if (property.PropertyType == typeof(DateTime))
                 {
                     var date = DateTime.Parse(value);
-                    return Expression.Constant(date.ToString("MM-dd-yyyy"), typeof(DateTime));
+                    return Expression.Constant(date.Date, typeof(DateTime));
                 }
                 else if (property.PropertyType == typeof(DateTime?))
                 {

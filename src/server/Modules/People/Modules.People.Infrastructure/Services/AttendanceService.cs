@@ -142,7 +142,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 {
                     _logger.LogCritical($"Attendance Already Exist : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
                     attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
-
+                    attendance.AttendanceStatus = AttendanceStatus.Present;
                     if (isCheckIn)
                     {
                         _logger.LogCritical($"CheckIn Job : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");

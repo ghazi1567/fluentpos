@@ -15,10 +15,10 @@ export class EmployeeApiService {
     constructor(private http: HttpClient) {}
 
     getAlls(params: HttpParams) {
-        if(localStorage.getItem(this.baseUrl)){
-            console.log('request already in progress')
-            return new Observable();
-        }
+        // if(localStorage.getItem(this.baseUrl)){
+        //     console.log('request already in progress')
+        //     return new Observable();
+        // }
         localStorage.setItem(this.baseUrl,JSON.stringify(params));
         return this.http.get(this.baseUrl, { params: params }).pipe(
             tap((response) => {
