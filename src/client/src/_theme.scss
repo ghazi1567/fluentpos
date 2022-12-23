@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 @include mat-core();
 // Define the default theme (same as the example above).
 $app-primary: mat-palette($mat-indigo);
