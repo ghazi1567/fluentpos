@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Category} from '../../../models/category';
@@ -11,10 +11,10 @@ import {CategoryService} from '../../../services/category.service';
   styleUrls: ['./category-form.component.scss']
 })
 export class CategoryFormComponent implements OnInit {
-  categoryForm: FormGroup;
+  categoryForm: UntypedFormGroup;
   formTitle: string;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Category, private categoryService: CategoryService, private toastr: ToastrService, private fb: FormBuilder) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Category, private categoryService: CategoryService, private toastr: ToastrService, private fb: UntypedFormBuilder) {
   }
 
   ngOnInit(): void {

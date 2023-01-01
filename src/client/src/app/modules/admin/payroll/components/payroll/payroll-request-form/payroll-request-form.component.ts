@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import * as moment from "moment";
 import { ToastrService } from "ngx-toastr";
@@ -14,13 +14,13 @@ import { PayrollService } from "../../../services/payroll.service";
     styleUrls: ["./payroll-request-form.component.scss"]
 })
 export class PayrollRequestFormComponent implements OnInit {
-    formGroup: FormGroup;
+    formGroup: UntypedFormGroup;
     formTitle: string;
     public PayPeriodMapping = PayPeriodMapping;
     public payPeriods = Object.values(PayPeriod).filter((value) => typeof value === "number");
     public MonthsMapping = MonthsMapping;
     public months = Object.values(Months).filter((value) => typeof value === "number");
-    constructor(private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialog, private payrollService: PayrollService, private toastr: ToastrService) {}
+    constructor(private fb: UntypedFormBuilder, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialog, private payrollService: PayrollService, private toastr: ToastrService) {}
 
     ngOnInit(): void {
         this.initializeForm();

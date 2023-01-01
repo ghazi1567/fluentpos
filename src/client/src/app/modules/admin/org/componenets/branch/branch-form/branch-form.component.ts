@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { Branch } from "../../../models/branch";
@@ -14,7 +14,7 @@ import { OrgService } from "../../../services/org.service";
     styleUrls: ["./branch-form.component.scss"]
 })
 export class branchFormComponent implements OnInit {
-    branchForm: FormGroup;
+    branchForm: UntypedFormGroup;
     formTitle: string;
     orgLookups: Organization[];
     constructor(
@@ -23,7 +23,7 @@ export class branchFormComponent implements OnInit {
         private branchService: BranchService,
         private orgService: OrgService,
         private toastr: ToastrService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {}
 
     ngOnInit(): void {

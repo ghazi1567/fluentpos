@@ -27,6 +27,9 @@ namespace FluentPOS.Modules.People.Controllers
         public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedFilter filter)
         {
             var request = Mapper.Map<GetEmployeesQuery>(filter);
+            request.PageSize = 100000;
+            request.PageNumber = 0;
+
             var customers = await Mediator.Send(request);
             return Ok(customers);
         }

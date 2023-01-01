@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { SearchParams } from "src/app/core/models/Filters/SearchParams";
@@ -15,7 +15,7 @@ import { UserService } from "../../../services/user.service";
     styleUrls: ["./user-form.component.scss"]
 })
 export class UserFormComponent implements OnInit {
-    userForm: FormGroup;
+    userForm: UntypedFormGroup;
     formTitle: string;
     editMode = false;
     employeesLookup: Employee[];
@@ -26,7 +26,7 @@ export class UserFormComponent implements OnInit {
         private identityService: IdentityService,
         private userService: UserService,
         private toastr: ToastrService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {}
 
     ngOnInit(): void {

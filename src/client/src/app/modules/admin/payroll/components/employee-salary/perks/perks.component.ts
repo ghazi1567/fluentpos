@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from "@angular/material-moment-adapter";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 import { MatDatepicker } from "@angular/material/datepicker";
@@ -44,7 +44,7 @@ export const Month_FORMATS = {
     ]
 })
 export class PerksComponent implements OnInit {
-    formGroup: FormGroup;
+    formGroup: UntypedFormGroup;
     formTitle: string;
     employeesLookup: Employee[];
     public minDate = new Date();
@@ -54,7 +54,7 @@ export class PerksComponent implements OnInit {
     salariesPerks: PaginatedResult<SalaryPerks>;
     salariesPerksParams = new SearchParams();
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialog, private salaryPerksService: SalaryPerksService, private toastr: ToastrService, private fb: FormBuilder) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialog, private salaryPerksService: SalaryPerksService, private toastr: ToastrService, private fb: UntypedFormBuilder) {}
     setMonthAndYear(normalizedMonthAndYear: Moment, datepicker: MatDatepicker<Moment>, dataKey: string) {
         const ctrlValue = this.f[dataKey].value;
         ctrlValue.month(normalizedMonthAndYear.month());

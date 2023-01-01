@@ -14,7 +14,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
 
         Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeDetailsAsync(List<Guid> Ids);
 
-        Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeDetailsByPolicyAsync(List<Guid> Ids);
+        Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids);
 
         Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetMyReporterEmployeeListAsync(Guid id, bool includeMe = false);
 

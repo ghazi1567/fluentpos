@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
@@ -19,7 +19,7 @@ export class PoEditComponent implements OnInit {
     displayedColumns: string[] = ["barcodeSymbology", "productName", "quantity", "price", "total", "action"];
     products: Product[];
     dataSource = new MatTableDataSource<Product>();
-    orderForm: FormGroup;
+    orderForm: UntypedFormGroup;
     defaultProduct: Product = {
         productId: "",
         quantity: 1,
@@ -48,7 +48,7 @@ export class PoEditComponent implements OnInit {
     warehouseLookups: any[];
     filteredproducts: any[];
     constructor(private toastr: ToastrService,
-         private fb: FormBuilder, 
+         private fb: UntypedFormBuilder, 
          private route: ActivatedRoute, 
          private purchaseOrderApi: PurchaseOrderService,
          private warehouseService : WarehouseService) {
