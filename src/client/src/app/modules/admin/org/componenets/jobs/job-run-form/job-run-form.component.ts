@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, FormControl, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, FormControl, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { JobTypeMapping, JobType } from "src/app/core/enums/JobType";
@@ -14,7 +14,7 @@ import { OrgService } from "../../../services/org.service";
     styleUrls: ["./job-run-form.component.scss"]
 })
 export class JobRunFormComponent implements OnInit {
-    jobForm: FormGroup;
+    jobForm: UntypedFormGroup;
     formTitle: string;
     hodLookups: any[];
     JobTypeMapping = JobTypeMapping;
@@ -26,7 +26,7 @@ export class JobRunFormComponent implements OnInit {
         private jobService: JobService,
         private orgService: OrgService,
         private toastr: ToastrService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {
         console.log(data);
     }

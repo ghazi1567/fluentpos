@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { Validators, FormBuilder, FormGroup } from "@angular/forms";
+import { Validators, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
 import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { EarlyArrivalPolicy, EarlyArrivalPolicyMapping } from "src/app/core/enums/EarlyArrivalPolicy";
@@ -18,10 +18,10 @@ import { PolicyService } from "../../../services/policy.service";
     styleUrls: ["./policy-form.component.scss"]
 })
 export class PolicyFormComponent implements OnInit {
-    firstFormGroup: FormGroup;
-    secondFormGroup: FormGroup;
-    thirdFormGroup: FormGroup;
-    forthFormGroup: FormGroup;
+    firstFormGroup: UntypedFormGroup;
+    secondFormGroup: UntypedFormGroup;
+    thirdFormGroup: UntypedFormGroup;
+    forthFormGroup: UntypedFormGroup;
     formTitle: string;
     public PayslipTypeMapping = PayslipTypeMapping;
     public payslipTypes = Object.values(PayslipType).filter((value) => typeof value === "number");
@@ -44,7 +44,7 @@ export class PolicyFormComponent implements OnInit {
     public EarnedHourPolicyMapping = EarnedHourPolicyMapping;
     public earnedHourPolicy = Object.values(EarnedHourPolicy).filter((value) => typeof value === "number");
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: Policy, private dialogRef: MatDialog, private fb: FormBuilder, public policyService: PolicyService, private toastr: ToastrService) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: Policy, private dialogRef: MatDialog, private fb: UntypedFormBuilder, public policyService: PolicyService, private toastr: ToastrService) {}
 
     ngOnInit(): void {
         this.initializeForm();

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators, UntypedFormControl } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { JobType, JobTypeMapping } from "src/app/core/enums/JobType";
@@ -17,7 +17,7 @@ import { OrgService } from "../../../services/org.service";
     styleUrls: ["./job-form.component.scss"]
 })
 export class JobFormComponent implements OnInit {
-    jobForm: FormGroup;
+    jobForm: UntypedFormGroup;
     formTitle: string;
     hodLookups: any[];
     JobTypeMapping = JobTypeMapping;
@@ -29,7 +29,7 @@ export class JobFormComponent implements OnInit {
         private jobService: JobService,
         private orgService: OrgService,
         private toastr: ToastrService,
-        private fb: FormBuilder
+        private fb: UntypedFormBuilder
     ) {}
 
     ngOnInit(): void {
@@ -46,7 +46,7 @@ export class JobFormComponent implements OnInit {
     }
     cronForm: any;
     initializeForm() {
-        this.cronForm = new FormControl("0 0 1/1 * *");
+        this.cronForm = new UntypedFormControl("0 0 1/1 * *");
         this.jobForm = this.fb.group({
             id: [this.data && this.data.id],
             jobName: [this.data && this.data.jobName, Validators.required],

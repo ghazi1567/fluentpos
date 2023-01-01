@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { Role } from '../../../models/role';
@@ -11,9 +11,9 @@ import { RoleService } from '../../../services/role.service';
   styleUrls: ['./role-form.component.scss']
 })
 export class RoleFormComponent implements OnInit {
-  roleForm: FormGroup;
+  roleForm: UntypedFormGroup;
   formTitle: string;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Role, private roleService: RoleService, private toastr: ToastrService, private fb: FormBuilder) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Role, private roleService: RoleService, private toastr: ToastrService, private fb: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     this.initializeForm();

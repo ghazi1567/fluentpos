@@ -1,7 +1,7 @@
 import { CategoryParams } from './../../models/categoryParams';
 import { Category } from './../../models/category';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PaginatedResult } from 'src/app/core/models/wrappers/PaginatedResult';
 import { BusyService } from 'src/app/core/services/busy.service';
@@ -25,8 +25,8 @@ export class CatalogComponent implements OnInit {
   products: PaginatedResult<Product>;
   productParams = new ProductParams();
   searchString: string;
-  brandAutoComplete = new FormControl();
-  categoryAutoComplete = new FormControl();
+  brandAutoComplete = new UntypedFormControl();
+  categoryAutoComplete = new UntypedFormControl();
   showImage: boolean = false;
   hasProductsLoaded: boolean = false;
   invalidCart: boolean = true;

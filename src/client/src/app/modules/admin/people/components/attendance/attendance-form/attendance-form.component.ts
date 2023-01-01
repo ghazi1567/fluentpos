@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { AttendanceStatus, AttendanceStatusMapping } from "src/app/core/enums/AttendanceStatus";
@@ -24,7 +24,7 @@ import { EmployeeService } from "../../../services/employee.service";
     styleUrls: ["./attendance-form.component.scss"]
 })
 export class AttendanceFormComponent implements OnInit {
-    formGroup: FormGroup;
+    formGroup: UntypedFormGroup;
     formTitle: string;
     employeesLookup: Employee[];
     public AttendanceStatusMapping = AttendanceStatusMapping;
@@ -36,7 +36,7 @@ export class AttendanceFormComponent implements OnInit {
         private attendanceService: AttendanceService,
         private employeeService: EmployeeService,
         private toastr: ToastrService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private authService: AuthService,
         private attendanceRequestService: AttendanceRequestService
     ) {}

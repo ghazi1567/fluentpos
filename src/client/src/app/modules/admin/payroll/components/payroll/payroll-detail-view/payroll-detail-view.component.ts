@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import * as moment from "moment";
@@ -20,7 +20,7 @@ import { PayslipService } from "../../../services/payslip.service";
     styleUrls: ["./payroll-detail-view.component.scss"]
 })
 export class PayrollDetailViewComponent implements OnInit {
-    formGroup: FormGroup;
+    formGroup: UntypedFormGroup;
     formTitle: string = "Payslip - ";
     public PayPeriodMapping = PayPeriodMapping;
     public payPeriods = Object.values(PayPeriod).filter((value) => typeof value === "number");
@@ -38,7 +38,7 @@ export class PayrollDetailViewComponent implements OnInit {
     payslip: Payroll;
     data: any = {};
     
-    constructor(private activatedroute:ActivatedRoute,private fb: FormBuilder, private dialogRef: MatDialog, public payslipService: PayslipService, private toastr: ToastrService) {
+    constructor(private activatedroute:ActivatedRoute,private fb: UntypedFormBuilder, private dialogRef: MatDialog, public payslipService: PayslipService, private toastr: ToastrService) {
         this.data.id = this.activatedroute.snapshot.paramMap.get("id");
         this.data.employeeName = "Inam";
     }

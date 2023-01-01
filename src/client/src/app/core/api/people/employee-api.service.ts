@@ -14,6 +14,12 @@ export class EmployeeApiService {
 
     constructor(private http: HttpClient) {}
 
+    getLookup(params: HttpParams) {
+        return this.http.get(this.baseUrl+'/Lookup', { params: params }).pipe(
+            tap((response) => {
+            })
+        );
+    }
     getAlls(params: HttpParams) {
         // if(localStorage.getItem(this.baseUrl)){
         //     console.log('request already in progress')

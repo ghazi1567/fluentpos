@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { EventLog } from 'src/app/core/models/event-logs/event-log';
@@ -11,9 +11,9 @@ import { EventLog } from 'src/app/core/models/event-logs/event-log';
 })
 export class EventLogDetailsComponent implements OnInit {
 
-  brandForm: FormGroup;
+  brandForm: UntypedFormGroup;
   formTitle: string = "Event Log Details";
-  constructor(@Inject(MAT_DIALOG_DATA) public data: EventLog, private toastr: ToastrService, private fb: FormBuilder) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: EventLog, private toastr: ToastrService, private fb: UntypedFormBuilder) { }
   jsonData;
   jsonOldValues;
   jsonNewValues;

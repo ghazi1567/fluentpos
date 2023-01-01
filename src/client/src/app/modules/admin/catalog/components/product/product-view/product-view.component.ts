@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, FormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { Upload } from "src/app/core/models/uploads/upload";
@@ -20,7 +20,7 @@ import { ProductService } from "../../../services/product.service";
   styleUrls: ['./product-view.component.scss']
 })
 export class ProductViewComponent implements OnInit {
-  productForm: FormGroup;
+  productForm: UntypedFormGroup;
   formTitle: string;
   brands: PaginatedResult<Brand>;
   brandParams = new BrandParams();
@@ -36,7 +36,7 @@ export class ProductViewComponent implements OnInit {
       private brandService: BrandService,
       private categoryService: CategoryService,
       private toastr: ToastrService,
-      private fb: FormBuilder
+      private fb: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {

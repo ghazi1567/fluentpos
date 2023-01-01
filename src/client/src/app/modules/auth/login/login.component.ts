@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { filter } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { filter } from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup;
+  loginForm: UntypedFormGroup;
   returnUrl: string;
   isBeingLoggedIn: boolean = false;
   constructor(private authService: AuthService, private router: Router, private activatedRoute: ActivatedRoute) {
@@ -23,9 +23,9 @@ export class LoginComponent implements OnInit {
   }
 
   initializeForm() {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', Validators.required && Validators.email),
-      password: new FormControl('', Validators.required)
+    this.loginForm = new UntypedFormGroup({
+      email: new UntypedFormControl('', Validators.required && Validators.email),
+      password: new UntypedFormControl('', Validators.required)
     });
   }
 
@@ -40,16 +40,16 @@ export class LoginComponent implements OnInit {
   }
 
   fillSuperAdminCredentials() {
-    this.loginForm = new FormGroup({
-      email: new FormControl('superadmin@e-smart.com', Validators.required && Validators.email),
-      password: new FormControl('123Pa$$word!', Validators.required)
+    this.loginForm = new UntypedFormGroup({
+      email: new UntypedFormControl('superadmin@e-smart.com', Validators.required && Validators.email),
+      password: new UntypedFormControl('123Pa$$word!', Validators.required)
     });
   }
 
   fillStaffCredentials() {
-    this.loginForm = new FormGroup({
-      email: new FormControl('staff@e-smart.com', Validators.required && Validators.email),
-      password: new FormControl('123Pa$$word!', Validators.required)
+    this.loginForm = new UntypedFormGroup({
+      email: new UntypedFormControl('staff@e-smart.com', Validators.required && Validators.email),
+      password: new UntypedFormControl('123Pa$$word!', Validators.required)
     });
   }
 }

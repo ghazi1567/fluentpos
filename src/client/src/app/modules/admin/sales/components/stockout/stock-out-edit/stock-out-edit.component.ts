@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MatTableDataSource } from "@angular/material/table";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
@@ -24,7 +24,7 @@ export class StockOutEditComponent implements OnInit {
     displayedColumns: string[] = ["barcodeSymbology", "productName", "quantity", "price", "total", "action"];
     products: Product[];
     dataSource = new MatTableDataSource<Product>();
-    orderForm: FormGroup;
+    orderForm: UntypedFormGroup;
     defaultProduct: Product = {
         productId: "",
         quantity: 1,
@@ -55,7 +55,7 @@ export class StockOutEditComponent implements OnInit {
     poFilteredOptions: Observable<any[]>;
     filteredproducts: any[];
     constructor(private toastr: ToastrService, 
-        private fb: FormBuilder, 
+        private fb: UntypedFormBuilder, 
         private router: Router,
         private route: ActivatedRoute, 
         private stockInService: StockOutService, 
