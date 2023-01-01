@@ -9,6 +9,7 @@
 using System;
 using FluentPOS.Modules.Organization.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
+using FluentPOS.Shared.DTOs.Enums;
 using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features
@@ -20,5 +21,8 @@ namespace FluentPOS.Modules.Organization.Core.Features
         public DateTime date { get; set; }
 
         public bool IsConfigure { get; set; }
+
+        public JobType JobName { get; set; }
+
     }
 }

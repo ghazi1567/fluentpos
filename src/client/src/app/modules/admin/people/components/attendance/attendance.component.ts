@@ -19,6 +19,7 @@ import { AttendanceFormComponent } from "./attendance-form/attendance-form.compo
 import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTerm";
 import { EmployeeService } from "../../services/employee.service";
 import { Employee } from "../../models/employee";
+import { CsvMapping, CsvParserService, NgxCSVParserError } from "src/app/core/services/csv-parser.service";
 
 @Component({
     selector: "app-attendance",
@@ -36,7 +37,14 @@ export class AttendanceComponent implements OnInit {
     public AttendanceTypeMapping = AttendanceTypeMapping;
     advanceSearch: NgAsConfig;
     public attendanceStatus = Object.values(AttendanceStatus).filter((value) => typeof value === "number");
-    constructor(public attendanceService: AttendanceService, private employeeService: EmployeeService, public dialog: MatDialog, public toastr: ToastrService, public authService: AuthService) {}
+    constructor(
+        public attendanceService: AttendanceService,
+        private employeeService: EmployeeService,
+        public dialog: MatDialog,
+        public toastr: ToastrService,
+        public authService: AuthService,
+        private csvParser: CsvParserService
+    ) {}
 
     ngOnInit(): void {
         this.loadLookups();
@@ -188,16 +196,13 @@ export class AttendanceComponent implements OnInit {
         this.attendanceParams.employeeId = this.authService.getEmployeeId;
         this.attendanceParams.requestType = RequestType.Attendance;
 
-        this.attendanceService.getAll(this.attendanceParams).subscribe((result) => {
+        this.attendanceService.advanceSearch(this.attendanceParams).subscribe((result) => {
             this.attendances = result;
             this.attendances.data.forEach((x) => {
                 x.statusName = RequestStatusMapping[x.status];
                 x.attendanceStatusName = AttendanceStatusMapping[x.attendanceStatus];
                 x.attendanceTypeName = AttendanceTypeMapping[x.attendanceType];
                 x.className = this.AttendanceClass(x.attendanceStatus);
-                // x.View = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
-                // x.Update = x.status == RequestStatus.Approved || x.status == RequestStatus.Pending || x.status == RequestStatus.Rejected;
-                // x.Remove = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
             });
         });
     }
@@ -269,8 +274,22 @@ export class AttendanceComponent implements OnInit {
     }
 
     sort($event: Sort): void {
-        this.attendanceParams.orderBy = $event.active + " " + $event.direction;
-        console.log(this.attendanceParams.orderBy);
+        var col = $event.active;
+        switch (col) {
+            case "statusName":
+                col = "status"
+                break;
+            case "attendanceStatusName":
+                col = "attendanceStatus"
+                break;
+            case "attendanceTypeName":
+                col = "attendanceType"
+                break;
+            default:
+                break;
+        }
+
+        this.attendanceParams.orderBy = col + " " + $event.direction;
         this.getAttendances();
     }
 
@@ -290,24 +309,45 @@ export class AttendanceComponent implements OnInit {
 
     onAdvanceFilters($event) {
         if ($event == null) {
-            this.getAttendances();
+            this.attendanceParams.advanceFilters = null;
+            this.attendanceParams.advancedSearchType = null;
         } else {
-            var model = {
-                advanceFilters: $event.advancedTerms,
-                advancedSearchType: $event.advancedSearchType,
-                employeeId: this.authService.getEmployeeId,
-                requestType: RequestType.Attendance
-            };
+            this.attendanceParams.advanceFilters = $event.advancedTerms;
+            this.attendanceParams.advancedSearchType = $event.advancedSearchType;
+        }
 
-            this.attendanceService.advanceSearch(model).subscribe((result) => {
-                this.attendances = result;
-                this.attendances.data.forEach((x) => {
-                    x.statusName = RequestStatusMapping[x.status];
-                    x.attendanceStatusName = AttendanceStatusMapping[x.attendanceStatus];
-                    x.attendanceTypeName = AttendanceTypeMapping[x.attendanceType];
-                    x.className = this.AttendanceClass(x.attendanceStatus);
+        this.attendanceParams.employeeId = this.authService.getEmployeeId;
+        this.attendanceParams.requestType = RequestType.Attendance;
+        this.getAttendances();
+    }
+
+    onExportFile($event) {
+        var parms = this.attendanceParams;
+        parms.pageNumber = 0;
+        parms.pageSize = 100000;
+
+        this.attendanceService.advanceSearch(parms).subscribe((result) => {
+            var attendances = [];
+            result.data.forEach((x) => {
+                x.statusName = RequestStatusMapping[x.status];
+                x.attendanceStatusName = AttendanceStatusMapping[x.attendanceStatus];
+                x.attendanceTypeName = AttendanceTypeMapping[x.attendanceType];
+                x.className = this.AttendanceClass(x.attendanceStatus);
+
+                attendances.push({
+                    employeeName: x.employeeName,
+                    attendanceDate: new Date(x.attendanceDate).toLocaleDateString(),
+                    attendanceType: x.attendanceTypeName,
+                    attendanceStatus: x.attendanceStatusName,
+                    checkIn: x.checkIn,
+                    checkOut: x.checkOut,
+                    isCheckOutMissing: x.isCheckOutMissing,
+                    isLateComer: x.isLateComer,
+                    overtimeHours: x.overtimeHours,
+                    earnedHours: x.earnedHours
                 });
             });
-        }
+            this.csvParser.exportXls(attendances, "Attendance.xlsx", "Attendance");
+        });
     }
 }

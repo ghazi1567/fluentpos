@@ -1,5 +1,5 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup, FormBuilder, ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { UntypedFormControl, UntypedFormGroup, UntypedFormBuilder, ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { ThemePalette } from "@angular/material/core";
 import { CronOptions } from "./enums/CronOptions";
 import { Days, MonthWeeks, Months } from "./enums/enum";
@@ -29,15 +29,15 @@ export class CronGenComponent implements OnInit, ControlValueAccessor {
     private localCron = "0 0 1/1 * *";
     private isDirty: boolean;
 
-    cronForm: FormControl;
+    cronForm: UntypedFormControl;
 
-    minutesForm: FormGroup;
-    hourlyForm: FormGroup;
-    dailyForm: FormGroup;
-    weeklyForm: FormGroup;
-    monthlyForm: FormGroup;
-    yearlyForm: FormGroup;
-    advancedForm: FormGroup;
+    minutesForm: UntypedFormGroup;
+    hourlyForm: UntypedFormGroup;
+    dailyForm: UntypedFormGroup;
+    weeklyForm: UntypedFormGroup;
+    monthlyForm: UntypedFormGroup;
+    yearlyForm: UntypedFormGroup;
+    advancedForm: UntypedFormGroup;
 
     @Input()
     get cron(): string {
@@ -69,7 +69,7 @@ export class CronGenComponent implements OnInit, ControlValueAccessor {
         return this.options.cronFlavor === "quartz" ? "?" : "*";
     }
 
-    constructor(private fb: FormBuilder) {}
+    constructor(private fb: UntypedFormBuilder) {}
 
     /* Update the cron output to that of the selected tab.
      * The cron output value is updated whenever a form is updated. To make it change in response to tab selection, we simply reset
@@ -132,7 +132,7 @@ export class CronGenComponent implements OnInit, ControlValueAccessor {
 
         const [defaultHours, defaultMinutes, defaultSeconds] = this.options.defaultTime.split(":").map(Number);
 
-        this.cronForm = new FormControl("0 0 1/1 * *");
+        this.cronForm = new UntypedFormControl("0 0 1/1 * *");
 
         this.minutesForm = this.fb.group({
             hours: [0],

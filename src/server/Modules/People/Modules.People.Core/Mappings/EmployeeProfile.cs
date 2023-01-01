@@ -53,8 +53,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
             CreateMap<PaginatedResult<Shared.DTOs.Dtos.Peoples.AttendanceDto>, PaginatedResult<Attendance>>().ReverseMap();
             CreateMap<AttendanceDto, Attendance>().ReverseMap();
             CreateMap<Shared.DTOs.Dtos.Peoples.AttendanceDto, Attendance>().ReverseMap();
-            CreateMap<PaginatedFilter, GetAttendanceQuery>()
-                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+            CreateMap<PaginatedFilter, GetAttendanceQuery>();
             CreateMap<PaginatedFilter, GetIndividualReportQuery>();
             CreateMap<BioAttendanceLogDto, BioAttendanceLog>().ReverseMap();
             CreateMap<PaginatedResult<BioAttendanceLogDto>, PaginatedResult<BioAttendanceLog>>().ReverseMap();

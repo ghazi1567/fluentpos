@@ -45,7 +45,7 @@ namespace FluentPOS.Modules.Organization.Controllers
         }
 
         [HttpPost("Run")]
-        [Authorize(Policy = Permissions.Jobs.Register)]
+        [AllowAnonymous]
         public async Task<IActionResult> RunAsync(RunJobCommand command)
         {
             return Ok(await Mediator.Send(command));

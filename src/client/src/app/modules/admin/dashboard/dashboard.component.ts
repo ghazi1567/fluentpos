@@ -1,7 +1,8 @@
 import { HttpParams } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Dashboard } from "./models/dashboard";
 import { DashboardService } from "./services/dashboard.service";
+
 
 @Component({
     selector: "app-dashboard",
@@ -13,7 +14,7 @@ export class DashboardComponent implements OnInit {
     constructor(private dashboardService: DashboardService) {}
 
     ngOnInit(): void {
-      this.loadAttendanceStats()
+        this.loadAttendanceStats();
     }
 
     loadAttendanceStats() {
@@ -23,4 +24,5 @@ export class DashboardComponent implements OnInit {
             this.attendanceStats = res;
         });
     }
+
 }

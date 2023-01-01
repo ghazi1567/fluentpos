@@ -5,6 +5,7 @@ import { ToastrService } from "ngx-toastr";
 import { RequestStatus, RequestStatusMapping } from "src/app/core/enums/RequestStatus";
 import { RequestType } from "src/app/core/enums/RequestType";
 import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
+import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTerm";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CsvMapping, CsvParserService, NgxCSVParserError } from "src/app/core/services/csv-parser.service";
@@ -31,10 +32,14 @@ export class AttendanceLogsComponent implements OnInit {
     bioAttendanceColumns: TableColumn[];
     importAttendanceColumns: TableColumn[];
     attendanceParams = new PeopleSearchParams();
+    attendanceLogsParams = new PeopleSearchParams();
     searchString: string;
     @ViewChild("file") fileInput: ElementRef;
     public RequestStatusMapping = RequestStatusMapping;
     customActionData: CustomAction = new CustomAction("Save", "save", "register", "save");
+    advanceSearch: NgAsConfig;
+    savedFilters: NgAsSearchTerm[];
+    isAdvanceFilter = false;
     constructor(
         public attendanceRequestService: AttendanceRequestService,
         public attendanceLogService: AttendanceLogService,
@@ -46,8 +51,10 @@ export class AttendanceLogsComponent implements OnInit {
 
     ngOnInit(): void {
         this.getAttendances();
+        this.getAttendancesLogs();
         this.initColumns();
         this.initBioColumns();
+        this.initAdvanceFilters();
     }
 
     getAttendances(): void {
@@ -64,7 +71,12 @@ export class AttendanceLogsComponent implements OnInit {
             });
         });
 
-        this.attendanceLogService.getAll(this.attendanceParams).subscribe((result) => {
+    }
+    getAttendancesLogs(): void {
+        this.attendanceLogsParams.employeeId = this.authService.getEmployeeId;
+        this.attendanceLogsParams.requestType = RequestType.Attendance;
+
+        this.attendanceLogService.advanceSearch(this.attendanceLogsParams).subscribe((result) => {
             this.bioAttendances = result;
         });
     }
@@ -117,6 +129,11 @@ export class AttendanceLogsComponent implements OnInit {
         this.attendanceParams.pageSize = event.pageSize;
         this.getAttendances();
     }
+    logsPageChanged(event: PaginatedFilter): void {
+        this.attendanceLogsParams.pageNumber = event.pageNumber;
+        this.attendanceLogsParams.pageSize = event.pageSize;
+        this.getAttendancesLogs();
+    }
 
     openForm(customer?: EmployeeRequest): void {
         const dialogRef = this.dialog.open(AttendanceLogFormComponent, {
@@ -141,6 +158,11 @@ export class AttendanceLogsComponent implements OnInit {
         console.log(this.attendanceParams.orderBy);
         this.getAttendances();
     }
+    logsSort($event: Sort): void {
+        this.attendanceLogsParams.orderBy = $event.active + " " + $event.direction;
+        console.log(this.attendanceLogsParams.orderBy);
+        this.getAttendancesLogs();
+    }
 
     filter($event: string): void {
         this.attendanceParams.searchString = $event.trim().toLocaleLowerCase();
@@ -148,12 +170,24 @@ export class AttendanceLogsComponent implements OnInit {
         this.attendanceParams.pageSize = 0;
         this.getAttendances();
     }
+    logsFilter($event: string): void {
+        this.attendanceLogsParams.searchString = $event.trim().toLocaleLowerCase();
+        this.attendanceLogsParams.pageNumber = 0;
+        this.attendanceLogsParams.pageSize = 0;
+        this.getAttendancesLogs();
+    }
 
     reload(): void {
         this.attendanceParams.searchString = "";
         this.attendanceParams.pageNumber = 0;
         this.attendanceParams.pageSize = 0;
         this.getAttendances();
+    }
+    logsReload(): void {
+        this.attendanceLogsParams.searchString = "";
+        this.attendanceLogsParams.pageNumber = 0;
+        this.attendanceLogsParams.pageSize = 0;
+        this.getAttendancesLogs();
     }
 
     handleFileSelect(evt) {
@@ -237,5 +271,32 @@ export class AttendanceLogsComponent implements OnInit {
 
     onImportFile($event) {
         console.log($event);
+    }
+    onAdvanceFilters($event) {
+        this.attendanceLogsParams.advanceFilters = $event.advancedTerms;
+        this.attendanceLogsParams.advancedSearchType = $event.advancedSearchType;
+        this.isAdvanceFilter = true;
+        this.getAttendancesLogs();
+    }
+
+    initAdvanceFilters() {
+        this.savedFilters = [];
+        this.advanceSearch = {
+            headers: [
+                { id: "name", displayText: "Employee Name" },
+                { id: "cardNo", displayText: "Card#" },
+                { id: "PunchCode", displayText: "Punch Code", type: "number" },
+                {
+                    id: "attendanceDate",
+                    displayText: "Attendance Date",
+                    type: "date"
+                }
+            ],
+            defaultTerm: null,
+            inputArray: null,
+            savedFilters: this.savedFilters,
+            showFilterSaving: null,
+            simpleFieldLabel: null
+        };
     }
 }

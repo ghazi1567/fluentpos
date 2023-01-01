@@ -27,7 +27,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public int PageSize { get; set; }
 
-        public string[] OrderBy { get;  set; }
+        public string OrderBy { get;  set; }
 
         public Guid EmployeeId { get; set; }
 

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { RequestStatus } from "src/app/core/enums/RequestStatus";
@@ -20,12 +20,12 @@ import { SalaryPerksService } from "../../../services/salary-perks.service";
     styleUrls: ["./increment-decrement-form.component.scss"]
 })
 export class IncrementDecrementFormComponent implements OnInit {
-    formGroup: FormGroup;
+    formGroup: UntypedFormGroup;
     formTitle: string;
     employeesLookup: Employee[];
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialog, 
-    private salaryPerksService: SalaryPerksService, private toastr: ToastrService, private fb: FormBuilder) {}
+    private salaryPerksService: SalaryPerksService, private toastr: ToastrService, private fb: UntypedFormBuilder) {}
 
     ngOnInit(): void {
         this.initializeForm();

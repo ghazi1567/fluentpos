@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { PaymentMode, PaymentModeMapping } from "src/app/core/enums/PaymentMode";
@@ -15,10 +15,10 @@ import { EmployeeService } from "../../../services/employee.service";
     styleUrls: ["./employee-form.component.scss"]
 })
 export class EmployeeFormComponent implements OnInit {
-    firstFormGroup: FormGroup;
-    secondFormGroup: FormGroup;
-    thirdFormGroup: FormGroup;
-    forthFormGroup: FormGroup;
+    firstFormGroup: UntypedFormGroup;
+    secondFormGroup: UntypedFormGroup;
+    thirdFormGroup: UntypedFormGroup;
+    forthFormGroup: UntypedFormGroup;
     formTitle: string;
 
     policies: any[];
@@ -29,7 +29,7 @@ export class EmployeeFormComponent implements OnInit {
     public PaymentModeMapping = PaymentModeMapping;
     public paymentModes = Object.values(PaymentMode).filter((value) => typeof value === "number");
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: Employee, private dialogRef: MatDialog, private fb: FormBuilder, public employeeService: EmployeeService, private toastr: ToastrService) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: Employee, private dialogRef: MatDialog, private fb: UntypedFormBuilder, public employeeService: EmployeeService, private toastr: ToastrService) {}
 
     ngOnInit(): void {
         this.initializeForm();
@@ -100,6 +100,7 @@ export class EmployeeFormComponent implements OnInit {
             socialSecurityNo: [this.data && this.data.socialSecurityNo],
             maritalStatus: [this.data && this.data.maritalStatus],
             religion: [this.data && this.data.religion],
+            active: [this.data && this.data.active],
         });
         if (this.firstFormGroup.get("id").value === "" || this.firstFormGroup.get("id").value == null) {
             this.formTitle = "Register Employee";

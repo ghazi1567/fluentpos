@@ -100,16 +100,16 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
                 options.ResourcesPath = "Resources";
             });
             services.AddRouting(options => options.LowercaseUrls = true);
-            //var setting = config.GetSection(nameof(PersistenceSettings));
+            // var setting = config.GetSection(nameof(PersistenceSettings));
 
-            //if (setting != null)
-            //{
+            // if (setting != null)
+            // {
             //    string conStr = setting.GetValue<string>("ConnectionStrings:MSSQL");
             //    if (conStr != null)
             //    {
             //        services.AddHangfire(x => x.UseSqlServerStorage(conStr));
             //    }
-            //}
+            // }
 
             services.AddHangfireServer();
             services.AddSingleton<GlobalExceptionHandler>();

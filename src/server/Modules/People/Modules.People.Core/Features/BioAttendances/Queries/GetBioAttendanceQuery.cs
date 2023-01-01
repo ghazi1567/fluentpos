@@ -10,11 +10,13 @@ using FluentPOS.Modules.People.Core.Dtos;
 using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Enums;
+using FluentPOS.Shared.DTOs.Filters;
 using FluentPOS.Shared.DTOs.People.Customers;
 using FluentPOS.Shared.DTOs.People.EmployeeRequests;
 using FluentPOS.Shared.DTOs.People.Employees;
 using MediatR;
 using System;
+using System.Collections.Generic;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
@@ -31,5 +33,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public Guid EmployeeId { get; set; }
 
         public AttendanceStatus? AttendanceStatus { get; set; }
+
+        public string AdvancedSearchType { get; set; }
+
+        public List<FilterModel> AdvanceFilters { get; set; }
     }
 }

@@ -33,16 +33,18 @@
                 [subtitle]="'Manage, Register, Update or Remove Bio Matric Logs here.'"
                 [data]="bioAttendances && bioAttendances.data"
                 [columns]="bioAttendanceColumns"
-                (onFilter)="filter($event)"
-                (onReload)="reload()"
+                (onFilter)="logsFilter($event)"
+                (onReload)="logsReload()"
                 (onCreateForm)="openForm()"
                 (onEditForm)="openForm($event)"
-                (onSort)="sort($event)"
+                (onSort)="logsSort($event)"
                 (onDelete)="remove($event)"
                 [totalCount]="bioAttendances && bioAttendances.totalCount"
                 [pageSize]="bioAttendances && bioAttendances.pageSize"
-                (onPageChanged)="pageChanged($event)"
+                (onPageChanged)="logsPageChanged($event)"
                 [moduleName]="'AttendanceRequests'"
+                (onAdvanceFilters)="onAdvanceFilters($event)"
+                [advanceFilters]="advanceSearch"
             >
             </app-table>
         </div>

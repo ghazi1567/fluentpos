@@ -24,6 +24,10 @@ export class AttendanceLogsApiService {
         return this.http.post(this.baseUrl, customer);
     }
 
+    advanceSearch(customer: any) {
+        return this.http.post(this.baseUrl+'/AdvanceSearch', customer);
+    }
+
     update(customer: any) {
         return this.http.put(this.baseUrl, customer);
     }

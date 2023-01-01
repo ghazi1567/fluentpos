@@ -78,7 +78,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                 queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
             }
 
-            string ordering = new OrderByConverter().Convert(request.OrderBy);
+            // string ordering = new OrderByConverter().Convert(request.OrderBy);
+            string ordering = request.OrderBy;
+
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderByDescending(a => a.AttendanceDate);
 
             if (request.AttendanceStatus != null)

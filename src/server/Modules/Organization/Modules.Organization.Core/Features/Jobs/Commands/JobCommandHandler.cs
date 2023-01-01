@@ -66,6 +66,8 @@ namespace FluentPOS.Modules.Organization.Core.Features
             mappedEntity.CreateaAt = DateTime.Now;
             await _context.Jobs.AddAsync(mappedEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+
+            _jobService.ConfigureJob(mappedEntity.JobName, mappedEntity.Schedule);
             return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Designation)} Saved"]);
         }
 
@@ -90,7 +92,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
         public async Task<Result<Guid>> Handle(UpdateJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var entity = await _context.Designations.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var entity = await _context.Jobs.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Job)}  Not Found!"], HttpStatusCode.NotFound);
@@ -107,6 +109,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             _context.Jobs.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
+            _jobService.ConfigureJob(updatedEntity.JobName, updatedEntity.Schedule);
             return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Designation)} Updated"]);
         }
 
@@ -117,22 +120,10 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             if (entity != null)
             {
-                if (command.IsConfigure)
-                {
-                    _jobService.ConfigureJob(entity.JobName,entity.Schedule);
-                }
-                else
-                {
-
-                }
+                _jobService.RunJob(entity.JobName, command.date);
 
                 return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Job)} run successfuly"]);
             }
-
-            // var mappedEntity = _mapper.Map<Job>(command);
-            // mappedEntity.CreateaAt = DateTime.Now;
-            // await _context.Jobs.AddAsync(mappedEntity, cancellationToken);
-            // await _context.SaveChangesAsync(cancellationToken);
 
             return await Result<Guid>.FailAsync(_localizer[$"{nameof(Job)} not found."]);
         }

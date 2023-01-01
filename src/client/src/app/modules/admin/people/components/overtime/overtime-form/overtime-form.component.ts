@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { RequestStatus } from "src/app/core/enums/RequestStatus";
@@ -17,7 +17,7 @@ import { OvertimeService } from "../../../services/overtime.service";
     styleUrls: ["./overtime-form.component.scss"]
 })
 export class OvertimeFormComponent implements OnInit {
-    formGroup: FormGroup;
+    formGroup: UntypedFormGroup;
     formTitle: string;
     employeesLookup: Employee[];
     departments: any[];
@@ -29,7 +29,7 @@ export class OvertimeFormComponent implements OnInit {
         private overtimeService: OvertimeService,
         private employeeService: EmployeeService,
         private toastr: ToastrService,
-        private fb: FormBuilder,
+        private fb: UntypedFormBuilder,
         private authService: AuthService
     ) {}
 

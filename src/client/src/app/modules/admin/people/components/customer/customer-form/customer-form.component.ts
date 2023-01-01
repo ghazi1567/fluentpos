@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { Customer } from '../../../models/customer';
@@ -11,10 +11,10 @@ import { CustomerService } from '../../../services/customer.service';
   styleUrls: ['./customer-form.component.scss']
 })
 export class CustomerFormComponent implements OnInit {
-  customerForm: FormGroup;
+  customerForm: UntypedFormGroup;
   formTitle: string;
   customerTypes: string[] = ['General', 'VIP'];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Customer, private customerService: CustomerService, private toastr: ToastrService, private fb: FormBuilder) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Customer, private customerService: CustomerService, private toastr: ToastrService, private fb: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     this.initializeForm();

@@ -50,8 +50,7 @@ namespace FluentPOS.Shared.Infrastructure.Persistence
             _persistenceOptions = persistenceOptions.Value;
             _json = json;
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.LogTo(Console.WriteLine);
+      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             if (!string.IsNullOrWhiteSpace(Schema))

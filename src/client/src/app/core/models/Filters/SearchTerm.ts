@@ -14,7 +14,7 @@ export interface NgAsAdvancedSearchTerm {
     id: number;
     fieldName?: string;
     fieldType?: "text" | "date" | "email" | "number" | "search" | "tel" | "url" | "time" | "checkbox" | "dropdown";
-    action?: "contains" | "equals" | "larger than" | "smaller than";
+    action?: "contains" | "equals" | "larger than" | "smaller than" | "=" | ">=" | "<=";
     searchTerm?: string;
     isNegated?: boolean;
     data?: Lookup[];
