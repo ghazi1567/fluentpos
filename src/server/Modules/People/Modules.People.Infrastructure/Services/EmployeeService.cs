@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListAsync()
         {
-            var employee = await _context.Employees.ToListAsync();
+            var employee = await _context.Employees.Where(x=>x.Active == true).ToListAsync();
             return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
         }
 
@@ -54,9 +54,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeDetailsByPolicyAsync(List<Guid> Ids)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids)
         {
-            var employee = await _context.Employees.Where(c => Ids.Contains(c.PolicyId)).ToListAsync(default(CancellationToken));
+            var employee = await _context.Employees.Where(c => c.Active == true && Ids.Contains(c.PolicyId)).ToListAsync(default(CancellationToken));
             if (employee == null)
             {
                 return default;

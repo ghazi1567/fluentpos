@@ -43,6 +43,14 @@ export class EmployeeService {
         if (searchParams.orderBy) params = params.append("orderBy", searchParams.orderBy.toString());
         return this.policyApi.getAlls(params).pipe(map((response: PaginatedResult<Policy>) => response));
     }
+    getEmployeesLookup(EmployeeParams: SearchParams): Observable<PaginatedResult<Employee>> {
+        let params = new HttpParams();
+        if (EmployeeParams.searchString) params = params.append("searchString", EmployeeParams.searchString);
+        if (EmployeeParams.pageNumber) params = params.append("pageNumber", EmployeeParams.pageNumber.toString());
+        if (EmployeeParams.pageSize) params = params.append("pageSize", EmployeeParams.pageSize.toString());
+        if (EmployeeParams.orderBy) params = params.append("orderBy", EmployeeParams.orderBy.toString());
+        return this.api.getLookup(params).pipe(map((response: PaginatedResult<Employee>) => response));
+    }
     getEmployees(EmployeeParams: SearchParams): Observable<PaginatedResult<Employee>> {
         let params = new HttpParams();
         if (EmployeeParams.searchString) params = params.append("searchString", EmployeeParams.searchString);

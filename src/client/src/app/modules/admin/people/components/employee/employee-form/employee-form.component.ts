@@ -100,6 +100,7 @@ export class EmployeeFormComponent implements OnInit {
             socialSecurityNo: [this.data && this.data.socialSecurityNo],
             maritalStatus: [this.data && this.data.maritalStatus],
             religion: [this.data && this.data.religion],
+            active: [this.data && this.data.active],
         });
         if (this.firstFormGroup.get("id").value === "" || this.firstFormGroup.get("id").value == null) {
             this.formTitle = "Register Employee";

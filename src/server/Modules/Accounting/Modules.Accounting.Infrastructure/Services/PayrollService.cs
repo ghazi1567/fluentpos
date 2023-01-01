@@ -103,7 +103,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 payrollRequest.LogList = new List<string>();
                 var plocies = await _orgService.GetPolicyDetailsAsync(payrollRequest.PayPeriod);
                 var plociesIds = plocies.Select(x => x.Id.Value).ToList();
-                var employees = await _employeeService.GetEmployeeDetailsByPolicyAsync(plociesIds);
+                var employees = await _employeeService.GetEmployeeListByPolicyAsync(plociesIds);
                 payrollRequest.EmployeeIds = new List<Guid>();
                 foreach (var item in employees)
                 {
@@ -348,7 +348,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             foreach (var item in attendances.OrderBy(x => x.AttendanceDate))
             {
                 totalMonthDays++;
-                if (IsWorkingDay(item.AttendanceDate, payrollRequest.Policy))
+                bool isWorkingDay = item.AttendanceStatus != Shared.DTOs.Enums.AttendanceStatus.Off || IsWorkingDay(item.AttendanceDate, payrollRequest.Policy);
+
+                if (isWorkingDay)
                 {
                     totalRequiredDays++;
                     switch (item.AttendanceStatus)
@@ -381,26 +383,22 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 }
             }
 
+
+            double salaryAmount = payrollRequest.EmployeeSalary.BasicSalary;
+            string salaryTransactionName = $"Base Salary";
             if (payrollRequest.PayPeriod == Shared.DTOs.Enums.PayPeriod.HalfMonth)
             {
-                transactions.Add(new PayrollTransaction
-                {
-                    TransactionType = Shared.DTOs.Enums.TransactionType.Earning,
-                    Earning = payrollRequest.EmployeeSalary.BasicSalary / 2,
-                    TransactionName = $"Base Salary (15 Days)",
-                    DaysOrHours = totalEarnedHours,
-                });
+                salaryAmount = payrollRequest.EmployeeSalary.BasicSalary / 2;
+                salaryTransactionName = $"Base Salary (15 Days)";
             }
-            else if (payrollRequest.PayPeriod == Shared.DTOs.Enums.PayPeriod.Monthly)
+
+            transactions.Add(new PayrollTransaction
             {
-                transactions.Add(new PayrollTransaction
-                {
-                    TransactionType = Shared.DTOs.Enums.TransactionType.Earning,
-                    Earning = payrollRequest.EmployeeSalary.BasicSalary,
-                    TransactionName = $"Base Salary",
-                    DaysOrHours = totalEarnedHours,
-                });
-            }
+                TransactionType = Shared.DTOs.Enums.TransactionType.Earning,
+                Earning = salaryAmount,
+                TransactionName = salaryTransactionName,
+                DaysOrHours = totalEarnedHours,
+            });
 
             if (totalDeductedHours > 0 && !payrollRequest.IgnoreDeductionForLateComer)
             {
@@ -417,15 +415,17 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             if (payrollRequest.Policy.AllowedOffDays < totalAbsent && !payrollRequest.IgnoreDeductionForAbsents)
             {
                 int absents = totalAbsent;
+                double deductionAmount = Math.Round(absents * payrollRequest.EmployeeSalary.PerDaySalary, 2);
                 if (totalRequiredDays == totalAbsent)
                 {
-                    // absents = totalAbsent + totalOffDays + totalHolidays;
+                     absents = totalAbsent + totalOffDays + totalHolidays;
+                    deductionAmount = salaryAmount;
                 }
 
                 transactions.Add(new PayrollTransaction
                 {
                     TransactionType = Shared.DTOs.Enums.TransactionType.Deduction,
-                    Deduction = absents * payrollRequest.EmployeeSalary.PerDaySalary,
+                    Deduction = deductionAmount,
                     TransactionName = $"Absents ({absents} Days.)",
                     DaysOrHours = absents,
                     EntryType = Shared.DTOs.Enums.EntryType.AbsentDeduction
