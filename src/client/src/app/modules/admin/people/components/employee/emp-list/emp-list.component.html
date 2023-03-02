@@ -1,0 +1,20 @@
+<mat-tab-group>
+    <mat-tab label="Current Employee">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Active Employee</span>
+        </ng-template>
+        <app-employee></app-employee>
+    </mat-tab>
+    <mat-tab label="Left Employee">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">InActive Employee</span>
+        </ng-template>
+        <app-employee activeEmployee="false"></app-employee>
+    </mat-tab>
+    <mat-tab label="Assign Department">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Assign Department</span>
+        </ng-template>
+        <app-assign-department></app-assign-department>
+    </mat-tab>
+</mat-tab-group>

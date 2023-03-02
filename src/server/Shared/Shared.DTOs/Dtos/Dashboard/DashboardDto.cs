@@ -10,7 +10,13 @@ namespace FluentPOS.Shared.DTOs.Dtos.Dashboard
     {
         public int TotalEmployees { get; set; }
 
+        public int ActiveEmployees { get; set; }
+
         public int Presents { get; set; }
+
+        public int MalePresents { get; set; }
+
+        public int FemalePresents { get; set; }
 
         public int Absents { get; set; }
 

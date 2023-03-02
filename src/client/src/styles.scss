@@ -1,8 +1,13 @@
-@import '~ngx-toastr/toastr';
-@import '~bootstrap/scss/bootstrap-grid';
+@import 'ngx-toastr/toastr';
+@import 'bootstrap/scss/bootstrap-grid';
 @import '_theme.scss';
 $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
 @import '~material-design-icons-iconfont/src/material-design-icons';
+
+
+@import '../node_modules/ag-grid-community/styles/ag-grid.css';
+@import '../node_modules/ag-grid-community/styles/ag-theme-alpine.css';
+
 .container {
     all: revert;
 }
@@ -339,4 +344,16 @@ th.mat-header-cell{
 
 .custom .bdt {
     border-top: none!important;
+}
+
+
+.bg-red {
+    background-color: lightcoral;
+    color: white;
+    text-align: center;
+}
+.bg-green {
+    background-color: lightgreen;
+    color: white;
+    text-align: center;
 }

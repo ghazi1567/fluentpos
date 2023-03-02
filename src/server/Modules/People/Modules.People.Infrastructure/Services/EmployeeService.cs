@@ -27,9 +27,16 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
         }
 
-        public async Task<int> GetEmployeeCountAsync()
+        public async Task<int> GetEmployeeCountAsync(bool isActiveOnly)
         {
-            return await _context.Employees.CountAsync();
+            var queryable = _context.Employees.AsQueryable();
+
+            if (isActiveOnly)
+            {
+                queryable = queryable.Where(x => x.Active == true);
+            }
+
+            return await queryable.CountAsync();
         }
 
         public async Task<Shared.DTOs.Dtos.Peoples.EmployeeDto> GetEmployeeDetailsAsync(Guid Id)

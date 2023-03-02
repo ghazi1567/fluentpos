@@ -1,0 +1,36 @@
+.overlay-boundary {
+    background-color: #eeeeee;
+    height: 15%;
+}
+
+.loading-spinner {
+    z-index: 999;
+}
+
+.loading {
+    left: 0;
+    top: 0;
+    position: fixed;
+    z-index: 10000;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.mat-progress-spinner {
+    position: absolute;
+    overflow: hidden;
+    left: 50%;
+    margin-left: -50px;
+    top: 50%;
+    margin-top: -50px;
+}
+::ng-deep app-grid-overlay {
+    left: 0;
+    top: 0;
+    position: fixed;
+    z-index: 10000;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+}

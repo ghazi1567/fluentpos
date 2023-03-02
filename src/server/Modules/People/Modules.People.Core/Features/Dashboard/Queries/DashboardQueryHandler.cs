@@ -14,7 +14,6 @@ using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
 using FluentPOS.Modules.People.Core.Dtos;
 using FluentPOS.Shared.Core.Interfaces.Services;
-using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
 
@@ -43,8 +42,13 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<DashboardDto> Handle(GetDashboardQuery request, CancellationToken cancellationToken)
         {
             var dto = new DashboardDto();
-            var totalEmployees = await _employeeService.GetEmployeeCountAsync();
+            int totalEmployees = await _employeeService.GetEmployeeCountAsync(false);
+            int activeEmployees = await _employeeService.GetEmployeeCountAsync(true);
+
             var attendance = _context.Attendances.Where(x => x.AttendanceDate.Date == request.StartDate.Date).ToList();
+            var maleEmployeeIds = _context.Employees.Where(x => x.Active == true && x.Gender == "male").Select(x => x.Id).ToList();
+            var femaleEmployeeIds = _context.Employees.Where(x => x.Active == true && x.Gender == "female").Select(x => x.Id).ToList();
+
 
             var endDate = request.StartDate;
             var startDate = request.StartDate.AddDays(-7);
@@ -52,7 +56,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             var last7DaysAttendance = _context.Attendances.Where(x => x.AttendanceDate.Date >= startDate.Date && x.AttendanceDate.Date <= endDate.Date).ToList();
 
             dto.TotalEmployees = totalEmployees;
+            dto.ActiveEmployees = activeEmployees;
             dto.Presents = attendance.Count(x => x.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Present);
+            dto.MalePresents = attendance.Count(x => maleEmployeeIds.Contains(x.EmployeeId) && x.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Present);
+            dto.FemalePresents = attendance.Count(x => femaleEmployeeIds.Contains(x.EmployeeId) && x.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Present);
+
+
             dto.Absents = attendance.Count(x => x.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Absent);
             dto.LateComer = attendance.Count(x => x.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Present && x.IsLateComer);
             dto.Absents = attendance.Count(x => x.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Absent);

@@ -14,5 +14,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services.Organization
 
         Task<List<PolicyDto>> GetPolicyDetailsAsync(PayPeriod payPeriod);
 
+        Task<List<DepartmentDto>> GetDepartmentListAsync(List<Guid> Ids);
+
     }
 }

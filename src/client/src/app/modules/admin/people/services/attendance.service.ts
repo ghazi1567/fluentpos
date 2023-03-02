@@ -2,6 +2,7 @@ import { HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { BaseApiService } from "src/app/core/api/baseApiService";
 import { AttendanceServiceApi } from "src/app/core/api/people/attendance-api.service";
 import { IResult } from "src/app/core/models/wrappers/IResult";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
@@ -12,8 +13,10 @@ import { PeopleSearchParams } from "../models/peopleSearchParams";
 @Injectable({
     providedIn: "root"
 })
-export class AttendanceService {
-    constructor(private api: AttendanceServiceApi) {}
+export class AttendanceService extends BaseApiService{
+    constructor(private api: AttendanceServiceApi) {
+        super();
+    }
 
     getParams(searchParams: PeopleSearchParams): HttpParams{
         let params = new HttpParams();
@@ -62,5 +65,9 @@ export class AttendanceService {
 
     advanceSearch(model: PeopleSearchParams): Observable<PaginatedResult<Attendance>> {
         return this.api.advanceSearch(model).pipe(map((response: PaginatedResult<Attendance>) => response));
+    }
+    
+    attendanceReport(model: PeopleSearchParams): Observable<PaginatedResult<Attendance>> {
+        return this.api.attendanceReport(model).pipe(map((response: PaginatedResult<Attendance>) => response));
     }
 }

@@ -53,6 +53,7 @@ export class AttendanceComponent implements OnInit {
     }
     loadLookups() {
         let employeeParams = new SearchParams();
+        employeeParams.pageSize = 10000;
         this.employeeService.getEmployees(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
             this.initAdvanceFilters();
@@ -344,7 +345,8 @@ export class AttendanceComponent implements OnInit {
                     isCheckOutMissing: x.isCheckOutMissing,
                     isLateComer: x.isLateComer,
                     overtimeHours: x.overtimeHours,
-                    earnedHours: x.earnedHours
+                    earnedHours: x.earnedHours,
+                    punchCode: x.punchCode
                 });
             });
             this.csvParser.exportXls(attendances, "Attendance.xlsx", "Attendance");

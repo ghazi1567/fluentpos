@@ -42,6 +42,7 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
             CreateMap<PaginatedBrachFilter, GetBranchsQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
 
+            CreateMap< Shared.DTOs.Dtos.Organizations.DepartmentDto, Department>().ReverseMap();
             CreateMap<RegisterDepartmentCommand, Department>().ReverseMap();
             CreateMap<UpdateDepartmentCommand, Department>().ReverseMap();
             CreateMap<GetByIdCacheableFilter<Guid, Department>, GetDepartmentByIdQuery>();

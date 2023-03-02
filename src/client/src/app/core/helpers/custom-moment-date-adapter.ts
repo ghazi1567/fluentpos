@@ -10,7 +10,7 @@ export class CustomMomentDateAdapter extends MomentDateAdapter {
   }
 
   static TIMEZONE = "Asia/Karachi";
-
+  static FORMAT = "yyyy-MM-DD";
   createDate(year: number, month: number, date: number): moment.Moment {
     // Moment.js will create an invalid date if any of the components are out of bounds, but we
     // explicitly check each case so we can throw more descriptive errors.

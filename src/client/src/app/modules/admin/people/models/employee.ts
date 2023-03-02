@@ -55,4 +55,7 @@ export interface Employee {
     domicile: string;
     organizationId: string;
     branchId: string;
+    departmentName?: string;
+    selected?: boolean;
+
 }

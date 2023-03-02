@@ -101,5 +101,14 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
                 OrganizationId  = branch.OrganizationId
             };
         }
+
+        public async Task<List<DepartmentDto>> GetDepartmentListAsync(List<Guid> Ids)
+        {
+            var departments = await _context.Departments.AsNoTracking()
+               .Where(b => Ids.Contains(b.Id))
+               .ToListAsync(default(CancellationToken));
+
+            return _mapper.Map<List<DepartmentDto>>(departments);
+        }
     }
 }

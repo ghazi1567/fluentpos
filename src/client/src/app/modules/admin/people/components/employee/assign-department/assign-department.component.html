@@ -1,0 +1,66 @@
+<mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+    <mat-card-header *ngIf="title">
+        <mat-card-title>
+            {{ title | translate }}
+        </mat-card-title>
+        <mat-card-subtitle>{{ subtitle | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-3">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Department</mat-label>
+                        <mat-select [(ngModel)]="model.departmentId" name="departmentId">
+                            <mat-option *ngFor="let department of departments" [value]="department.id">{{ department.name }}</mat-option>
+                        </mat-select>
+                        <mat-error> Please provide a valid Department</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xs-12 col-md-3">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Employees</mat-label>
+                        <mat-select [(ngModel)]="model.employeeIds" name="empId" multiple>
+                            <mat-option *ngFor="let emp of employees" [value]="emp.id">{{ emp.fullName }}</mat-option>
+                        </mat-select>
+                        <mat-error> Please provide a valid Department</mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-xs-12 col-md-3">
+                    <mat-form-field class="example-full-width" appearance="fill">
+                        <mat-label>Employees</mat-label>
+                        <input type="text" placeholder="Select Employees" aria-label="Employees" matInput [formControl]="myControl" [matAutocomplete]="auto" />
+                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                <div (click)="optionClicked($event, option)">
+                                    <mat-checkbox [checked]="option.selected" (change)="toggleSelection(option)" (click)="$event.stopPropagation()">
+                                        {{ option.fullName }}
+                                    </mat-checkbox>
+                                </div>
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div> -->
+            </div>
+            <div class="row">
+                <div style="margin: 0 26px 0 16px">
+                    <div class="left">
+                        <a mat-raised-button color="primary" (click)="saveAssignDepartment()">
+                            <mat-icon>add</mat-icon>
+                            {{ title }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3" *ngFor="let v of model.employeeIds">
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>{{ getEmployeeName(v) }}</mat-card-title>
+                        </mat-card-header>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

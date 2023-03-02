@@ -1,0 +1,41 @@
+/* style.css */
+
+.bg-red {
+    text-align: center;
+    font-weight: bold;
+    background-color: #f44336;
+}
+
+.cell-pass {
+    text-align: center;
+    font-weight: bold;
+    background-color: #4caf50;
+}
+.bg-red {
+    background-color: lightcoral;
+}
+.bg-green {
+    background-color: lightgreen;
+}
+.rag-amber {
+    background-color: lightsalmon;
+}
+
+.rag-red-outer .rag-element {
+    background-color: lightcoral;
+}
+
+.rag-green-outer .rag-element {
+    background-color: lightgreen;
+}
+
+.rag-amber-outer .rag-element {
+    background-color: lightsalmon;
+}
+
+::-webkit-scrollbar {
+    width: 17px;
+    overflow-y: scroll;
+    background: white;
+    box-shadow: inset 0 0 0px gainsboro;
+}

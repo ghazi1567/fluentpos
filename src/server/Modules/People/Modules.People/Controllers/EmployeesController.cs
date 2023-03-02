@@ -88,5 +88,12 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [HttpPost("AssignDepartment")]
+        [Authorize(Policy = Permissions.Employees.Register)]
+        public async Task<IActionResult> AssignDepartmentAsync(AssignDepartmentCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
     }
 }

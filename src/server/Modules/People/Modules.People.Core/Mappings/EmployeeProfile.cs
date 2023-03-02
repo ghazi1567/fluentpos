@@ -63,6 +63,8 @@ namespace FluentPOS.Modules.People.Core.Mappings
 
             CreateMap<PaginatedFilter, GetDashboardQuery>()
                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+
+            CreateMap<PaginatedFilter, GetAttendanceReportQuery>();
         }
     }
 }

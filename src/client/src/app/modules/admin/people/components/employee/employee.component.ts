@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Sort } from "@angular/material/sort";
 import { ToastrService } from "ngx-toastr";
@@ -21,6 +21,7 @@ import { EmployeeFormComponent } from "./employee-form/employee-form.component";
     styleUrls: ["./employee.component.scss"]
 })
 export class EmployeeComponent implements OnInit {
+    @Input() activeEmployee: boolean = true;
     employees: PaginatedResult<Employee>;
     employeeColumns: TableColumn[];
     customerParams = new SearchParams();
@@ -30,16 +31,39 @@ export class EmployeeComponent implements OnInit {
     advanceFilters: AdvanceFilter[];
     advanceSearch: NgAsConfig;
     savedFilters: NgAsSearchTerm[];
-
+    policies: any[];
+    departments: any[];
+    designations: any[];
     constructor(public employeeService: EmployeeService, private authService: AuthService, private csvParser: CsvParserService, public dialog: MatDialog, public toastr: ToastrService) {}
 
     ngOnInit(): void {
-        this.getEmployees();
         this.initColumns();
-        this.initAdvanceFilters();
+        this.loadLookups();
     }
-
+    loadLookups() {
+        let parms = new SearchParams();
+        parms.pageSize = 1000;
+        // this.employeeService.getPolicyLookup(parms).subscribe((res) => {
+        //     this.policies = res.data;
+        // });
+        this.employeeService.getDepartmentLookup(parms).subscribe((res) => {
+            this.departments = res.data;
+            this.initAdvanceFilters();
+            this.getEmployees();
+        });
+        // this.employeeService.getDesignationLookup(parms).subscribe((res) => {
+        //     this.designations = res.data;
+        //     this.filteredDesignations = this.designations.filter((x) => x.departmentId == this.data.departmentId);
+        // });
+        // this.employeeService.getEmployees(parms).subscribe((res) => {
+        //     this.employeesLookup = res.data.filter((x) => x.id != this.data.id);
+        // });
+    }
     initAdvanceFilters() {
+        var departmentsLookupData = this.departments.map((emp) => ({
+            key: emp.id,
+            value: emp.name
+        }));
         this.savedFilters = [];
         this.advanceSearch = {
             headers: [
@@ -47,6 +71,7 @@ export class EmployeeComponent implements OnInit {
                 { id: "FatherName", displayText: "Father Name" },
                 { id: "MotherName", displayText: "Mother Name" },
                 { id: "EmployeeCode", displayText: "Employee Code" },
+                { id: "DepartmentId", displayText: "Department", type: "dropdown", data: departmentsLookupData },
                 { id: "PunchCode", displayText: "Punch Code", type: "number" },
                 { id: "MobileNo", displayText: "Mobile#" },
                 { id: "PhoneNo", displayText: "Phone#" },
@@ -145,6 +170,11 @@ export class EmployeeComponent implements OnInit {
                     id: "DateOfBirth",
                     displayText: "Date Of Birth",
                     type: "date"
+                },
+                {
+                    id: "Active",
+                    displayText: "Active",
+                    type: "checkbox"
                 }
             ],
             defaultTerm: null,
@@ -216,9 +246,27 @@ export class EmployeeComponent implements OnInit {
     }
 
     getEmployees(): void {
-        this.employeeService.getEmployees(this.customerParams).subscribe((result) => {
-            console.log('after in progress')
+        if (!this.customerParams.advanceFilters || this.customerParams.advanceFilters.length == 0) {
+            var activeFilter = {
+                fieldName: "Active",
+                action: "=",
+                searchTerm: this.activeEmployee,
+                fieldType: "checkbox",
+                id: 0
+            };
+            this.customerParams.advanceFilters = [activeFilter];
+            this.customerParams.advancedSearchType = "And";
+        }
+
+        this.employeeService.advanceSearch(this.customerParams).subscribe((result) => {
             this.employees = result;
+            this.employees.data.forEach((emp) => {
+                emp.departmentName = "";
+                var dpt = this.departments.find((x) => x.id == emp.departmentId);
+                if (dpt) {
+                    emp.departmentName = dpt.name;
+                }
+            });
         });
     }
 
@@ -228,6 +276,7 @@ export class EmployeeComponent implements OnInit {
             { name: "Full Name", dataKey: "fullName", isSortable: true, isShowable: true },
             { name: "Employee Code", dataKey: "employeeCode", isSortable: true, isShowable: true },
             { name: "Punch Code", dataKey: "punchCode", isSortable: true, isShowable: true },
+            { name: "Department", dataKey: "departmentName", isSortable: false, isShowable: true },
             { name: "Employee Status", dataKey: "employeeStatus", isSortable: true, isShowable: true },
             { name: "Action", dataKey: "action", position: "right" }
         ];
@@ -349,14 +398,27 @@ export class EmployeeComponent implements OnInit {
     }
     onAdvanceFilters($event) {
         if ($event == null) {
-            this.getEmployees();
+            this.customerParams.advanceFilters = [];
+            this.customerParams.advancedSearchType = "";
         } else {
+            if ($event.advancedTerms.length >= 0) {
+                var exist = $event.advancedTerms.find((e) => e.fieldName === "Active");
+                if (!exist) {
+                    var activeFilter = {
+                        fieldName: "Active",
+                        action: "=",
+                        searchTerm: this.activeEmployee,
+                        fieldType: "checkbox",
+                        id: 0
+                    };
+                    $event.advancedTerms.push(activeFilter);
+                }
+            }
             this.customerParams.advanceFilters = $event.advancedTerms;
             this.customerParams.advancedSearchType = $event.advancedSearchType;
-
-            this.employeeService.advanceSearch(this.customerParams).subscribe((result) => {
-                this.employees = result;
-            });
+            this.customerParams.pageNumber = 0;
+            this.customerParams.pageSize = 10;
         }
+        this.getEmployees();
     }
 }

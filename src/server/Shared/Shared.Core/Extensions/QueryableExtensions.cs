@@ -206,6 +206,14 @@ namespace FluentPOS.Shared.Core.Extensions
                 {
                     return Expression.Constant(propValue, typeof(Int64?));
                 }
+                if (property.PropertyType == typeof(bool))
+                {
+                    return Expression.Constant(propValue, typeof(bool));
+                }
+                else if (property.PropertyType == typeof(bool?))
+                {
+                    return Expression.Constant(propValue, typeof(bool?));
+                }
             }
 
             if (typeCode == TypeCode.String)

@@ -83,4 +83,8 @@ export class EmployeeService {
     advanceSearch(model: any): Observable<PaginatedResult<Employee>> {
         return this.api.advanceSearch(model).pipe(map((response: PaginatedResult<Employee>) => response));
     }
+    
+    assignDepartment(model: any): Observable<Result<String>> {
+        return this.api.assignDepartment(model).pipe(map((response: Result<String>) => response));
+    }
 }

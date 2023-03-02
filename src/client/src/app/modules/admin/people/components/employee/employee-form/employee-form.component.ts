@@ -38,6 +38,7 @@ export class EmployeeFormComponent implements OnInit {
 
     loadLookups() {
         let parms = new SearchParams();
+        parms.pageSize = 1000;
         this.employeeService.getPolicyLookup(parms).subscribe((res) => {
             this.policies = res.data;
         });
