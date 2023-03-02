@@ -32,6 +32,7 @@ import { PermissionGuard } from './core/guards/permission.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { DatePipe } from '@angular/common';
 import { CustomerService } from './modules/admin/people/services/customer.service';
+import { CustomDateFormetPipe } from './core/pipes/custom-date-formet.pipe';
 export function rootLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -44,6 +45,7 @@ export function rootLoaderFactory(http: HttpClient) {
     ToolbarComponent,
     HomeLayoutComponent,
     AdminLayoutComponent,
+    CustomDateFormetPipe,
   ],
   imports: [
     BrowserModule,

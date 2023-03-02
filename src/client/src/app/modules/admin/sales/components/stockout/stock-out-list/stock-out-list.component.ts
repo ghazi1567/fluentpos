@@ -53,7 +53,7 @@ export class StockOutListComponent implements OnInit {
     }
 
     pageChanged(event: PaginatedFilter): void {
-        this.orderParams.pageNumber = event.pageIndex;
+        this.orderParams.pageNumber = event.pageIndex + 1;
         this.orderParams.pageSize = event.pageSize;
         this.getOrders();
     }

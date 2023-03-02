@@ -25,15 +25,15 @@ export class StockInListComponent implements OnInit {
     orderColumns: TableColumn[];
     orderParams = new OrderParams();
     searchString: string;
-
+    pageSize = 10;
     displayedColumns: string[] = ["id", "referenceNumber", "poReferenceNo", "timeStamp", "orderType", "action"];
     dataSource: PaginatedResult<Order>;
 
-    constructor(public stockInService: StockInService, 
-        private route: Router,
-        public dialog: MatDialog, public toastr: ToastrService) {}
+    constructor(public stockInService: StockInService, private route: Router, public dialog: MatDialog, public toastr: ToastrService) {}
 
     ngOnInit(): void {
+        this.orderParams.pageNumber = 1;
+        this.orderParams.pageSize = this.pageSize;
         this.getOrders();
     }
 
@@ -55,7 +55,7 @@ export class StockInListComponent implements OnInit {
     }
 
     pageChanged(event: PaginatedFilter): void {
-        this.orderParams.pageNumber = event.pageNumber;
+        this.orderParams.pageNumber = event.pageIndex + 1;
         this.orderParams.pageSize = event.pageSize;
         this.getOrders();
     }
@@ -91,7 +91,7 @@ export class StockInListComponent implements OnInit {
     }
 
     openEditPOS(orderId: string) {
-        this.route.navigateByUrl('/admin/sales/stock-in-edit/' + orderId);
+        this.route.navigateByUrl("/admin/sales/stock-in-edit/" + orderId);
     }
     openDeletePopup(orderId: string) {
         const dialogRef = this.dialog.open(DeleteDialogComponent, {

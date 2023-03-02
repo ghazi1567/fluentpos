@@ -1,9 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { PageEvent } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
 import { ProductParams } from "src/app/modules/admin/catalog/models/productParams";
 import { Order } from "../../../models/order";
 import { Product } from "../../../models/product";
@@ -228,5 +230,14 @@ export class StockInComponent implements OnInit {
     }
     calculateGridRowTotal(row) {
         row.total = row.price * row.quantity;
+    }
+
+    onPageChange(pageEvent: PageEvent) {
+        const event: PaginatedFilter = {
+            pageNumber: pageEvent.pageIndex + 1 ?? 1,
+            pageSize: pageEvent.pageSize ?? 10
+        };
+        console.log(event);
+        // this.onPageChanged.emit(event);
     }
 }

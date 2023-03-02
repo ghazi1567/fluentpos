@@ -21,6 +21,7 @@ import { RoleApiService } from '../api/identity/role-api.service';
 import { IdentityApiService } from '../api/identity/identity-api.service';
 import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
 import { UploaderComponent } from './components/uploader/uploader.component';
+import { MomentPipe } from '../pipes/MomentPipe.pipe';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { UploaderComponent } from './components/uploader/uploader.component';
     HasPermissionDirective,
     HasRoleDirective,
     DeleteDialogComponent,
-    UploaderComponent
+    UploaderComponent,
+    MomentPipe
   ],
   imports: [
     CommonModule,
@@ -58,7 +60,8 @@ import { UploaderComponent } from './components/uploader/uploader.component';
     TranslateModule,
     HasPermissionDirective,
     HasRoleDirective,
-    UploaderComponent
+    UploaderComponent,
+    MomentPipe
   ],
 })
 export class SharedModule {}

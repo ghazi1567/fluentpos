@@ -28,9 +28,7 @@ export class POListComponent implements OnInit {
     displayedColumns: string[] = ["id", "referenceNumber", "timeStamp", "note", "status", "action"];
     dataSource: PaginatedResult<Order>;
 
-    constructor(public purchaseOrderService: PurchaseOrderService, 
-        private route: Router,
-        public dialog: MatDialog, public toastr: ToastrService) {}
+    constructor(public purchaseOrderService: PurchaseOrderService, private route: Router, public dialog: MatDialog, public toastr: ToastrService) {}
 
     ngOnInit(): void {
         this.getOrders();
@@ -43,7 +41,7 @@ export class POListComponent implements OnInit {
     }
 
     pageChanged(event: PaginatedFilter): void {
-        this.orderParams.pageNumber = event.pageNumber;
+        this.orderParams.pageNumber = event.pageIndex + 1;
         this.orderParams.pageSize = event.pageSize;
         this.getOrders();
     }
@@ -80,7 +78,7 @@ export class POListComponent implements OnInit {
 
     openEditPOS(orderId: string) {
         console.log(orderId);
-        this.route.navigateByUrl('/admin/sales/po-edit/' + orderId);
+        this.route.navigateByUrl("/admin/sales/po-edit/" + orderId);
     }
 
     openDeletePopup(orderId: string) {

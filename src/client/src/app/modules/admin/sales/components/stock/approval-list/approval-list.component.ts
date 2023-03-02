@@ -23,7 +23,7 @@ export class ApprovalListComponent implements OnInit {
     orderParams = new OrderParams();
     searchString: string;
 
-    displayedColumns: string[] = ["id", "referenceNumber", "timeStamp", "orderType", "action"];
+    displayedColumns: string[] = ["id", "poReferenceNo", "referenceNumber", "timeStamp", "orderType", "action"];
     dataSource: PaginatedResult<Order>;
 
     constructor(public stockInService: StockInService, public dialog: MatDialog, public toastr: ToastrService) {}
@@ -46,7 +46,7 @@ export class ApprovalListComponent implements OnInit {
         return OrderStatus[status];
     }
     pageChanged(event: PaginatedFilter): void {
-        this.orderParams.pageNumber = event.pageNumber;
+        this.orderParams.pageNumber = event.pageIndex + 1;
         this.orderParams.pageSize = event.pageSize;
         this.getOrders();
     }

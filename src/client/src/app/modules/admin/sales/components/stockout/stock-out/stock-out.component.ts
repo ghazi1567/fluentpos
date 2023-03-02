@@ -89,7 +89,7 @@ export class StockOutComponent implements OnInit {
         this.orderForm = this.fb.group({
             id: [""],
             timeStamp: [new Date(), Validators.required],
-            note: [""],
+            note: ["", Validators.required],
             warehouseId: [""]
         });
     }
@@ -129,8 +129,8 @@ export class StockOutComponent implements OnInit {
         return "";
     }
     getProduct(keyword) {
-        if(!this.productLookups){
-            this.toastr.error('Please wait products are loading.')
+        if (!this.productLookups) {
+            this.toastr.error("Please wait products are loading.");
             return;
         }
         let product = this.productLookups.find((option) => option.barcodeSymbology.toLowerCase().includes(keyword) || option.productCode.toLowerCase().includes(keyword));
@@ -221,13 +221,17 @@ export class StockOutComponent implements OnInit {
     savePurchaseOrder() {
         var formValues = this.orderForm.value;
         if (!formValues.warehouseId) {
-            
             if (this.warehouseLookups.length > 0) {
                 formValues.warehouseId = this.warehouseLookups[0].id;
             } else {
                 this.toastr.error("Please select valid warehouse");
                 return;
             }
+        }
+
+        if(!formValues.note){
+            this.toastr.error("Please enter comments");
+            return;
         }
 
         let order = <Order>{
