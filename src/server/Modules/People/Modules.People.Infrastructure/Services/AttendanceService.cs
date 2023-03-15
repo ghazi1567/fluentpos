@@ -225,6 +225,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
             return false;
         }
+
         public async Task<bool> MarkManualAttendance(Guid requestId)
         {
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();

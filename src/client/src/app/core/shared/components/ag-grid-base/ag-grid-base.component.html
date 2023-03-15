@@ -3,6 +3,7 @@
     <input matInput type="text" placeholder="Search..." [(ngModel)]="globalFilter" (input)="onFilterTextBoxChanged($event)" />
 </mat-form-field>
 <ag-grid-angular
+   
     style="width: 100%; height: 100%"
     [gridOptions]="gridOptions"
     [rowHeight]="34"
@@ -38,5 +39,5 @@
     [groupHeaderHeight]="groupHeaderHeight"
     [sideBar]="sideBar"
     [pivotRowTotals]="pivotRowTotals"
-    
+    [animateRows]="true"
 ></ag-grid-angular>

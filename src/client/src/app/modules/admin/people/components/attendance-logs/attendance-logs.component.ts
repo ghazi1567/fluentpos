@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Sort } from "@angular/material/sort";
+import { IServerSideDatasource } from "ag-grid-community";
 import { ToastrService } from "ngx-toastr";
 import { RequestStatus, RequestStatusMapping } from "src/app/core/enums/RequestStatus";
 import { RequestType } from "src/app/core/enums/RequestType";
@@ -9,6 +10,7 @@ import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTe
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { AuthService } from "src/app/core/services/auth.service";
 import { CsvMapping, CsvParserService, NgxCSVParserError } from "src/app/core/services/csv-parser.service";
+import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
 import { CustomAction } from "src/app/core/shared/components/table/custom-action";
 import { TableColumn } from "src/app/core/shared/components/table/table-column";
 import { SearchParams } from "../../../org/models/SearchParams";
@@ -18,7 +20,7 @@ import { PeopleSearchParams } from "../../models/peopleSearchParams";
 import { AttendanceLogService } from "../../services/attendance-log.service";
 import { AttendanceRequestService } from "../../services/attendance-request.service";
 import { AttendanceLogFormComponent } from "./attendance-log-form/attendance-log-form.component";
-
+import * as moment from "moment";
 @Component({
     selector: "app-attendance-logs",
     templateUrl: "./attendance-logs.component.html",
@@ -27,9 +29,10 @@ import { AttendanceLogFormComponent } from "./attendance-log-form/attendance-log
 export class AttendanceLogsComponent implements OnInit {
     attendances: PaginatedResult<EmployeeRequest>;
     bioAttendances: PaginatedResult<BioAttendance>;
+    bioAttendancesData: BioAttendance[] = [];
     importAttendances: PaginatedResult<BioAttendance>;
     attendanceColumns: TableColumn[];
-    bioAttendanceColumns: TableColumn[];
+    bioAttendanceColumns: any[];
     importAttendanceColumns: TableColumn[];
     attendanceParams = new PeopleSearchParams();
     attendanceLogsParams = new PeopleSearchParams();
@@ -50,8 +53,10 @@ export class AttendanceLogsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.attendanceLogsParams.startDate = new Date();
+        this.attendanceLogsParams.endDate = new Date();
         this.getAttendances();
-        this.getAttendancesLogs();
+        // this.getAttendancesLogs();
         this.initColumns();
         this.initBioColumns();
         this.initAdvanceFilters();
@@ -70,15 +75,30 @@ export class AttendanceLogsComponent implements OnInit {
                 x.Remove = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
             });
         });
-
     }
-    getAttendancesLogs(): void {
+    getAttendancesLogs(params = null): void {
+        console.log(params);
         this.attendanceLogsParams.employeeId = this.authService.getEmployeeId;
         this.attendanceLogsParams.requestType = RequestType.Attendance;
-
+        this.attendanceLogsParams.pageSize = 100000;
         this.attendanceLogService.advanceSearch(this.attendanceLogsParams).subscribe((result) => {
             this.bioAttendances = result;
+            this.bioAttendancesData = result.data;
         });
+    }
+
+    private AgGrid: AgGridBaseComponent;
+    @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
+        if (content) {
+            // initially setter gets called with undefined
+            this.AgGrid = content;
+        }
+    }
+    gridReady(event): void {
+        if (this.AgGrid) {
+            // this.AgGrid.gridApi.setDatasource(this.scrollBarDataSource);
+        }
+        this.handleSearch();
     }
 
     initColumns(): void {
@@ -95,17 +115,63 @@ export class AttendanceLogsComponent implements OnInit {
     }
     initBioColumns(): void {
         this.bioAttendanceColumns = [
-            { name: "Punch Code", dataKey: "punchCode", isSortable: true, isShowable: true },
-            { name: "Employee Name", dataKey: "name", isSortable: true, isShowable: true },
-            { name: "Card No", dataKey: "cardNo", isSortable: true, isShowable: true },
-            { name: "Att. DateTime", dataKey: "attendanceDateTime", isSortable: true, isShowable: true, columnType: "date", format: "short" },
-            { name: "Att. Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "shortDate" },
-            { name: "Att. Time", dataKey: "attendanceTime", isSortable: true, isShowable: true, columnType: "date", format: "shortTime" },
-            { name: "Direction", dataKey: "direction", isSortable: true, isShowable: true },
-            { name: "Device Serial No", dataKey: "deviceSerialNo", isSortable: true, isShowable: false },
-            { name: "Device Name", dataKey: "deviceName", isSortable: true, isShowable: false },
-            { name: "Action", dataKey: "action", position: "right", buttons: [""] }
+            { headerName: "Punch Code", field: "punchCode", sortable: true },
+            { headerName: "Employee Name", field: "name", sortable: true },
+            { headerName: "Card No", field: "cardNo", sortable: true },
+            {
+                headerName: "Att. DateTime",
+                field: "attendanceDateTime",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    let date = moment(value, "YYYY-MM-DD hh:mm:ss A");
+                    if (date.isValid()) {
+                        value = date.format("YYYY-MM-DD hh:mm:ss A");
+                    }
+                    return value;
+                }
+            },
+            {
+                headerName: "Att. Date",
+                field: "attendanceDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    let date = moment(value, "YYYY-MM-DD");
+                    if (date.isValid()) {
+                        value = date.format("YYYY-MM-DD");
+                    }
+                    return value;
+                }
+            },
+            {
+                headerName: "Att. Time",
+                field: "attendanceTime",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        value = value.split("T");
+                    }
+                    return value.length > 1 ? value[1] : "";
+                }
+            },
+            { headerName: "Direction", field: "direction", sortable: true },
+            { headerName: "Device Serial No", field: "deviceSerialNo", sortable: true },
+            { headerName: "Device Name", field: "deviceName", sortable: true }
         ];
+        // this.bioAttendanceColumns = [
+        //     { name: "Punch Code", dataKey: "punchCode", isSortable: true, isShowable: true },
+        //     { name: "Employee Name", dataKey: "name", isSortable: true, isShowable: true },
+        //     { name: "Card No", dataKey: "cardNo", isSortable: true, isShowable: true },
+        //     { name: "Att. DateTime", dataKey: "attendanceDateTime", isSortable: true, isShowable: true, columnType: "date", format: "short" },
+        //     { name: "Att. Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "shortDate" },
+        //     { name: "Att. Time", dataKey: "attendanceTime", isSortable: true, isShowable: true, columnType: "date", format: "shortTime" },
+        //     { name: "Direction", dataKey: "direction", isSortable: true, isShowable: true },
+        //     { name: "Device Serial No", dataKey: "deviceSerialNo", isSortable: true, isShowable: false },
+        //     { name: "Device Name", dataKey: "deviceName", isSortable: true, isShowable: false },
+        //     { name: "Action", dataKey: "action", position: "right", buttons: [""] }
+        // ];
     }
     initImportColumns(): void {
         this.importAttendanceColumns = [
@@ -298,5 +364,21 @@ export class AttendanceLogsComponent implements OnInit {
             showFilterSaving: null,
             simpleFieldLabel: null
         };
+    }
+
+    handleSearch() {
+        this.attendanceLogsParams.advanceFilters = [];
+        this.attendanceLogsParams.advanceFilters.push({
+            fieldName: "attendanceDate",
+            searchTerm: this.attendanceLogsParams.startDate,
+            action: ">="
+        });
+        this.attendanceLogsParams.advanceFilters.push({
+            fieldName: "attendanceDate",
+            searchTerm: this.attendanceLogsParams.endDate,
+            action: "<="
+        });
+        this.attendanceLogsParams.advancedSearchType = "and";
+        this.getAttendancesLogs();
     }
 }

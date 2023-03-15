@@ -1,12 +1,15 @@
-@import 'ngx-toastr/toastr';
-@import 'bootstrap/scss/bootstrap-grid';
-@import '_theme.scss';
-$material-design-icons-font-directory-path: '~material-design-icons-iconfont/dist/fonts/';
-@import '~material-design-icons-iconfont/src/material-design-icons';
+@import "ngx-toastr/toastr";
+@import "bootstrap/scss/bootstrap-grid";
+@import "_theme.scss";
+$material-design-icons-font-directory-path: "~material-design-icons-iconfont/dist/fonts/";
+@import "~material-design-icons-iconfont/src/material-design-icons";
+
+@import 'ag-grid-community/src/styles/ag-grid.scss';
+
+@import 'ag-grid-community/dist/styles/ag-theme-alpine/sass/ag-theme-alpine.scss';
 
 
-@import '../node_modules/ag-grid-community/styles/ag-grid.css';
-@import '../node_modules/ag-grid-community/styles/ag-theme-alpine.css';
+
 
 .container {
     all: revert;
@@ -69,7 +72,7 @@ body {
 }
 
 .dark-theme .mat-drawer.mat-drawer-push {
-    background-color: #212121!important;
+    background-color: #212121 !important;
 }
 
 .dark-theme .mat-drawer-backdrop.mat-drawer-shown {
@@ -77,8 +80,8 @@ body {
 }
 
 .dark-theme .loader {
-    background-color: #3e3e3e00!important;
-    opacity: .5!important;
+    background-color: #3e3e3e00 !important;
+    opacity: 0.5 !important;
 }
 
 table {
@@ -86,12 +89,12 @@ table {
 }
 
 .mat-flat-button {
-    margin: 8px 8px 8px 0!important;
-    border-radius: 0px!important;
+    margin: 8px 8px 8px 0 !important;
+    border-radius: 0px !important;
 }
 
 .mat-raised-button {
-    margin: 8px 8px 8px 0!important;
+    margin: 8px 8px 8px 0 !important;
 }
 
 .toast-container .ngx-toastr {
@@ -124,13 +127,13 @@ table {
 }
 
 .mat-dialog-container {
-    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, .09)!important;
+    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, 0.09) !important;
 }
 
-@media screen and (max-width:1920px) {
-  .mat-dialog-container {
-    min-width: 50vw!important;
-  }
+@media screen and (max-width: 1920px) {
+    .mat-dialog-container {
+        min-width: 50vw !important;
+    }
 }
 
 .left {
@@ -142,28 +145,28 @@ table {
 }
 
 .mat-card {
-    border-radius: 4px!important;
-    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, .09)!important;
+    border-radius: 4px !important;
+    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, 0.09) !important;
 }
 
 .module-card {
-    padding-top: 32px!important;
+    padding-top: 32px !important;
 }
 
 .mat-list-item {
-    font-size: 14px!important;
+    font-size: 14px !important;
 }
 
 .mat-container {
-    height: 100%!important;
+    height: 100% !important;
 }
 
 .mat-menu-content {
-    padding: 0px!important;
+    padding: 0px !important;
 }
 
 .mat-menu-panel {
-    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 5px 8px 0px rgb(0 0 0 / 0%), 0px 1px 14px 0px rgb(0 0 0 / 8%)!important;
+    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 0%), 0px 5px 8px 0px rgb(0 0 0 / 0%), 0px 1px 14px 0px rgb(0 0 0 / 8%) !important;
 }
 
 .mat-divider {
@@ -188,7 +191,7 @@ table {
 }
 
 .mat-card-content {
-    padding: 16px!important;
+    padding: 16px !important;
 }
 
 .home-center-screen {
@@ -199,30 +202,30 @@ table {
 }
 
 .u-ml-auto {
-    margin-left: auto !important
+    margin-left: auto !important;
 }
 
 .u-mr-auto {
-    margin-right: auto !important
+    margin-right: auto !important;
 }
 
 .c-card {
     margin-bottom: 30px;
     padding: 40px;
     border-radius: 4px;
-    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, .09)
+    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, 0.09);
 }
 
 .dark-theme .c-card {
     background: #424242;
     color: white;
-    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, 0)
+    box-shadow: 0 10px 60px 0 rgba(29, 29, 31, 0);
 }
 
 .c-card.is-animated {
-    transition: -webkit-transform .3s;
-    transition: transform .3s;
-    transition: transform .3s, -webkit-transform .3s
+    transition: -webkit-transform 0.3s;
+    transition: transform 0.3s;
+    transition: transform 0.3s, -webkit-transform 0.3s;
 }
 
 .c-card.is-animated:hover {
@@ -231,58 +234,55 @@ table {
 }
 
 .c-card--center {
-    text-align: center
+    text-align: center;
 }
 
 .c-card__title {
-    margin-bottom: 10px
+    margin-bottom: 10px;
 }
 
 .position-fixed {
-    position: fixed
+    position: fixed;
 }
 
 .cdk-global-overlay-wrapper {
-  overflow: auto;
-  pointer-events: auto;  // needed for chrome but prevents backdrop click close
-  max-height: 90%;
-  margin: 20px;
+    overflow: auto;
+    pointer-events: auto; // needed for chrome but prevents backdrop click close
+    max-height: 90%;
+    margin: 20px;
 }
 
 .mat-dialog-container-no-padding {
-  mat-dialog-container {
-    padding: 0;
-    overflow: hidden;
-  }
+    mat-dialog-container {
+        padding: 0;
+        overflow: hidden;
+    }
 }
-
 
 // Mat Table Style
 table {
-  width: 100%;
+    width: 100%;
 }
 
 .text-right {
-  text-align: right !important;
+    text-align: right !important;
 }
-td.mat-cell{
-  border-bottom-style:dotted;
-  height: 60px!important;
+td.mat-cell {
+    border-bottom-style: dotted;
+    height: 60px !important;
 }
 
-th.mat-header-cell{
-  border-bottom-style: none;
-
+th.mat-header-cell {
+    border-bottom-style: none;
 }
 .mat-icon {
-  width: 17px;
-  height: 17px;
-  font-size: 17px;
+    width: 17px;
+    height: 17px;
+    font-size: 17px;
 }
 
-.mat-raised-button
-{
-  min-width: 0px!important;
+.mat-raised-button {
+    min-width: 0px !important;
 }
 
 .cls-absent {
@@ -331,21 +331,20 @@ th.mat-header-cell{
     padding-right: 21px;
 }
 
-
-.custom.table td, .custom.table th {
+.custom.table td,
+.custom.table th {
     padding: 0.75rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
 }
 
 .custom .font-weight-bold {
-    font-weight: 700!important;
+    font-weight: 700 !important;
 }
 
 .custom .bdt {
-    border-top: none!important;
+    border-top: none !important;
 }
-
 
 .bg-red {
     background-color: lightcoral;

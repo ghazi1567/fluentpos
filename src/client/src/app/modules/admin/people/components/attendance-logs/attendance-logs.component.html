@@ -27,27 +27,50 @@
         <ng-template matTabLabel>
             <span mat matBadgeOverlap="false">Bio Matric Logs </span>
         </ng-template>
-        <div [hidden]="!bioAttendances">
-            <app-table
-                [title]="'Bio Matric Logs'"
-                [subtitle]="'Manage, Register, Update or Remove Bio Matric Logs here.'"
-                [data]="bioAttendances && bioAttendances.data"
-                [columns]="bioAttendanceColumns"
-                (onFilter)="logsFilter($event)"
-                (onReload)="logsReload()"
-                (onCreateForm)="openForm()"
-                (onEditForm)="openForm($event)"
-                (onSort)="logsSort($event)"
-                (onDelete)="remove($event)"
-                [totalCount]="bioAttendances && bioAttendances.totalCount"
-                [pageSize]="bioAttendances && bioAttendances.pageSize"
-                (onPageChanged)="logsPageChanged($event)"
-                [moduleName]="'AttendanceRequests'"
-                (onAdvanceFilters)="onAdvanceFilters($event)"
-                [advanceFilters]="advanceSearch"
-            >
-            </app-table>
-        </div>
+        <mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+            <mat-card-content>
+                <div class="row">
+                    <div class="col-xs-12 col-md-2">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Start Date</mat-label>
+                            <input matInput [matDatepicker]="picker" [(ngModel)]="attendanceLogsParams.startDate" required />
+                            <mat-hint>MM/DD/YYYY</mat-hint>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-error> Please provide a valid Attendance Date </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <mat-form-field appearance="outline">
+                            <mat-label>End Date</mat-label>
+                            <input matInput [matDatepicker]="endDatepicker" [(ngModel)]="attendanceLogsParams.endDate" required />
+                            <mat-hint>MM/DD/YYYY</mat-hint>
+                            <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+                            <mat-datepicker #endDatepicker></mat-datepicker>
+                            <mat-error> Please provide a valid Attendance Date </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-2">
+                        <a mat-raised-button color="primary" (click)="handleSearch()"> <mat-icon>cloud_download</mat-icon> Search </a>
+                    </div>
+                </div>
+                <div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+                    <app-ag-grid-base
+                      
+                        #AgGrid
+                        [rowData]="bioAttendancesData"
+                        [columnDefs]="bioAttendanceColumns"
+                        [pagination]="true"
+                        (gridReadyComplete)="gridReady($event)"
+                        headerHeight="50"
+                        sideBar="false"
+                        paginationPageSize="100"
+                    >
+                    </app-ag-grid-base>
+                </div>
+            </mat-card-content>
+        </mat-card>
     </mat-tab>
     <!-- <mat-tab label="Pay Slips">
         <ng-template matTabLabel>

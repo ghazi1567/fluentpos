@@ -58,7 +58,7 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     stopEditingWhenGridLosesFocus: boolean = false;
     @Input()
     suppressColumnVirtualisation: boolean = false;
-
+    @Input()
     public sideBar: SideBarDef | string | string[] | boolean | null = "columns";
     @Input()
     public pivotRowTotals: "after" | "before";
@@ -73,7 +73,8 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     rowBuffer: number;
     @Input()
     rowModelType: string = ""; // normal|infinite
-    paginationPageSize: number;
+    @Input()
+    paginationPageSize: number = 100;
     cacheOverflowSize: number;
     maxConcurrentDatasourceRequests: number;
     infiniteInitialRowCount: number;
