@@ -71,6 +71,11 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
             }
 
+            if(employee.PolicyId == default || employee.PolicyId == Guid.Empty)
+            {
+                employee.PolicyId = Guid.Empty;
+            }
+
             // customer.AddDomainEvent(new EmployeeRegisteredEvent(customer));
 
             await _context.Employees.AddAsync(employee, cancellationToken);
@@ -94,7 +99,10 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                     uploadRequest.FileName = $"E-{command.FullName}{uploadRequest.Extension}";
                     employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
                 }
-
+                if (employee.PolicyId == default || employee.PolicyId == Guid.Empty)
+                {
+                    employee.PolicyId = Guid.Empty;
+                }
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
@@ -134,6 +142,11 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 bool isEists = await _context.Employees.AnyAsync(x => x.EmployeeCode == item.EmployeeCode || x.PunchCode == item.PunchCode);
                 if (!isEists)
                 {
+                    if (item.PolicyId == default || item.PolicyId == Guid.Empty)
+                    {
+                        item.PolicyId = Guid.Empty;
+                    }
+
                     filtered.Add(item);
                 }
                 else

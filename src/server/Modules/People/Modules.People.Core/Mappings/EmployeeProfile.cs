@@ -65,6 +65,13 @@ namespace FluentPOS.Modules.People.Core.Mappings
                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
 
             CreateMap<PaginatedFilter, GetAttendanceReportQuery>();
+            CreateMap<PaginatedResult<ShiftPlannerDto>, PaginatedResult<ShiftPlanner>>().ReverseMap();
+            CreateMap<PaginatedFilter, GetShiftPlanningQuery>();
+            CreateMap<ShiftPlannerDto, ShiftPlanner>().ReverseMap();
+
+            CreateMap<PaginatedResult<OvertimeRequestDto>, PaginatedResult<OvertimeRequest>>().ReverseMap();
+            CreateMap<PaginatedFilter, GetOvertimePlanningQuery>();
+            CreateMap<OvertimeRequestDto, OvertimeRequest>().ReverseMap();
         }
     }
 }

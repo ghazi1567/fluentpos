@@ -22,9 +22,9 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public DateTime AttendanceDate { get; set; }
 
-        public TimeSpan? CheckIn { get; set; }
+        public DateTime? CheckIn { get; set; }
 
-        public TimeSpan? CheckOut { get; set; }
+        public DateTime? CheckOut { get; set; }
 
         public int OvertimeHours { get; set; }
 
@@ -49,5 +49,7 @@ namespace FluentPOS.Modules.People.Core.Entities
         public Guid? ModificationId { get; set; }
 
         public AttendanceStatus AttendanceStatus { get; set; }
+
+        public bool IsNextDay { get; set; }
     }
 }

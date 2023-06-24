@@ -30,6 +30,13 @@
                     <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.overtimes" | translate }}
                 </a>
                
+                <a *appHasPermission="['Permissions.OvertimeRequests.View']" mat-list-item routerLink="people/shift-planner" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.ExtraShift" | translate }}
+                </a>
+                <a *appHasPermission="['Permissions.OvertimeRequests.View']" mat-list-item routerLink="people/overtime-planner" (click)="sidenav.close()">
+                    <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.OvertimePlanner" | translate }}
+                </a>
+               
                 <a *appHasPermission="['Permissions.AttendanceRequests.MyQueue','Permissions.OvertimeRequests.MyQueue']" mat-list-item routerLink="people/my-queue" (click)="sidenav.close()">
                     <mat-icon style="padding-right: 10px">face</mat-icon> {{ "layouts.admin.myQueue" | translate }}
                 </a>

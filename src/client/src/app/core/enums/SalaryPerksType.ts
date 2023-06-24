@@ -10,3 +10,11 @@ export const SalaryPerksTypeMapping: Record<SalaryPerksType, string> = {
     [SalaryPerksType.Incentives]: "Incentives",
     [SalaryPerksType.Deductions]: "Deductions"
 };
+export enum GlobalPerkType {
+    EOBI = 1,
+    FullMonthPresent = 2
+}
+export const GlobalPerkTypeMapping: Record<GlobalPerkType, string> = {
+    [GlobalPerkType.EOBI]: "EOBI",
+    [GlobalPerkType.FullMonthPresent]: "Full Month Present"
+};

@@ -14,6 +14,10 @@ import { SearchParams } from "../../../org/models/SearchParams";
 import { Employee } from "../../models/employee";
 import { EmployeeService } from "../../services/employee.service";
 import { EmployeeFormComponent } from "./employee-form/employee-form.component";
+import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
+import { PayPeriodMapping } from "src/app/core/enums/PayPeriod";
+import * as moment from "moment";
+import { ISetFilterParams } from "ag-grid-enterprise";
 
 @Component({
     selector: "app-employee",
@@ -23,7 +27,7 @@ import { EmployeeFormComponent } from "./employee-form/employee-form.component";
 export class EmployeeComponent implements OnInit {
     @Input() activeEmployee: boolean = true;
     employees: PaginatedResult<Employee>;
-    employeeColumns: TableColumn[];
+    employeeColumns: any[];
     customerParams = new SearchParams();
     searchString: string;
     @ViewChild("file") fileInput: ElementRef;
@@ -34,6 +38,7 @@ export class EmployeeComponent implements OnInit {
     policies: any[];
     departments: any[];
     designations: any[];
+    public PayPeriodMapping = PayPeriodMapping;
     constructor(public employeeService: EmployeeService, private authService: AuthService, private csvParser: CsvParserService, public dialog: MatDialog, public toastr: ToastrService) {}
 
     ngOnInit(): void {
@@ -257,6 +262,8 @@ export class EmployeeComponent implements OnInit {
             this.customerParams.advanceFilters = [activeFilter];
             this.customerParams.advancedSearchType = "And";
         }
+        this.customerParams.pageNumber = 0;
+        this.customerParams.pageSize = 10000;
 
         this.employeeService.advanceSearch(this.customerParams).subscribe((result) => {
             this.employees = result;
@@ -270,7 +277,7 @@ export class EmployeeComponent implements OnInit {
         });
     }
 
-    initColumns(): void {
+    initColumns1(): void {
         this.employeeColumns = [
             { name: "Id", dataKey: "id", isSortable: true, isShowable: true },
             { name: "Full Name", dataKey: "fullName", isSortable: true, isShowable: true },
@@ -282,6 +289,155 @@ export class EmployeeComponent implements OnInit {
         ];
     }
 
+    initColumns(): void {
+        var actionButtons: CustomAction[] = [new CustomAction("Edit", "Update", "Update", "mode_edit")];
+        this.employeeColumns = [
+            { headerName: "Id", field: "id", sortable: true },
+            { headerName: "Full Name", field: "fullName", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Employee Code",
+                field: "employeeCode",
+                sortable: true,
+                filter: "agTextColumnFilter"
+            },
+            { headerName: "Punch Code", field: "punchCode", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Department", field: "departmentName", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Employee Status", field: "employeeStatus", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Pay Period",
+                field: "payPeriod ",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.data.payPeriod;
+                    if (value > 0) {
+                        return PayPeriodMapping[value];
+                    }
+
+                    return "None";
+                },
+                filter: "agTextColumnFilter"
+            },
+            { headerName: "Father Name", field: "fatherName", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Mobile No", field: "mobileNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Emergancy No", field: "phoneNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Marital Status", field: "maritalStatus", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Gender", field: "gender", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Religion", field: "religion", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Bank Account No", field: "bankAccountNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Bank Account Title", field: "bankAccountTitle", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Bank Name", field: "bankName", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Employee Status", field: "employeeStatus", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Basic Salary", field: "basicSalary", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Joining Date",
+                field: "joiningDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            { headerName: "Blood Group", field: "bloodGroup", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "EOBI No", field: "eobiNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Social Security No", field: "socialSecurityNo", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Date Of Birth",
+                field: "dateOfBirth",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            { headerName: "Address", field: "address", sortable: true },
+            { headerName: "City", field: "city", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Languages", field: "languages", sortable: true },
+            { headerName: "Place Of Birth", field: "placeOfBirth", sortable: true },
+            { headerName: "CNIC Place", field: "nicPlace", sortable: true },
+            { headerName: "Domicile", field: "domicile ", sortable: true },
+            { headerName: "CNIC No", field: "cnicNo", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "CNIC Issue Date",
+                field: "cnicIssueDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            {
+                headerName: "CNIC Expire Date",
+                field: "cnicExpireDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            {
+                headerName: "Edit",
+                filter: false,
+                cellRenderer: "buttonRenderer",
+                cellRendererParams: {
+                    buttons: ["Increament", "Decrement", "Incentives", "Deductions"],
+                    actionButtons: actionButtons,
+                    onClick: this.onButtonClick.bind(this)
+                },
+                width: 50,
+                pinned: "right"
+            }
+        ];
+    }
+
+    onButtonClick(params) {
+        console.log(params);
+        if (params.button.key == "Update") {
+            this.openForm(params.event);
+        }
+    }
+
+    private AgGrid: AgGridBaseComponent;
+    @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
+        if (content) {
+            // initially setter gets called with undefined
+            this.AgGrid = content;
+        }
+    }
+    gridReady(event): void {
+        this.getEmployees();
+    }
     pageChanged(event: PaginatedFilter): void {
         this.customerParams.pageNumber = event.pageNumber;
         this.customerParams.pageSize = event.pageSize;
@@ -293,9 +449,7 @@ export class EmployeeComponent implements OnInit {
             data: customer
         });
         dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-                this.getEmployees();
-            }
+            this.getEmployees();
         });
     }
 

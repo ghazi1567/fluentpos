@@ -32,6 +32,7 @@ import { AgGridModule } from "ag-grid-angular";
 import { AgGridBaseComponent } from "./components/ag-grid-base/ag-grid-base.component";
 import { GridOverlayComponent } from "./components/ag-grid-base/grid-overlay/grid-overlay.component";
 import { GridNorowOverlayComponent } from "./components/ag-grid-base/grid-norow-overlay/grid-norow-overlay.component";
+import { ButtonRendererComponent } from './components/ag-grid-base/button-renderer/button-renderer.component';
 
 export const MY_FORMATS = {
     parse: {
@@ -62,7 +63,8 @@ export const MY_FORMATS = {
         AdvancedSearchComponent,
         AgGridBaseComponent,
         GridOverlayComponent,
-        GridNorowOverlayComponent
+        GridNorowOverlayComponent,
+        ButtonRendererComponent
     ],
     imports: [
         CommonModule,

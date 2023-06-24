@@ -20,6 +20,7 @@ import { NgAsConfig, NgAsSearchTerm } from "src/app/core/models/Filters/SearchTe
 import { EmployeeService } from "../../services/employee.service";
 import { Employee } from "../../models/employee";
 import { CsvMapping, CsvParserService, NgxCSVParserError } from "src/app/core/services/csv-parser.service";
+import { AttendanceRequestService } from "../../services/attendance-request.service";
 
 @Component({
     selector: "app-attendance",
@@ -43,7 +44,8 @@ export class AttendanceComponent implements OnInit {
         public dialog: MatDialog,
         public toastr: ToastrService,
         public authService: AuthService,
-        private csvParser: CsvParserService
+        private csvParser: CsvParserService,
+        private attendanceRequestService: AttendanceRequestService
     ) {}
 
     ngOnInit(): void {
@@ -54,7 +56,7 @@ export class AttendanceComponent implements OnInit {
     loadLookups() {
         let employeeParams = new SearchParams();
         employeeParams.pageSize = 10000;
-        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
             this.initAdvanceFilters();
         });
@@ -237,15 +239,15 @@ export class AttendanceComponent implements OnInit {
             { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
             { name: "Employee Name", dataKey: "employeeName", isSortable: true, isShowable: true },
             { name: "Attendance Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "dd MMM yyyy" },
-            { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true },
-            { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true },
+            { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true, columnType: "date", format: "dd-MM-yy hh:mm a" },
+            { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true, columnType: "date", format: "dd-MM-yy hh:mm a" },
             { name: "Actual Earned Hours", dataKey: "actualEarnedHours", isSortable: true, isShowable: true },
             { name: "Earned Hours", dataKey: "earnedHours", isSortable: true, isShowable: true },
             { name: "Overtime Hours", dataKey: "overtimeHours", isSortable: true, isShowable: true },
             { name: "Status", dataKey: "attendanceStatusName", isSortable: true, isShowable: true, isClass: true },
             { name: "Type", dataKey: "attendanceTypeName", isSortable: true, isShowable: true },
             { name: "Comments", dataKey: "reason", isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right", buttons: ["Update"] }
+            { name: "Action", dataKey: "action", position: "right", buttons: ["Update","Remove"] }
         ];
     }
 
@@ -267,24 +269,45 @@ export class AttendanceComponent implements OnInit {
         });
     }
 
+    // remove($event: string): void {
+    //     this.attendanceService.delete($event).subscribe(() => {
+    //         this.getAttendances();
+    //         this.toastr.info("Attendances Removed");
+    //     });
+    // }
     remove($event: string): void {
-        this.attendanceService.delete($event).subscribe(() => {
-            this.getAttendances();
-            this.toastr.info("Attendances Removed");
-        });
+        var data: any = this.attendances.data.find((x) => x.id == $event);
+        if (data) {
+            data.modificationId = data.id;
+            data.id = "";
+            data.requestType = RequestType.AttendanceDelete;
+            data.requestedBy = this.authService.getEmployeeId;
+            data.requestedBy = this.authService.getEmployeeId;
+            data.overtimeHours = 0;
+            this.attendanceRequestService.create(data).subscribe(
+                (response) => {
+                    this.toastr.success(response.messages[0]);
+                },
+                (error) => {
+                    error.messages.forEach((element) => {
+                        this.toastr.error(element);
+                    });
+                }
+            );
+        }
     }
 
     sort($event: Sort): void {
         var col = $event.active;
         switch (col) {
             case "statusName":
-                col = "status"
+                col = "status";
                 break;
             case "attendanceStatusName":
-                col = "attendanceStatus"
+                col = "attendanceStatus";
                 break;
             case "attendanceTypeName":
-                col = "attendanceType"
+                col = "attendanceType";
                 break;
             default:
                 break;

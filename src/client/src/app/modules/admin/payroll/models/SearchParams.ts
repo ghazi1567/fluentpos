@@ -8,4 +8,5 @@ export class SearchParams implements PaginatedFilter {
     orderBy: string;
     employeeId: string;
     type: SalaryPerksType;
+    isGlobal: boolean;
 }

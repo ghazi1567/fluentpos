@@ -62,4 +62,17 @@ export class OvertimeService {
     updateApproval(model: any): Observable<IResult<any>> {
         return this.api.updateApproval(model).pipe(map((response: IResult<any>) => response));
     }
+
+    createOvertimePlan(model: any) {
+        return this.api.createOvertimePlans(model).pipe(map((response: IResult<any>) => response));
+    }
+
+    deleteOvertimePlan(id: string) {
+        return this.api.deleteOvertimePlans(id).pipe(map((response: IResult<string>) => response));
+    }
+
+    getOvertimePlans(searchParams: PeopleSearchParams): Observable<PaginatedResult<any>> {
+        let params = this.getParams(searchParams);
+        return this.api.getOvertimePlans(params).pipe(map((response: PaginatedResult<any>) => response));
+    }
 }

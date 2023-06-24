@@ -87,5 +87,6 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         public int DailyWorkingHour { get; set; }
 
+        public bool IsNextDay { get; set; }
     }
 }

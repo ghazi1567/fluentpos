@@ -65,6 +65,14 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             return _mapper.Map<List<PolicyDto>>(policy);
         }
 
+        public async Task<List<PolicyDto>> GetAllPoliciesAsync()
+        {
+            var policy = await _context.Policies.AsNoTracking()
+                .ToListAsync(default(CancellationToken));
+
+            return _mapper.Map<List<PolicyDto>>(policy);
+        }
+
         private async Task<OrganizationDto> GetOrgnizationDetailsAsync(Guid Id)
         {
             var organisation = await _context.Organisations.AsNoTracking()
@@ -106,6 +114,23 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
         {
             var departments = await _context.Departments.AsNoTracking()
                .Where(b => Ids.Contains(b.Id))
+               .ToListAsync(default(CancellationToken));
+
+            return _mapper.Map<List<DepartmentDto>>(departments);
+        }
+
+        public async Task<DepartmentDto> GetDepartmentByIdAsync(Guid id)
+        {
+            var departments = await _context.Departments.AsNoTracking()
+               .Where(b => b.Id == id)
+               .FirstOrDefaultAsync(default(CancellationToken));
+
+            return _mapper.Map<DepartmentDto>(departments);
+        }
+
+        public async Task<List<DepartmentDto>> GetAllDepartmentAsync()
+        {
+            var departments = await _context.Departments.AsNoTracking()
                .ToListAsync(default(CancellationToken));
 
             return _mapper.Map<List<DepartmentDto>>(departments);

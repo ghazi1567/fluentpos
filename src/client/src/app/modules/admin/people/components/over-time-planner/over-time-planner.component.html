@@ -1,0 +1,24 @@
+<div class="row">
+    <div class="left">
+        <span>
+            <a mat-raised-button color="primary" (click)="openForm()">
+                <mat-icon>add</mat-icon> {{ "components.table.register" | translate }}
+                Overtime Planner
+            </a>
+        </span>
+        <a mat-raised-button color="accent" (click)="handleReload()"> <mat-icon>refresh</mat-icon> {{ "components.table.reload" | translate }} </a>
+    </div>
+</div>
+<div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+    <app-ag-grid-base
+        #AgGrid
+        [rowData]="overtimePlans"
+        [columnDefs]="overtimePlansColumns"
+        [pagination]="true"
+        (gridReadyComplete)="gridReady($event)"
+        headerHeight="50"
+        sideBar="false"
+        paginationPageSize="100"
+    >
+    </app-ag-grid-base>
+</div>

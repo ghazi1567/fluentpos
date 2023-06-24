@@ -48,8 +48,10 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
             CreateMap<GetByIdCacheableFilter<Guid, Department>, GetDepartmentByIdQuery>();
             CreateMap<GetDepartmentByIdResponse, Department>().ReverseMap();
             CreateMap<GetDepartmentResponse, Department>().ReverseMap();
+            CreateMap<GetDepartmentResponse, Dtos.DepartmentDto>().ReverseMap();
             CreateMap<PaginatedFilter, GetDepartmentsQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+            CreateMap<PaginatedResult<Dtos.DepartmentDto>, PaginatedResult<GetDepartmentResponse>>().ReverseMap();
 
             CreateMap<RegisterDesignationCommand, Designation>().ReverseMap();
             CreateMap<UpdateDesignationCommand, Designation>().ReverseMap();

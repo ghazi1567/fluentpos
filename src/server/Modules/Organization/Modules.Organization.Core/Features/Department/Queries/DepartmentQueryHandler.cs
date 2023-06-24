@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.Organization.Core.Abstractions;
+using FluentPOS.Modules.Organization.Core.Dtos;
 using FluentPOS.Modules.Organization.Core.Entities;
 using FluentPOS.Modules.Organization.Core.Exceptions;
 using FluentPOS.Shared.Core.Extensions;
@@ -28,7 +29,7 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Organizations.Core.Features
 {
     internal class DepartmentQueryHandler :
-        IRequestHandler<GetDepartmentsQuery, PaginatedResult<GetDepartmentResponse>>,
+        IRequestHandler<GetDepartmentsQuery, PaginatedResult<DepartmentDto>>,
         IRequestHandler<GetDepartmentByIdQuery, Result<GetDepartmentByIdResponse>>
     {
         private readonly IOrganizationDbContext _context;
@@ -45,9 +46,9 @@ namespace FluentPOS.Modules.Organizations.Core.Features
             _localizer = localizer;
         }
 
-        public async Task<PaginatedResult<GetDepartmentResponse>> Handle(GetDepartmentsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<DepartmentDto>> Handle(GetDepartmentsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Department, GetDepartmentResponse>> expression = e => new GetDepartmentResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId,e.Name,e.IsGlobalDepartment,e.Description,e.HeadOfDepartment,e.Production);
+            Expression<Func<Department, GetDepartmentResponse>> expression = e => new GetDepartmentResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.IsGlobalDepartment, e.Description, e.HeadOfDepartment, e.Production, e.PolicyId, e.ParentId);
             var queryable = _context.Departments.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
@@ -59,15 +60,15 @@ namespace FluentPOS.Modules.Organizations.Core.Features
                 || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
-            if (request.OrganizationId.HasValue)
-            {
-                queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
-            }
-
-            if (request.BranchId.HasValue)
-            {
-                queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
-            }
+            // if (request.OrganizationId.HasValue)
+            // {
+            //     queryable = queryable.Where(x => x.OrganizationId == request.OrganizationId.Value);
+            // }
+               
+            // if (request.BranchId.HasValue)
+            // {
+            //     queryable = queryable.Where(x => x.BranchId == request.BranchId.Value);
+            // }
 
             var brandList = await queryable
             .Select(expression)
@@ -77,7 +78,18 @@ namespace FluentPOS.Modules.Organizations.Core.Features
                 throw new OrganizationException(_localizer[$"{nameof(Department)}s Not Found!"], HttpStatusCode.NotFound);
             }
 
-            return _mapper.Map<PaginatedResult<GetDepartmentResponse>>(brandList);
+            var parentIds = brandList.Data.Where(x => x.ParentId != Guid.Empty && x.ParentId != null).Select(x => x.ParentId.Value).ToList();
+            var parentDepartment = _context.Departments.Where(x => parentIds.Contains(x.Id)).AsNoTracking().ToList();
+            var response = _mapper.Map<PaginatedResult<DepartmentDto>>(brandList);
+            foreach (var item in response.Data)
+            {
+                if (item.ParentId != Guid.Empty && item.ParentId != null)
+                {
+                    item.ParentDept = parentDepartment.FirstOrDefault(x => x.Id == item.ParentId)?.Name;
+                }
+            }
+
+            return response;
         }
 
         public async Task<Result<GetDepartmentByIdResponse>> Handle(GetDepartmentByIdQuery query, CancellationToken cancellationToken)

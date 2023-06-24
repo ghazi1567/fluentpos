@@ -17,6 +17,7 @@ using FluentPOS.Modules.Accounting.Core.Entities;
 using FluentPOS.Modules.Accounting.Core.Exceptions;
 using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 using FluentPOS.Shared.Core.Wrapper;
+using FluentPOS.Shared.DTOs.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -54,19 +55,39 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
 
-            var salary = _context.Salaries.AsNoTracking().FirstOrDefault(x => x.EmployeeId == command.EmployeeId);
+            // var salary = _context.Salaries.AsNoTracking().FirstOrDefault(x => x.EmployeeId == command.EmployeeId);
+
+            if (command.IsGlobal)
+            {
+                var existinfPerks = await _context.SalaryPerks.Where(c => c.GlobalPerkType == command.GlobalPerkType).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+                if (existinfPerks != null)
+                {
+                    throw new AccountingException(_localizer[$"This Perks [{Enum.GetName(typeof(GlobalSalaryPerksType), command.GlobalPerkType)}] Already Exist. Please Delete it first.!"], HttpStatusCode.Ambiguous);
+                }
+            }
+
+            if (command.IsRecursionUnLimited)
+            {
+                command.RecursionEndMonth = null;
+            }
 
             var salaryPerks = _mapper.Map<SalaryPerks>(command);
             await _context.SalaryPerks.AddAsync(salaryPerks, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            if (command.Type == Shared.DTOs.Enums.SalaryPerksType.Increment)
+            if (command.EmployeeId != null && command.EmployeeId != Guid.Empty)
             {
-                await _payrollService.SalaryIncrement(command.EmployeeId, command.Amount);
-            }
-            else if (command.Type == Shared.DTOs.Enums.SalaryPerksType.Decrement)
-            {
-                await _payrollService.SalaryDecrement(command.EmployeeId, command.Amount);
+                switch (command.Type)
+                {
+                    case SalaryPerksType.Increment:
+                        await _payrollService.SalaryIncrement(command.EmployeeId.Value, command.Amount);
+                        break;
+                    case SalaryPerksType.Decrement:
+                        await _payrollService.SalaryDecrement(command.EmployeeId.Value, command.Amount);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Saved"]);

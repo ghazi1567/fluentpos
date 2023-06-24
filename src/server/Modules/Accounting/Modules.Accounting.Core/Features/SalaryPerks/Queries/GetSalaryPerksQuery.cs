@@ -20,5 +20,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public string[] OrderBy { get; set; }
 
         public SalaryPerksType? Type { get; set; }
+
+        public bool IsGlobal { get; set; }
     }
 }

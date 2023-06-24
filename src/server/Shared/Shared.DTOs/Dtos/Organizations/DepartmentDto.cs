@@ -15,5 +15,8 @@ namespace FluentPOS.Shared.DTOs.Dtos.Organizations
         public Guid OrganizationId { get; set; }
 
         public Guid BranchId { get; set; }
+
+        public Guid PolicyId { get; set; }
+
     }
 }

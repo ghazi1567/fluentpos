@@ -129,7 +129,7 @@ export class TableComponent implements OnInit, AfterViewInit {
 
     openDeleteConfirmationDialog($event: string) {
         const dialogRef = this.dialog.open(DeleteDialogComponent, {
-            data: "Do you confirm the removal of this brand?"
+            data: "Do you confirm the removal of this record?"
         });
         dialogRef.afterClosed().subscribe((result) => {
             if (result.confirmed) {

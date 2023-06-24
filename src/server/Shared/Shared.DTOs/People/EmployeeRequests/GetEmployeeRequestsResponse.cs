@@ -30,9 +30,9 @@ Guid RequestedBy,
 
 DateTime AttendanceDate,
 
-TimeSpan? CheckIn,
+DateTime? CheckIn,
 
-TimeSpan? CheckOut,
+DateTime? CheckOut,
 
 int OvertimeHours,
 

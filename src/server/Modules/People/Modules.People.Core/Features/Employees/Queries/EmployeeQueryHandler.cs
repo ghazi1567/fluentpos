@@ -50,12 +50,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<PaginatedResult<GetEmployeesResponse>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<Employee, GetEmployeesResponse>> expression = e => new GetEmployeesResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, String.Empty, e.Prefix, e.FirstName, e.LastName, e.FullName, e.FatherName, e.EmployeeCode, e.PunchCode, e.MobileNo, e.PhoneNo, e.Email, e.AllowManualAttendance, e.UserName, e.Password, e.MaritalStatus, e.Gender, e.DateOfBirth, e.PlaceOfBirth, e.FamilyCode, e.Religion, e.BankAccountNo, e.BankAccountTitle, e.BankName, e.BankBranchCode, e.Address, e.CnicNo, e.CnicIssueDate, e.CnicExpireDate, e.DepartmentId, e.DesignationId, e.PolicyId, e.EmployeeStatus, e.JoiningDate, e.ConfirmationDate, e.ContractStartDate, e.ContractEndDate, e.ResignDate, e.ImageUrl,e.Active,e.BasicSalary,e.ReportingTo,e.PaymentMode, e.MotherName, e.City, e.Country, e.EOBINo, e.Qualification, e.BloodGroup, e.Languages, e.SocialSecurityNo, e.NICPlace, e.Domicile);
+            Expression<Func<Employee, GetEmployeesResponse>> expression = e => new GetEmployeesResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, String.Empty, e.Prefix, e.FirstName, e.LastName, e.FullName, e.FatherName, e.EmployeeCode, e.PunchCode, e.MobileNo, e.PhoneNo, e.Email, e.AllowManualAttendance, e.UserName, e.Password, e.MaritalStatus, e.Gender, e.DateOfBirth, e.PlaceOfBirth, e.FamilyCode, e.Religion, e.BankAccountNo, e.BankAccountTitle, e.BankName, e.BankBranchCode, e.Address, e.CnicNo, e.CnicIssueDate, e.CnicExpireDate, e.DepartmentId, e.DesignationId, e.PolicyId, e.EmployeeStatus, e.JoiningDate, e.ConfirmationDate, e.ContractStartDate, e.ContractEndDate, e.ResignDate, e.ImageUrl,e.Active,e.BasicSalary,e.ReportingTo,e.PaymentMode, e.MotherName, e.City, e.Country, e.EOBINo, e.Qualification, e.BloodGroup, e.Languages, e.SocialSecurityNo, e.NICPlace, e.Domicile, e.PayPeriod);
 
             var queryable = _context.Employees.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.FullName);
 
             if (request.AdvanceFilters != null && request.AdvanceFilters.Count > 0)
             {

@@ -30,4 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\OvertimeRequests\Queries\" />
+  </ItemGroup>
 </Project>

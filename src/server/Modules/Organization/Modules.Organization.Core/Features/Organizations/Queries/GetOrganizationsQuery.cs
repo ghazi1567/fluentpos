@@ -16,9 +16,9 @@ namespace FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries
 {
     public class GetOrganizationsQuery : IRequest<PaginatedResult<GetOrganizationResponse>>
     {
-        public int PageNumber { get; private set; }
+        public int PageNumber { get;  set; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get;  set; }
 
         public string[] OrderBy { get; private set; }
 

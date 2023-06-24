@@ -22,6 +22,11 @@ import { IndividualReportComponent } from './components/attendance/individual-re
 import { AttendanceReportComponent } from './components/attendance/attendance-report/attendance-report.component';
 import { EmpListComponent } from './components/employee/emp-list/emp-list.component';
 import { AssignDepartmentComponent } from './components/employee/assign-department/assign-department.component';
+import { ExtraShiftComponent } from './components/extra-shift/extra-shift.component';
+import { ExtraShiftFormComponent } from './components/extra-shift/extra-shift-form/extra-shift-form.component';
+import { OverTimePlannerComponent } from './components/over-time-planner/over-time-planner.component';
+import { ProductionAttendanceComponent } from './components/production-attendance/production-attendance.component';
+import { OvetimePlanFormComponent } from './components/over-time-planner/ovetime-plan-form/ovetime-plan-form.component';
 
 
 @NgModule({
@@ -42,7 +47,12 @@ import { AssignDepartmentComponent } from './components/employee/assign-departme
     IndividualReportComponent,
     AttendanceReportComponent,
     EmpListComponent,
-    AssignDepartmentComponent
+    AssignDepartmentComponent,
+    ExtraShiftComponent,
+    ExtraShiftFormComponent,
+    OverTimePlannerComponent,
+    ProductionAttendanceComponent,
+    OvetimePlanFormComponent
   ],
   imports: [
     CommonModule,

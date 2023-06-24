@@ -40,5 +40,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public DateTime EndDate { get; set; }
 
+        public Guid? DepartmentId { get; set; }
+
     }
 }

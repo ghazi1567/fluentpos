@@ -43,4 +43,16 @@ export class OvertimeApiService {
     updateApproval(customer: any) {
         return this.http.post(this.baseUrl + "/UpdateApproval", customer);
     }
+
+    createOvertimePlans(model: any) {
+        return this.http.post(this.baseUrl + "/OvertimePlan", model);
+    }
+
+    deleteOvertimePlans(id: string) {
+        return this.http.delete(this.baseUrl + "/OvertimePlan" + `/${id}`);
+    }
+
+    getOvertimePlans(params: HttpParams) {
+        return this.http.get(this.baseUrl + "/OvertimePlan", { params: params });
+    }
 }

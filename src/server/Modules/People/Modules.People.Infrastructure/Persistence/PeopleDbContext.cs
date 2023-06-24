@@ -18,6 +18,7 @@ using FluentPOS.Shared.Core.Settings;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
 
 namespace FluentPOS.Modules.People.Infrastructure.Persistence
@@ -62,8 +63,13 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence
 
         public DbSet<BioAttendanceLog> AttendanceLogs { get; set; }
 
+        public DbSet<OvertimeRequest> OvertimeRequests { get; set; }
+
+        public DbSet<ShiftPlanner> ShiftPlanners { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<BioAttendanceLog>().Property(p => p.LogId).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyPeopleConfiguration(_persistenceOptions);
         }

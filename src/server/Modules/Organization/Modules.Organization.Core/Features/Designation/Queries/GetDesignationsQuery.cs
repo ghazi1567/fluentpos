@@ -17,9 +17,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features
 {
     public class GetDesignationsQuery : IRequest<PaginatedResult<GetDesignationResponse>>
     {
-        public int PageNumber { get; private set; }
+        public int PageNumber { get;  set; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get;  set; }
 
         public string[] OrderBy { get; private set; }
 

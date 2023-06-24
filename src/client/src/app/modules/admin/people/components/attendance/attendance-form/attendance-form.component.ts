@@ -48,7 +48,7 @@ export class AttendanceFormComponent implements OnInit {
 
     loadLookups() {
         let employeeParams = new SearchParams();
-        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
         });
     }
@@ -58,8 +58,9 @@ export class AttendanceFormComponent implements OnInit {
             id: [this.data && this.data.id],
             attendanceDate: [this.data && this.data.attendanceDate, Validators.required],
             attendanceStatus: [this.data && this.data.attendanceStatus, Validators.required],
-            checkIn: [this.data && this.data.checkIn, Validators.required],
-            checkOut: [this.data && this.data.checkOut, Validators.required],
+            checkInTime: [this.data && this.data.checkInTime, Validators.required],
+            checkOutTime: [this.data && this.data.checkOutTime, Validators.required],
+            isNextDay: [this.data && this.data.isNextDay],
             reason: [this.data && this.data.reason, Validators.required]
         });
         if (this.formGroup.get("id").value === "" || this.formGroup.get("id").value == null) {
@@ -83,6 +84,7 @@ export class AttendanceFormComponent implements OnInit {
                 data.requestType = RequestType.AttendanceModify;
                 data.requestedBy = this.authService.getEmployeeId;
                 data.requestedBy = this.authService.getEmployeeId;
+                data.overtimeHours =0;
                 this.attendanceRequestService.create(data).subscribe(
                     (response) => {
                         this.toastr.success(response.messages[0]);

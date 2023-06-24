@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
 using FluentPOS.Shared.Core.Interfaces.Services;
+using FluentPOS.Shared.DTOs.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FluentPOS.Modules.People.Infrastructure.Services
@@ -23,7 +24,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListAsync()
         {
-            var employee = await _context.Employees.Where(x=>x.Active == true).ToListAsync();
+            var employee = await _context.Employees.Where(x => x.Active == true).ToListAsync();
             return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
         }
 
@@ -64,6 +65,17 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids)
         {
             var employee = await _context.Employees.Where(c => c.Active == true && Ids.Contains(c.PolicyId)).ToListAsync(default(CancellationToken));
+            if (employee == null)
+            {
+                return default;
+            }
+
+            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
+        }
+
+        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListByPayPeriodAsync(PayPeriod payPeriod)
+        {
+            var employee = await _context.Employees.Where(c => c.Active == true && c.PayPeriod == payPeriod).ToListAsync(default(CancellationToken));
             if (employee == null)
             {
                 return default;

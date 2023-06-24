@@ -4,7 +4,7 @@ import { Sort } from "@angular/material/sort";
 import { ToastrService } from "ngx-toastr";
 import { AttendanceStatusMapping } from "src/app/core/enums/AttendanceStatus";
 import { RequestStatusMapping, RequestStatus } from "src/app/core/enums/RequestStatus";
-import { RequestType } from "src/app/core/enums/RequestType";
+import { RequestType, RequestTypeMapping } from "src/app/core/enums/RequestType";
 import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { AuthService } from "src/app/core/services/auth.service";
@@ -32,6 +32,8 @@ export class MyQueueComponent implements OnInit {
     searchString: string;
     public RequestStatusMapping = RequestStatusMapping;
     public AttendanceStatusMapping = AttendanceStatusMapping;
+    public RequestTypeMapping = RequestTypeMapping;
+    
     actionButtons: CustomAction[] = [new CustomAction("Approve", "approved", "Update", "check"), new CustomAction("Reject", "rejected", "Update", "close", "warn")];
     attendanceRequestPermission = ["Permissions.AttendanceRequests.MyQueue"];
     overtimeRequestPermission = ["Permissions.OvertimeRequests.MyQueue"];
@@ -56,6 +58,7 @@ export class MyQueueComponent implements OnInit {
             this.attendances.data.forEach((x) => {
                 x.statusName = RequestStatusMapping[x.status];
                 x.attendanceStatusName = AttendanceStatusMapping[x.attendanceStatus];
+                x.requestTypeName = RequestTypeMapping[x.requestType];
                 x.View = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
                 x.Update = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
                 x.Remove = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
@@ -74,6 +77,7 @@ export class MyQueueComponent implements OnInit {
             this.overtimes.data.forEach((x) => {
                 x.statusName = RequestStatusMapping[x.status];
                 x.attendanceStatusName = AttendanceStatusMapping[x.attendanceStatus];
+                x.requestTypeName = RequestTypeMapping[x.requestType];
                 x.View = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
                 x.Update = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
                 x.Remove = x.status == RequestStatus.Approved || x.status == RequestStatus.InProgress;
@@ -85,6 +89,7 @@ export class MyQueueComponent implements OnInit {
         this.attendanceColumns = [
             { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
             { name: "Employee Name", dataKey: "requestedForName", isSortable: false, isShowable: true },
+            { name: "Request Type", dataKey: "requestTypeName", isSortable: false, isShowable: true },
             { name: "Attendance Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "dd MMM yyyy" },
             { name: "Attendance Status", dataKey: "attendanceStatusName", isSortable: false, isShowable: true },
             { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true },
@@ -98,6 +103,7 @@ export class MyQueueComponent implements OnInit {
         this.overtimeColumns = [
             { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
             { name: "Employee Name", dataKey: "requestedForName", isSortable: true, isShowable: true },
+            { name: "Request Type", dataKey: "requestTypeName", isSortable: false, isShowable: true },
             { name: "Overtime Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "dd MMM yyyy" },
             { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true },
             { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true },
@@ -172,10 +178,10 @@ export class MyQueueComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result) => {
             if (result.confirmed) {
-                if (result.rowData.requestType == RequestType.Attendance || result.rowData.requestType == RequestType.AttendanceModify) {
+                if (result.rowData.requestType == RequestType.Attendance || result.rowData.requestType == RequestType.AttendanceModify  || result.rowData.requestType == RequestType.AttendanceDelete) {
                     this.updateAttendanceApproval(result);
                 }
-                if (result.rowData.requestType == RequestType.OverTime || result.rowData.requestType == RequestType.OverTimeModify) {
+                if (result.rowData.requestType == RequestType.OverTime || result.rowData.requestType == RequestType.OverTimeModify || result.rowData.requestType == RequestType.OvertimeDelete) {
                     this.updateOvertimeApproval(result);
                 }
             }

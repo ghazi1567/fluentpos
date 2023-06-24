@@ -9,12 +9,15 @@ import { Result } from "src/app/core/models/wrappers/Result";
 import { BioAttendance } from "../models/bioAttendance";
 import { EmployeeRequest } from "../models/employeeRequest";
 import { PeopleSearchParams } from "../models/peopleSearchParams";
+import { BaseApiService } from "src/app/core/api/baseApiService";
 
 @Injectable({
     providedIn: "root"
 })
-export class AttendanceLogService {
-    constructor(private api: AttendanceLogsApiService) {}
+export class AttendanceLogService extends BaseApiService {
+    constructor(private api: AttendanceLogsApiService) {
+        super();
+    }
 
     getParams(searchParams: PeopleSearchParams): HttpParams {
         let params = new HttpParams();

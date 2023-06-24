@@ -112,5 +112,6 @@ string SocialSecurityNo,
 
 string NICPlace,
 
-string Domicile);
+string Domicile,
+PayPeriod PayPeriod);
 }

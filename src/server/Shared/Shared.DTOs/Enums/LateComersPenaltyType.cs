@@ -10,6 +10,7 @@ namespace FluentPOS.Shared.DTOs.Enums
     {
         Nothing = 0,
         Hour = 1,
+        Minute = 2,
 
     }
 }

@@ -85,6 +85,12 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Production")
                         .HasColumnType("int");
 
@@ -279,6 +285,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsMonday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsNextDay")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSaturday")

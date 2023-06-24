@@ -1,4 +1,5 @@
 import { PaymentMode } from "src/app/core/enums/PaymentMode";
+import { PayPeriod } from "src/app/core/enums/PayPeriod";
 
 export interface Employee {
     id: string;
@@ -57,5 +58,6 @@ export interface Employee {
     branchId: string;
     departmentName?: string;
     selected?: boolean;
+    payPeriod: PayPeriod;
 
 }

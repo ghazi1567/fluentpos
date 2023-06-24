@@ -27,17 +27,17 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public Guid? RequestId { get; set; }
 
-        public TimeSpan ActualIn { get; set; }
+        public DateTime ActualIn { get; set; }
 
-        public TimeSpan ActualOut { get; set; }
+        public DateTime ActualOut { get; set; }
 
-        public TimeSpan ExpectedIn { get; set; }
+        public DateTime ExpectedIn { get; set; }
 
-        public TimeSpan ExpectedOut { get; set; }
+        public DateTime ExpectedOut { get; set; }
 
-        public TimeSpan CheckIn { get; set; }
+        public DateTime? CheckIn { get; set; }
 
-        public TimeSpan CheckOut { get; set; }
+        public DateTime? CheckOut { get; set; }
 
         public RequestStatus Status { get; set; }
 
@@ -49,30 +49,45 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public double EarnedHours { get; set; }
 
-        public int EarnedMinutes { get; set; }
+        public double EarnedMinutes { get; set; }
 
         public double OvertimeHours { get; set; }
 
-        public int OvertimeMinutes { get; set; }
+        public double OvertimeMinutes { get; set; }
 
         public string BioMachineId { get; set; }
 
+        public double DeductedHours { get; set; }
 
-        public int DeductedHours { get; set; }
+        public double LateMinutes { get; set; }
 
-        public int LateMinutes { get; set; }
-
+        /// <summary>
+        /// Only contains shift hours or overtime if seperate entry
+        /// </summary>
         public double TotalEarnedHours { get; set; }
 
         public double ActualEarnedHours { get; set; }
 
-
         public bool IsLateComer { get; set; }
 
         public bool IsCheckOutMissing { get; set; }
-        public OverTimeType OverTimeType { get; set; }
-        public int Production { get; set; }
 
-        public int RequiredProduction { get; set; }
+        public OverTimeType OverTimeType { get; set; }
+
+        public double Production { get; set; }
+
+        public double RequiredProduction { get; set; }
+
+        public bool IsNextDay { get; set; }
+
+        public string PunchCode { get; set; }
+
+        public string CardNo { get; set; }
+
+        public ShiftType ShiftType { get; set; }
+
+        public Guid? ShiftId { get; set; }
+
+        public Guid? OvertimeRequestId { get; set; }
     }
 }

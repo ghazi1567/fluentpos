@@ -110,5 +110,8 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
         public string NICPlace { get; set; }
 
         public string Domicile { get; set; }
+
+        public PayPeriod PayPeriod { get; set; }
+
     }
 }

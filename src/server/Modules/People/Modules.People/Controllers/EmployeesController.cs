@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.People.Controllers
     internal sealed class EmployeesController : BaseController
     {
         [HttpGet("Lookup")]
-        [Authorize(Policy = Permissions.Employees.ViewAll)]
+        [Authorize(Policy = Permissions.Common.Lookup)]
         public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedFilter filter)
         {
             var request = Mapper.Map<GetEmployeesQuery>(filter);

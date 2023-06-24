@@ -45,4 +45,5 @@ export interface Policy {
     overTimeTypeName: string;
     sandwichLeaveCount: number;
     dailyWorkingHour: number;
+    isNextDay: boolean;
 }

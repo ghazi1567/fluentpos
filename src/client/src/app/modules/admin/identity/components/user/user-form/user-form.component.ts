@@ -37,7 +37,7 @@ export class UserFormComponent implements OnInit {
 
     loadLookups() {
         let employeeParams = new SearchParams();
-        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
         });
     }

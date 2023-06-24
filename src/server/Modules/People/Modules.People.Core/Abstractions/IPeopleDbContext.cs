@@ -32,5 +32,8 @@ namespace FluentPOS.Modules.People.Core.Abstractions
 
         public DbSet<BioAttendanceLog> AttendanceLogs { get; set; }
 
+        public DbSet<OvertimeRequest> OvertimeRequests { get; set; }
+
+        public DbSet<ShiftPlanner> ShiftPlanners { get; set; }
     }
 }

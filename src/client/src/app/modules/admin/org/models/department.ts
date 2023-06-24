@@ -8,4 +8,7 @@ export interface Department {
     description: string;
     headOfDepartment: boolean;
     production: number;
+    policyId: string;
+    parentId?: string;
+    parentDept?: string;
 }

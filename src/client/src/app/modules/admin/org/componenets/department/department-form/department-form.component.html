@@ -21,11 +21,31 @@
                     <mat-error> Please provide a valid Head Of Department </mat-error>
                 </mat-form-field>
             </div>
+            <div class="col-xs-12 col-md-3">
+                <mat-form-field appearance="outline">
+                    <mat-label>Policy</mat-label>
+                    <mat-select formControlName="policyId" name="policyId" required>
+                        <mat-option *ngFor="let policy of policies" [value]="policy.id">{{ policy.name }}</mat-option>
+                    </mat-select>
+                    <mat-error> Please provide a valid Policy </mat-error>
+                </mat-form-field>
+            </div>
             <div class="col-xs-12 col-md-4">
                 <mat-form-field appearance="outline">
                     <mat-label>Production/Day</mat-label>
                     <input matInput autocomplete="off" placeholder="Production" formControlName="production" required />
                     <mat-error> Please provide a valid production qty. </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <mat-form-field appearance="outline">
+                    <mat-label>Parent Department</mat-label>
+                    <mat-select formControlName="parentId" name="parentId">
+                        <mat-option *ngFor="let org of departments" [value]="org.id">
+                            {{ org.name }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error> Please provide a valid Head Of Department </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-xs-12 col-md-12">

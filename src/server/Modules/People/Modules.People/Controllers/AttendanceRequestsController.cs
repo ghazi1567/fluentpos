@@ -86,5 +86,27 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [HttpGet("ShiftPlan")]
+        [Authorize(Policy = Permissions.ShiftPlans.ViewAll)]
+        public async Task<IActionResult> GetShiftPlanAsync([FromQuery] PaginatedFilter filter)
+        {
+            var request = Mapper.Map<GetShiftPlanningQuery>(filter);
+            var customers = await Mediator.Send(request);
+            return Ok(customers);
+        }
+
+        [HttpPost("ShiftPlan")]
+        [Authorize(Policy = Permissions.ShiftPlans.Register)]
+        public async Task<IActionResult> CreateShiftPlanAsync(RegisterShiftPlanningCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpDelete("ShiftPlan/{id}")]
+        [Authorize(Policy = Permissions.ShiftPlans.Remove)]
+        public async Task<IActionResult> RemoveShiftPlanAsync(Guid id)
+        {
+            return Ok(await Mediator.Send(new RemoveShiftPlanningCommand(id)));
+        }
     }
 }

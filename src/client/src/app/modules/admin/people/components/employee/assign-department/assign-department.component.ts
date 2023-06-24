@@ -25,7 +25,7 @@ export class AssignDepartmentComponent implements OnInit {
     filteredOptions: Observable<Employee[]>;
 
     model: any = {
-        departmentId: "",
+        policyId: "",
         employeeIds: []
     };
     constructor(public employeeService: EmployeeService, public toastr: ToastrService) {}

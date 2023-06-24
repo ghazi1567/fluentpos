@@ -42,7 +42,9 @@ export interface Attendance {
     checkIn: Date;
 
     checkOut: Date;
+    checkInTime: Date;
 
+    checkOutTime: Date;
     status: RequestStatus;
 
     statusUpdateOn: Date;
@@ -80,4 +82,5 @@ export interface Attendance {
     isLateComer: boolean;
     punchCode?: number;
     departmentName?: string;
+    isNextDay: boolean;
 }

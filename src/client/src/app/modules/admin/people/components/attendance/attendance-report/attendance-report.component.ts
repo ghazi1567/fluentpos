@@ -62,7 +62,7 @@ export class AttendanceReportComponent implements OnInit {
     }
     loadLookups() {
         let employeeParams = new SearchParams();
-        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
             this.initAdvanceFilters();
         });

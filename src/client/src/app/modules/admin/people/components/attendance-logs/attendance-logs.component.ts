@@ -106,8 +106,8 @@ export class AttendanceLogsComponent implements OnInit {
             { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
             { name: "Employee Name", dataKey: "requestedForName", isSortable: true, isShowable: true },
             { name: "Attendance Date", dataKey: "attendanceDate", isSortable: true, isShowable: true, columnType: "date", format: "dd MMM yyyy" },
-            { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true },
-            { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true },
+            { name: "In Time", dataKey: "checkIn", isSortable: true, isShowable: true, columnType: "date", format: "dd-MM-yy hh:mm a" },
+            { name: "Out Time", dataKey: "checkOut", isSortable: true, isShowable: true, columnType: "date", format: "dd-MM-yy hh:mm a" },
             { name: "Status", dataKey: "statusName", isSortable: true, isShowable: true },
             { name: "Comments", dataKey: "reason", isSortable: true, isShowable: true },
             { name: "Action", dataKey: "action", position: "right", buttons: ["Register", "Update", "Remove"] }
@@ -206,9 +206,7 @@ export class AttendanceLogsComponent implements OnInit {
             data: customer
         });
         dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-                this.getAttendances();
-            }
+            this.getAttendances();
         });
     }
 
@@ -370,12 +368,12 @@ export class AttendanceLogsComponent implements OnInit {
         this.attendanceLogsParams.advanceFilters = [];
         this.attendanceLogsParams.advanceFilters.push({
             fieldName: "attendanceDate",
-            searchTerm: this.attendanceLogsParams.startDate,
+            searchTerm: this.attendanceLogService.getDateStringOnly(this.attendanceLogsParams.startDate),
             action: ">="
         });
         this.attendanceLogsParams.advanceFilters.push({
             fieldName: "attendanceDate",
-            searchTerm: this.attendanceLogsParams.endDate,
+            searchTerm: this.attendanceLogService.getDateStringOnly(this.attendanceLogsParams.endDate),
             action: "<="
         });
         this.attendanceLogsParams.advancedSearchType = "and";

@@ -4,6 +4,7 @@ import { FormControl } from "@angular/forms";
 import { GridOverlayComponent } from "./grid-overlay/grid-overlay.component";
 import { FilterModel, SortModel } from "./ag-grid.models";
 import { GridNorowOverlayComponent } from "./grid-norow-overlay/grid-norow-overlay.component";
+import { ButtonRendererComponent } from "./button-renderer/button-renderer.component";
 
 @Component({
     selector: "app-ag-grid-base",
@@ -125,7 +126,8 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.frameworkComponents = {
             GridNorowOverlayComponent: GridNorowOverlayComponent,
-            GridOverlayComponent: GridOverlayComponent
+            GridOverlayComponent: GridOverlayComponent,
+            buttonRenderer: ButtonRendererComponent
         };
         this.gridOverlayComponentParams = { loadingMessage: "One moment please..." };
         this.gridOptions = <GridOptions>{
@@ -135,6 +137,8 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
             },
             // enableFilter: true,
             defaultColDef: {
+                floatingFilter: true
+
                 // editable: true
                 // stopEditingWhenGridLosesFocus=true,
             },
@@ -154,6 +158,14 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
                 return { "font-weight": "bold" };
             }
         };
+
+        if (this.columnDefs) {
+            this.columnDefs.forEach((col) => {
+                if (!col.filter && col.filter != false) {
+                    col.filter = "agTextColumnFilter";
+                }
+            });
+        }
     }
 
     ngOnChanges(changes: any) {

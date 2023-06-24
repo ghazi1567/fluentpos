@@ -41,7 +41,7 @@ export class OvertimeFormComponent implements OnInit {
     loadLookups() {
         let employeeParams = new SearchParams();
         employeeParams.pageSize = 10000;
-        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
         });
         this.employeeService.getDepartmentLookup(employeeParams).subscribe((res) => {

@@ -29,5 +29,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
         Task<bool> UpdateModification(Guid requestId);
 
         bool TiggerAutoPresentJob(DateTime? datetime, bool isCheckIn = true);
+
+        Task<bool> DeleteAttendanceOrOvertime(Guid requestId);
     }
 }

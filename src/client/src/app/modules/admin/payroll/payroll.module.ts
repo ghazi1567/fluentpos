@@ -11,6 +11,8 @@ import { PayrollComponent } from './components/payroll/payroll.component';
 import { PayrollRequestFormComponent } from './components/payroll/payroll-request-form/payroll-request-form.component';
 import { PayrollDetailViewComponent } from './components/payroll/payroll-detail-view/payroll-detail-view.component';
 import { PerksComponent } from './components/employee-salary/perks/perks.component';
+import { GlobalPerksComponent } from './components/employee-salary/global-perks/global-perks.component';
+import { GlobalPerkFormComponent } from './components/employee-salary/global-perks/global-perk-form/global-perk-form.component';
 
 
 @NgModule({
@@ -20,7 +22,9 @@ import { PerksComponent } from './components/employee-salary/perks/perks.compone
     PayrollComponent,
     PayrollRequestFormComponent,
     PayrollDetailViewComponent,
-    PerksComponent
+    PerksComponent,
+    GlobalPerksComponent,
+    GlobalPerkFormComponent
   ],
   imports: [
     CommonModule,

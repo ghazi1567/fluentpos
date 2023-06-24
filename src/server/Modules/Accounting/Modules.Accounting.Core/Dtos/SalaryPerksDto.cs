@@ -6,7 +6,7 @@ namespace FluentPOS.Modules.Accounting.Core.Dtos
 {
     public class SalaryPerksDto : BaseEntityDto
     {
-        public Guid EmployeeId { get; set; }
+        public Guid? EmployeeId { get; set; }
 
         public string Name { get; set; }
 
@@ -28,6 +28,8 @@ namespace FluentPOS.Modules.Accounting.Core.Dtos
 
         public bool IsTaxable { get; set; }
 
+        public bool IsGlobal { get; set; }
 
+        public GlobalSalaryPerksType GlobalPerkType { get; set; }
     }
 }

@@ -26,17 +26,17 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public Guid? RequestId { get; set; }
 
-        public TimeSpan ActualIn { get; set; }
+        public DateTime ActualIn { get; set; }
 
-        public TimeSpan ActualOut { get; set; }
+        public DateTime ActualOut { get; set; }
 
-        public TimeSpan ExpectedIn { get; set; }
+        public DateTime ExpectedIn { get; set; }
 
-        public TimeSpan ExpectedOut { get; set; }
+        public DateTime ExpectedOut { get; set; }
 
-        public TimeSpan CheckIn { get; set; }
+        public DateTime? CheckIn { get; set; }
 
-        public TimeSpan CheckOut { get; set; }
+        public DateTime? CheckOut { get; set; }
 
         public RequestStatus Status { get; set; }
 
@@ -63,8 +63,15 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
         public double TotalEarnedHours { get; set; }
 
         public double ActualEarnedHours { get; set; }
+
         public bool IsLateComer { get; set; }
 
         public bool IsCheckOutMissing { get; set; }
+
+        public bool IsNextDay { get; set; }
+
+        public TimeSpan CheckInTime { get; set; }
+
+        public TimeSpan CheckOutTime { get; set; }
     }
 }
