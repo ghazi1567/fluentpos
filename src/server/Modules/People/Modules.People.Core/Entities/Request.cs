@@ -26,7 +26,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public DateTime? CheckOut { get; set; }
 
-        public int OvertimeHours { get; set; }
+        public double OvertimeHours { get; set; }
 
         public OverTimeType OverTimeType { get; set; }
 

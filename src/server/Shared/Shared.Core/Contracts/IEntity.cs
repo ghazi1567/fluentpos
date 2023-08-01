@@ -6,6 +6,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using MediatR;
+
 namespace FluentPOS.Shared.Core.Contracts
 {
     public interface IEntity<TEntityId> : IEntity
@@ -13,7 +15,7 @@ namespace FluentPOS.Shared.Core.Contracts
         public TEntityId Id { get; set; }
     }
 
-    public interface IEntity
+    public interface IEntity 
     {
     }
 }

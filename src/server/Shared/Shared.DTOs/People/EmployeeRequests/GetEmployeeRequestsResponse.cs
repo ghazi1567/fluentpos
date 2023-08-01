@@ -34,7 +34,7 @@ DateTime? CheckIn,
 
 DateTime? CheckOut,
 
-int OvertimeHours,
+double OvertimeHours,
 
 OverTimeType OverTimeType,
 

@@ -35,7 +35,7 @@ namespace FluentPOS.Shared.Core.Extensions
         public static IServiceCollection AddSharedApplication(this IServiceCollection services, IConfiguration config)
         {
             services.Configure<CacheSettings>(config.GetSection(nameof(CacheSettings)));
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CachingBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             return services;

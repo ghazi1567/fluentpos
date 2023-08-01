@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
     {
         public EmployeeProfile()
         {
-            CreateMap<Shared.DTOs.Dtos.Peoples.EmployeeDto, Employee>().ReverseMap();
+            CreateMap<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto, Employee>().ReverseMap();
             CreateMap<RegisterEmployeeCommand, Employee>().ReverseMap();
             CreateMap<UpdateEmployeeCommand, Employee>().ReverseMap();
             CreateMap<GetByIdCacheableFilter<Guid, Employee>, GetEmployeeByIdQuery>();

@@ -27,7 +27,7 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public DateTime? CheckOut { get; set; }
 
-        public int OvertimeHours { get; set; }
+        public double OvertimeHours { get; set; }
 
         public OverTimeType OverTimeType { get; set; }
 
@@ -49,9 +49,9 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public string RequestedByName { get; set; }
 
-        public int Production { get; set; }
+        public float Production { get; set; }
 
-        public int RequiredProduction { get; set; }
+        public float RequiredProduction { get; set; }
 
         public Guid? ModificationId { get; set; }
 

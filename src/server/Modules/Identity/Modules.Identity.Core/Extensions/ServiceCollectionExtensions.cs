@@ -18,7 +18,7 @@ namespace FluentPOS.Modules.Identity.Core.Extensions
     {
         public static IServiceCollection AddIdentityCore(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddExtendedAttributeHandlersFromAssembly(Assembly.GetExecutingAssembly());
             services.AddExtendedAttributeCommandValidatorsFromAssembly(Assembly.GetExecutingAssembly());

@@ -430,8 +430,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 {
                     throw new PeopleException(_localizer[$"Attendance Already Marked For Date : {request.AttendanceDate}!"], HttpStatusCode.Ambiguous);
                 }
-                var employeeInfo = await _employeeService.GetEmployeeDetailsAsync(request.EmployeeId);
 
+                var employeeInfo = await _employeeService.GetEmployeeDetailsAsync(request.EmployeeId);
+                var policyId = await GetEmployeePolicyId(request.EmployeeId);
                 var attendance = new Attendance
                 {
                     EmployeeId = request.EmployeeId,
@@ -451,9 +452,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     BioMachineId = string.Empty,
                     EarnedMinutes = 0,
                     OrganizationId = request.OrganizationId,
-                    OvertimeHours = 0,
+                    OvertimeHours = request.OvertimeHours,
                     OvertimeMinutes = 0,
-                    PolicyId = employeeInfo.PolicyId,
+                    PolicyId = policyId,
                     Reason = request.Reason,
                     RequestId = requestId,
                     Status = request.Status,
@@ -550,9 +551,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                         var overtimeDiffrence = attendance.CheckOut.Value - attendance.CheckIn.Value;
                         attendance.OvertimeHours = Math.Round(overtimeDiffrence.TotalHours, 2);
                     }
+                    attendance.EarnedHours = attendance.OvertimeHours;
                 }
 
-                if (attendance.AttendanceType != AttendanceType.Manual && IsOffDay(attendance.AttendanceDate, policy.Policy) && !IsUpdate)
+                if (attendance.AttendanceType != AttendanceType.Manual && attendance.AttendanceType != AttendanceType.OverTime && IsOffDay(attendance.AttendanceDate, policy.Policy) && !IsUpdate)
                 {
                     attendance.AttendanceStatus = AttendanceStatus.Off;
                 }

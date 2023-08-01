@@ -33,6 +33,7 @@ import { AgGridBaseComponent } from "./components/ag-grid-base/ag-grid-base.comp
 import { GridOverlayComponent } from "./components/ag-grid-base/grid-overlay/grid-overlay.component";
 import { GridNorowOverlayComponent } from "./components/ag-grid-base/grid-norow-overlay/grid-norow-overlay.component";
 import { ButtonRendererComponent } from './components/ag-grid-base/button-renderer/button-renderer.component';
+import { AutoCompleteComponent } from './components/auto-complete/auto-complete.component';
 
 export const MY_FORMATS = {
     parse: {
@@ -64,7 +65,8 @@ export const MY_FORMATS = {
         AgGridBaseComponent,
         GridOverlayComponent,
         GridNorowOverlayComponent,
-        ButtonRendererComponent
+        ButtonRendererComponent,
+        AutoCompleteComponent
     ],
     imports: [
         CommonModule,
@@ -110,7 +112,8 @@ export const MY_FORMATS = {
         AgGridModule,
         AgGridBaseComponent,
         GridOverlayComponent,
-        GridNorowOverlayComponent
+        GridNorowOverlayComponent,
+        AutoCompleteComponent
     ]
 })
 export class SharedModule {}

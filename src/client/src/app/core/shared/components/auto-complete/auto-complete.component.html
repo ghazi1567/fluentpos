@@ -1,0 +1,11 @@
+<mat-form-field class="example-full-width" appearance="fill">
+    <input type="text" id="account" class="input-placeholder" matInput [formControl]="myControl"
+        placeholder="Enter text to search" [matAutocomplete]="auto" />
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onOptionSelection($event)"
+        [displayWith]="displayCustomerName.bind(this)">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{ option[displayColumnName] }}
+        </mat-option>
+
+    </mat-autocomplete>
+</mat-form-field>

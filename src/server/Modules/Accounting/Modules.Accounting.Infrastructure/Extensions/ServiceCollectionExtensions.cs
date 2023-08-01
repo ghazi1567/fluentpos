@@ -27,7 +27,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Extensions
                 .AddDatabaseContext<AccountingDbContext>()
                 .AddScoped<IAccountingDbContext>(provider => provider.GetService<AccountingDbContext>());
             services.AddExtendedAttributeDbContextsFromAssembly(typeof(AccountingDbContext), Assembly.GetAssembly(typeof(IAccountingDbContext)));
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddTransient<IPayrollService, PayrollService>();
             return services;
         }

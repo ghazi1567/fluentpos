@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 {
-    public class EmployeeDto : BaseEntityDto
+    public class BaseEmployeeDto : BaseEntityDto
     {
         public string Prefix { get; set; }
 

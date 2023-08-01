@@ -6,11 +6,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
 using FluentPOS.Modules.People.Core.Entities;
@@ -23,6 +18,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
@@ -106,12 +106,13 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             if (command.RequestType == Shared.DTOs.Enums.RequestType.OverTime && command.OverTimeType == Shared.DTOs.Enums.OverTimeType.Production)
             {
-                int perHourQty = command.RequiredProduction / 8;
-                int overtimeHours = command.Production / perHourQty;
+                var perHourQty = command.RequiredProduction / 8;
+                var overtimeHours = command.Production / Math.Round(perHourQty, 2);
                 DateTime checkIn = new DateTime(command.AttendanceDate.Year, command.AttendanceDate.Month, command.AttendanceDate.Day, 00, 00, 01);
                 DateTime checkOut = checkIn.AddHours(overtimeHours);
-                command.CheckIn = checkIn;
-                command.CheckOut = checkOut;
+                employeeRequest.CheckIn = checkIn;
+                employeeRequest.CheckOut = checkOut;
+                employeeRequest.OvertimeHours = Math.Round(overtimeHours, 2);
             }
 
             await _context.EmployeeRequests.AddAsync(employeeRequest, cancellationToken);

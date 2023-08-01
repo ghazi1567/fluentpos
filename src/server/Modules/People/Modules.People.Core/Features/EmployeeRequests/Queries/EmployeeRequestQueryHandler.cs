@@ -114,7 +114,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                                       RequestedOn = r.RequestedOn,
                                       RequestType = r.RequestType,
                                       RequestedForName = e.FullName,
-                                      RequestedByName = b.FullName
+                                      RequestedByName = b.FullName,
+                                      Production = r.Production,
+                                      RequiredProduction = r.RequiredProduction,
+                                      AttendanceStatus = r.AttendanceStatus,
+                                      IsNextDay = r.IsNextDay,
+
                                   })
                                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
