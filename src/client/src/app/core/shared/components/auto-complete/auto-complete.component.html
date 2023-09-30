@@ -4,7 +4,7 @@
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onOptionSelection($event)"
         [displayWith]="displayCustomerName.bind(this)">
         <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-            {{ option[displayColumnName] }}
+            {{ displayOptions(option) }}
         </mat-option>
 
     </mat-autocomplete>

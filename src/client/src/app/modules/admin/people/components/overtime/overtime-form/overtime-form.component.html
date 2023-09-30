@@ -3,14 +3,14 @@
     <mat-dialog-content class="mat-typography">
         <div class="row">
             <input mat type="hidden" formControlName="id" />
-            <div class="col-xs-12 col-md-2">
+            <div class="col-xs-12 col-md-4">
                 <app-auto-complete [data]="employeesLookup" [filterColumns]="filterColumns"
                     [displayColumnName]="displayColumnName" displayColumnId="id"
                     [control]="formGroup.controls['employeeId']"
                     (onSelection)="employeeSelection($event)"></app-auto-complete>
             </div>
 
-            <div class="col-xs-12 col-md-2">
+            <div class="col-xs-12 col-md-4">
                 <app-auto-complete [data]="departments" [filterColumns]="filterColumns" displayColumnName="name"
                     displayColumnId="id" [control]="formGroup.controls['departmentId']"
                     (onSelection)="departmentSelection($event)"></app-auto-complete>
@@ -59,7 +59,7 @@
                     <mat-error> Please provide a valid production </mat-error>
                 </mat-form-field>
             </div>
-            <div class="col-xs-12 col-md-12">
+            <div class="col-xs-12 col-md-8">
                 <mat-form-field appearance="outline">
                     <mat-label>Reason</mat-label>
                     <textarea matInput formControlName="reason"></textarea>

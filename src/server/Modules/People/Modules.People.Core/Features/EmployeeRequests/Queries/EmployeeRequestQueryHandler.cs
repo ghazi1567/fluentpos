@@ -6,14 +6,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
 using FluentPOS.Modules.People.Core.Dtos;
@@ -26,6 +18,14 @@ using FluentPOS.Shared.DTOs.People.EmployeeRequests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
@@ -86,8 +86,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             var requests = await (from r in queryable
                                   join e in _context.Employees
                                   on r.EmployeeId equals e.Id
-                                  join b in _context.Employees
-                                  on r.RequestedBy equals b.Id
+                                  join rbe in _context.Employees
+                                  on r.RequestedBy equals rbe.Id into rb
+                                  from b in rb.DefaultIfEmpty()
                                   select new EmployeeRequestDto
                                   {
                                       Id = r.Id,
@@ -114,7 +115,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                                       RequestedOn = r.RequestedOn,
                                       RequestType = r.RequestType,
                                       RequestedForName = e.FullName,
-                                      RequestedByName = b.FullName,
+                                      RequestedByName = b == null ? string.Empty : b.FullName,
                                       Production = r.Production,
                                       RequiredProduction = r.RequiredProduction,
                                       AttendanceStatus = r.AttendanceStatus,
@@ -185,8 +186,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             var myQueueRequests = await (from r in queryable
                                          join e in _context.Employees
                                          on r.EmployeeId equals e.Id
-                                         join b in _context.Employees
-                                         on r.RequestedBy equals b.Id
+                                         join rbe in _context.Employees
+                                         on r.RequestedBy equals rbe.Id into rb
+                                         from b in rb.DefaultIfEmpty()
                                          select new EmployeeRequestDto
                                          {
                                              Id = r.Id,
@@ -214,7 +216,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                                              RequestedOn = r.RequestedOn,
                                              RequestType = r.RequestType,
                                              RequestedForName = e.FullName,
-                                             RequestedByName = b.FullName,
+                                             RequestedByName = b == null ? string.Empty : b.FullName,
                                              AttendanceStatus = r.AttendanceStatus,
                                              ModificationId = r.ModificationId,
                                              Production = r.Production,

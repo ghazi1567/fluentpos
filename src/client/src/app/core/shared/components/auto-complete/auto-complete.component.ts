@@ -12,7 +12,7 @@ export class AutoCompleteComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() filterColumns: string[] = [];
   @Input() displayColumnId: string = '';
-  @Input() displayColumnName: string = '';
+  @Input() displayColumnName: [] | string = '';
   @Input() control: FormControl;
   @Input() isObject: boolean = false;
   @Output() onSelection: any = new EventEmitter<any>();
@@ -43,7 +43,30 @@ export class AutoCompleteComponent implements OnInit {
 
   displayCustomerName(value) {
     if (typeof value === 'object' && value && this.displayColumnName) {
-      return value[this.displayColumnName];
+      if (Array.isArray(this.displayColumnName)) {
+        var _displayValues = [];
+        this.displayColumnName.forEach(x => {
+          _displayValues.push(value[x]);
+        });
+        return _displayValues.join(' - ')
+      } else {
+        return value[this.displayColumnName];
+      }
+    } else {
+      return value;
+    }
+  }
+  displayOptions(value) {
+    if (typeof value === 'object' && value && this.displayColumnName) {
+      if (Array.isArray(this.displayColumnName)) {
+        var _displayValues = [];
+        this.displayColumnName.forEach(x => {
+          _displayValues.push(value[x]);
+        });
+        return _displayValues.join(' - ')
+      } else {
+        return value[this.displayColumnName];
+      }
     } else {
       return value;
     }

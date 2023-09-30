@@ -25,7 +25,7 @@ export class OvertimeFormComponent implements OnInit {
     disableProductionOption = true;
 
 
-    displayColumnName = 'fullName';
+    displayColumnName = ['fullName', 'employeeCode'];
     filterColumns = ['fullName', 'name']
 
 
