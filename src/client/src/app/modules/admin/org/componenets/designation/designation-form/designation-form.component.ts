@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from "@angular/forms";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
+import { LookupApiService } from "src/app/core/api/common/lookup.service";
 import { Department } from "../../../models/Department";
 import { Designation } from "../../../models/designation";
 import { SearchParams } from "../../../models/SearchParams";
@@ -24,7 +25,8 @@ export class DesignationFormComponent implements OnInit {
         private departmentService: DepartmentService,
         private designationService: DesignationService,
         private toastr: ToastrService,
-        private fb: UntypedFormBuilder
+        private fb: UntypedFormBuilder,
+        private lookupApiService: LookupApiService
     ) {}
 
     ngOnInit(): void {
@@ -32,10 +34,7 @@ export class DesignationFormComponent implements OnInit {
         this.initializeForm();
     }
     loadLookups() {
-        let model = <SearchParams>{
-            pageSize: 10000
-        };
-        this.departmentService.getAlls(model).subscribe((res) => {
+        this.lookupApiService.getDepartmentLookup().subscribe((res) => {
             this.departmentLookups = res.data;
         });
     }

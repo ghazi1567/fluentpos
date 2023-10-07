@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 {
-    public class EmployeeDto : BaseEntityDto
+    public class BaseEmployeeDto : BaseEntityDto
     {
         public string Prefix { get; set; }
 
@@ -110,5 +110,8 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
         public string NICPlace { get; set; }
 
         public string Domicile { get; set; }
+
+        public PayPeriod PayPeriod { get; set; }
+
     }
 }

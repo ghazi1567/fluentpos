@@ -1,4 +1,4 @@
-import { SalaryPerksType } from "src/app/core/enums/SalaryPerksType";
+import { GlobalPerkType, SalaryPerksType } from "src/app/core/enums/SalaryPerksType";
 
 export interface SalaryPerks {
     id: string;
@@ -17,4 +17,6 @@ export interface SalaryPerks {
     description: string;
     effecitveFrom: string;
     isTaxable: string;
+    isGlobal: string;
+    globalPerkType: GlobalPerkType;
 }

@@ -1,0 +1,12 @@
+html,
+body {
+    height: calc(100vh - 144px) !important;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ag-header-group-cell-label {
+    justify-content: center;
+ }

@@ -24,7 +24,7 @@ namespace FluentPOS.Modules.Inventory.Core.Extensions
         /// <returns>Returns <see cref="IServiceCollection"/>.</returns>
         public static IServiceCollection AddInventoryCore(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             return services;
         }

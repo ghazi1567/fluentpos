@@ -4,8 +4,10 @@ import { RequestStatus } from "src/app/core/enums/RequestStatus";
 
 export interface Dashboard {
     totalEmployees: number;
-
+    activeEmployees: number;
     presents: number;
+    malePresents: number;
+    femalePresents: number;
 
     absents: number;
 

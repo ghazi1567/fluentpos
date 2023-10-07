@@ -88,5 +88,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Organizations
 
         public int DailyWorkingHour { get; set; }
 
+        public bool IsNextDay { get; set; }
+
     }
 }

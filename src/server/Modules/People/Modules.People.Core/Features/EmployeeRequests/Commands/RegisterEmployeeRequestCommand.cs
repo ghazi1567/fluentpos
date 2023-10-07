@@ -16,6 +16,5 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
     public class RegisterEmployeeRequestCommand : EmployeeRequestDto, IRequest<Result<Guid>>
     {
-
     }
 }

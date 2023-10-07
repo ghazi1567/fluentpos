@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
     {
         public EmployeeProfile()
         {
-            CreateMap<Shared.DTOs.Dtos.Peoples.EmployeeDto, Employee>().ReverseMap();
+            CreateMap<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto, Employee>().ReverseMap();
             CreateMap<RegisterEmployeeCommand, Employee>().ReverseMap();
             CreateMap<UpdateEmployeeCommand, Employee>().ReverseMap();
             CreateMap<GetByIdCacheableFilter<Guid, Employee>, GetEmployeeByIdQuery>();
@@ -63,6 +63,15 @@ namespace FluentPOS.Modules.People.Core.Mappings
 
             CreateMap<PaginatedFilter, GetDashboardQuery>()
                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+
+            CreateMap<PaginatedFilter, GetAttendanceReportQuery>();
+            CreateMap<PaginatedResult<ShiftPlannerDto>, PaginatedResult<ShiftPlanner>>().ReverseMap();
+            CreateMap<PaginatedFilter, GetShiftPlanningQuery>();
+            CreateMap<ShiftPlannerDto, ShiftPlanner>().ReverseMap();
+
+            CreateMap<PaginatedResult<OvertimeRequestDto>, PaginatedResult<OvertimeRequest>>().ReverseMap();
+            CreateMap<PaginatedFilter, GetOvertimePlanningQuery>();
+            CreateMap<OvertimeRequestDto, OvertimeRequest>().ReverseMap();
         }
     }
 }

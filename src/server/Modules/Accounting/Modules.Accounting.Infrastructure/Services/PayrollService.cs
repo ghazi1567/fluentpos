@@ -101,9 +101,11 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 payrollRequest.StartDate = startDate;
                 payrollRequest.EndDate = endDate;
                 payrollRequest.LogList = new List<string>();
-                var plocies = await _orgService.GetPolicyDetailsAsync(payrollRequest.PayPeriod);
+                var plocies = await _orgService.GetAllPoliciesAsync();
+                var departments = await _orgService.GetAllDepartmentAsync();
+
                 var plociesIds = plocies.Select(x => x.Id.Value).ToList();
-                var employees = await _employeeService.GetEmployeeListByPolicyAsync(plociesIds);
+                var employees = await _employeeService.GetEmployeeListByPayPeriodAsync(payrollRequest.PayPeriod);
                 payrollRequest.EmployeeIds = new List<Guid>();
                 foreach (var item in employees)
                 {
@@ -118,8 +120,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
 
                 if (payrollRequest.EmployeeIds.Count > 0)
                 {
-
-                    //payrollRequest.EmployeeIds = employees.Select(x => x.Id.Value).ToList();
+                    // payrollRequest.EmployeeIds = employees.Select(x => x.Id.Value).ToList();
                     var attendances = await _attendanceService.GetEmployeeAttendance(payrollRequest.EmployeeIds, payrollRequest.StartDate, payrollRequest.EndDate);
 
                     // if (employees.Count > 0)
@@ -143,7 +144,21 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                                 payrollRequest.LogList.Add($"{payrollRequest.EmployeeInfo.FullName}'s Salary Information Not Found!!");
                             }
 
-                            var policy = plocies.FirstOrDefault(x => x.Id == payrollRequest.EmployeeInfo.PolicyId);
+                            var policyId = Guid.Empty;
+                            if (payrollRequest.EmployeeInfo.PolicyId != default && payrollRequest.EmployeeInfo.PolicyId != Guid.Empty)
+                            {
+                                policyId = payrollRequest.EmployeeInfo.PolicyId;
+                            }
+                            else
+                            {
+                                var department = departments.FirstOrDefault(x => x.Id == payrollRequest.EmployeeInfo.DepartmentId);
+                                if(department != null)
+                                {
+                                    policyId = department.PolicyId;
+                                }
+                            }
+
+                            var policy = plocies.FirstOrDefault(x => x.Id == policyId);
                             if (policy != null)
                             {
                                 payrollRequest.Policy = policy;
@@ -174,7 +189,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                         }
                     }
                 }
-                
+
 
                 if (payrollList.Count > 0)
                 {
@@ -254,7 +269,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 transactions.AddRange(CalculateOvertime(overtimeList, payrollRequest));
             }
 
-            transactions.AddRange(GetPerks(payrollRequest, payroll.EmployeeId));
+            transactions.AddRange(GetPerks(payrollRequest, payroll));
 
             payroll.Transactions.AddRange(transactions);
 
@@ -267,16 +282,20 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             return payroll;
         }
 
-        private List<PayrollTransaction> GetPerks(Shared.DTOs.Dtos.Accounting.PayrollRequestDto payrollRequest, Guid employeeId)
+        private List<PayrollTransaction> GetPerks(Shared.DTOs.Dtos.Accounting.PayrollRequestDto payrollRequest, Payroll payroll)
         {
             DateTime payrollMonth = new DateTime(payrollRequest.StartDate.Year, payrollRequest.StartDate.Month, 01);
             List<PayrollTransaction> payrollTransactions = new List<PayrollTransaction>();
-            var perks = _context.SalaryPerks.Where(x => x.EmployeeId == employeeId && (x.Type == Shared.DTOs.Enums.SalaryPerksType.Incentives || x.Type == Shared.DTOs.Enums.SalaryPerksType.Deductions)).ToList();
-
-            foreach (var item in perks)
+            var perks = _context.SalaryPerks.Where(x => x.EmployeeId == payroll.EmployeeId && (x.Type == Shared.DTOs.Enums.SalaryPerksType.Incentives || x.Type == Shared.DTOs.Enums.SalaryPerksType.Deductions)).ToList();
+            var globalPerks = _context.SalaryPerks.Where(x => x.IsGlobal == true && (x.Type == Shared.DTOs.Enums.SalaryPerksType.Incentives || x.Type == Shared.DTOs.Enums.SalaryPerksType.Deductions)).ToList();
+            var allPerks = globalPerks.Union(perks).ToList();
+            foreach (var item in allPerks)
             {
                 DateTime perkEffectiveMonth = new DateTime(item.EffecitveFrom.Year, item.EffecitveFrom.Month, 01);
-                DateTime perkEndingMonth = new DateTime(item.RecursionEndMonth.Value.Year, item.RecursionEndMonth.Value.Month, 01);
+                if (!IsPerksValid(payrollRequest, payroll, item))
+                {
+                    continue;
+                }
 
                 if (perkEffectiveMonth <= payrollMonth)
                 {
@@ -306,6 +325,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                     }
                     else if (item.IsRecursion && !item.IsRecursionUnLimited)
                     {
+                        DateTime perkEndingMonth = new DateTime(item.RecursionEndMonth.Value.Year, item.RecursionEndMonth.Value.Month, 01);
                         if (payrollMonth <= perkEndingMonth)
                         {
                             payrollTransactions.Add(new PayrollTransaction
@@ -325,6 +345,26 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             return payrollTransactions;
         }
 
+        private bool IsPerksValid(Shared.DTOs.Dtos.Accounting.PayrollRequestDto payrollRequest, Payroll payroll, SalaryPerks salaryPerk)
+        {
+            if (salaryPerk.IsGlobal)
+            {
+                switch (salaryPerk.GlobalPerkType)
+                {
+                    case Shared.DTOs.Enums.GlobalSalaryPerksType.None:
+                        break;
+                    case Shared.DTOs.Enums.GlobalSalaryPerksType.EOBI:
+                        return string.IsNullOrEmpty(payrollRequest.EmployeeInfo.EOBINo) == false;
+                        break;
+                    case Shared.DTOs.Enums.GlobalSalaryPerksType.FullMonthPresent:
+                        return payroll.RequiredDays <= payroll.PresentDays;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return true;
+        }
 
         private Payroll CalculateAttendance(Payroll payroll, List<AttendanceDto> attendances, Shared.DTOs.Dtos.Accounting.PayrollRequestDto payrollRequest)
         {
@@ -338,6 +378,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             int totalHolidays = 0;
             int totalOffDays = 0;
             int totalDeductedHours = 0;
+            double totalOvertimeHours = 0;
 
             if (!payrollRequest.IgnoreAttendance && attendances.Count == 0)
             {
@@ -361,6 +402,11 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                             if (item.DeductedHours > 0)
                             {
                                 totalDeductedHours += item.DeductedHours;
+                            }
+
+                            if (item.OvertimeHours > 0)
+                            {
+                                totalOvertimeHours += item.OvertimeHours;
                             }
 
                             break;
@@ -400,6 +446,21 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 DaysOrHours = totalEarnedHours,
             });
 
+            if (totalOvertimeHours > 0)
+            {
+                double totalOvertimeAmount = totalOvertimeHours * payrollRequest.EmployeeSalary.PerHourSalary;
+                transactions.Add(new PayrollTransaction
+                {
+                    Earning = totalOvertimeAmount,
+                    DaysOrHours = totalOvertimeHours,
+                    TransactionName = $"Overtime ({totalOvertimeHours} Hrs)",
+                    TransactionType = Shared.DTOs.Enums.TransactionType.Earning,
+                    Deduction = 0,
+                    EntryType = Shared.DTOs.Enums.EntryType.Overtime
+                });
+            }
+
+
             if (totalDeductedHours > 0 && !payrollRequest.IgnoreDeductionForLateComer)
             {
                 transactions.Add(new PayrollTransaction
@@ -418,7 +479,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 double deductionAmount = Math.Round(absents * payrollRequest.EmployeeSalary.PerDaySalary, 2);
                 if (totalRequiredDays == totalAbsent)
                 {
-                     absents = totalAbsent + totalOffDays + totalHolidays;
+                    absents = totalAbsent + totalOffDays + totalHolidays;
                     deductionAmount = salaryAmount;
                 }
 

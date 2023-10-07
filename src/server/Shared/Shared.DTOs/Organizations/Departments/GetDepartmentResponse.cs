@@ -11,5 +11,7 @@ string Name,
 bool IsGlobalDepartment,
 string Description,
 Guid? HeadOfDepartment,
-int Production);
+int Production,
+Guid PolicyId,
+Guid? ParentId);
 }

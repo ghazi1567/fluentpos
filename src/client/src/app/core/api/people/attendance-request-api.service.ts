@@ -13,11 +13,11 @@ export class AttendanceRequestApiService {
     constructor(private http: HttpClient) {}
 
     getApprovarList(params: HttpParams) {
-        return this.http.get(this.baseUrl+'/RequestApprover', { params: params });
+        return this.http.get(this.baseUrl + "/RequestApprover", { params: params });
     }
 
     getMyQueue(params: HttpParams) {
-        return this.http.get(this.baseUrl+'/MyQueue', { params: params });
+        return this.http.get(this.baseUrl + "/MyQueue", { params: params });
     }
 
     getAlls(params: HttpParams) {
@@ -41,6 +41,18 @@ export class AttendanceRequestApiService {
     }
 
     updateApproval(customer: any) {
-        return this.http.post(this.baseUrl + '/UpdateApproval', customer);
+        return this.http.post(this.baseUrl + "/UpdateApproval", customer);
+    }
+
+    createShiftPlan(model: any) {
+        return this.http.post(this.baseUrl + "/ShiftPlan", model);
+    }
+
+    deleteShiftPlan(id: string) {
+        return this.http.delete(this.baseUrl + "/ShiftPlan" + `/${id}`);
+    }
+
+    getShiftPlans(params: HttpParams) {
+        return this.http.get(this.baseUrl + "/ShiftPlan", { params: params });
     }
 }

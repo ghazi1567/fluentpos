@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Sort } from "@angular/material/sort";
 import { ToastrService } from "ngx-toastr";
@@ -14,6 +14,10 @@ import { SearchParams } from "../../../org/models/SearchParams";
 import { Employee } from "../../models/employee";
 import { EmployeeService } from "../../services/employee.service";
 import { EmployeeFormComponent } from "./employee-form/employee-form.component";
+import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
+import { PayPeriodMapping } from "src/app/core/enums/PayPeriod";
+import * as moment from "moment";
+import { ISetFilterParams } from "ag-grid-enterprise";
 
 @Component({
     selector: "app-employee",
@@ -21,8 +25,9 @@ import { EmployeeFormComponent } from "./employee-form/employee-form.component";
     styleUrls: ["./employee.component.scss"]
 })
 export class EmployeeComponent implements OnInit {
+    @Input() activeEmployee: boolean = true;
     employees: PaginatedResult<Employee>;
-    employeeColumns: TableColumn[];
+    employeeColumns: any[];
     customerParams = new SearchParams();
     searchString: string;
     @ViewChild("file") fileInput: ElementRef;
@@ -30,16 +35,40 @@ export class EmployeeComponent implements OnInit {
     advanceFilters: AdvanceFilter[];
     advanceSearch: NgAsConfig;
     savedFilters: NgAsSearchTerm[];
-
+    policies: any[];
+    departments: any[];
+    designations: any[];
+    public PayPeriodMapping = PayPeriodMapping;
     constructor(public employeeService: EmployeeService, private authService: AuthService, private csvParser: CsvParserService, public dialog: MatDialog, public toastr: ToastrService) {}
 
     ngOnInit(): void {
-        this.getEmployees();
         this.initColumns();
-        this.initAdvanceFilters();
+        this.loadLookups();
     }
-
+    loadLookups() {
+        let parms = new SearchParams();
+        parms.pageSize = 1000;
+        // this.employeeService.getPolicyLookup(parms).subscribe((res) => {
+        //     this.policies = res.data;
+        // });
+        this.employeeService.getDepartmentLookup(parms).subscribe((res) => {
+            this.departments = res.data;
+            this.initAdvanceFilters();
+            this.getEmployees();
+        });
+        // this.employeeService.getDesignationLookup(parms).subscribe((res) => {
+        //     this.designations = res.data;
+        //     this.filteredDesignations = this.designations.filter((x) => x.departmentId == this.data.departmentId);
+        // });
+        // this.employeeService.getEmployees(parms).subscribe((res) => {
+        //     this.employeesLookup = res.data.filter((x) => x.id != this.data.id);
+        // });
+    }
     initAdvanceFilters() {
+        var departmentsLookupData = this.departments.map((emp) => ({
+            key: emp.id,
+            value: emp.name
+        }));
         this.savedFilters = [];
         this.advanceSearch = {
             headers: [
@@ -47,6 +76,7 @@ export class EmployeeComponent implements OnInit {
                 { id: "FatherName", displayText: "Father Name" },
                 { id: "MotherName", displayText: "Mother Name" },
                 { id: "EmployeeCode", displayText: "Employee Code" },
+                { id: "DepartmentId", displayText: "Department", type: "dropdown", data: departmentsLookupData },
                 { id: "PunchCode", displayText: "Punch Code", type: "number" },
                 { id: "MobileNo", displayText: "Mobile#" },
                 { id: "PhoneNo", displayText: "Phone#" },
@@ -145,6 +175,11 @@ export class EmployeeComponent implements OnInit {
                     id: "DateOfBirth",
                     displayText: "Date Of Birth",
                     type: "date"
+                },
+                {
+                    id: "Active",
+                    displayText: "Active",
+                    type: "checkbox"
                 }
             ],
             defaultTerm: null,
@@ -216,23 +251,193 @@ export class EmployeeComponent implements OnInit {
     }
 
     getEmployees(): void {
-        this.employeeService.getEmployees(this.customerParams).subscribe((result) => {
-            console.log('after in progress')
+        if (!this.customerParams.advanceFilters || this.customerParams.advanceFilters.length == 0) {
+            var activeFilter = {
+                fieldName: "Active",
+                action: "=",
+                searchTerm: this.activeEmployee,
+                fieldType: "checkbox",
+                id: 0
+            };
+            this.customerParams.advanceFilters = [activeFilter];
+            this.customerParams.advancedSearchType = "And";
+        }
+        this.customerParams.pageNumber = 0;
+        this.customerParams.pageSize = 10000;
+
+        this.employeeService.advanceSearch(this.customerParams).subscribe((result) => {
             this.employees = result;
+            this.employees.data.forEach((emp) => {
+                emp.departmentName = "";
+                var dpt = this.departments.find((x) => x.id == emp.departmentId);
+                if (dpt) {
+                    emp.departmentName = dpt.name;
+                }
+            });
         });
     }
 
-    initColumns(): void {
+    initColumns1(): void {
         this.employeeColumns = [
             { name: "Id", dataKey: "id", isSortable: true, isShowable: true },
             { name: "Full Name", dataKey: "fullName", isSortable: true, isShowable: true },
             { name: "Employee Code", dataKey: "employeeCode", isSortable: true, isShowable: true },
             { name: "Punch Code", dataKey: "punchCode", isSortable: true, isShowable: true },
+            { name: "Department", dataKey: "departmentName", isSortable: false, isShowable: true },
             { name: "Employee Status", dataKey: "employeeStatus", isSortable: true, isShowable: true },
             { name: "Action", dataKey: "action", position: "right" }
         ];
     }
 
+    initColumns(): void {
+        var actionButtons: CustomAction[] = [new CustomAction("Edit", "Update", "Update", "mode_edit")];
+        this.employeeColumns = [
+            { headerName: "Id", field: "id", sortable: true },
+            { headerName: "Full Name", field: "fullName", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Employee Code",
+                field: "employeeCode",
+                sortable: true,
+                filter: "agTextColumnFilter"
+            },
+            { headerName: "Punch Code", field: "punchCode", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Department", field: "departmentName", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Employee Status", field: "employeeStatus", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Pay Period",
+                field: "payPeriod ",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.data.payPeriod;
+                    if (value > 0) {
+                        return PayPeriodMapping[value];
+                    }
+
+                    return "None";
+                },
+                filter: "agTextColumnFilter"
+            },
+            { headerName: "Father Name", field: "fatherName", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Mobile No", field: "mobileNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Emergancy No", field: "phoneNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Marital Status", field: "maritalStatus", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Gender", field: "gender", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Religion", field: "religion", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Bank Account No", field: "bankAccountNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Bank Account Title", field: "bankAccountTitle", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Bank Name", field: "bankName", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Employee Status", field: "employeeStatus", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Basic Salary", field: "basicSalary", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Joining Date",
+                field: "joiningDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            { headerName: "Blood Group", field: "bloodGroup", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "EOBI No", field: "eobiNo", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Social Security No", field: "socialSecurityNo", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "Date Of Birth",
+                field: "dateOfBirth",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            { headerName: "Address", field: "address", sortable: true },
+            { headerName: "City", field: "city", sortable: true, filter: "agTextColumnFilter" },
+            { headerName: "Languages", field: "languages", sortable: true },
+            { headerName: "Place Of Birth", field: "placeOfBirth", sortable: true },
+            { headerName: "CNIC Place", field: "nicPlace", sortable: true },
+            { headerName: "Domicile", field: "domicile ", sortable: true },
+            { headerName: "CNIC No", field: "cnicNo", sortable: true, filter: "agTextColumnFilter" },
+            {
+                headerName: "CNIC Issue Date",
+                field: "cnicIssueDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            {
+                headerName: "CNIC Expire Date",
+                field: "cnicExpireDate",
+                sortable: true,
+                valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value) {
+                        let date = moment(value, "YYYY-MM-DD");
+                        if (date.isValid()) {
+                            value = date.format("YYYY-MM-DD");
+                        }
+                        return value;
+                    }
+
+                    return "-";
+                }
+            },
+            {
+                headerName: "Edit",
+                filter: false,
+                cellRenderer: "buttonRenderer",
+                cellRendererParams: {
+                    buttons: ["Increament", "Decrement", "Incentives", "Deductions"],
+                    actionButtons: actionButtons,
+                    onClick: this.onButtonClick.bind(this)
+                },
+                width: 50,
+                pinned: "right"
+            }
+        ];
+    }
+
+    onButtonClick(params) {
+        console.log(params);
+        if (params.button.key == "Update") {
+            this.openForm(params.event);
+        }
+    }
+
+    private AgGrid: AgGridBaseComponent;
+    @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
+        if (content) {
+            // initially setter gets called with undefined
+            this.AgGrid = content;
+        }
+    }
+    gridReady(event): void {
+        this.getEmployees();
+    }
     pageChanged(event: PaginatedFilter): void {
         this.customerParams.pageNumber = event.pageNumber;
         this.customerParams.pageSize = event.pageSize;
@@ -244,9 +449,7 @@ export class EmployeeComponent implements OnInit {
             data: customer
         });
         dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-                this.getEmployees();
-            }
+            this.getEmployees();
         });
     }
 
@@ -349,14 +552,27 @@ export class EmployeeComponent implements OnInit {
     }
     onAdvanceFilters($event) {
         if ($event == null) {
-            this.getEmployees();
+            this.customerParams.advanceFilters = [];
+            this.customerParams.advancedSearchType = "";
         } else {
+            if ($event.advancedTerms.length >= 0) {
+                var exist = $event.advancedTerms.find((e) => e.fieldName === "Active");
+                if (!exist) {
+                    var activeFilter = {
+                        fieldName: "Active",
+                        action: "=",
+                        searchTerm: this.activeEmployee,
+                        fieldType: "checkbox",
+                        id: 0
+                    };
+                    $event.advancedTerms.push(activeFilter);
+                }
+            }
             this.customerParams.advanceFilters = $event.advancedTerms;
             this.customerParams.advancedSearchType = $event.advancedSearchType;
-
-            this.employeeService.advanceSearch(this.customerParams).subscribe((result) => {
-                this.employees = result;
-            });
+            this.customerParams.pageNumber = 0;
+            this.customerParams.pageSize = 10;
         }
+        this.getEmployees();
     }
 }

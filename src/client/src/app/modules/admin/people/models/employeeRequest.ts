@@ -32,6 +32,10 @@ export interface EmployeeRequest {
     checkIn: Date;
 
     checkOut: Date;
+    
+    checkInTime: Date;
+
+    checkOutTime: Date;
 
     overtimeHours: number;
 
@@ -58,5 +62,6 @@ export interface EmployeeRequest {
     modificationId?: string;
     attendanceStatus: AttendanceStatus;
     attendanceStatusName: string;
-
+    requestTypeName: string;
+    isNextDay: boolean;
 }

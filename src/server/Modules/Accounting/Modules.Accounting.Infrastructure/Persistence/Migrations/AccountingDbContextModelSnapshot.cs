@@ -312,8 +312,14 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("EffecitveFrom")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("EmployeeId")
+                    b.Property<Guid?>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("GlobalPerkType")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsGlobal")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsRecursion")
                         .HasColumnType("bit");

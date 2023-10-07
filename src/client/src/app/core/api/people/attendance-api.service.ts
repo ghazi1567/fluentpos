@@ -51,4 +51,7 @@ export class AttendanceServiceApi {
     advanceSearch(model: any) {
         return this.http.post(this.baseUrl + "/AdvanceSearch", model);
     }
+    attendanceReport(model: any) {
+        return this.http.post(this.baseUrl + "/Report", model);
+    }
 }

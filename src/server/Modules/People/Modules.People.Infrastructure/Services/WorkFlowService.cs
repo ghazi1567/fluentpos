@@ -141,7 +141,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     // await _context.SaveChangesAsync(default(CancellationToken));
                 }
 
-                var nextApproval = _context.RequestApprovals.Where(x => x.EmployeeRequestId == requestId && x.ApproverId != approvalLevel.ApproverId && x.Status != RequestStatus.Approved).OrderBy(x => x.ApprovalIndex).FirstOrDefault();
+                var nextApproval = _context.RequestApprovals.Where(x => x.EmployeeRequestId == requestId && (approvalLevel != null && x.ApproverId != approvalLevel.ApproverId) && x.Status != RequestStatus.Approved).OrderBy(x => x.ApprovalIndex).FirstOrDefault();
                 if (nextApproval != null)
                 {
                     request.AssignedTo = nextApproval.ApproverId;
@@ -189,6 +189,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 else if (request.RequestType == RequestType.OverTimeModify || request.RequestType == RequestType.AttendanceModify)
                 {
                     await _attendanceService.UpdateModification(requestId);
+                }
+                else if (request.RequestType == RequestType.OvertimeDelete || request.RequestType == RequestType.AttendanceDelete)
+                {
+                    await _attendanceService.DeleteAttendanceOrOvertime(requestId);
                 }
             }
 

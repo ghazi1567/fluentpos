@@ -42,7 +42,9 @@
             "overtimes": "Overtimes",
             "employeesSalary": "Employees Salary",
             "payroll": "Payroll",
-            "Jobs": "Jobs"
+            "Jobs": "Jobs",
+            "ExtraShift": "Shift Planner",
+            "OvertimePlanner": "Overtime Planner"
         }
     },
     "dashboard": {

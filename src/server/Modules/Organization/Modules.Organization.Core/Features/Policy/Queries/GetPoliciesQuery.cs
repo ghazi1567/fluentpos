@@ -15,9 +15,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features
 {
     public class GetPoliciesQuery : IRequest<PaginatedResult<GetPolicyResponse>>
     {
-        public int PageNumber { get; private set; }
+        public int PageNumber { get;  set; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get;  set; }
 
         public string[] OrderBy { get; private set; }
 

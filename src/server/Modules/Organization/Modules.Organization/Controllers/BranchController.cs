@@ -14,6 +14,17 @@ namespace FluentPOS.Modules.Organization.Controllers
     [ApiVersion("1")]
     internal class BranchController : BaseController
     {
+        [HttpGet("Lookup")]
+        [Authorize(Policy = Permissions.Common.Lookup)]
+        public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedBrachFilter filter)
+        {
+            var request = Mapper.Map<GetBranchsQuery>(filter);
+            request.PageSize = 100000;
+            request.PageNumber = 0;
+            var brands = await Mediator.Send(request);
+            return Ok(brands);
+        }
+
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Branchs.View)]
         public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Branch> filter)

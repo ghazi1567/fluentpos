@@ -23,11 +23,11 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public DateTime AttendanceDate { get; set; }
 
-        public TimeSpan? CheckIn { get; set; }
+        public DateTime? CheckIn { get; set; }
 
-        public TimeSpan? CheckOut { get; set; }
+        public DateTime? CheckOut { get; set; }
 
-        public int OvertimeHours { get; set; }
+        public double OvertimeHours { get; set; }
 
         public OverTimeType OverTimeType { get; set; }
 
@@ -49,12 +49,18 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public string RequestedByName { get; set; }
 
-        public int Production { get; set; }
+        public float Production { get; set; }
 
-        public int RequiredProduction { get; set; }
+        public float RequiredProduction { get; set; }
 
         public Guid? ModificationId { get; set; }
 
         public AttendanceStatus AttendanceStatus { get; set; }
+
+        public bool IsNextDay { get; set; }
+
+        public TimeSpan CheckInTime { get; set; }
+
+        public TimeSpan CheckOutTime { get; set; }
     }
 }

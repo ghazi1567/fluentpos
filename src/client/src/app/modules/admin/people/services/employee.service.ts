@@ -2,6 +2,7 @@ import { HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { LookupApiService } from "src/app/core/api/common/lookup.service";
 import { DepartmentApiService } from "src/app/core/api/org/department-api.service";
 import { DesignationApiService } from "src/app/core/api/org/designation-api.service";
 import { PolicyApiService } from "src/app/core/api/org/policy-api.service";
@@ -17,39 +18,25 @@ import { Employee } from "../models/employee";
     providedIn: "root"
 })
 export class EmployeeService {
-    constructor(private api: EmployeeApiService, private policyApi: PolicyApiService, private departmentApi: DepartmentApiService, private designationApi: DesignationApiService) {}
+    constructor(
+        private api: EmployeeApiService,
+        private lookupApiService: LookupApiService,
+        private policyApi: PolicyApiService,
+        private departmentApi: DepartmentApiService,
+        private designationApi: DesignationApiService
+    ) {}
 
     getDepartmentLookup(searchParams: SearchParams): Observable<PaginatedResult<Policy>> {
-        let params = new HttpParams();
-        if (searchParams.searchString) params = params.append("searchString", searchParams.searchString);
-        if (searchParams.pageNumber) params = params.append("pageNumber", searchParams.pageNumber.toString());
-        if (searchParams.pageSize) params = params.append("pageSize", searchParams.pageSize.toString());
-        if (searchParams.orderBy) params = params.append("orderBy", searchParams.orderBy.toString());
-        return this.departmentApi.getAlls(params).pipe(map((response: PaginatedResult<Policy>) => response));
+        return this.lookupApiService.getDepartmentLookup();
     }
     getDesignationLookup(searchParams: SearchParams): Observable<PaginatedResult<Policy>> {
-        let params = new HttpParams();
-        if (searchParams.searchString) params = params.append("searchString", searchParams.searchString);
-        if (searchParams.pageNumber) params = params.append("pageNumber", searchParams.pageNumber.toString());
-        if (searchParams.pageSize) params = params.append("pageSize", searchParams.pageSize.toString());
-        if (searchParams.orderBy) params = params.append("orderBy", searchParams.orderBy.toString());
-        return this.designationApi.getAlls(params).pipe(map((response: PaginatedResult<Policy>) => response));
+        return this.lookupApiService.getDesignationLookup();
     }
     getPolicyLookup(searchParams: SearchParams): Observable<PaginatedResult<Policy>> {
-        let params = new HttpParams();
-        if (searchParams.searchString) params = params.append("searchString", searchParams.searchString);
-        if (searchParams.pageNumber) params = params.append("pageNumber", searchParams.pageNumber.toString());
-        if (searchParams.pageSize) params = params.append("pageSize", searchParams.pageSize.toString());
-        if (searchParams.orderBy) params = params.append("orderBy", searchParams.orderBy.toString());
-        return this.policyApi.getAlls(params).pipe(map((response: PaginatedResult<Policy>) => response));
+        return this.lookupApiService.getPolicyLookup();
     }
     getEmployeesLookup(EmployeeParams: SearchParams): Observable<PaginatedResult<Employee>> {
-        let params = new HttpParams();
-        if (EmployeeParams.searchString) params = params.append("searchString", EmployeeParams.searchString);
-        if (EmployeeParams.pageNumber) params = params.append("pageNumber", EmployeeParams.pageNumber.toString());
-        if (EmployeeParams.pageSize) params = params.append("pageSize", EmployeeParams.pageSize.toString());
-        if (EmployeeParams.orderBy) params = params.append("orderBy", EmployeeParams.orderBy.toString());
-        return this.api.getLookup(params).pipe(map((response: PaginatedResult<Employee>) => response));
+        return this.lookupApiService.getEmployeesLookup();
     }
     getEmployees(EmployeeParams: SearchParams): Observable<PaginatedResult<Employee>> {
         let params = new HttpParams();
@@ -82,5 +69,9 @@ export class EmployeeService {
 
     advanceSearch(model: any): Observable<PaginatedResult<Employee>> {
         return this.api.advanceSearch(model).pipe(map((response: PaginatedResult<Employee>) => response));
+    }
+
+    assignDepartment(model: any): Observable<Result<String>> {
+        return this.api.assignDepartment(model).pipe(map((response: Result<String>) => response));
     }
 }

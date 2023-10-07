@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Modules.People.Core.Features.Customers.Queries;
 using FluentPOS.Modules.People.Core.Features.Employees.Commands;
+using FluentPOS.Modules.People.Core.Features.OvertimeRequests.Commands;
 using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.DTOs.Filters;
@@ -86,5 +87,27 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [HttpGet("OvertimePlan")]
+        [Authorize(Policy = Permissions.ShiftPlans.ViewAll)]
+        public async Task<IActionResult> GetShiftPlanAsync([FromQuery] PaginatedFilter filter)
+        {
+            var request = Mapper.Map<GetOvertimePlanningQuery>(filter);
+            var customers = await Mediator.Send(request);
+            return Ok(customers);
+        }
+
+        [HttpPost("OvertimePlan")]
+        [Authorize(Policy = Permissions.ShiftPlans.Register)]
+        public async Task<IActionResult> CreateShiftPlanAsync(RegisterOvertimePlanningCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpDelete("OvertimePlan/{id}")]
+        [Authorize(Policy = Permissions.ShiftPlans.Remove)]
+        public async Task<IActionResult> RemoveShiftPlanAsync(Guid id)
+        {
+            return Ok(await Mediator.Send(new RemoveOvertimePlanningCommand(id)));
+        }
     }
 }

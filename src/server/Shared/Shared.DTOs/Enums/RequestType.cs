@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FluentPOS.Shared.DTOs.Enums
+﻿namespace FluentPOS.Shared.DTOs.Enums
 {
     public enum RequestType
     {
@@ -12,5 +6,7 @@ namespace FluentPOS.Shared.DTOs.Enums
         OverTime = 2,
         AttendanceModify = 3,
         OverTimeModify = 4,
+        AttendanceDelete = 5,
+        OvertimeDelete = 6,
     }
 }

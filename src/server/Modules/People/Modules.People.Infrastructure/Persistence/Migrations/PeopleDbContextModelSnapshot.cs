@@ -92,11 +92,11 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<double>("ActualEarnedHours")
                         .HasColumnType("float");
 
-                    b.Property<TimeSpan>("ActualIn")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ActualIn")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("ActualOut")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ActualOut")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("AddedOn")
                         .HasColumnType("datetime2");
@@ -119,17 +119,20 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("CheckIn")
-                        .HasColumnType("time");
+                    b.Property<string>("CardNo")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("CheckOut")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreateaAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeductedHours")
-                        .HasColumnType("int");
+                    b.Property<double>("DeductedHours")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
@@ -140,17 +143,17 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<double>("EarnedHours")
                         .HasColumnType("float");
 
-                    b.Property<int>("EarnedMinutes")
-                        .HasColumnType("int");
+                    b.Property<double>("EarnedMinutes")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("ExpectedIn")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ExpectedIn")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("ExpectedOut")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("ExpectedOut")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCheckOutMissing")
                         .HasColumnType("bit");
@@ -158,8 +161,11 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsLateComer")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LateMinutes")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsNextDay")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("LateMinutes")
+                        .HasColumnType("float");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
@@ -170,14 +176,20 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<double>("OvertimeHours")
                         .HasColumnType("float");
 
-                    b.Property<int>("OvertimeMinutes")
-                        .HasColumnType("int");
+                    b.Property<double>("OvertimeMinutes")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("OvertimeRequestId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("PolicyId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Production")
-                        .HasColumnType("int");
+                    b.Property<double>("Production")
+                        .HasColumnType("float");
+
+                    b.Property<string>("PunchCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Reason")
                         .HasColumnType("nvarchar(max)");
@@ -185,7 +197,13 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("RequestId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("RequiredProduction")
+                    b.Property<double>("RequiredProduction")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("ShiftId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ShiftType")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -237,6 +255,14 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Direction")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("LogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -490,6 +516,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PayPeriod")
+                        .HasColumnType("int");
+
                     b.Property<int>("PaymentMode")
                         .HasColumnType("int");
 
@@ -555,11 +584,11 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan?>("CheckIn")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckIn")
+                        .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("CheckOut")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("CheckOut")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreateaAt")
                         .HasColumnType("datetime2");
@@ -572,6 +601,9 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsNextDay")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("ModificationId")
                         .HasColumnType("uniqueidentifier");
@@ -818,6 +850,53 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.ToTable("CustomerExtendedAttributes");
                 });
 
+            modelBuilder.Entity("FluentPOS.Modules.People.Core.Entities.OvertimeRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AllowedHours")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsNextDay")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OvertimeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RequestedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OvertimeRequests");
+                });
+
             modelBuilder.Entity("FluentPOS.Modules.People.Core.Entities.RequestApproval", b =>
                 {
                     b.Property<Guid>("Id")
@@ -857,6 +936,47 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RequestApprovals");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.People.Core.Entities.ShiftPlanner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreateaAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EmployeeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsNextDay")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ShiftDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShiftPlanners");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.People.Core.Entities.ApprovalFlowLevels", b =>

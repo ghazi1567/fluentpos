@@ -1,9 +1,3 @@
-<!-- <div *ngIf="!attendances" class="d-flex justify-center p-4">
-    <mat-icon>
-        <mat-spinner diameter="20"> </mat-spinner>
-    </mat-icon>
-    Loading ...
-</div> -->
 <div>
     <mat-tab-group>
         <mat-tab label="Attendance Requests" *appHasPermission="['Permissions.AttendanceRequests.MyQueue']">
@@ -29,7 +23,7 @@
             <ng-template matTabLabel>
                 <span mat matBadgeOverlap="false">Ovetime Requests</span>
             </ng-template>
-            <app-table
+            <!-- <app-table
                 [data]="overtimes && overtimes.data"
                 [columns]="overtimeColumns"
                 (onFilter)="filterOvertime($event)"
@@ -42,7 +36,12 @@
                 [customActionButtons]="actionButtons"
                 (onCustomActionButton)="openCustomActionButton($event)"
             >
-            </app-table>
+            </app-table> -->
+            <div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+                <app-ag-grid-base #AgGrid [rowData]="overtimesData" [columnDefs]="overtimeColumns" [pagination]="true"
+                    (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+                </app-ag-grid-base>
+            </div>
         </mat-tab>
     </mat-tab-group>
 </div>

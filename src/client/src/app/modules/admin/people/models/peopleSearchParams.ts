@@ -13,4 +13,6 @@ export class PeopleSearchParams implements SearchParams {
     year?: number;
     advanceFilters?: any[];
     advancedSearchType?: string;
+    startDate: Date;
+    endDate: Date;
 }

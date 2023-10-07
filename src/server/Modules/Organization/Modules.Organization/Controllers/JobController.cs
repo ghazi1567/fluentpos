@@ -14,6 +14,17 @@ namespace FluentPOS.Modules.Organization.Controllers
     [ApiVersion("1")]
     internal class JobController : BaseController
     {
+        [HttpGet("Lookup")]
+        [Authorize(Policy = Permissions.Common.Lookup)]
+        public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedFilter filter)
+        {
+            var request = Mapper.Map<GetJobsQuery>(filter);
+            request.PageSize = 100000;
+            request.PageNumber = 0;
+            var brands = await Mediator.Send(request);
+            return Ok(brands);
+        }
+
         [HttpGet]
         [Authorize(Policy = Permissions.Jobs.ViewAll)]
         public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedFilter filter)
@@ -22,6 +33,7 @@ namespace FluentPOS.Modules.Organization.Controllers
             var brands = await Mediator.Send(request);
             return Ok(brands);
         }
+
 
         [HttpPost]
         [Authorize(Policy = Permissions.Jobs.Register)]

@@ -385,5 +385,24 @@ namespace FluentPOS.Shared.Core.Constants
             public const string Update = "Permissions.Jobs.Update";
             public const string Remove = "Permissions.Jobs.Remove";
         }
+
+        [DisplayName("Common")]
+        [Description("Common Permissions")]
+        public static class Common
+        {
+            public const string Lookup = "Permissions.Common.Lookup";
+            public const string DashboardAttendanceStats = "Permissions.Common.DashboardAttendanceStats"; 
+        }
+
+        [DisplayName("ShiftPlans")]
+        [Description("Shift Plan Permissions")]
+        public static class ShiftPlans
+        {
+            public const string View = "Permissions.ShiftPlans.View";
+            public const string ViewAll = "Permissions.ShiftPlans.ViewAll";
+            public const string Register = "Permissions.ShiftPlans.Register";
+            public const string Update = "Permissions.ShiftPlans.Update";
+            public const string Remove = "Permissions.ShiftPlans.Remove";
+        }
     }
 }

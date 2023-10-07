@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Extensions
                 .AddScoped<ICatalogDbContext>(provider => provider.GetService<CatalogDbContext>());
             services.AddExtendedAttributeDbContextsFromAssembly(typeof(CatalogDbContext), Assembly.GetAssembly(typeof(ICatalogDbContext)));
             services.AddTransient<IDatabaseSeeder, CatalogDbSeeder>();
-            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
             services.AddTransient<IProductService, ProductService>();
             return services;

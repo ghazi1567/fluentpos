@@ -6,6 +6,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using FluentPOS.Modules.Organization.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Catalogs.Brands;
 using FluentPOS.Shared.DTOs.Organizations.Branchs;
@@ -15,13 +16,13 @@ using System;
 
 namespace FluentPOS.Modules.Organizations.Core.Features
 {
-    public class GetDepartmentsQuery : IRequest<PaginatedResult<GetDepartmentResponse>>
+    public class GetDepartmentsQuery : IRequest<PaginatedResult<DepartmentDto>>
     {
-        public int PageNumber { get; private set; }
+        public int PageNumber { get;  set; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get;  set; }
 
-        public string[] OrderBy { get; private set; }
+        public string[] OrderBy { get;  set; }
 
         public string SearchString { get; private set; }
 

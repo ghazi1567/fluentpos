@@ -14,11 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
-using FluentPOS.Modules.People.Core.Constants;
 using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Modules.People.Core.Exceptions;
-using FluentPOS.Modules.People.Core.Features.Customers.Events;
-using FluentPOS.Shared.Core.Constants;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 using FluentPOS.Shared.Core.Wrapper;
@@ -33,7 +30,8 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         IRequestHandler<RegisterEmployeeCommand, Result<Guid>>,
         IRequestHandler<ImportEmployeeCommand, Result<Guid>>,
         IRequestHandler<RemoveEmployeeCommand, Result<Guid>>,
-        IRequestHandler<UpdateEmployeeCommand, Result<Guid>>
+        IRequestHandler<UpdateEmployeeCommand, Result<Guid>>,
+        IRequestHandler<AssignDepartmentCommand, Result<Guid>>
     {
         private readonly IDistributedCache _cache;
         private readonly IPeopleDbContext _context;
@@ -73,6 +71,11 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
             }
 
+            if(employee.PolicyId == default || employee.PolicyId == Guid.Empty)
+            {
+                employee.PolicyId = Guid.Empty;
+            }
+
             // customer.AddDomainEvent(new EmployeeRegisteredEvent(customer));
 
             await _context.Employees.AddAsync(employee, cancellationToken);
@@ -96,7 +99,10 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                     uploadRequest.FileName = $"E-{command.FullName}{uploadRequest.Extension}";
                     employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
                 }
-
+                if (employee.PolicyId == default || employee.PolicyId == Guid.Empty)
+                {
+                    employee.PolicyId = Guid.Empty;
+                }
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
@@ -136,8 +142,14 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 bool isEists = await _context.Employees.AnyAsync(x => x.EmployeeCode == item.EmployeeCode || x.PunchCode == item.PunchCode);
                 if (!isEists)
                 {
+                    if (item.PolicyId == default || item.PolicyId == Guid.Empty)
+                    {
+                        item.PolicyId = Guid.Empty;
+                    }
+
                     filtered.Add(item);
-                } else
+                }
+                else
                 {
                     duplicateCount++;
                 }
@@ -157,5 +169,23 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             return await Result<Guid>.SuccessAsync(Guid.Empty, messages);
         }
+
+        public async Task<Result<Guid>> Handle(AssignDepartmentCommand command, CancellationToken cancellationToken)
+        {
+            var employees = await _context.Employees.Where(x => command.EmployeeIds.Contains(x.Id)).ToListAsync();
+
+            foreach (var item in employees)
+            {
+                item.DepartmentId = command.DepartmentId;
+                item.UpdatedAt = DateTime.Now;
+
+            }
+
+            _context.Employees.UpdateRange(employees);
+            _context.SaveChanges();
+
+            return await Result<Guid>.SuccessAsync(Guid.Empty, $"Department Assigned to {command.EmployeeIds.Count} Employees");
+        }
+
     }
 }

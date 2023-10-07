@@ -8,9 +8,17 @@ import { CustomMomentDateAdapter } from "../helpers/custom-moment-date-adapter";
     providedIn: "root"
 })
 export class BaseApiService {
-
     getDate(date): moment.Moment {
         var momentDate = moment(date);
         return momentDate.tz(CustomMomentDateAdapter.TIMEZONE);
+    }
+    getDateStringOnly(date): string {
+        var momentDate = moment(date);
+        return momentDate.tz(CustomMomentDateAdapter.TIMEZONE).format(CustomMomentDateAdapter.FORMAT);
+    }
+
+    getDateOnly(date): moment.Moment {
+        var momentDate = moment(date);
+        return moment(momentDate.tz(CustomMomentDateAdapter.TIMEZONE).format(CustomMomentDateAdapter.FORMAT));
     }
 }

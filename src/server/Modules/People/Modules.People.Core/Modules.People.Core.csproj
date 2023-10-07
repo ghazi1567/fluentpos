@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>FluentPOS.Modules.People.Core</RootNamespace>
     <AssemblyName>FluentPOS.Modules.People.Core</AssemblyName>
   </PropertyGroup>
@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Roslynator.Analyzers" Version="3.2.0">
+    <PackageReference Include="Roslynator.Analyzers" Version="4.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,5 +29,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Core\Shared.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\OvertimeRequests\Queries\" />
   </ItemGroup>
 </Project>

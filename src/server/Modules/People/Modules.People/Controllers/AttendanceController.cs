@@ -48,6 +48,15 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(customer);
         }
 
+        [HttpPost("Report")]
+        [Authorize(Policy = Permissions.Attendance.View)]
+        public async Task<IActionResult> GetMonthlyReportAsync(GetAttendanceReportQuery filter)
+        {
+            // var request = Mapper.Map<GetIndividualReportQuery>(filter);
+            var customer = await Mediator.Send(filter);
+            return Ok(customer);
+        }
+
         [HttpPost]
         [Authorize(Policy = Permissions.Attendance.Register)]
         public async Task<IActionResult> RegisterAsync(RegisterAttendanceCommand command)

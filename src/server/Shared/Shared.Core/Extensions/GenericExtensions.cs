@@ -35,5 +35,12 @@ namespace FluentPOS.Shared.Core.Extensions
             DateTime dt = dateTime.PST();
             return new DateTime(dt.Year, dt.Month, dt.Day, 23, 59, 59);
         }
+
+        public static DateTime ToDatetime(this TimeSpan ts, DateTime dateTime, bool IsNextDay = false)
+        {
+            int day = IsNextDay ? dateTime.Day + 1 : dateTime.Day;
+            return new DateTime(dateTime.Year, dateTime.Month, day, ts.Hours, ts.Minutes, ts.Seconds);
+        }
+
     }
 }

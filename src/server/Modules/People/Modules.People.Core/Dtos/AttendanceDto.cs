@@ -9,5 +9,9 @@ namespace FluentPOS.Modules.People.Core.Dtos
     public class AttendanceDto : Shared.DTOs.Dtos.Peoples.AttendanceDto
     {
         public string EmployeeName { get; set; }
+
+        public int? PunchCode { get; set; }
+
+        public string DepartmentName { get; set; }
     }
 }

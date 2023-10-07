@@ -65,11 +65,12 @@ export class PolicyFormComponent implements OnInit {
         this.thirdFormGroup = this.fb.group({
             shiftStartTime: [this.data && this.data.shiftStartTime, Validators.required],
             shiftEndTime: [this.data && this.data.shiftEndTime, Validators.required],
+            isNextDay: [this.data && this.data.isNextDay],
             allowedLateMinutes: [(this.data && this.data.allowedLateMinutes) || 0],
             allowedLateMinInMonth: [(this.data && this.data.allowedLateMinInMonth) || 0],
             forceTimeout: [(this.data && this.data.forceTimeout) || 0],
-            earlyArrivalPolicy: [this.data && this.data.earlyArrivalPolicy, Validators.required],
-            timeoutPolicy: [this.data && this.data.timeoutPolicy, Validators.required],
+            earlyArrivalPolicy: [(this.data && this.data.earlyArrivalPolicy) || EarlyArrivalPolicy.ShiftTime, Validators.required],
+            timeoutPolicy: [(this.data && this.data.timeoutPolicy) || TimeoutPolicy.Present, Validators.required],
             isMonday: [(this.data && this.data.isMonday) || false],
             isTuesday: [(this.data && this.data.isTuesday) || false],
             isWednesday: [(this.data && this.data.isWednesday) || false],
@@ -79,9 +80,9 @@ export class PolicyFormComponent implements OnInit {
             isSunday: [(this.data && this.data.isSunday) || false],
             lateComersPenalty: [(this.data && this.data.lateComersPenalty) || 0],
             lateComersPenaltyType: [this.data && this.data.lateComersPenaltyType, Validators.required],
-            earnedHourPolicy: [this.data && this.data.earnedHourPolicy, Validators.required],
-            sandwichLeaveCount: [this.data && this.data.sandwichLeaveCount || 0],
-            dailyWorkingHour: [this.data && this.data.dailyWorkingHour || 0],
+            earnedHourPolicy: [(this.data && this.data.earnedHourPolicy) || EarnedHourPolicy.ShiftHour, Validators.required],
+            sandwichLeaveCount: [(this.data && this.data.sandwichLeaveCount) || 0],
+            dailyWorkingHour: [(this.data && this.data.dailyWorkingHour) || 0]
         });
         this.forthFormGroup = this.fb.group({
             dailyOverTime: [this.data && this.data.dailyOverTime, Validators.required],
@@ -112,7 +113,7 @@ export class PolicyFormComponent implements OnInit {
                         this.dialogRef.closeAll();
                     },
                     (error) => {
-                        error.messages.forEach(element => {
+                        error.messages.forEach((element) => {
                             this.toastr.error(element);
                         });
                     }

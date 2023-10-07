@@ -107,5 +107,8 @@ namespace FluentPOS.Modules.People.Core.Entities
         public string NICPlace { get; set; }
 
         public string Domicile { get; set; }
+
+        public PayPeriod PayPeriod { get; set; }
+
     }
 }

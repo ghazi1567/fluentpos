@@ -1,4 +1,4 @@
-<div [hidden]="!salaries">
+<!-- <div [hidden]="!salaries">
     <app-table
         [title]="'Employee Salaries'"
         [subtitle]="'Manage, Register, Update or Remove Employee Salaries here.'"
@@ -18,5 +18,38 @@
         (onCustomActionButton)="openCustomActionButton($event)"
     >
     </app-table>
-</div>
-
+</div> -->
+<mat-tab-group>
+    <mat-tab label="Employees Salary">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Employees Salary </span>
+        </ng-template>
+        <mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+            <mat-card-content>
+                <div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+                    <app-ag-grid-base
+                        #AgGrid
+                        [rowData]="salariesData"
+                        [columnDefs]="salariesColumns"
+                        [pagination]="true"
+                        (gridReadyComplete)="gridReady($event)"
+                        headerHeight="50"
+                        sideBar="false"
+                        paginationPageSize="100"
+                    >
+                    </app-ag-grid-base>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </mat-tab>
+    <mat-tab label="Employees Salary">
+        <ng-template matTabLabel>
+            <span mat matBadgeOverlap="false">Incentive/Deduction </span>
+        </ng-template>
+        <mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+            <mat-card-content>
+               <app-global-perks></app-global-perks>
+            </mat-card-content>
+        </mat-card>
+    </mat-tab>
+</mat-tab-group>

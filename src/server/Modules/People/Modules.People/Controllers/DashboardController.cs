@@ -6,14 +6,9 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
 using System.Threading.Tasks;
-using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Modules.People.Core.Features.Customers.Queries;
-using FluentPOS.Modules.People.Core.Features.Employees.Commands;
 using FluentPOS.Shared.Core.Constants;
-using FluentPOS.Shared.Core.Features.Common.Filters;
-using FluentPOS.Shared.DTOs.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,9 +18,9 @@ namespace FluentPOS.Modules.People.Controllers
     internal sealed class DashboardController : BaseController
     {
         [HttpGet("AttendanceStats")]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedFilter filter)
+        [Authorize(Policy = Permissions.Common.DashboardAttendanceStats)]
+        public async Task<IActionResult> GetAllAsync([FromQuery] GetDashboardQuery request)
         {
-            var request = Mapper.Map<GetDashboardQuery>(filter);
             var customers = await Mediator.Send(request);
             return Ok(customers);
         }

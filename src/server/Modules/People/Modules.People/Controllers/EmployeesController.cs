@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.People.Controllers
     internal sealed class EmployeesController : BaseController
     {
         [HttpGet("Lookup")]
-        [Authorize(Policy = Permissions.Employees.ViewAll)]
+        [Authorize(Policy = Permissions.Common.Lookup)]
         public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedFilter filter)
         {
             var request = Mapper.Map<GetEmployeesQuery>(filter);
@@ -84,6 +84,13 @@ namespace FluentPOS.Modules.People.Controllers
         [HttpPost("Import")]
         [Authorize(Policy = Permissions.Employees.Register)]
         public async Task<IActionResult> RegisterAsync(ImportEmployeeCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("AssignDepartment")]
+        [Authorize(Policy = Permissions.Employees.Register)]
+        public async Task<IActionResult> AssignDepartmentAsync(AssignDepartmentCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

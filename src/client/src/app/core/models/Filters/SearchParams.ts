@@ -5,4 +5,6 @@ export class SearchParams implements PaginatedFilter {
     pageNumber: number;
     pageSize: number;
     orderBy: string;
+    startDate?: Date;
+    endDate?: Date;
 }

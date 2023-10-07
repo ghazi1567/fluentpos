@@ -22,13 +22,13 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
     public class GetBioAttendanceQuery : IRequest<PaginatedResult<BioAttendanceLogDto>>
     {
-        public int PageNumber { get; private set; }
+        public int PageNumber { get;  set; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get;  set; }
 
-        public string[] OrderBy { get; private set; }
+        public string[] OrderBy { get;  set; }
 
-        public string SearchString { get; private set; }
+        public string SearchString { get;  set; }
 
         public Guid EmployeeId { get; set; }
 

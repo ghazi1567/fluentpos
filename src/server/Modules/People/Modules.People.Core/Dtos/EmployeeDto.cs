@@ -4,7 +4,7 @@ using System;
 
 namespace FluentPOS.Modules.People.Core.Dtos
 {
-    public class EmployeeDto : Shared.DTOs.Dtos.Peoples.EmployeeDto
+    public class EmployeeDto : Shared.DTOs.Dtos.Peoples.BaseEmployeeDto
     {
     }
 }

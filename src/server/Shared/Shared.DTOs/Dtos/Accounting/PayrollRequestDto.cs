@@ -33,7 +33,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Accounting
 
         public PolicyDto? Policy { get; set; }
 
-        public EmployeeDto? EmployeeInfo { get; set; }
+        public BaseEmployeeDto? EmployeeInfo { get; set; }
 
         public SalaryDto? EmployeeSalary { get; set; }
 

@@ -15,5 +15,10 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
 
         public int Production { get; set; }
 
+        public Guid PolicyId { get; set; }
+
+        public Guid? ParentId { get; set; }
+
+        public string ParentDept { get; set; }
     }
 }

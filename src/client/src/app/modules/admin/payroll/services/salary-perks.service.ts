@@ -23,6 +23,7 @@ export class SalaryPerksService {
       if (CustomerParams.orderBy) params = params.append("orderBy", CustomerParams.orderBy.toString());
       if (CustomerParams.employeeId) params = params.append("employeeId", CustomerParams.employeeId.toString());
       if (CustomerParams.type) params = params.append("type", CustomerParams.type.toString());
+      if (CustomerParams.isGlobal) params = params.append("isGlobal", CustomerParams.isGlobal.toString());
       return this.api.getAlls(params).pipe(map((response: PaginatedResult<SalaryPerks>) => response));
   }
 

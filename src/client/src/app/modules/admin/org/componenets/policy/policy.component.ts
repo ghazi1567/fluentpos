@@ -66,7 +66,6 @@ export class PolicyComponent implements OnInit {
         this.policiesColumns = [
             { name: "Id", dataKey: "id", isSortable: true, isShowable: false },
             { name: "Policy Name", dataKey: "name", isSortable: true, isShowable: true },
-            { name: "Department", dataKey: "departmentName", isSortable: true, isShowable: true },
             { name: "Timings", dataKey: "timings", isSortable: true, isShowable: true },
             { name: "Payslip Type", dataKey: "payslipTypeName", isSortable: true, isShowable: true },
             { name: "Over Time", dataKey: "overTimeTypeName", isSortable: true, isShowable: true },

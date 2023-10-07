@@ -347,6 +347,9 @@ export class AdvancedSearchComponent implements OnInit {
         if (header.type !== undefined) {
             term.fieldType = header.type;
         }
+        if (term.fieldType == "checkbox") {
+            term.searchTerm = 'true';
+        }
         term.data = header.data;
         this.outputUpdate();
     }

@@ -3,6 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
 import { PaymentMode, PaymentModeMapping } from "src/app/core/enums/PaymentMode";
+import { PayPeriod, PayPeriodMapping } from "src/app/core/enums/PayPeriod";
 import { Policy } from "src/app/modules/admin/org/models/policy";
 import { SearchParams } from "src/app/modules/admin/org/models/SearchParams";
 import { PolicyService } from "src/app/modules/admin/org/services/policy.service";
@@ -28,6 +29,8 @@ export class EmployeeFormComponent implements OnInit {
     employeesLookup: Employee[];
     public PaymentModeMapping = PaymentModeMapping;
     public paymentModes = Object.values(PaymentMode).filter((value) => typeof value === "number");
+    public PayPeriodMapping = PayPeriodMapping;
+    public payPeriods = Object.values(PayPeriod).filter((value) => typeof value === "number");
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: Employee, private dialogRef: MatDialog, private fb: UntypedFormBuilder, public employeeService: EmployeeService, private toastr: ToastrService) {}
 
@@ -38,6 +41,7 @@ export class EmployeeFormComponent implements OnInit {
 
     loadLookups() {
         let parms = new SearchParams();
+        parms.pageSize = 1000;
         this.employeeService.getPolicyLookup(parms).subscribe((res) => {
             this.policies = res.data;
         });
@@ -62,12 +66,13 @@ export class EmployeeFormComponent implements OnInit {
             lastName: [this.data && this.data.lastName, Validators.required],
             departmentId: [this.data && this.data.departmentId, Validators.required],
             designationId: [this.data && this.data.designationId, Validators.required],
-            policyId: [this.data && this.data.policyId, Validators.required],
+            policyId: [(this.data && this.data.policyId) || "00000000-0000-0000-0000-000000000000"],
             mobileNo: [this.data && this.data.mobileNo],
-            basicSalary: [this.data && this.data.basicSalary],
+            basicSalary: [(this.data && this.data.basicSalary) || 0],
             reportingTo: [this.data && this.data.reportingTo],
             employeeStatus: [(this.data && this.data.employeeStatus) || "Permanent"],
-            gender: [this.data && this.data.gender, Validators.required]
+            gender: [this.data && this.data.gender, Validators.required],
+            payPeriod: [this.data && this.data.payPeriod, Validators.required]
         });
         this.secondFormGroup = this.fb.group({
             fatherName: [this.data && this.data.fatherName],
@@ -87,8 +92,9 @@ export class EmployeeFormComponent implements OnInit {
             nicPlace: [this.data && this.data.nicPlace],
             domicile: [this.data && this.data.domicile]
         });
+
         this.thirdFormGroup = this.fb.group({
-            paymentMode: [this.data && this.data.paymentMode],
+            paymentMode: [(this.data && this.data.paymentMode) || PaymentMode.Cash],
             bankAccountNo: [this.data && this.data.bankAccountNo],
             bankAccountTitle: [this.data && this.data.bankAccountTitle],
             bankBranchCode: [this.data && this.data.bankBranchCode],
@@ -100,7 +106,7 @@ export class EmployeeFormComponent implements OnInit {
             socialSecurityNo: [this.data && this.data.socialSecurityNo],
             maritalStatus: [this.data && this.data.maritalStatus],
             religion: [this.data && this.data.religion],
-            active: [this.data && this.data.active],
+            active: [this.data && (this.data.active != null || this.data.active != undefined) ? this.data.active : true]
         });
         if (this.firstFormGroup.get("id").value === "" || this.firstFormGroup.get("id").value == null) {
             this.formTitle = "Register Employee";
@@ -110,7 +116,7 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     departmentSelection(event) {
-        this.filteredDesignations = this.designations.filter((x) => x.departmentId == event.value);
+        this.filteredDesignations = this.designations;
     }
 
     onSubmit() {

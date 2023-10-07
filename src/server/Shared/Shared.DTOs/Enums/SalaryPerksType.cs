@@ -13,4 +13,11 @@ namespace FluentPOS.Shared.DTOs.Enums
         Incentives = 3,
         Deductions = 4,
     }
+
+    public enum GlobalSalaryPerksType
+    {
+        None = 0,
+        EOBI = 1,
+        FullMonthPresent = 2,
+    }
 }

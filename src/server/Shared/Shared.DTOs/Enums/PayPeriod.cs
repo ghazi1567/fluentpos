@@ -2,6 +2,7 @@
 {
     public enum PayPeriod
     {
+        None = 0,
         Daily = 1,
         Weekly = 2,
         HalfMonth = 3,

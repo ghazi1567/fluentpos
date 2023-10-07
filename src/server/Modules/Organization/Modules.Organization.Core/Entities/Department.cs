@@ -14,5 +14,9 @@ namespace FluentPOS.Modules.Organization.Core.Entities
         public Guid? HeadOfDepartment { get; set; }
 
         public int Production { get; set; }
+
+        public Guid PolicyId { get; set; }
+
+        public Guid? ParentId { get; set; }
     }
 }

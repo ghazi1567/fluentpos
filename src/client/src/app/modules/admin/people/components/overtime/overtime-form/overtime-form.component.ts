@@ -23,6 +23,12 @@ export class OvertimeFormComponent implements OnInit {
     departments: any[];
     showTime = true;
     disableProductionOption = true;
+
+
+    displayColumnName = ['fullName', 'employeeCode'];
+    filterColumns = ['fullName', 'name']
+
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: EmployeeRequest,
         private dialogRef: MatDialog,
@@ -31,7 +37,7 @@ export class OvertimeFormComponent implements OnInit {
         private toastr: ToastrService,
         private fb: UntypedFormBuilder,
         private authService: AuthService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadLookups();
@@ -40,7 +46,8 @@ export class OvertimeFormComponent implements OnInit {
 
     loadLookups() {
         let employeeParams = new SearchParams();
-        this.employeeService.getEmployees(employeeParams).subscribe((res) => {
+        employeeParams.pageSize = 10000;
+        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
             this.employeesLookup = res.data;
         });
         this.employeeService.getDepartmentLookup(employeeParams).subscribe((res) => {
@@ -90,8 +97,8 @@ export class OvertimeFormComponent implements OnInit {
                 var outTimeTime = 9 + overtimeHours;
 
 
-                model.checkIn = "09:00";
-                model.checkOut = parseInt(outTimeTime.toFixed(0)) + ":00";
+                model.checkIn = "00:00";
+                model.checkOut = "23:00";
             }
 
             if (this.formGroup.get("id").value === "" || this.formGroup.get("id").value == null) {

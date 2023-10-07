@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
 using FluentPOS.Shared.Core.Interfaces.Services;
+using FluentPOS.Shared.DTOs.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FluentPOS.Modules.People.Infrastructure.Services
@@ -21,18 +22,25 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             _mapper = mapper;
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListAsync()
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListAsync()
         {
-            var employee = await _context.Employees.Where(x=>x.Active == true).ToListAsync();
-            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
+            var employee = await _context.Employees.Where(x => x.Active == true).ToListAsync();
+            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
         }
 
-        public async Task<int> GetEmployeeCountAsync()
+        public async Task<int> GetEmployeeCountAsync(bool isActiveOnly)
         {
-            return await _context.Employees.CountAsync();
+            var queryable = _context.Employees.AsQueryable();
+
+            if (isActiveOnly)
+            {
+                queryable = queryable.Where(x => x.Active == true);
+            }
+
+            return await queryable.CountAsync();
         }
 
-        public async Task<Shared.DTOs.Dtos.Peoples.EmployeeDto> GetEmployeeDetailsAsync(Guid Id)
+        public async Task<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto> GetEmployeeDetailsAsync(Guid Id)
         {
             var employee = await _context.Employees.Where(c => c.Id == Id).FirstOrDefaultAsync(default(CancellationToken));
             if (employee == null)
@@ -40,10 +48,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 return default;
             }
 
-            return _mapper.Map<Shared.DTOs.Dtos.Peoples.EmployeeDto>(employee);
+            return _mapper.Map<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeDetailsAsync(List<Guid> Ids)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeDetailsAsync(List<Guid> Ids)
         {
             var employee = await _context.Employees.Where(c => Ids.Contains(c.Id)).ToListAsync(default(CancellationToken));
             if (employee == null)
@@ -51,10 +59,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 return default;
             }
 
-            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
+            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids)
         {
             var employee = await _context.Employees.Where(c => c.Active == true && Ids.Contains(c.PolicyId)).ToListAsync(default(CancellationToken));
             if (employee == null)
@@ -62,10 +70,21 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 return default;
             }
 
-            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
+            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>> GetMyReporterEmployeeListAsync(Guid id, bool includeMe = false)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListByPayPeriodAsync(PayPeriod payPeriod)
+        {
+            var employee = await _context.Employees.Where(c => c.Active == true && c.PayPeriod == payPeriod).ToListAsync(default(CancellationToken));
+            if (employee == null)
+            {
+                return default;
+            }
+
+            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
+        }
+
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetMyReporterEmployeeListAsync(Guid id, bool includeMe = false)
         {
             var employee = await _context.Employees.Where(x => x.ReportingTo == id).ToListAsync();
             if (includeMe)
@@ -77,7 +96,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 }
             }
 
-            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.EmployeeDto>>(employee);
+            return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
         }
     }
 }

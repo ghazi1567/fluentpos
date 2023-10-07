@@ -1,0 +1,51 @@
+<mat-card class="module-card" style="margin-bottom: 0px !important; padding-bottom: 4px !important">
+    <mat-card-header *ngIf="title">
+        <mat-card-title>
+            {{ title | translate }}
+        </mat-card-title>
+        <mat-card-subtitle>{{ subtitle | translate }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="row">
+            <div class="col-xs-12 col-md-2">
+                <mat-form-field appearance="outline">
+                    <mat-label>Start Date</mat-label>
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="attendanceParams.startDate" required />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error> Please provide a valid Attendance Date </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-xs-12 col-md-2">
+                <mat-form-field appearance="outline">
+                    <mat-label>End Date</mat-label>
+                    <input matInput [matDatepicker]="endDatepicker" [(ngModel)]="attendanceParams.endDate" required />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #endDatepicker></mat-datepicker>
+                    <mat-error> Please provide a valid Attendance Date </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-md-2">
+                <a mat-raised-button color="primary" (click)="handleSearch()"> <mat-icon>cloud_download</mat-icon> Search </a>
+            </div>
+        </div>
+        <div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+            <app-ag-grid-base
+                #AgGrid
+                [rowData]="attendanceRows"
+                [columnDefs]="attendanceColumns"
+                [pagination]="false"
+                [suppressColumnVirtualisation]="false"
+                [enablePivotMode]="true"
+                [autoGroupColumnDef]="autoGroupColumnDef"
+                (gridReadyComplete)="gridReady($event)"
+                headerHeight="50"
+                pivotRowTotals="after"
+            >
+            </app-ag-grid-base>
+        </div>
+    </mat-card-content>
+</mat-card>

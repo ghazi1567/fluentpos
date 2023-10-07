@@ -23,6 +23,17 @@ namespace FluentPOS.Modules.Organization.Controllers
             return Ok(brand);
         }
 
+        [HttpGet("Lookup")]
+        [Authorize(Policy = Permissions.Common.Lookup)]
+        public async Task<IActionResult> GetLookupAsync([FromQuery] PaginatedOrganizationFilter filter)
+        {
+            var request = Mapper.Map<GetOrganizationsQuery>(filter);
+            request.PageSize = 100000;
+            request.PageNumber = 0;
+            var brands = await Mediator.Send(request);
+            return Ok(brands);
+        }
+
         [HttpGet]
         [Authorize(Policy = Permissions.Organizations.ViewAll)]
         public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedOrganizationFilter filter)

@@ -60,4 +60,8 @@ export class EmployeeApiService {
     advanceSearch(model: any) {
         return this.http.post(this.baseUrl + `/AdvanceSearch`, model);
     }
+    
+    assignDepartment(model: any) {
+        return this.http.post(this.baseUrl + `/AssignDepartment`, model);
+    }
 }

@@ -6,15 +6,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.People.Core.Abstractions;
 using FluentPOS.Modules.People.Core.Entities;
 using FluentPOS.Modules.People.Core.Exceptions;
+using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Interfaces.Services.Accounting;
 using FluentPOS.Shared.Core.Wrapper;
@@ -22,6 +18,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
@@ -92,6 +93,9 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             var employeeRequest = _mapper.Map<EmployeeRequest>(command);
 
+            employeeRequest.CheckIn = command.CheckInTime.ToDatetime(command.AttendanceDate);
+            employeeRequest.CheckOut = command.CheckOutTime.ToDatetime(command.AttendanceDate, command.IsNextDay);
+
             var employeeDetails = await _employeeService.GetEmployeeDetailsAsync(employeeRequest.EmployeeId);
             if (employeeDetails != null)
             {
@@ -102,16 +106,14 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             if (command.RequestType == Shared.DTOs.Enums.RequestType.OverTime && command.OverTimeType == Shared.DTOs.Enums.OverTimeType.Production)
             {
-                int perHourQty = command.RequiredProduction / 8;
-                int overtimeHours = command.Production / perHourQty;
-
-                TimeSpan checkIn = new TimeSpan(00, 00, 01);
-                TimeSpan newSpan = new TimeSpan(0, overtimeHours, 0, 0);
-                TimeSpan checkOut = checkIn.Add(newSpan);
-                command.CheckIn = checkIn;
-                command.CheckIn = checkOut;
+                var perHourQty = command.RequiredProduction / 8;
+                var overtimeHours = command.Production / Math.Round(perHourQty, 2);
+                DateTime checkIn = new DateTime(command.AttendanceDate.Year, command.AttendanceDate.Month, command.AttendanceDate.Day, 00, 00, 01);
+                DateTime checkOut = checkIn.AddHours(overtimeHours);
+                employeeRequest.CheckIn = checkIn;
+                employeeRequest.CheckOut = checkOut;
+                employeeRequest.OvertimeHours = Math.Round(overtimeHours, 2);
             }
-
 
             await _context.EmployeeRequests.AddAsync(employeeRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);

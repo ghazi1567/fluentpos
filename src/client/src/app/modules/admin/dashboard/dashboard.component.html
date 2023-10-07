@@ -2,12 +2,41 @@
     <mat-card-header>
         <mat-card-title translate>dashboard.title</mat-card-title>
         <mat-card-subtitle translate>dashboard.subtitle</mat-card-subtitle>
+        <div class="col-xs-12 col-md-2 ">
+            <mat-form-field appearance="outline">
+                <mat-label>Select Date</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" required (dateChange)="dateChange($event)" />
+                <mat-hint>DD/MM/YYYY</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error> Please provide a valid Attendance Date </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-xs-12 col-md-2">
+            <mat-form-field appearance="outline">
+                <mat-label>Department</mat-label>
+                <mat-select [(ngModel)]="departmentId" name="departmentId" (selectionChange)="selectionChange($event.value)">
+                    <mat-option value="">
+                        None
+                    </mat-option>
+                    <mat-option *ngFor="let org of departments" [value]="org.id">
+                        {{ org.name }}
+                    </mat-option>
+                </mat-select>
+                <mat-error> Please provide a valid Head Of Department </mat-error>
+            </mat-form-field>
+        </div>
     </mat-card-header>
 </mat-card>
 <div class="row">
-    <div class="col-md-2">
+    <!-- <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
             <app-stat [bgClass]="'bg_blueish'" [icon]="'groups'" [count]="attendanceStats && attendanceStats.totalEmployees" [label]="'Total Employees'"></app-stat>
+        </div>
+    </div> -->
+    <div class="col-md-2">
+        <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
+            <app-stat [bgClass]="'bg_greenish'" [icon]="'people_outline'" [count]="attendanceStats && attendanceStats.activeEmployees" [label]="'Active Employees'"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
@@ -22,18 +51,13 @@
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'success'" [icon]="'directions_run'" [count]="attendanceStats && attendanceStats.lateComer" [label]="'Today Late Comers'"></app-stat>
+            <app-stat [bgClass]="'success'" [icon]="'directions_run'" [count]="attendanceStats && attendanceStats.femalePresents" [label]="'Female Present'"></app-stat>
         </div>
     </div>
 
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'info'" [icon]="'group_off'" [count]="attendanceStats && attendanceStats.last7DaysLateComer" [label]="'Late Comers Last 7 days'"></app-stat>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_greenish'" [icon]="'people_outline'" [count]="attendanceStats && attendanceStats.last7DaysAbsents" [label]="'Absent Last 7 days'"></app-stat>
+            <app-stat [bgClass]="'info'" [icon]="'group_off'" [count]="attendanceStats && attendanceStats.malePresents" [label]="'Male Present'"></app-stat>
         </div>
     </div>
 </div>
