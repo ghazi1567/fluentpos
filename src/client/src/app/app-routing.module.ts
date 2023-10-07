@@ -29,7 +29,7 @@ const routes: Routes = [
         loadChildren: () => import("./modules/home/home.module").then((mod) => mod.HomeModule)
     },
     {
-        path: "admin",
+        path: "admin1",
         canActivate: [AuthGuard, RoleGuard],
         component: AdminLayoutComponent,
         loadChildren: () => import("./modules/admin/admin.module").then((mod) => mod.AdminModule),
@@ -38,7 +38,7 @@ const routes: Routes = [
         }
     },
     {
-        path: "ngx-admin",
+        path: "admin",
         canActivate: [],
         component: NgxAdminLayoutComponent,
         loadChildren: () => import("./modules/admin/admin.module").then((mod) => mod.AdminModule)

@@ -45,6 +45,8 @@ import {
   NbSidebarModule,
   NbToastrModule,
   NbWindowModule,
+  NbCardModule,
+  NbCheckboxModule
 } from '@nebular/theme';
 @NgModule({
   declarations: [
@@ -64,6 +66,8 @@ import {
     SharedModule,
     HttpClientModule,
     CatalogRoutingModule,
+    NbCardModule,
+    NbCheckboxModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
@@ -95,4 +99,4 @@ import {
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

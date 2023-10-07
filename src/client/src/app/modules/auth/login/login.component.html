@@ -1,50 +1,117 @@
-<div class="content">
-  <div class="container">
-    <mat-card class="mat-card-login">
-      <mat-card-content class="mat-card-content-login">
-        <div class="row">
-          <div class="col-lg-6 col-md-6 col-xl-6 col-xs-6 d-none d-lg-block login-image">
-          </div>
-          <div class="col-lg-6 col-md-12 col-xl-6 col-xs-6 login-form">
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-              <h1>Sign in to E Smart Solution</h1>
-              <h3>Enter your credentials here.</h3>
-              <mat-form-field appearance="fill">
-                <input matInput placeholder="Email" formControlName="email" required>
-                <mat-error>
-                  Please provide a valid email address
-                </mat-error>
-              </mat-form-field>
-              <mat-form-field appearance="fill">
-                <input matInput type="password" placeholder="Password" formControlName="password" required>
-                <mat-error>
-                  Please provide a valid password
-                </mat-error>
-              </mat-form-field>
-              <button *ngIf="!isBeingLoggedIn" mat-raised-button color="primary" style="width:100%;height: 50px;"
-                [disabled]="!loginForm.valid" type="submit"> Sign In
-              </button>
-              <button *ngIf="isBeingLoggedIn" mat-raised-button color="primary" style="width:100%;height: 50px;"
-                [disabled]="!loginForm.valid" type="submit">
-                <mat-icon>
-                  <mat-spinner diameter="20">
-                  </mat-spinner>
-                </mat-icon> Logging you in..
-              </button>
-            </form>
-            <!-- <div class="row">
-              <div class="col"><button mat-raised-button color="accent" style="width:100%;height: 50px"
-                  (click)="fillSuperAdminCredentials()">superadmin
-                  credentials</button></div>
-              <div class="col"><button mat-raised-button color="accent" style="width:100%;height: 50px"
-                  (click)="fillStaffCredentials()">Staff
-                  credentials</button></div>
-             
-            </div> -->
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+<h1 id="title" class="title">Login</h1>
+<p class="sub-title">Hello! Log in with your email.</p>
 
+<nb-alert *ngIf="showMessages.error && errors?.length && !submitted" outline="danger" role="alert">
+  <p class="alert-title"><b>Oh snap!</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let error of errors" class="alert-message">{{ error }}</li>
+  </ul>
+</nb-alert>
+
+<nb-alert *ngIf="showMessages.success && messages?.length && !submitted" outline="success" role="alert">
+  <p class="alert-title"><b>Hooray!</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let message of messages" class="alert-message">{{ message }}</li>
+  </ul>
+</nb-alert>
+
+<form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
+
+  <div class="form-control-group">
+    <label class="label" for="input-email">Email address:</label>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="user.email"
+           #email="ngModel"
+           name="email"
+           id="input-email"
+           pattern=".+@.+\..+"
+           placeholder="Email address"
+           fieldSize="large"
+           autofocus
+           [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : 'basic'"
+           [required]="getConfigValue('forms.validation.email.required')"
+           [attr.aria-invalid]="email.invalid && email.touched ? true : null">
+    <ng-container *ngIf="email.invalid && email.touched">
+      <p class="caption status-danger" *ngIf="email.errors?.required">
+        Email is required!
+      </p>
+      <p class="caption status-danger" *ngIf="email.errors?.pattern">
+        Email should be the real one!
+      </p>
+    </ng-container>
   </div>
-</div>
+
+  <div class="form-control-group">
+    <span class="label-with-link">
+      <label class="label" for="input-password">Password:</label>
+      <a class="forgot-password caption-2" routerLink="../request-password">Forgot Password?</a>
+    </span>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="user.password"
+           #password="ngModel"
+           name="password"
+           type="password"
+           id="input-password"
+           placeholder="Password"
+           fieldSize="large"
+           [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : 'basic'"
+           [required]="getConfigValue('forms.validation.password.required')"
+           [minlength]="getConfigValue('forms.validation.password.minLength')"
+           [maxlength]="getConfigValue('forms.validation.password.maxLength')"
+           [attr.aria-invalid]="password.invalid && password.touched ? true : null">
+    <ng-container *ngIf="password.invalid && password.touched ">
+      <p class="caption status-danger" *ngIf="password.errors?.required">
+        Password is required!
+      </p>
+      <p class="caption status-danger" *ngIf="password.errors?.minlength || password.errors?.maxlength">
+        Password should contain
+        from {{ getConfigValue('forms.validation.password.minLength') }}
+        to {{ getConfigValue('forms.validation.password.maxLength') }}
+        characters
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="form-control-group accept-group">
+    <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Remember me</nb-checkbox>
+  </div>
+
+  <button nbButton
+          fullWidth
+          status="primary"
+          size="large"
+          [disabled]="submitted || !form.valid"
+          [class.btn-pulse]="submitted">
+    Log In
+  </button>
+</form>
+
+<section *ngIf="socialLinks && socialLinks.length > 0" class="links" aria-label="Social sign in">
+  or enter with:
+  <div class="socials">
+    <ng-container *ngFor="let socialLink of socialLinks">
+      <a *ngIf="socialLink.link"
+         [routerLink]="socialLink.link"
+         [attr.target]="socialLink.target"
+         [attr.class]="socialLink.icon"
+         [class.with-icon]="socialLink.icon">
+        <nb-icon *ngIf="socialLink.icon; else title" [icon]="socialLink.icon"></nb-icon>
+        <ng-template #title>{{ socialLink.title }}</ng-template>
+      </a>
+      <a *ngIf="socialLink.url"
+         [attr.href]="socialLink.url"
+         [attr.target]="socialLink.target"
+         [attr.class]="socialLink.icon"
+         [class.with-icon]="socialLink.icon">
+        <nb-icon *ngIf="socialLink.icon; else title" [icon]="socialLink.icon"></nb-icon>
+        <ng-template #title>{{ socialLink.title }}</ng-template>
+      </a>
+    </ng-container>
+  </div>
+</section>
+
+<section class="another-action" aria-label="Register">
+  Don't have an account? <a class="text-link" routerLink="../register">Register</a>
+</section>

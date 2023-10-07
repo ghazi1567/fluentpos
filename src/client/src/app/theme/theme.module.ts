@@ -13,7 +13,11 @@ import {
     NbButtonModule,
     NbSelectModule,
     NbIconModule,
-    NbThemeModule
+    NbThemeModule,
+    NbCardModule,
+    NbCheckboxModule,
+    NbInputModule,
+    
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 import { NbSecurityModule } from "@nebular/security";
@@ -21,6 +25,7 @@ import { DEFAULT_THEME } from "./styles/theme.default";
 import { COSMIC_THEME } from "./styles/theme.cosmic";
 import { CORPORATE_THEME } from "./styles/theme.corporate";
 import { DARK_THEME } from "./styles/theme.dark";
+import { NbAuthModule, NbDummyAuthStrategy } from "@nebular/auth";
 const PIPES = [CapitalizePipe, PluralPipe, RoundPipe, TimingPipe, NumberWithCommasPipe];
 const COMPONENTS = [FooterComponent, HeaderComponent, SearchInputComponent, OneColumnLayoutComponent];
 const NB_MODULES = [
@@ -34,12 +39,16 @@ const NB_MODULES = [
     NbEvaIconsModule,
     NbButtonModule,
     NbSelectModule,
-    NbIconModule
+    NbIconModule,
+    NbCardModule,
+    NbCheckboxModule,
+    NbInputModule,
+    NbAuthModule
 ];
 @NgModule({
     declarations: [...COMPONENTS, ...PIPES],
     imports: [CommonModule, ...NB_MODULES],
-    exports: [...PIPES, ...COMPONENTS]
+    exports: [...PIPES, ...COMPONENTS, ...NB_MODULES]
 })
 export class ThemeModule {
     static forRoot(): ModuleWithProviders<ThemeModule> {
@@ -51,7 +60,24 @@ export class ThemeModule {
                         name: "default"
                     },
                     [DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME]
-                ).providers
+                ).providers,
+                ...NbAuthModule.forRoot({
+
+                    strategies: [
+                        NbDummyAuthStrategy.setup({
+                            name: 'email',
+                            delay: 3000,
+                        }),
+                    ],
+                    forms: {
+                        login: {
+                            socialLinks: [],
+                        },
+                        register: {
+                            socialLinks: [],
+                        },
+                    },
+                }).providers,
             ]
         };
     }

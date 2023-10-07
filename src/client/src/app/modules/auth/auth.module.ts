@@ -5,6 +5,7 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { MaterialModule } from 'src/app/core/material/material.module';
 import { SharedModule } from 'src/app/core/shared/shared.module';
+import { ThemeModule } from 'src/app/theme/theme.module';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { SharedModule } from 'src/app/core/shared/shared.module';
     CommonModule,
     AuthRoutingModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
+    ThemeModule
   ]
 })
 export class AuthModule { }
