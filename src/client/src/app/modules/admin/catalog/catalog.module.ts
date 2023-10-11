@@ -16,6 +16,7 @@ import {CategoryService} from './services/category.service';
 import {ProductService} from './services/product.service';
 import { ProductImportComponent } from './components/product-import/product-import.component';
 import { ProductViewComponent } from './components/product/product-view/product-view.component';
+import { ThemeModule } from 'src/app/theme/theme.module';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { ProductViewComponent } from './components/product/product-view/product-
     CommonModule,
     CatalogRoutingModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
+    ThemeModule
   ],
   providers: [
     BrandService, CategoryService, ProductService

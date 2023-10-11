@@ -53,12 +53,12 @@ namespace FluentPOS.Modules.People.Core.Features.OvertimeRequests.Commands
 
         public async Task<Result<Guid>> Handle(RemoveOvertimeRequestCommand request, CancellationToken cancellationToken)
         {
-            var overtimeRequest = await _context.OvertimeRequests.Where(c => c.Id == request.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var overtimeRequest = await _context.OvertimeRequests.Where(c => c.UUID == request.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (overtimeRequest != null)
             {
                 _context.OvertimeRequests.Remove(overtimeRequest);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(overtimeRequest.Id, _localizer["Overtime request Deleted"]);
+                return await Result<Guid>.SuccessAsync(overtimeRequest.UUID, _localizer["Overtime request Deleted"]);
             }
             else
             {
@@ -71,7 +71,7 @@ namespace FluentPOS.Modules.People.Core.Features.OvertimeRequests.Commands
             var overtimeRequest = _mapper.Map<OvertimeRequest>(request);
             await _context.OvertimeRequests.AddAsync(overtimeRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(overtimeRequest.Id, _localizer["Overtime request Saved"]);
+            return await Result<Guid>.SuccessAsync(overtimeRequest.UUID, _localizer["Overtime request Saved"]);
         }
     }
 }

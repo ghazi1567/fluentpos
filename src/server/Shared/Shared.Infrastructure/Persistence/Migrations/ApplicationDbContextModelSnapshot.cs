@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
@@ -16,16 +18,18 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Application")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("FluentPOS.Shared.Core.Entities.EntityReference", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Count")
                         .HasColumnType("int");
@@ -41,7 +45,7 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EntityReferences");
+                    b.ToTable("EntityReferences", "Application");
                 });
 
             modelBuilder.Entity("FluentPOS.Shared.Core.Entities.RemoteClient", b =>
@@ -64,12 +68,12 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RemoteClients");
+                    b.ToTable("RemoteClients", "Application");
                 });
 
             modelBuilder.Entity("FluentPOS.Shared.Core.EventLogging.EventLog", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -100,9 +104,9 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("EventLogs");
+                    b.ToTable("EventLogs", "Application");
                 });
 #pragma warning restore 612, 618
         }

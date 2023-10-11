@@ -82,7 +82,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
 
             foreach (var item in dto.Data)
             {
-                item.EmployeeName = employees.FirstOrDefault(x => x.Id == item.EmployeeId)?.FullName;
+                item.EmployeeName = employees.FirstOrDefault(x => x.UUID == item.EmployeeId)?.FullName;
             }
 
             return dto;
@@ -94,7 +94,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<Result<PayrollDto>> Handle(GetPayslipRequestByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var payrollRequest = await _context.Payrolls.Where(c => c.Id == query.Id).Include(x=>x.Transactions).FirstOrDefaultAsync(cancellationToken);
+            var payrollRequest = await _context.Payrolls.Where(c => c.UUID == query.Id).Include(x=>x.Transactions).FirstOrDefaultAsync(cancellationToken);
             if (payrollRequest == null)
             {
                 throw new AccountingException(_localizer["Payroll Request Not Found!"], HttpStatusCode.NotFound);

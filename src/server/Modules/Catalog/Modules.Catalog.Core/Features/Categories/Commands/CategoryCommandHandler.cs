@@ -71,17 +71,17 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
             category.AddDomainEvent(new CategoryRegisteredEvent(category));
             await _context.Categories.AddAsync(category, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(category.Id, _localizer["Category Saved"]);
+            return await Result<Guid>.SuccessAsync(category.UUID, _localizer["Category Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var category = await _context.Categories.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var category = await _context.Categories.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (category != null)
             {
-                if (await _context.Categories.AnyAsync(c => c.Id != command.Id && c.Name == command.Name, cancellationToken))
+                if (await _context.Categories.AnyAsync(c => c.UUID != command.Id && c.Name == command.Name, cancellationToken))
                 {
                     throw new CatalogException(_localizer["Category with the same name already exists."], HttpStatusCode.BadRequest);
                 }
@@ -98,7 +98,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
                 _context.Categories.Update(category);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Category>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(category.Id, _localizer["Category Updated"]);
+                return await Result<Guid>.SuccessAsync(category.UUID, _localizer["Category Updated"]);
             }
             else
             {
@@ -113,13 +113,13 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
             bool isCategoryUsed = await IsCategoryUsedAsync(command.Id);
             if (!isCategoryUsed)
             {
-                var category = await _context.Categories.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
+                var category = await _context.Categories.FirstOrDefaultAsync(b => b.UUID == command.Id, cancellationToken);
                 // TODO null check
-                category.AddDomainEvent(new CategoryRemovedEvent(category.Id));
+                category.AddDomainEvent(new CategoryRemovedEvent(category.UUID));
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Category>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(category.Id, _localizer["Category Deleted"]);
+                return await Result<Guid>.SuccessAsync(category.UUID, _localizer["Category Deleted"]);
             }
             else
             {
@@ -129,7 +129,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
 
         public async Task<bool> IsCategoryUsedAsync(Guid categoryId)
         {
-            return await _context.Products.AnyAsync(c => c.CategoryId == categoryId);
+            return await _context.Products.AnyAsync(c => c.UUID == categoryId);
         }
     }
 }

@@ -106,7 +106,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             await _salesContext.Orders.AddAsync(order, cancellationToken);
             _salesContext.PurchaseOrders.Update(po);
             await _salesContext.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock In {0} Created for approval"], order.ReferenceNumber));
+            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock In {0} Created for approval"], order.ReferenceNumber));
         }
 
         public async Task<Result<Guid>> Handle(ApproveStockInCommand request, CancellationToken cancellationToken)
@@ -114,7 +114,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             var order = await _salesContext.Orders.AsNoTracking()
                .Include(x => x.Products)
                .OrderBy(x => x.TimeStamp)
-               .SingleOrDefaultAsync(x => x.Id == request.OrderId);
+               .SingleOrDefaultAsync(x => x.UUID == request.OrderId);
 
             if (order == null)
             {
@@ -149,12 +149,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 }
             }
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
+            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
         }
 
         public async Task<Result<Guid>> Handle(RemoveStockInCommand request, CancellationToken cancellationToken)
         {
-            var stockIn = await _salesContext.Orders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
+            var stockIn = await _salesContext.Orders.Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockIn != null)
             {
                 if (stockIn.Status == OrderStatus.Approved)
@@ -164,7 +164,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 
                 _salesContext.Orders.Remove(stockIn);
                 await _salesContext.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(stockIn.Id, _localizer["Stock In Deleted"]);
+                return await Result<Guid>.SuccessAsync(stockIn.UUID, _localizer["Stock In Deleted"]);
             }
             else
             {
@@ -174,7 +174,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 
         public async Task<Result<Guid>> Handle(UpdateStockInCommand request, CancellationToken cancellationToken)
         {
-            var stockIn = await _salesContext.Orders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
+            var stockIn = await _salesContext.Orders.Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockIn != null)
             {
                 var order = Order.InitializeOrder(request.TimeStamp);
@@ -199,7 +199,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 _salesContext.Orders.Remove(stockIn);
                 await _salesContext.Orders.AddAsync(order, cancellationToken);
                 await _salesContext.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock In {0} Updated"], order.ReferenceNumber));
+                return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock In {0} Updated"], order.ReferenceNumber));
             }
             else
             {

@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using FluentPOS.Modules.Catalog.Core.Features;
-using FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries;
 using FluentPOS.Modules.Organization.Core.Dtos;
 using FluentPOS.Modules.Organization.Core.Entities;
 using FluentPOS.Modules.Organization.Core.Features;
-using FluentPOS.Modules.Organization.Core.Features.Branchs.Commands;
+using FluentPOS.Modules.Organization.Core.Features.Stores.Commands;
 using FluentPOS.Modules.Organization.Core.Features.Organizations.Commands;
 using FluentPOS.Modules.Organizations.Core.Features;
 using FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries;
@@ -19,6 +18,7 @@ using FluentPOS.Shared.DTOs.Organizations.Departments;
 using FluentPOS.Shared.DTOs.Organizations.Designations;
 using FluentPOS.Shared.DTOs.Organizations.Policies;
 using System;
+using FluentPOS.Modules.Catalog.Core.Features.Stores.Queries;
 
 namespace FluentPOS.Modules.Organization.Core.Mappings
 {
@@ -34,11 +34,11 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
             CreateMap<PaginatedOrganizationFilter, GetOrganizationsQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
 
-            CreateMap<RegisterBranchCommand, Branch>().ReverseMap();
-            CreateMap<UpdateBranchCommand, Branch>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Branch>, GetBranchByIdQuery>();
-            CreateMap<GetBranchByIdResponse, Branch>().ReverseMap();
-            CreateMap<GetBranchResponse, Branch>().ReverseMap();
+            CreateMap<RegisterBranchCommand, Store>().ReverseMap();
+            CreateMap<UpdateBranchCommand, Store>().ReverseMap();
+            CreateMap<GetByIdCacheableFilter<Guid, Store>, GetBranchByIdQuery>();
+            CreateMap<GetBranchByIdResponse, Store>().ReverseMap();
+            CreateMap<GetBranchResponse, Store>().ReverseMap();
             CreateMap<PaginatedBrachFilter, GetBranchsQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
 

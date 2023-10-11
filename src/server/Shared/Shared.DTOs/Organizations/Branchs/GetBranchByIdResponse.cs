@@ -12,7 +12,7 @@ namespace FluentPOS.Shared.DTOs.Organizations.Branchs
 {
     public record GetBranchByIdResponse(Guid Id,
 
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 
 DateTime? UpdatedAt,
 

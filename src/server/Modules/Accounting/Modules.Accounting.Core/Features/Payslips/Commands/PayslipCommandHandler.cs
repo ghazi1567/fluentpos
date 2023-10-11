@@ -103,23 +103,23 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 
             await _context.PayrollRequests.AddAsync(payrollRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            command.Id = payrollRequest.Id;
+            command.UUID = payrollRequest.UUID;
             _jobService.Enqueue(() => _payrollService.GeneratePayroll(command));
-            return await Result<Guid>.SuccessAsync(payrollRequest.Id, _localizer["Payroll Request Saved"]);
+            return await Result<Guid>.SuccessAsync(payrollRequest.UUID, _localizer["Payroll Request Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdatePayslipCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var payrollRequest = await _context.PayrollRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var payrollRequest = await _context.PayrollRequests.Where(c => c.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (payrollRequest != null)
             {
                 payrollRequest = _mapper.Map<PayrollRequest>(command);
 
                 _context.PayrollRequests.Update(payrollRequest);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(payrollRequest.Id, _localizer["Payroll Request Updated"]);
+                return await Result<Guid>.SuccessAsync(payrollRequest.UUID, _localizer["Payroll Request Updated"]);
             }
             else
             {
@@ -131,7 +131,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         public async Task<Result<Guid>> Handle(RemovePayslipCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var paySlip = await _context.Payrolls.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var paySlip = await _context.Payrolls.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (paySlip != null)
             {
                 if (paySlip.Status == Shared.DTOs.Enums.PayslipStatus.Paid)
@@ -141,7 +141,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 
                 _context.Payrolls.Remove(paySlip);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(paySlip.Id, _localizer["Payslip Deleted"]);
+                return await Result<Guid>.SuccessAsync(paySlip.UUID, _localizer["Payslip Deleted"]);
             }
             else
             {
@@ -155,7 +155,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         public async Task<Result<Guid>> Handle(RunPayrollJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var payrollRequest = await _context.PayrollRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var payrollRequest = await _context.PayrollRequests.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (payrollRequest != null)
             {
                 var payrollRequestDto = _mapper.Map<PayrollRequestDto>(payrollRequest);
@@ -163,7 +163,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
                 _context.PayrollRequests.Update(payrollRequest);
                 await _context.SaveChangesAsync(cancellationToken);
                 _jobService.Enqueue(() => _payrollService.GeneratePayroll(payrollRequestDto));
-                return await Result<Guid>.SuccessAsync(payrollRequest.Id, _localizer["Payroll Request Updated"]);
+                return await Result<Guid>.SuccessAsync(payrollRequest.UUID, _localizer["Payroll Request Updated"]);
             }
             else
             {

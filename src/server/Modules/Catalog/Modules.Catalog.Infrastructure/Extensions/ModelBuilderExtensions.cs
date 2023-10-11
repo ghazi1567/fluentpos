@@ -36,12 +36,12 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Extensions
 
                 if (persistenceOptions.UseMsSql)
                 {
-                    entity.Property(p => p.Price)
-                        .HasColumnType("decimal(23, 2)");
-                    entity.Property(p => p.Cost)
-                        .HasColumnType("decimal(23, 2)");
-                    entity.Property(p => p.AlertQuantity)
-                        .HasColumnType("decimal(23, 2)");
+                    //entity.Property(p => p.Price)
+                    //    .HasColumnType("decimal(23, 2)");
+                    //entity.Property(p => p.Cost)
+                    //    .HasColumnType("decimal(23, 2)");
+                    //entity.Property(p => p.AlertQuantity)
+                    //    .HasColumnType("decimal(23, 2)");
                 }
             });
 

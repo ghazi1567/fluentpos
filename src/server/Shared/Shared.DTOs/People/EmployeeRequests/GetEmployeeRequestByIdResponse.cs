@@ -5,7 +5,7 @@ namespace FluentPOS.Shared.DTOs.People.EmployeeRequests
 {
     public record GetEmployeeRequestByIdResponse(Guid Id,
 
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 
 DateTime? UpdatedAt,
 

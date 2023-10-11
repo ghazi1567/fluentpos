@@ -17,6 +17,8 @@ import {
     NbCardModule,
     NbCheckboxModule,
     NbInputModule,
+    NbRadioModule,
+    NbDatepickerModule,
     
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
@@ -26,6 +28,8 @@ import { COSMIC_THEME } from "./styles/theme.cosmic";
 import { CORPORATE_THEME } from "./styles/theme.corporate";
 import { DARK_THEME } from "./styles/theme.dark";
 import { NbAuthModule, NbDummyAuthStrategy } from "@nebular/auth";
+import { FormsModule as ngFormsModule } from '@angular/forms';
+
 const PIPES = [CapitalizePipe, PluralPipe, RoundPipe, TimingPipe, NumberWithCommasPipe];
 const COMPONENTS = [FooterComponent, HeaderComponent, SearchInputComponent, OneColumnLayoutComponent];
 const NB_MODULES = [
@@ -43,7 +47,10 @@ const NB_MODULES = [
     NbCardModule,
     NbCheckboxModule,
     NbInputModule,
-    NbAuthModule
+    NbAuthModule,
+    NbRadioModule,
+    NbDatepickerModule,
+    ngFormsModule
 ];
 @NgModule({
     declarations: [...COMPONENTS, ...PIPES],

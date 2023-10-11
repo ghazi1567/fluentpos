@@ -50,9 +50,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<PaginatedResult<GetEmployeesResponse>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<Employee, GetEmployeesResponse>> expression = e => new GetEmployeesResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, String.Empty, e.Prefix, e.FirstName, e.LastName, e.FullName, e.FatherName, e.EmployeeCode, e.PunchCode, e.MobileNo, e.PhoneNo, e.Email, e.AllowManualAttendance, e.UserName, e.Password, e.MaritalStatus, e.Gender, e.DateOfBirth, e.PlaceOfBirth, e.FamilyCode, e.Religion, e.BankAccountNo, e.BankAccountTitle, e.BankName, e.BankBranchCode, e.Address, e.CnicNo, e.CnicIssueDate, e.CnicExpireDate, e.DepartmentId, e.DesignationId, e.PolicyId, e.EmployeeStatus, e.JoiningDate, e.ConfirmationDate, e.ContractStartDate, e.ContractEndDate, e.ResignDate, e.ImageUrl,e.Active,e.BasicSalary,e.ReportingTo,e.PaymentMode, e.MotherName, e.City, e.Country, e.EOBINo, e.Qualification, e.BloodGroup, e.Languages, e.SocialSecurityNo, e.NICPlace, e.Domicile, e.PayPeriod);
+            Expression<Func<Employee, GetEmployeesResponse>> expression = e => new GetEmployeesResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, String.Empty, e.Prefix, e.FirstName, e.LastName, e.FullName, e.FatherName, e.EmployeeCode, e.PunchCode, e.MobileNo, e.PhoneNo, e.Email, e.AllowManualAttendance, e.UserName, e.Password, e.MaritalStatus, e.Gender, e.DateOfBirth, e.PlaceOfBirth, e.FamilyCode, e.Religion, e.BankAccountNo, e.BankAccountTitle, e.BankName, e.BankBranchCode, e.Address, e.CnicNo, e.CnicIssueDate, e.CnicExpireDate, e.DepartmentId, e.DesignationId, e.PolicyId, e.EmployeeStatus, e.JoiningDate, e.ConfirmationDate, e.ContractStartDate, e.ContractEndDate, e.ResignDate, e.ImageUrl,e.Active,e.BasicSalary,e.ReportingTo,e.PaymentMode, e.MotherName, e.City, e.Country, e.EOBINo, e.Qualification, e.BloodGroup, e.Languages, e.SocialSecurityNo, e.NICPlace, e.Domicile, e.PayPeriod);
 
-            var queryable = _context.Employees.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
+            var queryable = _context.Employees.AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.FullName);
@@ -93,7 +93,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<Result<GetEmployeeByIdResponse>> Handle(GetEmployeeByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employee = await _context.Employees.Where(c => c.Id == query.Id).FirstOrDefaultAsync(cancellationToken);
+            var employee = await _context.Employees.Where(c => c.UUID == query.Id).FirstOrDefaultAsync(cancellationToken);
             if (employee == null)
             {
                 throw new PeopleException(_localizer["Customer Not Found!"], HttpStatusCode.NotFound);
@@ -108,7 +108,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             string data = await _context.Customers.AsNoTracking()
-                .Where(c => c.Id == request.Id)
+                .Where(c => c.UUID == request.Id)
                 .Select(a => a.ImageUrl)
                 .FirstOrDefaultAsync(cancellationToken);
 

@@ -43,7 +43,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence
             _json = json;
         }
 
-        public DbSet<Branch> Branchs { get; set; }
+        public DbSet<Store> Stores { get; set; }
 
         public DbSet<Department> Departments { get; set; }
 

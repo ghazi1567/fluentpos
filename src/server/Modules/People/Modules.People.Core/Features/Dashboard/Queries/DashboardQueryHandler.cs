@@ -53,8 +53,8 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
                 attendanceQueryable = attendanceQueryable.Where(x => x.DepartmentId == request.DepartmentId);
             }
             var attendance = attendanceQueryable.ToList();
-            var maleEmployeeIds = _context.Employees.Where(x => x.Active == true && x.Gender == "male").Select(x => x.Id).ToList();
-            var femaleEmployeeIds = _context.Employees.Where(x => x.Active == true && x.Gender == "female").Select(x => x.Id).ToList();
+            var maleEmployeeIds = _context.Employees.Where(x => x.Active == true && x.Gender == "male").Select(x => x.UUID).ToList();
+            var femaleEmployeeIds = _context.Employees.Where(x => x.Active == true && x.Gender == "female").Select(x => x.UUID).ToList();
 
             // var endDate = request.StartDate;
             // var startDate = request.StartDate.AddDays(-7);

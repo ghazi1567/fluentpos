@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto> GetEmployeeDetailsAsync(Guid Id)
         {
-            var employee = await _context.Employees.Where(c => c.Id == Id).FirstOrDefaultAsync(default(CancellationToken));
+            var employee = await _context.Employees.Where(c => c.UUID == Id).FirstOrDefaultAsync(default(CancellationToken));
             if (employee == null)
             {
                 return default;
@@ -53,7 +53,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeDetailsAsync(List<Guid> Ids)
         {
-            var employee = await _context.Employees.Where(c => Ids.Contains(c.Id)).ToListAsync(default(CancellationToken));
+            var employee = await _context.Employees.Where(c => Ids.Contains(c.UUID)).ToListAsync(default(CancellationToken));
             if (employee == null)
             {
                 return default;
@@ -89,7 +89,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             var employee = await _context.Employees.Where(x => x.ReportingTo == id).ToListAsync();
             if (includeMe)
             {
-                var me = await _context.Employees.FirstOrDefaultAsync(x => x.Id == id);
+                var me = await _context.Employees.FirstOrDefaultAsync(x => x.UUID == id);
                 if (me != null)
                 {
                     employee.Add(me);

@@ -6,82 +6,62 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using FluentPOS.Shared.Core.Interfaces.Services;
+using Hangfire;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using FluentPOS.Shared.Core.Interfaces.Services;
-using FluentPOS.Shared.DTOs.Enums;
-using Hangfire;
 
 namespace FluentPOS.Shared.Infrastructure.Services
 {
     public class HangfireService : IJobService
     {
-        private readonly IAttendanceService _attendanceService;
+        public bool Delete(string jobId) =>
+           BackgroundJob.Delete(jobId);
 
-        public HangfireService(IAttendanceService attendanceService)
-        {
-            _attendanceService = attendanceService;
-        }
+        public bool Delete(string jobId, string fromState) =>
+            BackgroundJob.Delete(jobId, fromState);
 
-        public string Enqueue(Expression<Func<Task>> methodCall)
-        {
-            return BackgroundJob.Enqueue(methodCall);
-        }
+        public string Enqueue(Expression<Func<Task>> methodCall) =>
+            BackgroundJob.Enqueue(methodCall);
 
-        public void Recurring(string jobName, Expression<Func<Task>> methodCall, string schdule = "")
-        {
-            if (string.IsNullOrEmpty(schdule))
-            {
-                schdule = Cron.Daily();
-            }
+        public string Enqueue<T>(Expression<Action<T>> methodCall) =>
+            BackgroundJob.Enqueue(methodCall);
 
-            RecurringJob.AddOrUpdate(jobName, methodCall, schdule);
-        }
+        public string Enqueue(Expression<Action> methodCall) =>
+            BackgroundJob.Enqueue(methodCall);
 
-        public void ConfigureJob(JobType jobName, string schdule = "")
-        {
-            if (string.IsNullOrEmpty(schdule))
-            {
-                schdule = Cron.Daily();
-            }
+        public string Enqueue<T>(Expression<Func<T, Task>> methodCall) =>
+            BackgroundJob.Enqueue(methodCall);
 
-            switch (jobName)
-            {
-                case JobType.MarkAbsent:
-                    RecurringJob.AddOrUpdate("AbsentJob", () => _attendanceService.TiggerAutoAbsentJob(null), schdule);
-                    break;
-                case JobType.MarkOffDay:
-                    break;
-                case JobType.FetchCheckIn:
-                    RecurringJob.AddOrUpdate("CheckInJob", () => _attendanceService.TiggerAutoPresentJob(null, true), schdule);
-                    break; ;
-                case JobType.FetchCheckOut:
-                    RecurringJob.AddOrUpdate("CheckOutJob", () => _attendanceService.TiggerAutoPresentJob(null, false), schdule);
-                    break;
-                default:
-                    break;
-            }
-        }
+        public bool Requeue(string jobId) =>
+            BackgroundJob.Requeue(jobId);
 
-        public void RunJob(JobType jobName, DateTime dateTime)
-        {
-            switch (jobName)
-            {
-                case JobType.MarkAbsent:
-                    _attendanceService.TiggerAutoAbsentJob(dateTime);
-                    break;
-                case JobType.MarkOffDay:
-                    break;
-                case JobType.FetchCheckIn:
-                    _attendanceService.TiggerAutoPresentJob(dateTime, true);
-                    break;
-                case JobType.FetchCheckOut:
-                    _attendanceService.TiggerAutoPresentJob(dateTime, false);
-                    break;
-                default:
-                    break;
-            }
-        }
+        public bool Requeue(string jobId, string fromState) =>
+            BackgroundJob.Requeue(jobId, fromState);
+
+        public string Schedule(Expression<Action> methodCall, TimeSpan delay) =>
+            BackgroundJob.Schedule(methodCall, delay);
+
+        public string Schedule(Expression<Func<Task>> methodCall, TimeSpan delay) =>
+            BackgroundJob.Schedule(methodCall, delay);
+
+        public string Schedule(Expression<Action> methodCall, DateTimeOffset enqueueAt) =>
+            BackgroundJob.Schedule(methodCall, enqueueAt);
+
+        public string Schedule(Expression<Func<Task>> methodCall, DateTimeOffset enqueueAt) =>
+            BackgroundJob.Schedule(methodCall, enqueueAt);
+
+        public string Schedule<T>(Expression<Action<T>> methodCall, TimeSpan delay) =>
+            BackgroundJob.Schedule(methodCall, delay);
+
+        public string Schedule<T>(Expression<Func<T, Task>> methodCall, TimeSpan delay) =>
+            BackgroundJob.Schedule(methodCall, delay);
+
+        public string Schedule<T>(Expression<Action<T>> methodCall, DateTimeOffset enqueueAt) =>
+            BackgroundJob.Schedule(methodCall, enqueueAt);
+
+        public string Schedule<T>(Expression<Func<T, Task>> methodCall, DateTimeOffset enqueueAt) =>
+            BackgroundJob.Schedule(methodCall, enqueueAt);
     }
 }

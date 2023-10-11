@@ -66,7 +66,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         public async Task<Result<Guid>> Handle(RemoveOvertimePlanningCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var overtimeRequest = await _context.OvertimeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var overtimeRequest = await _context.OvertimeRequests.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (overtimeRequest != null)
             {
                 _context.OvertimeRequests.Remove(overtimeRequest);

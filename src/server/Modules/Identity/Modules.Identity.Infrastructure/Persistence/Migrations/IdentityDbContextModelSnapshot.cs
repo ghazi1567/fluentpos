@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
@@ -16,13 +18,14 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Identity")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.RoleExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -32,7 +35,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateTime")
@@ -45,7 +48,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EntityId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ExternalId")
@@ -53,6 +55,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
@@ -79,16 +84,16 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
                     b.HasIndex("EntityId");
 
-                    b.ToTable("RoleExtendedAttributes");
+                    b.ToTable("RoleExtendedAttributes", "Identity");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.UserExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -98,7 +103,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateTime")
@@ -111,7 +116,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EntityId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ExternalId")
@@ -119,6 +123,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
@@ -145,11 +152,11 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
                     b.HasIndex("EntityId");
 
-                    b.ToTable("UserExtendedAttributes");
+                    b.ToTable("UserExtendedAttributes", "Identity");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.FluentRole", b =>
@@ -172,6 +179,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("UUID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
@@ -179,15 +189,16 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", "Identity");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.FluentRoleClaim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -209,7 +220,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims");
+                    b.ToTable("RoleClaims", "Identity");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.FluentUser", b =>
@@ -284,6 +295,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UUID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -298,12 +312,12 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", "Identity");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.UserBranch", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -313,8 +327,11 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
@@ -325,17 +342,18 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("UserBranchs");
+                    b.ToTable("UserBranchs", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -351,7 +369,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserClaims");
+                    b.ToTable("UserClaims", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -373,7 +391,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins");
+                    b.ToTable("UserLogins", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -388,7 +406,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", "Identity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -407,16 +425,14 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens");
+                    b.ToTable("UserTokens", "Identity");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.RoleExtendedAttribute", b =>
                 {
                     b.HasOne("FluentPOS.Modules.Identity.Core.Entities.FluentRole", "Entity")
                         .WithMany("ExtendedAttributes")
-                        .HasForeignKey("EntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EntityId");
 
                     b.Navigation("Entity");
                 });
@@ -425,9 +441,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FluentPOS.Modules.Identity.Core.Entities.FluentUser", "Entity")
                         .WithMany("ExtendedAttributes")
-                        .HasForeignKey("EntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EntityId");
 
                     b.Navigation("Entity");
                 });

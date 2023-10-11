@@ -1,13 +1,15 @@
 ﻿using FluentPOS.Shared.Core.Contracts;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
     public class Organisation : IEntity<Guid>
     {
-        public Guid Id { get; set; }
+        [Key]
+        public Guid UUID { get; set; }
 
-        public DateTime? CreateaAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
@@ -25,7 +27,7 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         protected Organisation()
         {
-            Id = Guid.NewGuid();
+            UUID = Guid.NewGuid();
         }
     }
 }

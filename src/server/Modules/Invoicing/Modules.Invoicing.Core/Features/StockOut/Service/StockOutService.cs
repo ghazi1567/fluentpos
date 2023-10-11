@@ -70,7 +70,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
         public async Task<bool> AlreadyExist(Guid id)
         {
-            return await _salesContext.Orders.AnyAsync(x => x.Id == id);
+            return await _salesContext.Orders.AnyAsync(x => x.UUID == id);
         }
 
         public async Task<Result<Guid>> Save(RegisterStockOutCommand command, CancellationToken cancellationToken)
@@ -95,14 +95,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             }
 
             await Save(order, cancellationToken);
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock Out {0} Created for approval"], order.ReferenceNumber));
+            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock Out {0} Created for approval"], order.ReferenceNumber));
         }
 
         public async Task<Result<Guid>> Delete(RemoveStockOutCommand request, CancellationToken cancellationToken)
         {
             var stockOut = await _salesContext.Orders
                 .Include(x => x.Products)
-                .Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
+                .Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockOut != null)
             {
                 _salesContext.Orders.Remove(stockOut);
@@ -113,7 +113,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                     await _stockService.ReverseTransaction(orderItem.ProductId, orderItem.Quantity, stockOut.ReferenceNumber, OrderType.StockOut, stockOut.WarehouseId);
                 }
 
-                return await Result<Guid>.SuccessAsync(stockOut.Id, _localizer["Stock Out Deleted"]);
+                return await Result<Guid>.SuccessAsync(stockOut.UUID, _localizer["Stock Out Deleted"]);
             }
             else
             {
@@ -125,7 +125,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
         {
             var stockOut = await _salesContext.Orders
                 .Include(x => x.Products)
-                .Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
+                .Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockOut != null)
             {
                 var order = Order.InitializeOrder(request.TimeStamp);
@@ -166,7 +166,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                     }
                 }
 
-                return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock Out {0} Updated"], order.ReferenceNumber));
+                return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock Out {0} Updated"], order.ReferenceNumber));
             }
             else
             {

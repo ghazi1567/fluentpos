@@ -12,7 +12,7 @@ using System;
 namespace FluentPOS.Shared.DTOs.Organizations.Policies
 {
     public record GetPolicyByIdResponse(Guid Id,
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 DateTime? UpdatedAt,
 Guid OrganizationId,
 Guid BranchId,

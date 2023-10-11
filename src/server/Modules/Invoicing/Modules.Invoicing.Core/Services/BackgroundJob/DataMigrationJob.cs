@@ -111,7 +111,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                     {
                         bool result = true;
 
-                        if (!await poService.AlreadyExist(item.Id))
+                        if (!await poService.AlreadyExist(item.UUID))
                         {
                             result = await poService.SavePurchaseOrder(item);
                         }
@@ -120,8 +120,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                         {
                             var logs = new SyncLog
                             {
-                                CreateaAt = DateTime.Now,
-                                EntryId = item.Id,
+                                CreatedAt = DateTime.Now,
+                                EntryId = item.UUID,
                                 RemoteClientId = _clientId,
                                 EntryType = "PurchaseOrder",
                                 LastUpdateOn = DateTime.Now,
@@ -151,7 +151,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                     {
                         bool result = true;
 
-                        if (!await service.AlreadyExist(item.Id))
+                        if (!await service.AlreadyExist(item.UUID))
                         {
                             result = await service.SaveStockIn(item);
                         }
@@ -160,8 +160,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                         {
                             var logs = new SyncLog
                             {
-                                CreateaAt = DateTime.Now,
-                                EntryId = item.Id,
+                                CreatedAt = DateTime.Now,
+                                EntryId = item.UUID,
                                 RemoteClientId = _clientId,
                                 EntryType = "StockIn",
                                 LastUpdateOn = DateTime.Now,
@@ -191,7 +191,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                     {
                         bool result = true;
 
-                        if (!await service.AlreadyExist(item.Id))
+                        if (!await service.AlreadyExist(item.UUID))
                         {
                             result = await service.Save(item);
                         }
@@ -200,8 +200,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                         {
                             var logs = new SyncLog
                             {
-                                CreateaAt = DateTime.Now,
-                                EntryId = item.Id,
+                                CreatedAt = DateTime.Now,
+                                EntryId = item.UUID,
                                 RemoteClientId = _clientId,
                                 EntryType = "StockOut",
                                 LastUpdateOn = DateTime.Now,

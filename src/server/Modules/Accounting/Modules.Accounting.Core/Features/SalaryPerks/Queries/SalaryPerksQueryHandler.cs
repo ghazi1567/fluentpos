@@ -79,7 +79,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<Result<SalaryPerksDto>> Handle(GetSalaryPerksByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employee = await _context.Salaries.Where(c => c.Id == query.Id).FirstOrDefaultAsync(cancellationToken);
+            var employee = await _context.Salaries.Where(c => c.UUID == query.Id).FirstOrDefaultAsync(cancellationToken);
             if (employee == null)
             {
                 throw new AccountingException(_localizer["Salary Perks Not Found!"], HttpStatusCode.NotFound);

@@ -3,7 +3,7 @@
 namespace FluentPOS.Shared.DTOs.Organizations.Departments
 {
     public record GetDepartmentResponse(Guid Id,
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 DateTime? UpdatedAt,
 Guid OrganizationId,
 Guid BranchId,

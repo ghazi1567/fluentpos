@@ -10,7 +10,7 @@ using System;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 
-namespace FluentPOS.Modules.Organization.Core.Features.Branchs.Commands
+namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
 {
     public class RemoveBranchCommand : IRequest<Result<Guid>>
     {

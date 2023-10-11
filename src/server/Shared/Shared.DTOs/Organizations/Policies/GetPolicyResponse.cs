@@ -4,7 +4,7 @@ using System;
 namespace FluentPOS.Shared.DTOs.Organizations.Policies
 {
     public record GetPolicyResponse(Guid Id,
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 DateTime? UpdatedAt,
 Guid OrganizationId,
 Guid BranchId,

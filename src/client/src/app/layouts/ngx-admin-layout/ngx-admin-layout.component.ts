@@ -52,12 +52,22 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ]
     },
     {
+        title: "Catalog Management",
+        icon: "settings-outline",
+        children: [
+            {
+                title: "Products",
+                link: "catalog/products"
+            },
+        ]
+    },
+    {
         title: "Store Management",
         icon: "settings-outline",
         children: [
             {
                 title: "Store Config",
-                link: "people/employees"
+                link: "settings"
             },
         ]
     },

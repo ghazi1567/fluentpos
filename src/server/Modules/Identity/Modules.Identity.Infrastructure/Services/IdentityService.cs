@@ -108,7 +108,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
                     if (!_mailSettings.EnableVerification && !_smsSettings.EnableVerification)
                     {
-                        return await Result<string>.SuccessAsync(user.Id, message: string.Format(_localizer["User {0} Registered."], user.UserName));
+                        return await Result<string>.SuccessAsync(user.UUID, message: string.Format(_localizer["User {0} Registered."], user.UserName));
                     }
 
                     var messages = new List<string> { string.Format(_localizer["User {0} Registered."], user.UserName) };
@@ -142,7 +142,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                         messages.Add(_localizer["Please check your Phone for code in SMS to verify!"]);
                     }
 
-                    return await Result<string>.SuccessAsync(user.Id, messages: messages);
+                    return await Result<string>.SuccessAsync(user.UUID, messages: messages);
                 }
                 else
                 {
@@ -161,7 +161,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             string route = "api/v1/identity/confirm-email/";
             var endpointUri = new Uri(string.Concat($"{origin}/", route));
-            string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.Id);
+            string verificationUri = QueryHelpers.AddQueryString(endpointUri.ToString(), "userId", user.UUID);
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
             return verificationUri;
         }
@@ -185,11 +185,11 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             {
                 if (user.PhoneNumberConfirmed || !_smsSettings.EnableVerification)
                 {
-                    return await Result<string>.SuccessAsync(user.Id, string.Format(_localizer["Account Confirmed for E-Mail {0}. You can now use the /api/identity/token endpoint to generate JWT."], user.Email));
+                    return await Result<string>.SuccessAsync(user.UUID, string.Format(_localizer["Account Confirmed for E-Mail {0}. You can now use the /api/identity/token endpoint to generate JWT."], user.Email));
                 }
                 else
                 {
-                    return await Result<string>.SuccessAsync(user.Id, string.Format(_localizer["Account Confirmed for E-Mail {0}. You should confirm your Phone Number before using the /api/identity/token endpoint to generate JWT."], user.Email));
+                    return await Result<string>.SuccessAsync(user.UUID, string.Format(_localizer["Account Confirmed for E-Mail {0}. You should confirm your Phone Number before using the /api/identity/token endpoint to generate JWT."], user.Email));
                 }
             }
             else
@@ -211,11 +211,11 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             {
                 if (user.EmailConfirmed)
                 {
-                    return await Result<string>.SuccessAsync(user.Id, string.Format(_localizer["Account Confirmed for Phone Number {0}. You can now use the /api/identity/token endpoint to generate JWT."], user.PhoneNumber));
+                    return await Result<string>.SuccessAsync(user.UUID, string.Format(_localizer["Account Confirmed for Phone Number {0}. You can now use the /api/identity/token endpoint to generate JWT."], user.PhoneNumber));
                 }
                 else
                 {
-                    return await Result<string>.SuccessAsync(user.Id, string.Format(_localizer["Account Confirmed for Phone Number {0}. You should confirm your E-mail before using the /api/identity/token endpoint to generate JWT."], user.PhoneNumber));
+                    return await Result<string>.SuccessAsync(user.UUID, string.Format(_localizer["Account Confirmed for Phone Number {0}. You should confirm your E-mail before using the /api/identity/token endpoint to generate JWT."], user.PhoneNumber));
                 }
             }
             else

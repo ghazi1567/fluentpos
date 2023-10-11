@@ -6,6 +6,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Net;
@@ -24,6 +25,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using ShopifySharp;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 {
@@ -53,6 +55,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public async Task<PaginatedResult<GetProductsResponse>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
+
+            var service = new ProductService("https://shopbee-online.myshopify.com", "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");
+            var products = await service.ListAsync();
+
+
             var queryable = _context.Products.AsNoTracking()
                 .ProjectTo<GetProductsResponse>(_mapper.ConfigurationProvider)
                 .OrderBy(x => x.Id)
@@ -97,7 +104,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var product = await _context.Products.AsNoTracking()
-                .Where(p => p.Id == query.Id)
+                .Where(p => p.UUID == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (product == null)
@@ -113,11 +120,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public async Task<Result<string>> Handle(GetProductImageQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            string data = await _context.Products.AsNoTracking()
-                .Where(p => p.Id == query.Id)
-                .Select(x => x.ImageUrl)
-                .FirstOrDefaultAsync(cancellationToken);
+            //string data = await _context.Products.AsNoTracking()
+            //    .Where(p => p.Id == query.Id)
+            //    .Select(x => x.ImageUrl)
+            //    .FirstOrDefaultAsync(cancellationToken);
 
+            string data = "";
             return await Result<string>.SuccessAsync(data: $"{_applicationSettings.ApiUrl}{data.Replace(@"\", "/")}");
         }
     }

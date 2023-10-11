@@ -12,7 +12,7 @@ namespace FluentPOS.Shared.DTOs
 {
     public record GetOrganizationResponse(Guid Id,
 
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 
 DateTime? UpdatedAt,
 

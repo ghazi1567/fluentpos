@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
 
         public async Task GeneratePayroll(Shared.DTOs.Dtos.Accounting.PayrollRequestDto payrollRequest)
         {
-            var payrollRequestEntry = await _context.PayrollRequests.Where(c => c.Id == payrollRequest.Id).AsNoTracking().FirstOrDefaultAsync();
+            var payrollRequestEntry = await _context.PayrollRequests.Where(c => c.UUID == payrollRequest.UUID).AsNoTracking().FirstOrDefaultAsync();
 
             if (payrollRequestEntry == null)
             {
@@ -104,15 +104,15 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 var plocies = await _orgService.GetAllPoliciesAsync();
                 var departments = await _orgService.GetAllDepartmentAsync();
 
-                var plociesIds = plocies.Select(x => x.Id.Value).ToList();
+                var plociesIds = plocies.Select(x => x.UUID.Value).ToList();
                 var employees = await _employeeService.GetEmployeeListByPayPeriodAsync(payrollRequest.PayPeriod);
                 payrollRequest.EmployeeIds = new List<Guid>();
                 foreach (var item in employees)
                 {
-                    bool result = await IsPayrollGenerated(item.Id.Value, startDate);
+                    bool result = await IsPayrollGenerated(item.UUID.Value, startDate);
                     if (!result)
                     {
-                        payrollRequest.EmployeeIds.Add(item.Id.Value);
+                        payrollRequest.EmployeeIds.Add(item.UUID.Value);
                     }
                 }
 
@@ -131,7 +131,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
 
                     foreach (var item in results)
                     {
-                        payrollRequest.EmployeeInfo = employees.FirstOrDefault(x => x.Id == item.EmployeeId);
+                        payrollRequest.EmployeeInfo = employees.FirstOrDefault(x => x.UUID == item.EmployeeId);
                         if (payrollRequest.EmployeeInfo != null)
                         {
                             var salary = _context.Salaries.FirstOrDefault(x => x.EmployeeId == item.EmployeeId);
@@ -158,7 +158,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                                 }
                             }
 
-                            var policy = plocies.FirstOrDefault(x => x.Id == policyId);
+                            var policy = plocies.FirstOrDefault(x => x.UUID == policyId);
                             if (policy != null)
                             {
                                 payrollRequest.Policy = policy;
@@ -243,8 +243,8 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 EarnedDays = 0,
                 EmployeeSalary = payrollRequest.EmployeeSalary.BasicSalary,
                 BranchId = payrollRequest.BranchId,
-                CreateaAt = DateTime.Now,
-                EmployeeId = payrollRequest.EmployeeInfo.Id.Value,
+                CreatedAt = DateTime.Now,
+                EmployeeId = payrollRequest.EmployeeInfo.UUID.Value,
                 leaves = 0,
                 NetPay = 0,
                 OrganizationId = payrollRequest.OrganizationId,

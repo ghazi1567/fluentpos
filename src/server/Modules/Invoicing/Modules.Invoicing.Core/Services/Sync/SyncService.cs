@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         public async Task<List<PurchaseOrder>> GetPendingPurchaseOrdersAsync(Guid clientId)
         {
             return await _context.PurchaseOrders
-                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "PurchaseOrder") == false)
+                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.UUID && s.RemoteClientId == clientId && s.EntryType == "PurchaseOrder") == false)
                 .AsNoTracking()
                 .Include(x => x.Products)
                 .OrderBy(x => x.TimeStamp)
@@ -38,7 +38,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         public async Task<List<Order>> GetPendingStockInAsync(Guid clientId)
         {
             return await _context.Orders
-                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockIn") == false
+                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.UUID && s.RemoteClientId == clientId && s.EntryType == "StockIn") == false
                  && x.Status == OrderStatus.PendingApproval && x.OrderType == OrderType.StockIn)
                 .AsNoTracking()
                 .Include(x => x.Products)
@@ -49,7 +49,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         public async Task<List<Order>> GetPendingStockOutAsync(Guid clientId)
         {
             return await _context.Orders
-                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false
+                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.UUID && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false
                 && x.OrderType == OrderType.StockOut)
                 .AsNoTracking()
                 .Include(x => x.Products)

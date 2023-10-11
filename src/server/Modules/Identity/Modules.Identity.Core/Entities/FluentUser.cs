@@ -17,6 +17,7 @@ namespace FluentPOS.Modules.Identity.Core.Entities
 {
     public class FluentUser : IdentityUser, IEntity<string>, IBaseEntity
     {
+        public string UUID { get; set; }
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

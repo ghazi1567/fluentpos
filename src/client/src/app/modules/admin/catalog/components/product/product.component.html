@@ -1,8 +1,22 @@
-<div [hidden]="!products">
+<!-- <div [hidden]="!products">
   <app-table [permissions]="['Permissions.Products.Register']" [title]="'Products'" [subtitle]="'Manage, Register, Update or Remove Products here.'"
     [data]="products && products.data" [columns]="productColumns" (onFilter)="filter($event)"
     (onReload)="reload()" (onCreateForm)="openForm()" (onEditForm)="openForm($event)" (onSort)="sort($event)"
     (onDelete)="remove($event)" (onExport)="onExport($event)" [totalCount]="products && products.totalCount"
     [pageSize]="products && products.pageSize" (onPageChanged)="pageChanged($event)" (onView)="view($event)">
   </app-table>
-</div>
+</div> -->
+
+<nb-card>
+  <nb-card-header>
+    Smart Table
+  </nb-card-header>
+
+  <nb-card-body>
+    <div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+      <app-ag-grid-base #AgGrid [rowData]="productsData" [columnDefs]="productColumns" [pagination]="true"
+        (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+      </app-ag-grid-base>
+    </div>
+  </nb-card-body>
+</nb-card>

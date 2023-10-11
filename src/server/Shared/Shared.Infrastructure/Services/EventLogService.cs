@@ -72,7 +72,7 @@ namespace FluentPOS.Shared.Infrastructure.Services
                 queryable = queryable.Where(x => (!string.IsNullOrWhiteSpace(x.Data) && EF.Functions.Like(x.Data.ToLower(), $"%{lowerSearchString}%"))
                                                  || (!string.IsNullOrWhiteSpace(x.OldValues) && EF.Functions.Like(x.OldValues.ToLower(), $"%{lowerSearchString}%"))
                                                  || (!string.IsNullOrWhiteSpace(x.NewValues) && EF.Functions.Like(x.NewValues.ToLower(), $"%{lowerSearchString}%"))
-                                                 || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{lowerSearchString}%"));
+                                                 || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{lowerSearchString}%"));
             }
 
             var eventLogList = await queryable
@@ -89,7 +89,7 @@ namespace FluentPOS.Shared.Infrastructure.Services
         {
             var log = _mapper.Map<EventLog>(request);
             await _logger.SaveAsync(log, default);
-            return await Result<string>.SuccessAsync(data: log.Id.ToString());
+            return await Result<string>.SuccessAsync(data: log.UUID.ToString());
         }
     }
 }

@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands.Validators
     {
         public UpdateEmployeeCommandValidator(IStringLocalizer<UpdateEmployeeCommandValidator> localizer)
         {
-            RuleFor(c => c.Id)
+            RuleFor(c => c.UUID)
                   .NotEqual(Guid.Empty).WithMessage(x => localizer["The {PropertyName} property cannot be empty."]);
             RuleFor(c => c.FullName)
                 .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."])

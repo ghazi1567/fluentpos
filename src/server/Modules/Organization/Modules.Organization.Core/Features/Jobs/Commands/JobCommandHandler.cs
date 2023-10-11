@@ -63,12 +63,12 @@ namespace FluentPOS.Modules.Organization.Core.Features
             }
 
             var mappedEntity = _mapper.Map<Job>(command);
-            mappedEntity.CreateaAt = DateTime.Now;
+            mappedEntity.CreatedAt = DateTime.Now;
             await _context.Jobs.AddAsync(mappedEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            _jobService.ConfigureJob(mappedEntity.JobName, mappedEntity.Schedule);
-            return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Designation)} Saved"]);
+            //_jobService.ConfigureJob(mappedEntity.JobName, mappedEntity.Schedule);
+            return await Result<Guid>.SuccessAsync(mappedEntity.UUID, _localizer[$"{nameof(Designation)} Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -77,7 +77,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
         {
             // TODO : check Designation already in use
 
-            var entity = await _context.Jobs.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
+            var entity = await _context.Jobs.FirstOrDefaultAsync(b => b.UUID == command.Id, cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Designation)}  Not Found"], HttpStatusCode.NotFound);
@@ -85,44 +85,44 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             _context.Jobs.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Designation)} Deleted"]);
+            return await Result<Guid>.SuccessAsync(entity.UUID, _localizer[$"{nameof(Designation)} Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var entity = await _context.Jobs.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var entity = await _context.Jobs.Where(b => b.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Job)}  Not Found!"], HttpStatusCode.NotFound);
             }
 
-            if (await _context.Jobs.AnyAsync(c => c.Id != command.Id && c.JobName == command.JobName, cancellationToken))
+            if (await _context.Jobs.AnyAsync(c => c.UUID != command.UUID && c.JobName == command.JobName, cancellationToken))
             {
                 throw new OrganizationException(_localizer[$"{nameof(Job)} with the same name already exists."], HttpStatusCode.BadRequest);
             }
 
             var updatedEntity = _mapper.Map<Job>(command);
-            updatedEntity.CreateaAt = entity.CreateaAt;
+            updatedEntity.CreatedAt = entity.CreatedAt;
             updatedEntity.UpdatedAt = DateTime.Now;
 
             _context.Jobs.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
-            _jobService.ConfigureJob(updatedEntity.JobName, updatedEntity.Schedule);
-            return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Designation)} Updated"]);
+            //_jobService.ConfigureJob(updatedEntity.JobName, updatedEntity.Schedule);
+            return await Result<Guid>.SuccessAsync(updatedEntity.UUID, _localizer[$"{nameof(Designation)} Updated"]);
         }
 
         public async Task<Result<Guid>> Handle(RunJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var entity = await _context.Jobs.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var entity = await _context.Jobs.Where(b => b.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
 
             if (entity != null)
             {
-                _jobService.RunJob(entity.JobName, command.date);
+                //_jobService.RunJob(entity.JobName, command.date);
 
-                return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Job)} run successfuly"]);
+                return await Result<Guid>.SuccessAsync(entity.UUID, _localizer[$"{nameof(Job)} run successfuly"]);
             }
 
             return await Result<Guid>.FailAsync(_localizer[$"{nameof(Job)} not found."]);

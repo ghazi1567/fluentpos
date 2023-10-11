@@ -27,8 +27,8 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Events
             CartId = cartItem.CartId;
             ProductId = cartItem.ProductId;
             Quantity = cartItem.Quantity;
-            Id = cartItem.Id;
-            AggregateId = cartItem.Id;
+            Id = cartItem.UUID;
+            AggregateId = cartItem.UUID;
             RelatedEntities = new[] { typeof(CartItem) };
             EventDescription = $"Added {cartItem.Quantity} Item(s) to cart.";
         }

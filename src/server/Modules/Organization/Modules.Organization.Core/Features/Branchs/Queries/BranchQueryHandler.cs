@@ -25,7 +25,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
-namespace FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries
+namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
 {
     internal class BrandQueryHandler :
         IRequestHandler<GetBranchsQuery, PaginatedResult<GetBranchResponse>>,
@@ -47,16 +47,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries
 
         public async Task<PaginatedResult<GetBranchResponse>> Handle(GetBranchsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Branch, GetBranchResponse>> expression = e => new GetBranchResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country);
-            var queryable = _context.Branchs.AsNoTracking().AsQueryable();
+            Expression<Func<Store, GetBranchResponse>> expression = e => new GetBranchResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country);
+            var queryable = _context.Stores.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             var brandList = await queryable
@@ -64,7 +64,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
             if (brandList == null)
             {
-                throw new OrganizationException(_localizer[$"{nameof(Branch)}s Not Found!"], HttpStatusCode.NotFound);
+                throw new OrganizationException(_localizer[$"{nameof(Store)}s Not Found!"], HttpStatusCode.NotFound);
             }
 
             return _mapper.Map<PaginatedResult<GetBranchResponse>>(brandList);
@@ -72,13 +72,13 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries
 
         public async Task<Result<GetBranchByIdResponse>> Handle(GetBranchByIdQuery query, CancellationToken cancellationToken)
         {
-            var brand = await _context.Branchs.AsNoTracking()
-                .Where(b => b.Id == query.Id)
+            var brand = await _context.Stores.AsNoTracking()
+                .Where(b => b.UUID == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (brand == null)
             {
-                throw new OrganizationException(_localizer[$"{nameof(Branch)} Not Found!"], HttpStatusCode.NotFound);
+                throw new OrganizationException(_localizer[$"{nameof(Store)} Not Found!"], HttpStatusCode.NotFound);
             }
 
             var mappedBrand = _mapper.Map<GetBranchByIdResponse>(brand);

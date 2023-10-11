@@ -59,10 +59,10 @@ namespace FluentPOS.Modules.Organization.Core.Features
             }
 
             var mappedEntity = _mapper.Map<Department>(command);
-            mappedEntity.CreateaAt = DateTime.Now;
+            mappedEntity.CreatedAt = DateTime.Now;
             await _context.Departments.AddAsync(mappedEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Department)} Saved"]);
+            return await Result<Guid>.SuccessAsync(mappedEntity.UUID, _localizer[$"{nameof(Department)} Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -71,7 +71,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
         {
             // TODO : check Department already in use
 
-            var entity = await _context.Departments.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
+            var entity = await _context.Departments.FirstOrDefaultAsync(b => b.UUID == command.Id, cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Department)}  Not Found"], HttpStatusCode.NotFound);
@@ -79,31 +79,31 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             _context.Departments.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Department)} Deleted"]);
+            return await Result<Guid>.SuccessAsync(entity.UUID, _localizer[$"{nameof(Department)} Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateDepartmentCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var entity = await _context.Departments.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var entity = await _context.Departments.Where(b => b.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Department)}  Not Found!"], HttpStatusCode.NotFound);
             }
 
-            if (await _context.Departments.AnyAsync(c => c.Id != command.Id && c.Name == command.Name, cancellationToken))
+            if (await _context.Departments.AnyAsync(c => c.UUID != command.UUID && c.Name == command.Name, cancellationToken))
             {
                 throw new OrganizationException(_localizer[$"{nameof(Department)} with the same name already exists."], HttpStatusCode.BadRequest);
             }
 
             var updatedEntity = _mapper.Map<Department>(command);
-            updatedEntity.CreateaAt = entity.CreateaAt;
+            updatedEntity.CreatedAt = entity.CreatedAt;
             updatedEntity.UpdatedAt = DateTime.Now;
 
             _context.Departments.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Department)} Updated"]);
+            return await Result<Guid>.SuccessAsync(updatedEntity.UUID, _localizer[$"{nameof(Department)} Updated"]);
         }
     }
 }

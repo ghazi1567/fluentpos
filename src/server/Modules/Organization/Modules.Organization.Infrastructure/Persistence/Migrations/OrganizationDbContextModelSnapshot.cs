@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(OrganizationDbContext))]
@@ -16,58 +18,21 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Org")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Branch", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreateaAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PhoneNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Branchs");
-                });
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Department", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -75,6 +40,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid?>("HeadOfDepartment")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsGlobalDepartment")
                         .HasColumnType("bit");
@@ -97,25 +65,28 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", "Org");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Designation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -126,25 +97,28 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Designations");
+                    b.ToTable("Designations", "Org");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Job", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Enabled")
                         .HasColumnType("bit");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("JobName")
                         .HasColumnType("int");
@@ -158,25 +132,28 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Jobs");
+                    b.ToTable("Jobs", "Org");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.JobHistory", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Job")
                         .HasColumnType("int");
@@ -193,14 +170,14 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("JobHistory");
+                    b.ToTable("JobHistory", "Org");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Organisation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -210,7 +187,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Currency")
@@ -228,14 +205,14 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Organisations");
+                    b.ToTable("Organisations", "Org");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Policy", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -251,7 +228,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DailyOverTime")
@@ -280,6 +257,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("HolidayOverTimeRate")
                         .HasColumnType("int");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsFriday")
                         .HasColumnType("bit");
@@ -341,9 +321,59 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("lateComersPenaltyType")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Policies");
+                    b.ToTable("Policies", "Org");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Store", b =>
+                {
+                    b.Property<Guid>("UUID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShopifyAdminEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShopifyAdminPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShopifyUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UUID");
+
+                    b.ToTable("Stores", "Org");
                 });
 #pragma warning restore 612, 618
         }

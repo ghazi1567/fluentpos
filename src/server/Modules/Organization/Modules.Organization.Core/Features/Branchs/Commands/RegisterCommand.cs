@@ -12,7 +12,7 @@ using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Upload;
 using MediatR;
 
-namespace FluentPOS.Modules.Organization.Core.Features.Branchs.Commands
+namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
 {
     public class RegisterBranchCommand : BranchDto, IRequest<Result<Guid>>
     {

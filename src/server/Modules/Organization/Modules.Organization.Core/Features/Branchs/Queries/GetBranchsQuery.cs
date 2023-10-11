@@ -11,7 +11,7 @@ using FluentPOS.Shared.DTOs.Catalogs.Brands;
 using FluentPOS.Shared.DTOs.Organizations.Branchs;
 using MediatR;
 
-namespace FluentPOS.Modules.Catalog.Core.Features.Branchs.Queries
+namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
 {
     public class GetBranchsQuery : IRequest<PaginatedResult<GetBranchResponse>>
     {

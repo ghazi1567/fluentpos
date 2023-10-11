@@ -81,7 +81,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
                 await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber);
             }
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
+            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
         }
     }
 }

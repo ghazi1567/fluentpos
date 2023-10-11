@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
             var order = await _context.Orders.AsNoTracking()
                 .Include(x => x.Products)
                 .OrderBy(x => x.TimeStamp)
-                .SingleOrDefaultAsync(x => x.Id == request.Id);
+                .SingleOrDefaultAsync(x => x.UUID == request.Id);
 
             if (order == null)
             {

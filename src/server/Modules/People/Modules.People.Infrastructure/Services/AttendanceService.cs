@@ -76,12 +76,12 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             var employeeInfo = _context.Employees.FirstOrDefault(x => x.PunchCode == punchCode);
             if (employeeInfo != null)
             {
-                bool isExist = await IsAttendanceExist(employeeInfo.Id, attendanceDate.Date);
+                bool isExist = await IsAttendanceExist(employeeInfo.UUID, attendanceDate.Date);
                 Attendance attendance = null;
                 if (isExist)
                 {
                     _logger.LogCritical($"Attendance Already Exist : {punchCode} - {employeeInfo.FullName} - {attendanceDate}");
-                    attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
+                    attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.UUID && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
 
                     if (attendance.IsCheckOutMissing)
                     {
@@ -95,7 +95,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 {
                     attendance = new Attendance
                     {
-                        EmployeeId = employeeInfo.Id,
+                        EmployeeId = employeeInfo.UUID,
                         DepartmentId = employeeInfo.DepartmentId,
                         DesignationId = employeeInfo.DesignationId,
                         AttendanceDate = attendanceDate.Date,
@@ -104,7 +104,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                         ActualIn = attendanceDate,
                         AttendanceType = AttendanceType.Bio,
                         BranchId = employeeInfo.BranchId,
-                        CreateaAt = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         EarnedHours = 0,
                         BioMachineId = string.Empty,
                         EarnedMinutes = 0,
@@ -150,7 +150,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         private async Task<Guid> GetEmployeePolicyId(Guid employeeId)
         {
             var policyId = Guid.Empty;
-            var employeeInfo = _context.Employees.AsNoTracking().FirstOrDefault(x => x.Id == employeeId);
+            var employeeInfo = _context.Employees.AsNoTracking().FirstOrDefault(x => x.UUID == employeeId);
             if (employeeInfo != null)
             {
                 if (employeeInfo.PolicyId != default && employeeInfo.PolicyId != Guid.Empty)
@@ -206,15 +206,15 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 bool isExist = false;
                 if (attendanceId.HasValue && attendanceId != null)
                 {
-                    attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.Id == attendanceId.Value);
+                    attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.UUID == attendanceId.Value);
                     isExist = true;
                 }
                 else
                 {
-                    isExist = await IsAttendanceExist(employeeInfo.Id, attendanceDate.Date);
+                    isExist = await IsAttendanceExist(employeeInfo.UUID, attendanceDate.Date);
                     if (isExist)
                     {
-                        attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
+                        attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.UUID && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
                     }
                 }
 
@@ -248,7 +248,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 {
                     attendance = new Attendance
                     {
-                        EmployeeId = employeeInfo.Id,
+                        EmployeeId = employeeInfo.UUID,
                         DepartmentId = employeeInfo.DepartmentId,
                         DesignationId = employeeInfo.DesignationId,
                         AttendanceDate = attendanceDate.Date,
@@ -257,7 +257,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                         ActualIn = attendanceDate,
                         AttendanceType = AttendanceType.Bio,
                         BranchId = employeeInfo.BranchId,
-                        CreateaAt = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         EarnedHours = 0,
                         BioMachineId = string.Empty,
                         EarnedMinutes = 0,
@@ -306,7 +306,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         // Using for manual attendance approval
         public async Task<bool> MarkManualAttendance(Guid requestId)
         {
-            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.UUID == requestId).FirstOrDefault();
             if (request != null)
             {
                 bool isExist = await IsAttendanceExist(request.EmployeeId, request.AttendanceDate.Date);
@@ -332,7 +332,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     ApprovedBy = request.AssignedTo.Value,
                     AttendanceType = AttendanceType.Manual,
                     BranchId = request.BranchId,
-                    CreateaAt = DateTime.Now,
+                    CreatedAt = DateTime.Now,
                     EarnedHours = 0,
                     BioMachineId = string.Empty,
                     EarnedMinutes = 0,
@@ -375,7 +375,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 attendance.AttendanceStatus = attendanceStatus;
                 attendance.AddedOn = DateTime.Now;
                 attendance.AttendanceType = AttendanceType.Manual;
-                attendance.CreateaAt = DateTime.Now;
+                attendance.CreatedAt = DateTime.Now;
                 attendance.ApprovedBy = _currentUser.GetUserId();
                 if (attendanceStatus == AttendanceStatus.Present)
                 {
@@ -401,7 +401,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         {
             if (attendanceDto != null)
             {
-                var attendance = await _context.Attendances.Where(c => c.Id == attendanceDto.Id).AsNoTracking().FirstOrDefaultAsync();
+                var attendance = await _context.Attendances.Where(c => c.UUID == attendanceDto.UUID).AsNoTracking().FirstOrDefaultAsync();
                 if (attendance != null)
                 {
                     attendance.AttendanceStatus = attendanceDto.AttendanceStatus;
@@ -422,7 +422,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         // Using for manual overtime approval
         public async Task<bool> MarkOverTime(Guid requestId)
         {
-            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.UUID == requestId).FirstOrDefault();
             if (request != null)
             {
                 bool isExist = await IsOverTimeExist(request.EmployeeId, request.AttendanceDate.Date);
@@ -447,7 +447,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     ApprovedBy = request.AssignedTo.Value,
                     AttendanceType = AttendanceType.OverTime,
                     BranchId = request.BranchId,
-                    CreateaAt = DateTime.Now,
+                    CreatedAt = DateTime.Now,
                     EarnedHours = 0,
                     BioMachineId = string.Empty,
                     EarnedMinutes = 0,
@@ -636,7 +636,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     ApprovedBy = request.AssignedTo.Value,
                     AttendanceType = AttendanceType.Manual,
                     BranchId = request.BranchId,
-                    CreateaAt = DateTime.Now,
+                    CreatedAt = DateTime.Now,
                     EarnedHours = 0,
                     BioMachineId = string.Empty,
                     EarnedMinutes = 0,
@@ -666,7 +666,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
             foreach (var item in employeList)
             {
-                if (_context.Attendances.Any(x => x.EmployeeId == item.Id && x.AttendanceDate.Date == dateTime.Date))
+                if (_context.Attendances.Any(x => x.EmployeeId == item.UUID && x.AttendanceDate.Date == dateTime.Date))
                 {
                     continue;
                 }
@@ -676,8 +676,8 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     continue;
                 }
 
-                var policyId = await GetEmployeePolicyId(item.Id.Value);
-                if (!policyList.Any(x => x.Id == policyId))
+                var policyId = await GetEmployeePolicyId(item.UUID.Value);
+                if (!policyList.Any(x => x.UUID == policyId))
                 {
                     var policyDetail = await _orgService.GetPolicyDetailsAsync(policyId);
                     if (policyDetail != null)
@@ -686,13 +686,13 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     }
                 }
 
-                var policy = policyList.FirstOrDefault(x => x.Id == policyId);
+                var policy = policyList.FirstOrDefault(x => x.UUID == policyId);
 
                 var status = AttendanceStatus.None;
 
                 if (IsOffDay(dateTime, policy))
                 {
-                    if (IsSandwich(dateTime, policy, item.Id.Value))
+                    if (IsSandwich(dateTime, policy, item.UUID.Value))
                     {
                         status = AttendanceStatus.Absent;
                     }
@@ -708,7 +708,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
                 var attendance = new Attendance
                 {
-                    EmployeeId = item.Id.Value,
+                    EmployeeId = item.UUID.Value,
                     DepartmentId = item.DepartmentId,
                     DesignationId = item.DesignationId,
                     AttendanceDate = dateTime,
@@ -717,7 +717,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     AddedOn = DateTime.Now,
                     AttendanceType = AttendanceType.System,
                     BranchId = item.BranchId,
-                    CreateaAt = DateTime.Now,
+                    CreatedAt = DateTime.Now,
                     EarnedHours = 0,
                     BioMachineId = string.Empty,
                     EarnedMinutes = 0,
@@ -827,7 +827,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     var bioAttendanceLog = _context.AttendanceLogs.AsNoTracking().FirstOrDefault(x => x.PunchCode == item.PunchCode && x.AttendanceDate.Date == currentDate.Date);
                     if (bioAttendanceLog != null)
                     {
-                        bool result = MarkBioAttendance(bioAttendanceLog, isCheckIn, item.Id).Result;
+                        bool result = MarkBioAttendance(bioAttendanceLog, isCheckIn, item.UUID).Result;
                         bioAttendanceLog.IsUsed = true;
                         var entity = _context.AttendanceLogs.Update(bioAttendanceLog);
                         isUpdated = true;
@@ -921,7 +921,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         public async Task<bool> UpdateModification(Guid requestId)
         {
             bool result = false;
-            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.UUID == requestId).FirstOrDefault();
             if (request != null)
             {
                 if (request.RequestType == RequestType.AttendanceModify)
@@ -939,7 +939,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         private async Task<bool> AttendanceModification(EmployeeRequest request)
         {
-            var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.Id == request.ModificationId.Value);
+            var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.UUID == request.ModificationId.Value);
             attendance.AttendanceStatus = request.AttendanceStatus;
             attendance.ActualIn = attendance.CheckIn.HasValue ? attendance.CheckIn.Value : attendance.ActualIn;
             attendance.ActualOut = attendance.CheckOut.HasValue ? attendance.CheckOut.Value : attendance.ActualOut;
@@ -953,7 +953,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         private async Task<bool> OverTimeModification(EmployeeRequest request)
         {
-            var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.Id == request.ModificationId.Value);
+            var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.UUID == request.ModificationId.Value);
             attendance.AttendanceStatus = request.AttendanceStatus;
             attendance.ActualIn = attendance.CheckIn.Value;
             attendance.ActualOut = attendance.CheckOut.Value;
@@ -979,7 +979,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             if (employeeInfo != null)
             {
                 // check attendance exist for the date
-                var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.Id && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
+                var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.EmployeeId == employeeInfo.UUID && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
                 if (attendance != null)
                 {
                     if (attendance.AttendanceStatus == AttendanceStatus.Present)
@@ -989,7 +989,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                             return await CheckoutAttendanceAsync(attendance, bioAttendanceLog);
                         }
 
-                        var extraShift = GetExtraShiftPlan(employeeInfo.Id, attendanceDate.Date);
+                        var extraShift = GetExtraShiftPlan(employeeInfo.UUID, attendanceDate.Date);
                         if (extraShift != null)
                         {
                             TimeSpan ts = extraShift.StartTime - attendanceDate;
@@ -1043,7 +1043,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
             var attendance = new Attendance
             {
-                EmployeeId = employeeInfo.Id,
+                EmployeeId = employeeInfo.UUID,
                 DepartmentId = employeeInfo.DepartmentId,
                 DesignationId = employeeInfo.DesignationId,
                 AttendanceDate = attendanceDate.Date,
@@ -1052,7 +1052,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                 ActualIn = attendanceDate,
                 AttendanceType = AttendanceType.Bio,
                 BranchId = employeeInfo.BranchId,
-                CreateaAt = DateTime.Now,
+                CreatedAt = DateTime.Now,
                 EarnedHours = 0,
                 BioMachineId = string.Empty,
                 EarnedMinutes = 0,
@@ -1101,10 +1101,10 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         public async Task<bool> DeleteAttendanceOrOvertime(Guid requestId)
         {
             bool result = false;
-            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.UUID == requestId).FirstOrDefault();
             if (request != null)
             {
-                var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.Id == request.ModificationId.Value);
+                var attendance = await _context.Attendances.FirstOrDefaultAsync(x => x.UUID == request.ModificationId.Value);
                 if (attendance != null)
                 {
                     var entity = _context.Attendances.Remove(attendance);

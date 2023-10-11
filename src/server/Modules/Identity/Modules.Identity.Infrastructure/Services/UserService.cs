@@ -57,7 +57,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
         public async Task<IResult<UserResponse>> GetAsync(string userId)
         {
-            var user = await _userManager.Users.AsNoTracking().Where(u => u.Id == userId).FirstOrDefaultAsync();
+            var user = await _userManager.Users.AsNoTracking().Where(u => u.UUID == userId).FirstOrDefaultAsync();
             var result = _mapper.Map<UserResponse>(user);
             return await Result<UserResponse>.SuccessAsync(result);
         }
@@ -71,7 +71,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             {
                 var userRolesViewModel = new UserRoleModel
                 {
-                    RoleId = role.Id,
+                    RoleId = role.UUID,
                     RoleName = role.Name
                 };
                 if (await _userManager.IsInRoleAsync(user, role.Name))
@@ -109,7 +109,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
             if (result.Succeeded)
             {
-                return await Result<string>.SuccessAsync(user.Id, _localizer["User Updated Succesffully."]);
+                return await Result<string>.SuccessAsync(user.UUID, _localizer["User Updated Succesffully."]);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
         public async Task<IResult<string>> UpdateUserRolesAsync(string userId, UserRolesRequest request)
         {
-            var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            var user = await _userManager.Users.Where(u => u.UUID == userId).FirstOrDefaultAsync();
             if (user == null)
             {
                 return await Result<string>.FailAsync(_localizer["User Not Found."]);
@@ -154,7 +154,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
         public async Task<IResult<string>> UpdateUserBranchsAsync(string userId, UserBranchModel request)
         {
-            var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            var user = await _userManager.Users.Where(u => u.UUID == userId).FirstOrDefaultAsync();
             if (user == null)
             {
                 return await Result<string>.FailAsync(_localizer["User Not Found."]);

@@ -59,7 +59,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             // var myEmployees = await _employeeService.GetMyReporterEmployeeListAsync(request.EmployeeId, true);
             // var myEmpIds = myEmployees.Select(x => x.Id.Value).ToList();
 
-            // Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.Id, e.CreateaAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
+            // Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
 
             var queryable = _context.Attendances.AsNoTracking().OrderByDescending(x => x.AttendanceDate).AsQueryable();
 
@@ -108,8 +108,8 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
             var myEmployees = await _employeeService.GetEmployeeDetailsAsync(myEmpIds);
             foreach (var item in response.Data)
             {
-                item.EmployeeName = myEmployees.FirstOrDefault(x => x.Id == item.EmployeeId)?.FullName;
-                item.PunchCode = item.PunchCode == null ? myEmployees.FirstOrDefault(x => x.Id == item.EmployeeId)?.PunchCode : item.PunchCode;
+                item.EmployeeName = myEmployees.FirstOrDefault(x => x.UUID == item.EmployeeId)?.FullName;
+                item.PunchCode = item.PunchCode == null ? myEmployees.FirstOrDefault(x => x.UUID == item.EmployeeId)?.PunchCode : item.PunchCode;
                 item.CheckInTime = item.CheckIn.HasValue ? TimeSpan.Parse(item.CheckIn.Value.TimeOfDay.ToString("hh\\:mm\\:ss")) : TimeSpan.Zero;
                 item.CheckOutTime = item.CheckOut.HasValue ? TimeSpan.Parse(item.CheckOut.Value.TimeOfDay.ToString("hh\\:mm\\:ss")) : TimeSpan.Zero;
             }
@@ -162,7 +162,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             foreach (var item in result)
             {
-                var employee = myEmployees.FirstOrDefault(x => x.Id == item.EmployeeId);
+                var employee = myEmployees.FirstOrDefault(x => x.UUID == item.EmployeeId);
                 var department = departments.FirstOrDefault(x => x.Id == item.DepartmentId);
 
                 item.EmployeeName = $"{employee?.FullName} - {employee?.EmployeeCode}";

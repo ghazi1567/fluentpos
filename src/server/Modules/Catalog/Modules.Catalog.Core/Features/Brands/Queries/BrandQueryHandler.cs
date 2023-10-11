@@ -50,17 +50,17 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Queries
         public async Task<PaginatedResult<GetBrandsResponse>> Handle(GetBrandsQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<Brand, GetBrandsResponse>> expression = e => new GetBrandsResponse(e.Id, e.Name, e.Detail);
+            Expression<Func<Brand, GetBrandsResponse>> expression = e => new GetBrandsResponse(e.UUID, e.Name, e.Detail);
             var queryable = _context.Brands.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
                 || EF.Functions.Like(x.Detail.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             var brandList = await queryable
@@ -79,7 +79,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var brand = await _context.Brands.AsNoTracking()
-                .Where(b => b.Id == query.Id)
+                .Where(b => b.UUID == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (brand == null)
@@ -96,7 +96,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             string data = await _context.Brands.AsNoTracking()
-                .Where(b => b.Id == request.Id)
+                .Where(b => b.UUID == request.Id)
                 .Select(a => a.ImageUrl)
                 .FirstOrDefaultAsync(cancellationToken);
 

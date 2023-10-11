@@ -3,7 +3,7 @@
 namespace FluentPOS.Shared.DTOs.Organizations.Designations
 {
     public record GetDesignationResponse(Guid Id,
-DateTime? CreateaAt,
+DateTime? CreatedAt,
 DateTime? UpdatedAt,
 Guid OrganizationId,
 Guid BranchId,

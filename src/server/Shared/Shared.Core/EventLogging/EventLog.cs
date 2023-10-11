@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using FluentPOS.Shared.Core.Contracts;
 using FluentPOS.Shared.Core.Domain;
 
@@ -16,7 +17,7 @@ namespace FluentPOS.Shared.Core.EventLogging
     {
         public EventLog(Event theEvent, string data, (string oldValues, string newValues) changes, string email, Guid userId)
         {
-            Id = Guid.NewGuid();
+            UUID = Guid.NewGuid();
             AggregateId = theEvent.AggregateId;
             MessageType = theEvent.MessageType;
             Data = data;
@@ -31,7 +32,8 @@ namespace FluentPOS.Shared.Core.EventLogging
         {
         }
 
-        public Guid Id { get; set; }
+        [Key]
+        public Guid UUID { get; set; }
 
         public string Data { get; private set; }
 

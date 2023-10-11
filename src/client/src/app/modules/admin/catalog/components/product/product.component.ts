@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { PaginatedFilter } from "src/app/core/models/Filters/PaginatedFilter";
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
@@ -13,6 +13,7 @@ import { ProductViewComponent } from "./product-view/product-view.component";
 import { ReportService } from "../../../sales/services/report.service";
 import { WarehouseService } from "../../../sales/services/warehouse.service";
 import { CsvParserService } from "src/app/core/services/csv-parser.service";
+import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
 
 @Component({
     selector: "app-product",
@@ -21,7 +22,7 @@ import { CsvParserService } from "src/app/core/services/csv-parser.service";
 })
 export class ProductComponent implements OnInit {
     products: PaginatedResult<Product>;
-    productColumns: TableColumn[];
+    productColumns: any[];
     productParams = new ProductParams();
     searchString: string;
     warehouseLookups: any[];
@@ -36,12 +37,13 @@ export class ProductComponent implements OnInit {
         public reportService: ReportService,
         private warehouseService: WarehouseService,
         private csvParserService: CsvParserService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
-        this.loadLookups();
+        // this.loadLookups();
 
-        this.initColumns();
+        // this.initColumns();
+        this.initOvertimeColumns();
     }
     loadLookups() {
         this.warehouseService.getAll().subscribe((res) => {
@@ -59,7 +61,7 @@ export class ProductComponent implements OnInit {
         });
     }
 
-    initColumns(): void {
+    initColumns1(): void {
         this.productColumns = [
             //{ name: 'Id', dataKey: 'id', isSortable: true, isShowable: true },
             { name: "Name", dataKey: "name", isSortable: true, isShowable: true },
@@ -127,7 +129,7 @@ export class ProductComponent implements OnInit {
         const dialogRef = this.dialog.open(ProductViewComponent, {
             data: product
         });
-        dialogRef.afterClosed().subscribe((result) => {});
+        dialogRef.afterClosed().subscribe((result) => { });
     }
 
     getStockReport(): void {
@@ -165,7 +167,7 @@ export class ProductComponent implements OnInit {
         return map;
     }
 
-    getAvailableStock() {}
+    getAvailableStock() { }
 
     onExport($event) {
         let exportProductParams = new ProductParams();
@@ -197,5 +199,96 @@ export class ProductComponent implements OnInit {
             });
             this.csvParserService.exportXls(result.data, "products.xlsx", "Products");
         });
+    }
+
+
+    productsData: any[] = [];
+
+    private AgGrid: AgGridBaseComponent;
+    @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
+        if (content) {
+            // initially setter gets called with undefined
+            this.AgGrid = content;
+        }
+    }
+    gridReady(event): void {
+        if (this.AgGrid) {
+            // this.AgGrid.gridApi.setDatasource(this.scrollBarDataSource);
+        }
+        // this.getOvertimeMyQueue();
+        this.getProducts();
+    }
+    initOvertimeColumns(): void {
+        this.productColumns = [
+            { headerName: "Employee Name", field: "requestedForName", sortable: true, isShowable: true, width: 256 },
+            {
+                headerName: "Type", field: "overTimeType", sortable: true, isShowable: true, valueFormatter: (params) => {
+                    let value = params.value;
+                    if (value == 1) {
+                        value = 'Hour'
+                    } else {
+                        value = 'Production'
+                    }
+                    return value;
+                },
+                width: 120
+            },
+            {
+                headerName: "Ovetime Date", field: "attendanceDate", sortable: true, isShowable: true, valueFormatter: (params) => {
+                    let value = params.value;
+                    return value;
+                },
+                width: 150
+            },
+            {
+                headerName: "In Time", field: "checkIn", sortable: true, valueFormatter: (params) => {
+                    if (params && params.data && params.data.overTimeType == 2) {
+                        return '-';
+                    }
+                    let value = params.value;
+                   
+                    return value;
+                },
+                width: 120
+            },
+            {
+                headerName: "Out Time", field: "checkOut", sortable: true, valueFormatter: (params) => {
+                    if (params && params.data && params.data.overTimeType == 2) {
+                        return '-';
+                    }
+                    let value = params.value;
+                   
+                    return value;
+                },
+                width: 150
+            },
+            {
+                headerName: "Production / Day", field: "production", sortable: true, valueFormatter: (params) => {
+                    if (params && params.data && params.data.overTimeType == 1) {
+                        return '-';
+                    }
+                    let value = params.value;
+                    return value + ' / ' + params.data.requiredProduction;
+                },
+                width: 160
+            },
+
+            { headerName: "Hours", field: "overtimeHours", sortable: true, width: 160 },
+            { headerName: "Status", field: "statusName", sortable: true, width: 160 },
+            { headerName: "Comments", field: "reason", sortable: true, width: 330 },
+            // {
+            //     headerName: "Action",
+            //     cellRenderer: "buttonRenderer",
+            //     cellRendererParams: {
+            //         buttons: ["Remove"],
+            //         actionButtons: this.actionButtons,
+            //         onClick: this.openDeleteConfirmationDialog.bind(this)
+            //     },
+            //     width: 50,
+            //     pinned: "right"
+            // }
+
+
+        ];
     }
 }

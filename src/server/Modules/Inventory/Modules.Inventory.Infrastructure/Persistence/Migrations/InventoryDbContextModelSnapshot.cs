@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
@@ -16,24 +18,34 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Inventory")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.Stock", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("AvailableQuantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("LastUpdatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -44,18 +56,21 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Stocks");
+                    b.ToTable("Stocks", "Inventory");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.StockTransaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("DiscountFactor")
@@ -63,6 +78,12 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("FactorDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -88,9 +109,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("StockTransactions");
+                    b.ToTable("StockTransactions", "Inventory");
                 });
 #pragma warning restore 612, 618
         }

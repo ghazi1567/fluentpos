@@ -59,10 +59,10 @@ namespace FluentPOS.Modules.Organization.Core.Features.Organizations.Commands
             }
 
             var mappedEntity = _mapper.Map<Organisation>(command);
-            mappedEntity.CreateaAt = DateTime.Now;
+            mappedEntity.CreatedAt = DateTime.Now;
             await _context.Organisations.AddAsync(mappedEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Organisation)} Saved"]);
+            return await Result<Guid>.SuccessAsync(mappedEntity.UUID, _localizer[$"{nameof(Organisation)} Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -71,7 +71,7 @@ namespace FluentPOS.Modules.Organization.Core.Features.Organizations.Commands
         {
             // TODO : check Organisation already in use
 
-            var entity = await _context.Organisations.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
+            var entity = await _context.Organisations.FirstOrDefaultAsync(b => b.UUID == command.Id, cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Organisation)}  Not Found"], HttpStatusCode.NotFound);
@@ -79,31 +79,31 @@ namespace FluentPOS.Modules.Organization.Core.Features.Organizations.Commands
 
             _context.Organisations.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Organisation)} Deleted"]);
+            return await Result<Guid>.SuccessAsync(entity.UUID, _localizer[$"{nameof(Organisation)} Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateOrganizationCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var entity = await _context.Organisations.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var entity = await _context.Organisations.Where(b => b.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (entity == null)
             {
                 throw new OrganizationException(_localizer[$"{nameof(Organisation)}  Not Found!"], HttpStatusCode.NotFound);
             }
 
-            if (await _context.Organisations.AnyAsync(c => c.Id != command.Id && c.Name == command.Name, cancellationToken))
+            if (await _context.Organisations.AnyAsync(c => c.UUID != command.Id && c.Name == command.Name, cancellationToken))
             {
                 throw new OrganizationException(_localizer[$"{nameof(Organisation)} with the same name already exists."], HttpStatusCode.BadRequest);
             }
 
             var updatedEntity = _mapper.Map<Organisation>(command);
-            updatedEntity.CreateaAt = entity.CreateaAt;
+            updatedEntity.CreatedAt = entity.CreatedAt;
             updatedEntity.UpdatedAt = DateTime.Now;
 
             _context.Organisations.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Organisation)} Updated"]);
+            return await Result<Guid>.SuccessAsync(updatedEntity.UUID, _localizer[$"{nameof(Organisation)} Updated"]);
         }
     }
 }

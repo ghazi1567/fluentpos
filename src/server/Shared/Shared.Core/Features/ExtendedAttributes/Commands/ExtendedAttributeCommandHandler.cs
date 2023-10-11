@@ -60,7 +60,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
         public async Task<Result<Guid>> Handle(AddExtendedAttributeCommand<TEntityId, TEntity> command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var entity = await _context.Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(command.EntityId), cancellationToken);
+            var entity = await _context.Entities.AsNoTracking().FirstOrDefaultAsync(e => e.UUID.Equals(command.EntityId), cancellationToken);
             if (entity == null)
             {
                 throw new CustomException(string.Format(_localizer["{0} Not Found"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
@@ -77,14 +77,14 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
             extendedAttribute.AddDomainEvent(new ExtendedAttributeAddedEvent<TEntityId, TEntity>(extendedAttribute));
             await _context.ExtendedAttributes.AddAsync(extendedAttribute, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(extendedAttribute.Id, string.Format(_localizer["{0} Extended Attribute Saved"], typeof(TEntity).GetGenericTypeName()));
+            return await Result<Guid>.SuccessAsync(extendedAttribute.UUID, string.Format(_localizer["{0} Extended Attribute Saved"], typeof(TEntity).GetGenericTypeName()));
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(RemoveExtendedAttributeCommand<TEntityId, TEntity> command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var extendedAttribute = await _context.ExtendedAttributes.FirstOrDefaultAsync(ea => ea.Id == command.Id, cancellationToken);
+            var extendedAttribute = await _context.ExtendedAttributes.FirstOrDefaultAsync(ea => ea.UUID == command.Id, cancellationToken);
             if (extendedAttribute == null)
             {
                 throw new CustomException(string.Format(_localizer["{0} Extended Attribute Not Found"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
@@ -94,14 +94,14 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
             extendedAttribute.AddDomainEvent(new ExtendedAttributeRemovedEvent<TEntity>(command.Id));
             await _context.SaveChangesAsync(cancellationToken);
             await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, ExtendedAttribute<TEntityId, TEntity>>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(extendedAttribute.Id, string.Format(_localizer["{0} Extended Attribute Deleted"], typeof(TEntity).GetGenericTypeName()));
+            return await Result<Guid>.SuccessAsync(extendedAttribute.UUID, string.Format(_localizer["{0} Extended Attribute Deleted"], typeof(TEntity).GetGenericTypeName()));
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateExtendedAttributeCommand<TEntityId, TEntity> command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var extendedAttribute = await _context.ExtendedAttributes.Where(ea => ea.Id.Equals(command.Id)).FirstOrDefaultAsync(cancellationToken);
+            var extendedAttribute = await _context.ExtendedAttributes.Where(ea => ea.UUID.Equals(command.Id)).FirstOrDefaultAsync(cancellationToken);
             if (extendedAttribute == null)
             {
                 throw new CustomException(string.Format(_localizer["{0} Extended Attribute Not Found!"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
@@ -113,7 +113,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
             }
 
             bool isKeyUsed = await _context.ExtendedAttributes.AsNoTracking()
-                .AnyAsync(ea => ea.Id != extendedAttribute.Id && ea.EntityId.Equals(command.EntityId) && ea.Key.Equals(command.Key), cancellationToken);
+                .AnyAsync(ea => ea.UUID != extendedAttribute.UUID && ea.EntityId.Equals(command.EntityId) && ea.Key.Equals(command.Key), cancellationToken);
             if (isKeyUsed)
             {
                 throw new CustomException(string.Format(_localizer["This {0} Key Is Already Used For This Entity"], typeof(TEntity).GetGenericTypeName()), statusCode: HttpStatusCode.NotFound);
@@ -124,7 +124,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
             _context.ExtendedAttributes.Update(extendedAttribute);
             await _context.SaveChangesAsync(cancellationToken);
             await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, ExtendedAttribute<TEntityId, TEntity>>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(extendedAttribute.Id, string.Format(_localizer["{0} Extended Attribute Updated"], typeof(TEntity).GetGenericTypeName()));
+            return await Result<Guid>.SuccessAsync(extendedAttribute.UUID, string.Format(_localizer["{0} Extended Attribute Updated"], typeof(TEntity).GetGenericTypeName()));
         }
     }
 }

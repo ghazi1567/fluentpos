@@ -118,8 +118,8 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             await _context.EmployeeRequests.AddAsync(employeeRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            await _workFlowService.AssignAprroversAsync(employeeRequest.Id);
-            return await Result<Guid>.SuccessAsync(employeeRequest.Id, _localizer["Request Saved"]);
+            await _workFlowService.AssignAprroversAsync(employeeRequest.UUID);
+            return await Result<Guid>.SuccessAsync(employeeRequest.UUID, _localizer["Request Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -132,14 +132,14 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 throw new PeopleException(_localizer[$"Payroll Already Generated For Month : {command.AttendanceDate.ToString("MMMM")}!"], HttpStatusCode.Ambiguous);
             }
 
-            var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var employeeRequest = await _context.EmployeeRequests.Where(c => c.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (employeeRequest != null)
             {
                 employeeRequest = _mapper.Map<EmployeeRequest>(command);
 
                 _context.EmployeeRequests.Update(employeeRequest);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(employeeRequest.Id, _localizer["Request Updated"]);
+                return await Result<Guid>.SuccessAsync(employeeRequest.UUID, _localizer["Request Updated"]);
             }
             else
             {
@@ -151,7 +151,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         public async Task<Result<Guid>> Handle(RemoveEmployeeRequestCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var employeeRequest = await _context.EmployeeRequests.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (employeeRequest != null)
             {
                 bool isPayrollGenerated = await _payrollService.IsPayrollGenerated(employeeRequest.AttendanceDate.Date);
@@ -161,7 +161,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 }
                 _context.EmployeeRequests.Remove(employeeRequest);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(employeeRequest.Id, _localizer["Request Deleted"]);
+                return await Result<Guid>.SuccessAsync(employeeRequest.UUID, _localizer["Request Deleted"]);
             }
             else
             {
@@ -173,7 +173,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         {
             if (command.Status == Shared.DTOs.Enums.RequestStatus.Approved)
             {
-                var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+                var employeeRequest = await _context.EmployeeRequests.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
                 if (employeeRequest != null)
                 {
                     bool isPayrollGenerated = await _payrollService.IsPayrollGenerated(employeeRequest.EmployeeId, employeeRequest.AttendanceDate.Date);

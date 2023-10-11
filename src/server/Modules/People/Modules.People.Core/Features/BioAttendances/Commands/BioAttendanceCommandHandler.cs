@@ -70,7 +70,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             await _context.AttendanceLogs.AddAsync(attendanceLog, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(attendanceLog.Id, _localizer["Attendance Log Saved"]);
+            return await Result<Guid>.SuccessAsync(attendanceLog.UUID, _localizer["Attendance Log Saved"]);
         }
 
         public async Task<Result<Guid>> Handle(ImportBioAttendanceCommand command, CancellationToken cancellationToken)
@@ -84,17 +84,17 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             await _context.AttendanceLogs.AddRangeAsync(attendanceLog, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(attendanceLog[0].Id, _localizer["Attendance Log Saved"]);
+            return await Result<Guid>.SuccessAsync(attendanceLog[0].UUID, _localizer["Attendance Log Saved"]);
         }
 
         public async Task<Result<Guid>> Handle(UpdateBioAttendanceCommand command, CancellationToken cancellationToken)
         {
-            var attendance = await _context.Attendances.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var attendance = await _context.Attendances.Where(c => c.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (attendance != null)
             {
                 _context.Attendances.Update(attendance);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(attendance.Id, _localizer["Attendance Log Updated"]);
+                return await Result<Guid>.SuccessAsync(attendance.UUID, _localizer["Attendance Log Updated"]);
             }
             else
             {

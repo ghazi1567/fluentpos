@@ -56,21 +56,21 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
             var salary = _mapper.Map<Salary>(command);
             await _context.Salaries.AddAsync(salary, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(salary.Id, _localizer["Salary Saved"]);
+            return await Result<Guid>.SuccessAsync(salary.UUID, _localizer["Salary Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateSalaryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var salary = await _context.Salaries.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var salary = await _context.Salaries.Where(c => c.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (salary != null)
             {
                 salary = _mapper.Map<Salary>(command);
 
                 _context.Salaries.Update(salary);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salary.Id, _localizer["Salary Updated"]);
+                return await Result<Guid>.SuccessAsync(salary.UUID, _localizer["Salary Updated"]);
             }
             else
             {
@@ -82,12 +82,12 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         public async Task<Result<Guid>> Handle(RemoveSalaryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var salary = await _context.Salaries.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var salary = await _context.Salaries.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (salary != null)
             {
                 _context.Salaries.Remove(salary);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salary.Id, _localizer["Salary Deleted"]);
+                return await Result<Guid>.SuccessAsync(salary.UUID, _localizer["Salary Deleted"]);
             }
             else
             {

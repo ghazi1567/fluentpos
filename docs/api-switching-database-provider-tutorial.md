@@ -34,21 +34,89 @@ Note: If you set both to true, Postgres will be used by default.
 Navigate terminal to Shared.Infrastructure and run the following.
 
 `dotnet ef migrations add "initial" --startup-project ../../API -o Persistence/Migrations/ --context ApplicationDbContext`
+`dotnet ef database update --startup-project ../../API --context ApplicationDbContext`
 
+
+### Accounting
+
+Navigate terminal to Shared.Infrastructure and run the following.
+
+`dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context AccountingDbContext`
+`dotnet ef database update --startup-project ../../../API --context AccountingDbContext`
 ### Identity
 
 Navigate terminal to Modules.Identity.Infrastructure and run the following.
 
 `dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context IdentityDbContext`
-
+`dotnet ef database update --startup-project ../../../API --context IdentityDbContext`
 ### Catalog
 
 Navigate terminal to Modules.Catalog.Infrastructure and run the following.
 
 `dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context CatalogDbContext`
-
+`dotnet ef database update --startup-project ../../../API --context CatalogDbContext`
 ### People
 
 Navigate terminal to Modules.People.Infrastructure and run the following.
 
 `dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context PeopleDbContext`
+`dotnet ef database update --startup-project ../../../API --context PeopleDbContext`
+### Inventory
+
+Navigate terminal to Modules.People.Infrastructure and run the following.
+
+`dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context InventoryDbContext`
+`dotnet ef database update --startup-project ../../../API --context InventoryDbContext`
+### Organization
+
+Navigate terminal to Modules.People.Infrastructure and run the following.
+
+`dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context OrganizationDbContext`
+`dotnet ef database update --startup-project ../../../API --context OrganizationDbContext`
+### Sales
+
+Navigate terminal to Modules.People.Infrastructure and run the following.
+
+`dotnet ef migrations add "initial" --startup-project ../../../API -o Persistence/Migrations/ --context SalesDbContext`
+`dotnet ef database update --startup-project ../../../API --context SalesDbContext`
+
+
+
+cd ./Shared/Shared.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../API -o Persistence/Migrations/ --context ApplicationDbContext
+dotnet ef database update --startup-project ../../API --context ApplicationDbContext
+cd ../../
+cd ./Modules/Accounting/Modules.Accounting.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../../API -o Persistence/Migrations/ --context AccountingDbContext
+dotnet ef database update --startup-project ../../../API --context AccountingDbContext
+cd ../../../
+
+cd ./Modules/Identity/Modules.Identity.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../../API -o Persistence/Migrations/ --context IdentityDbContext
+dotnet ef database update --startup-project ../../../API --context IdentityDbContext
+cd ../../../
+
+cd ./Modules/Catalog/Modules.Catalog.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../../API -o Persistence/Migrations/ --context CatalogDbContext
+dotnet ef database update --startup-project ../../../API --context CatalogDbContext
+cd ../../../
+
+cd ./Modules/People/Modules.People.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../../API -o Persistence/Migrations/ --context PeopleDbContext
+dotnet ef database update --startup-project ../../../API --context PeopleDbContext
+cd ../../../
+
+cd ./Modules/Inventory/Modules.Inventory.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../../API -o Persistence/Migrations/ --context InventoryDbContext
+dotnet ef database update --startup-project ../../../API --context InventoryDbContext
+cd ../../../
+
+cd ./Modules/Organization/Modules.Organization.Infrastructure
+dotnet ef migrations add "migration" --startup-project ../../../API -o Persistence/Migrations/ --context OrganizationDbContext
+dotnet ef database update --startup-project ../../../API --context OrganizationDbContext
+cd ../../../
+
+cd ./Modules/Invoicing/Modules.Invoicing.Infrastructure
+dotnet ef migrations add "migration" --startup-project ..../../API -o Persistence/Migrations/ --context SalesDbContext
+dotnet ef database update --startup-project ../../../API --context SalesDbContext
+cd ../../../

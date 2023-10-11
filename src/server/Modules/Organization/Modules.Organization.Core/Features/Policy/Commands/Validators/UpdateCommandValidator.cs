@@ -11,13 +11,13 @@ using FluentPOS.Shared.DTOs.Enums;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace FluentPOS.Modules.Organization.Core.Features.Branchs.Commands.Validators
+namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands.Validators
 {
     public class UpdatePolicyCommandValidator : AbstractValidator<UpdatePolicyCommand>
     {
         public UpdatePolicyCommandValidator(IStringLocalizer<UpdateCommandValidator> localizer)
         {
-            RuleFor(c => c.Id)
+            RuleFor(c => c.UUID)
                 .NotEqual(Guid.Empty).WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
             RuleFor(c => c.Name)
               .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."])

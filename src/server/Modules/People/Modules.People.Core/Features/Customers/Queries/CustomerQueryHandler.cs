@@ -50,12 +50,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<PaginatedResult<GetCustomersResponse>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<Customer, GetCustomersResponse>> expression = e => new GetCustomersResponse(e.Id, e.Name, e.Phone, e.Email, e.ImageUrl, e.Type);
+            Expression<Func<Customer, GetCustomersResponse>> expression = e => new GetCustomersResponse(e.UUID, e.Name, e.Phone, e.Email, e.ImageUrl, e.Type);
 
-            var queryable = _context.Customers.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
+            var queryable = _context.Customers.AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
@@ -79,7 +79,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<Result<GetCustomerByIdResponse>> Handle(GetCustomerByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var customer = await _context.Customers.Where(c => c.Id == query.Id).FirstOrDefaultAsync(cancellationToken);
+            var customer = await _context.Customers.Where(c => c.UUID == query.Id).FirstOrDefaultAsync(cancellationToken);
             if (customer == null)
             {
                 throw new PeopleException(_localizer["Customer Not Found!"], HttpStatusCode.NotFound);
@@ -94,7 +94,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             string data = await _context.Customers.AsNoTracking()
-                .Where(c => c.Id == request.Id)
+                .Where(c => c.UUID == request.Id)
                 .Select(a => a.ImageUrl)
                 .FirstOrDefaultAsync(cancellationToken);
 

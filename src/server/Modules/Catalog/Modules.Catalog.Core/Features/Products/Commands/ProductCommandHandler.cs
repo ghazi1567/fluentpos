@@ -68,147 +68,151 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
         public async Task<Result<Guid>> Handle(RegisterProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            if (await _context.Products.AnyAsync(p => p.BarcodeSymbology == command.BarcodeSymbology, cancellationToken))
-            {
-                throw new CatalogException(_localizer["Barcode already exists."], HttpStatusCode.BadRequest);
-            }
+            //if (await _context.Products.AnyAsync(p => p.BarcodeSymbology == command.BarcodeSymbology, cancellationToken))
+            //{
+            //    throw new CatalogException(_localizer["Barcode already exists."], HttpStatusCode.BadRequest);
+            //}
 
-            var product = _mapper.Map<Product>(command);
-            product.ReferenceNumber = await _referenceService.TrackAsync(product.GetType().Name);
-            var uploadRequest = command.UploadRequest;
-            if (uploadRequest != null)
-            {
-                uploadRequest.FileName = $"P-{command.BarcodeSymbology}.{uploadRequest.Extension}";
-                product.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
-            }
+            //var product = _mapper.Map<Product>(command);
+            //product.ReferenceNumber = await _referenceService.TrackAsync(product.GetType().Name);
+            //var uploadRequest = command.UploadRequest;
+            //if (uploadRequest != null)
+            //{
+            //    uploadRequest.FileName = $"P-{command.BarcodeSymbology}.{uploadRequest.Extension}";
+            //    product.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
+            //}
 
-            product.AddDomainEvent(new ProductRegisteredEvent(product));
-            await _context.Products.AddAsync(product, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            //product.AddDomainEvent(new ProductRegisteredEvent(product));
+            //await _context.Products.AddAsync(product, cancellationToken);
+            //await _context.SaveChangesAsync(cancellationToken);
 
-            if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
-            {
-                await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber,  product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
-            }
+            //if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //{
+            //    await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber,  product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+            //}
 
-            return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Saved"]);
+            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            if (await _context.Products.Where(p => p.Id != command.Id).AnyAsync(p => p.BarcodeSymbology == command.BarcodeSymbology, cancellationToken))
-            {
-                throw new CatalogException(_localizer["Barcode already exists."], HttpStatusCode.BadRequest);
-            }
+            //if (await _context.Products.Where(p => p.Id != command.Id).AnyAsync(p => p.BarcodeSymbology == command.BarcodeSymbology, cancellationToken))
+            //{
+            //    throw new CatalogException(_localizer["Barcode already exists."], HttpStatusCode.BadRequest);
+            //}
 
-            var product = await _context.Products.Where(p => p.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            //var product = await _context.Products.Where(p => p.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
 
-            if (product != null)
-            {
-                product = _mapper.Map<Product>(command);
-                var uploadRequest = command.UploadRequest;
-                if (uploadRequest != null)
-                {
-                    uploadRequest.FileName = $"P-{command.BarcodeSymbology}.{uploadRequest.Extension}";
-                    product.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
-                }
+            //if (product != null)
+            //{
+            //    product = _mapper.Map<Product>(command);
+            //    var uploadRequest = command.UploadRequest;
+            //    if (uploadRequest != null)
+            //    {
+            //        uploadRequest.FileName = $"P-{command.BarcodeSymbology}.{uploadRequest.Extension}";
+            //        product.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
+            //    }
 
-                product.AddDomainEvent(new ProductUpdatedEvent(product));
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync(cancellationToken);
+            //    product.AddDomainEvent(new ProductUpdatedEvent(product));
+            //    _context.Products.Update(product);
+            //    await _context.SaveChangesAsync(cancellationToken);
 
-                if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
-                {
-                    await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
-                }
+            //    if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //    {
+            //        await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+            //    }
 
-                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Updated"]);
-            }
-            else
-            {
-                throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
-            }
+            //    await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
+            //    return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Updated"]);
+            //}
+            //else
+            //{
+            //    throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
+            //}
+            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Updated"]);
+
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(RemoveProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var product = await _context.Products.Where(p => p.Id == command.Id).FirstOrDefaultAsync(cancellationToken);
-            if (product != null)
-            {
-                product.AddDomainEvent(new ProductRemovedEvent(product.Id));
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync(cancellationToken);
-                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
+            //var product = await _context.Products.Where(p => p.Id == command.Id).FirstOrDefaultAsync(cancellationToken);
+            //if (product != null)
+            //{
+            //    product.AddDomainEvent(new ProductRemovedEvent(product.Id));
+            //    _context.Products.Remove(product);
+            //    await _context.SaveChangesAsync(cancellationToken);
+            //    await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
 
-                if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
-                {
-                    await _stockService.RecordOpeningTransaction(product.Id, 0, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
-                }
+            //    if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //    {
+            //        await _stockService.RecordOpeningTransaction(product.Id, 0, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+            //    }
 
-                return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Deleted"]);
-            }
-            else
-            {
-                throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
-            }
+            //    return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Deleted"]);
+            //}
+            //else
+            //{
+            //    throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
+            //}
+            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Deleted"]);
+
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(ImportProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Guid productId = Guid.Empty;
-            if (command.products.Count > 0)
-            {
-                var barcodes = command.products.Select(x => x.BarcodeSymbology).Distinct();
-                var existingProducts = await _context.Products.Where(p => barcodes.Contains(p.BarcodeSymbology)).ToListAsync(cancellationToken);
-                var importProducts = _mapper.Map<List<Product>>(command.products);
+            //Guid productId = Guid.Empty;
+            //if (command.products.Count > 0)
+            //{
+            //    var barcodes = command.products.Select(x => x.BarcodeSymbology).Distinct();
+            //    var existingProducts = await _context.Products.Where(p => barcodes.Contains(p.BarcodeSymbology)).ToListAsync(cancellationToken);
+            //    var importProducts = _mapper.Map<List<Product>>(command.products);
 
-                var differenceQuery = importProducts.Where(x => !existingProducts.Any(z => z.BarcodeSymbology == x.BarcodeSymbology)).ToList();
-                if (differenceQuery.Count > 0)
-                {
-                    _context.OperationName = "ProductImport";
-                    _context.Products.AddRange(differenceQuery);
-                    _context.SaveChanges();
+            //    var differenceQuery = importProducts.Where(x => !existingProducts.Any(z => z.BarcodeSymbology == x.BarcodeSymbology)).ToList();
+            //    if (differenceQuery.Count > 0)
+            //    {
+            //        _context.OperationName = "ProductImport";
+            //        _context.Products.AddRange(differenceQuery);
+            //        _context.SaveChanges();
 
-                    foreach (var product in differenceQuery)
-                    {
-                        if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
-                        {
-                            await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.Id.ToString(), product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
-                        }
-                    }
-                }
-            }
+            //        foreach (var product in differenceQuery)
+            //        {
+            //            if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //            {
+            //                await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.Id.ToString(), product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+            //            }
+            //        }
+            //    }
+            //}
 
-            return await Result<Guid>.SuccessAsync(productId, _localizer["Product Saved"]);
+            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateFactorCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Guid productId = Guid.Empty;
+            //Guid productId = Guid.Empty;
 
-            foreach (var item in command.Products)
-            {
-                var product = await _context.Products.SingleOrDefaultAsync(p => p.Id == item.ProductId);
-                if (product != null)
-                {
-                    product.discountFactor = item.FactorAmount;
-                    product.FactorUpdateOn = DateTime.Now;
-                    _context.Products.Update(product);
-                }
-            }
-            await _context.SaveChangesAsync(cancellationToken);
+            //foreach (var item in command.Products)
+            //{
+            //    var product = await _context.Products.SingleOrDefaultAsync(p => p.Id == item.ProductId);
+            //    if (product != null)
+            //    {
+            //        product.discountFactor = item.FactorAmount;
+            //        product.FactorUpdateOn = DateTime.Now;
+            //        _context.Products.Update(product);
+            //    }
+            //}
+            //await _context.SaveChangesAsync(cancellationToken);
 
-            await _stockService.UpdateFactor(command.Products, command.updateFrom);
-            return await Result<Guid>.SuccessAsync(productId, _localizer["Product Saved"]);
+            //await _stockService.UpdateFactor(command.Products, command.updateFrom);
+            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
         }
 
 

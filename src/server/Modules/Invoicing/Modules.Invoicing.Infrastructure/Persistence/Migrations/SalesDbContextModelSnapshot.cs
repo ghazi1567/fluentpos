@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(SalesDbContext))]
@@ -16,13 +18,14 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("Invoicing")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.Order", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -32,7 +35,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ApprovedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerEmail")
@@ -50,6 +56,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
@@ -61,6 +70,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.Property<byte>("OrderType")
                         .HasColumnType("tinyint");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("POReferenceNo")
                         .HasColumnType("nvarchar(max)");
@@ -89,15 +101,18 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.POProduct", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Brand")
@@ -106,13 +121,19 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
@@ -136,17 +157,20 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
                     b.HasIndex("PurchaseOrderId");
 
-                    b.ToTable("POProducts");
+                    b.ToTable("POProducts", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Brand")
@@ -155,13 +179,19 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
@@ -182,16 +212,16 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.PurchaseOrder", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -201,14 +231,23 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ApproveDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ReferenceNumber")
                         .HasColumnType("nvarchar(max)");
@@ -228,18 +267,21 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("PurchaseOrders");
+                    b.ToTable("PurchaseOrders", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.SyncLog", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("EntryId")
@@ -248,36 +290,54 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("EntryType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("LastUpdateOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("RemoteClientId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("SyncLogs");
+                    b.ToTable("SyncLogs", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.Transaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("PaymentType")
@@ -295,32 +355,41 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.Warehouse", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("UUID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("CreateaAt")
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("Id")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("UUID");
 
-                    b.ToTable("Warehouses");
+                    b.ToTable("Warehouses", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.POProduct", b =>

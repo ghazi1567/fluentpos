@@ -51,10 +51,10 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<PaginatedResult<SalaryDto>> Handle(GetSalaryQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var queryable = _context.Salaries.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
+            var queryable = _context.Salaries.AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
 
             if (request.OrganizationId.HasValue)
             {
@@ -82,7 +82,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
 
             foreach (var item in response.Data)
             {
-                item.EmployeeName = employeeDetails.Any(x => x.Id == item.EmployeeId) ? employeeDetails.FirstOrDefault(x => x.Id == item.EmployeeId).FullName : string.Empty;
+                item.EmployeeName = employeeDetails.Any(x => x.UUID == item.EmployeeId) ? employeeDetails.FirstOrDefault(x => x.UUID == item.EmployeeId).FullName : string.Empty;
             }
 
             return response;
@@ -92,7 +92,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<Result<SalaryDto>> Handle(GetSalaryByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employee = await _context.Salaries.Where(c => c.Id == query.Id).FirstOrDefaultAsync(cancellationToken);
+            var employee = await _context.Salaries.Where(c => c.UUID == query.Id).FirstOrDefaultAsync(cancellationToken);
             if (employee == null)
             {
                 throw new AccountingException(_localizer["Salary Not Found!"], HttpStatusCode.NotFound);

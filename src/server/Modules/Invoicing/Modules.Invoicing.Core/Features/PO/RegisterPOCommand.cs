@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 
         public DateTime? TimeStamp { get; set; }
 
-        public DateTime? CreateaAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
     }

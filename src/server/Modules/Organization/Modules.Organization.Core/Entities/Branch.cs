@@ -1,14 +1,15 @@
-﻿using System;
-using FluentPOS.Shared.Core.Contracts;
-using FluentPOS.Shared.Core.Domain;
+﻿using FluentPOS.Shared.Core.Contracts;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
-    public class Branch: IEntity<Guid>
+    public class Store : IEntity<Guid>
     {
-        public Guid Id { get; set; }
+        [Key]
+        public Guid UUID { get; set; }
 
-        public DateTime? CreateaAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
@@ -26,9 +27,18 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         public string Country { get; set; }
 
-        protected Branch()
+        public string ShopifyUrl { get; set; }
+
+        public string AccessToken { get; set; }
+
+        public string ShopifyAdminEmail { get; set; }
+
+        // TODO: password should be encrypted
+        public string ShopifyAdminPassword { get; set; }
+
+        protected Store()
         {
-            Id = Guid.NewGuid();
+            UUID = Guid.NewGuid();
         }
     }
 }

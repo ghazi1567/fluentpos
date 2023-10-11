@@ -1,7 +1,7 @@
 @import '../../theme/styles/themes';
 
 @include nb-install-component() {
-  ::ng-deep router-outlet + * {
+  ::ng-deep router-outlet+* {
     display: block;
     animation: fade 1s;
 
@@ -13,6 +13,20 @@
       to {
         opacity: 1;
       }
+    }
+  }
+
+
+}
+
+
+:host {
+  $custom-layout-padding: 0.1rem;
+
+  ::ng-deep {
+    nb-layout .layout .layout-container .content .columns nb-layout-column {
+      padding: $custom-layout-padding;
+
     }
   }
 }

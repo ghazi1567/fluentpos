@@ -8,9 +8,9 @@ namespace FluentPOS.Shared.DTOs.Dtos
 {
     public class BaseEntityDto
     {
-        public Guid? Id { get; set; }
+        public Guid? UUID { get; set; }
 
-        public DateTime? CreateaAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 

@@ -47,26 +47,26 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Events
         public decimal discountFactor { get; }
         public ProductUpdatedEvent(Product product)
         {
-            Id = product.Id;
-            Name = product.Name;
-            LocaleName = product.LocaleName;
-            BrandId = product.BrandId;
-            CategoryId = product.CategoryId;
-            Price = product.Price;
-            Cost = product.Cost;
-            ImageUrl = product.ImageUrl;
-            Tax = product.Tax;
-            TaxMethod = product.TaxMethod;
-            BarcodeSymbology = product.BarcodeSymbology;
-            IsAlert = product.IsAlert;
-            AlertQuantity = product.AlertQuantity;
-            Detail = product.Detail;
-            AggregateId = product.Id;
-            RelatedEntities = new[] { typeof(Product) };
-            productCode = product.productCode;
-            quantity = product.quantity;
-            location = product.location;
-            discountFactor = product.discountFactor;
+            //Id = product.Id;
+            //Name = product.Name;
+            //LocaleName = product.LocaleName;
+            //BrandId = product.BrandId;
+            //CategoryId = product.CategoryId;
+            //Price = product.Price;
+            //Cost = product.Cost;
+            //ImageUrl = product.ImageUrl;
+            //Tax = product.Tax;
+            //TaxMethod = product.TaxMethod;
+            //BarcodeSymbology = product.BarcodeSymbology;
+            //IsAlert = product.IsAlert;
+            //AlertQuantity = product.AlertQuantity;
+            //Detail = product.Detail;
+            //AggregateId = product.Id;
+            //RelatedEntities = new[] { typeof(Product) };
+            //productCode = product.productCode;
+            //quantity = product.quantity;
+            //location = product.location;
+            //discountFactor = product.discountFactor;
         }
     }
 }

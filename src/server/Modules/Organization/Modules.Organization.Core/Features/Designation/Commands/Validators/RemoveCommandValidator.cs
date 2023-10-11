@@ -10,7 +10,7 @@ using System;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
-namespace FluentPOS.Modules.Organization.Core.Features.Branchs.Commands.Validators
+namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands.Validators
 {
     public class RemoveDesignationCommandValidator : AbstractValidator<RemoveDesignationCommand>
     {

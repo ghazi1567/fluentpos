@@ -12,9 +12,10 @@ import { TranslateModule } from "@ngx-translate/core";
 import { AboutComponent } from "./about/about.component";
 import { EventLogsComponent } from "./event-logs/event-logs.component";
 import { StatComponent } from "./dashboard/stat/stat.component";
+import { ThemeModule } from "src/app/theme/theme.module";
 
 @NgModule({
     declarations: [DashboardComponent, DeleteDialogComponent, LogoutDialogComponent, SettingsComponent, AboutComponent, EventLogsComponent, StatComponent],
-    imports: [CommonModule, AdminRoutingModule, MaterialModule, SharedModule, CatalogModule, TranslateModule]
+    imports: [CommonModule, AdminRoutingModule, MaterialModule, SharedModule, CatalogModule, TranslateModule,ThemeModule]
 })
 export class AdminModule {}

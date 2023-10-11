@@ -8,15 +8,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using FluentPOS.Shared.Core.Contracts;
 
 namespace FluentPOS.Shared.Core.Domain
 {
     public abstract class BaseEntity : IEntity<Guid>, IBaseEntity
     {
-        public Guid Id { get; set; }
+        [Key]
+        public Guid UUID { get; set; }
 
-        public DateTime? CreateaAt { get; set; }
+        public long? Id { get; set; }
+
+        public DateTime? CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
 
@@ -26,7 +30,7 @@ namespace FluentPOS.Shared.Core.Domain
 
         protected BaseEntity()
         {
-            Id = Guid.NewGuid();
+            UUID = Guid.NewGuid();
         }
 
         private List<Event> _domainEvents;
