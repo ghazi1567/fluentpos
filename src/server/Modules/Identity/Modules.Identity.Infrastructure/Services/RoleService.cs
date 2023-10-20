@@ -78,7 +78,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             {
                 existingRole.AddDomainEvent(new RoleDeletedEvent(id));
                 await _roleManager.DeleteAsync(existingRole);
-                return await Result<string>.SuccessAsync(existingRole.UUID, string.Format(_localizer["Role {0} Deleted."], existingRole.Name));
+                return await Result<string>.SuccessAsync(existingRole.Id, string.Format(_localizer["Role {0} Deleted."], existingRole.Name));
             }
             else
             {
@@ -95,7 +95,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
         public async Task<Result<RoleResponse>> GetByIdAsync(string id)
         {
-            var roles = await _roleManager.Roles.SingleOrDefaultAsync(x => x.UUID == id);
+            var roles = await _roleManager.Roles.SingleOrDefaultAsync(x => x.Id == id);
             var rolesResponse = _mapper.Map<RoleResponse>(roles);
             return await Result<RoleResponse>.SuccessAsync(rolesResponse);
         }
@@ -116,7 +116,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 await _context.SaveChangesAsync();
                 if (response.Succeeded)
                 {
-                    return await Result<string>.SuccessAsync(newRole.UUID, string.Format(_localizer["Role {0} Created."], request.Name));
+                    return await Result<string>.SuccessAsync(newRole.Id, string.Format(_localizer["Role {0} Created."], request.Name));
                 }
                 else
                 {
@@ -141,7 +141,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 existingRole.Description = request.Description;
                 existingRole.AddDomainEvent(new RoleUpdatedEvent(existingRole));
                 await _roleManager.UpdateAsync(existingRole);
-                return await Result<string>.SuccessAsync(existingRole.UUID, string.Format(_localizer["Role {0} Updated."], existingRole.Name));
+                return await Result<string>.SuccessAsync(existingRole.Id, string.Format(_localizer["Role {0} Updated."], existingRole.Name));
             }
         }
 

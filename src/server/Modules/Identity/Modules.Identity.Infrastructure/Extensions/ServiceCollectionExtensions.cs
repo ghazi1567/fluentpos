@@ -39,7 +39,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Extensions
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services
-                .AddHttpContextAccessor()
                 .AddScoped<ICurrentUser, CurrentUser>()
                 .Configure<JwtSettings>(configuration.GetSection("JwtSettings"))
                 .AddTransient<ITokenService, TokenService>()

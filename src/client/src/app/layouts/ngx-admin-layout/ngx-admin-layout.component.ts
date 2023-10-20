@@ -62,12 +62,40 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ]
     },
     {
-        title: "Store Management",
+        title: "Order Management",
+        icon: "settings-outline",
+        children: [
+            {
+                title: "Orders",
+                link: "sales/orders"
+            },
+        ]
+    },
+    {
+        title: "Organization",
         icon: "settings-outline",
         children: [
             {
                 title: "Store Config",
-                link: "settings"
+                link: "org/store"
+            },
+        ]
+    },
+    {
+        title: "User Management",
+        icon: "settings-outline",
+        children: [
+            {
+                title: "Users",
+                link: "identity/users"
+            },
+            {
+                title: "Roles",
+                link: "identity/roles"
+            },
+            {
+                title: "Event Logs",
+                link: "event-logs"
             },
         ]
     },

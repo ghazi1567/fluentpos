@@ -24,8 +24,8 @@ namespace FluentPOS.Modules.Identity.Core.Features.Roles.Events
         {
             Name = role.Name;
             Description = role.Description;
-            Id = role.UUID;
-            AggregateId = Guid.TryParse(role.UUID, out var aggregateId)
+            Id = role.Id;
+            AggregateId = Guid.TryParse(role.Id, out var aggregateId)
                 ? aggregateId
                 : Guid.NewGuid();
             RelatedEntities = new[] { typeof(FluentRole) };

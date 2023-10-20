@@ -9,7 +9,7 @@ import { IResult } from '../../models/wrappers/IResult';
 })
 export class BranchApiService {
 
-  baseUrl = environment.apiUrl + 'org/branch/';
+  baseUrl = environment.apiUrl + 'org/store/';
 
   constructor(private http: HttpClient) {
   }

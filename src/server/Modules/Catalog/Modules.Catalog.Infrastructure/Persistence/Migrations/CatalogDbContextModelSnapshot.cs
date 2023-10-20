@@ -25,21 +25,18 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.Brand", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Detail")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -50,31 +47,31 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("UUID");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Brands", "Catalog");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.Category", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Detail")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -85,17 +82,20 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("UUID");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Categories", "Catalog");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.ExtendedAttributes.BrandExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -105,8 +105,8 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
@@ -126,9 +126,6 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
 
@@ -145,16 +142,19 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("EntityId");
 
@@ -163,7 +163,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.ExtendedAttributes.CategoryExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -173,8 +173,8 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
@@ -194,9 +194,6 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
 
@@ -213,16 +210,19 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("EntityId");
 
@@ -231,7 +231,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.ExtendedAttributes.ProductExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -241,8 +241,8 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
@@ -262,9 +262,6 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
 
@@ -281,16 +278,19 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("EntityId");
 
@@ -299,7 +299,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.Product", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -309,14 +309,11 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Handle")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
@@ -330,6 +327,12 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("PublishedScope")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ReferenceNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -339,20 +342,20 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Vendor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("Products", "Catalog");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.ProductImage", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -365,17 +368,14 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Filename")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Height")
                         .HasColumnType("int");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
@@ -386,28 +386,31 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<long?>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid?>("ProductUUID")
+                    b.Property<Guid?>("ProductId1")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Src")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int?>("Width")
                         .HasColumnType("int");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ProductUUID");
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductImage", "Catalog");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.ProductVariant", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -420,16 +423,13 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<decimal?>("CompareAtPrice")
                         .HasColumnType("decimal(23,2)");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("FulfillmentService")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("Grams")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("Id")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("ImageId")
@@ -468,7 +468,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<long?>("ProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid?>("ProductUUID")
+                    b.Property<Guid?>("ProductId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("RequiresShipping")
@@ -476,6 +476,9 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("TaxCode")
                         .HasColumnType("nvarchar(max)");
@@ -486,8 +489,8 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<decimal?>("Weight")
                         .HasColumnType("decimal(23,2)");
@@ -495,9 +498,9 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<string>("WeightUnit")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ProductUUID");
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductVariant", "Catalog");
                 });
@@ -539,14 +542,14 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FluentPOS.Modules.Catalog.Core.Entities.Product", null)
                         .WithMany("Images")
-                        .HasForeignKey("ProductUUID");
+                        .HasForeignKey("ProductId1");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.ProductVariant", b =>
                 {
                     b.HasOne("FluentPOS.Modules.Catalog.Core.Entities.Product", null)
                         .WithMany("Variants")
-                        .HasForeignKey("ProductUUID");
+                        .HasForeignKey("ProductId1");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.Brand", b =>

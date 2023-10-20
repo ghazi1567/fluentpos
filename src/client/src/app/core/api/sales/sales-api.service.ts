@@ -20,4 +20,8 @@ export class SalesApiService {
   getById(id: string) {
     return this.http.get(this.baseUrl + id);
   }
+  
+  syncOrders() {
+    return this.http.get(environment.apiUrl + 'invoicing/Sync/SyncOrders');
+  }
 }

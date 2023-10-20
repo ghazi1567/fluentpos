@@ -71,9 +71,47 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.ToTable("RemoteClients", "Application");
                 });
 
+            modelBuilder.Entity("FluentPOS.Shared.Core.Entities.WebhookEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApiVersion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventEntity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventOperation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsTest")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JsonBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShopDomain")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("TriggeredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WebhookId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebhookEvents", "Application");
+                });
+
             modelBuilder.Entity("FluentPOS.Shared.Core.EventLogging.EventLog", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -104,7 +142,7 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("EventLogs", "Application");
                 });

@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Accounting.Core.Entities.Payroll", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -50,8 +50,8 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("EarnedDays")
                         .HasColumnType("int");
@@ -64,9 +64,6 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<int>("Month")
                         .HasColumnType("int");
@@ -91,6 +88,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("RequiredDays")
                         .HasColumnType("int");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -119,37 +119,34 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<double>("TotalOvertime")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("leaves")
                         .HasColumnType("int");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("Payrolls", "Accounting");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Accounting.Core.Entities.PayrollRequest", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("EndedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<bool>("IgnoreAttendance")
                         .HasColumnType("bit");
@@ -181,6 +178,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<int>("SalaryCalculationFormula")
                         .HasColumnType("int");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -190,25 +190,25 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("PayrollRequests", "Accounting");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Accounting.Core.Entities.PayrollTransaction", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("DaysOrHours")
                         .HasColumnType("float");
@@ -222,9 +222,6 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<int>("EntryType")
                         .HasColumnType("int");
 
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -234,16 +231,19 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("PerDaySalary")
                         .HasColumnType("decimal(23,2)");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TransactionName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TransactionType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("PayrollId");
 
@@ -252,7 +252,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Accounting.Core.Entities.Salary", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -265,8 +265,8 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("CurrentSalary")
                         .HasColumnType("decimal(23,2)");
@@ -276,9 +276,6 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<decimal>("Incentive")
                         .HasColumnType("decimal(23,2)");
@@ -295,20 +292,23 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("PerHourSalary")
                         .HasColumnType("decimal(23,2)");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<decimal>("TotalDaysInMonth")
                         .HasColumnType("decimal(23,2)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("Salaries", "Accounting");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Accounting.Core.Entities.SalaryPerks", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -318,8 +318,8 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -332,9 +332,6 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("GlobalPerkType")
                         .HasColumnType("int");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsGlobal")
                         .HasColumnType("bit");
@@ -360,13 +357,16 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("RecursionEndMonth")
                         .HasColumnType("datetime2");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("SalaryPerks", "Accounting");
                 });

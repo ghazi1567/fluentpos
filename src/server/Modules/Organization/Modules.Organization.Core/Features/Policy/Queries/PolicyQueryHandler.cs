@@ -47,16 +47,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features
 
         public async Task<PaginatedResult<GetPolicyResponse>> Handle(GetPoliciesQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Policy, GetPolicyResponse>> expression = e => new GetPolicyResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.DepartmentId, e.PayslipType, e.PayPeriod, e.AllowedOffDays, e.RequiredWorkingHour, e.ShiftStartTime, e.ShiftEndTime, e.AllowedLateMinutes, e.AllowedLateMinInMonth, e.EarlyArrivalPolicy, e.ForceTimeout, e.TimeoutPolicy, e.IsMonday, e.IsTuesday, e.IsWednesday, e.IsThursday, e.IsFriday, e.IsSaturday, e.IsSunday, e.DailyOverTime, e.HolidayOverTime,e.lateComersPenaltyType,e.lateComersPenalty,e.DailyOverTimeRate,e.HolidayOverTimeRate,e.EarnedHourPolicy,e.SandwichLeaveCount,e.DailyWorkingHour);
+            Expression<Func<Policy, GetPolicyResponse>> expression = e => new GetPolicyResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.DepartmentId, e.PayslipType, e.PayPeriod, e.AllowedOffDays, e.RequiredWorkingHour, e.ShiftStartTime, e.ShiftEndTime, e.AllowedLateMinutes, e.AllowedLateMinInMonth, e.EarlyArrivalPolicy, e.ForceTimeout, e.TimeoutPolicy, e.IsMonday, e.IsTuesday, e.IsWednesday, e.IsThursday, e.IsFriday, e.IsSaturday, e.IsSunday, e.DailyOverTime, e.HolidayOverTime,e.lateComersPenaltyType,e.lateComersPenalty,e.DailyOverTimeRate,e.HolidayOverTimeRate,e.EarnedHourPolicy,e.SandwichLeaveCount,e.DailyWorkingHour);
             var queryable = _context.Policies.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             if (request.OrganizationId.HasValue)
@@ -83,7 +83,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features
         public async Task<Result<GetPolicyByIdResponse>> Handle(GetPolicyByIdQuery query, CancellationToken cancellationToken)
         {
             var entity = await _context.Policies.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (entity == null)

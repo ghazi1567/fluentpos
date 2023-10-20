@@ -39,7 +39,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             OrgDetailsDto orgDetailsDto = new OrgDetailsDto();
 
             var policy = await _context.Policies.AsNoTracking()
-                .Where(b => b.UUID == Id)
+                .Where(b => b.Id == Id)
                 .FirstOrDefaultAsync(default(CancellationToken));
 
             if (policy != null)
@@ -76,7 +76,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
         private async Task<OrganizationDto> GetOrgnizationDetailsAsync(Guid Id)
         {
             var organisation = await _context.Organisations.AsNoTracking()
-               .Where(b => b.UUID == Id)
+               .Where(b => b.Id == Id)
                .FirstOrDefaultAsync(default(CancellationToken));
 
             if (organisation == null)
@@ -94,7 +94,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
         private async Task<BranchDto> GetBranchDetailsAsync(Guid Id)
         {
             var branch = await _context.Stores.AsNoTracking()
-               .Where(b => b.UUID == Id)
+               .Where(b => b.Id == Id)
                .FirstOrDefaultAsync(default(CancellationToken));
 
             if (branch == null)
@@ -113,7 +113,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
         public async Task<List<DepartmentDto>> GetDepartmentListAsync(List<Guid> Ids)
         {
             var departments = await _context.Departments.AsNoTracking()
-               .Where(b => Ids.Contains(b.UUID))
+               .Where(b => Ids.Contains(b.Id))
                .ToListAsync(default(CancellationToken));
 
             return _mapper.Map<List<DepartmentDto>>(departments);
@@ -122,7 +122,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
         public async Task<DepartmentDto> GetDepartmentByIdAsync(Guid id)
         {
             var departments = await _context.Departments.AsNoTracking()
-               .Where(b => b.UUID == id)
+               .Where(b => b.Id == id)
                .FirstOrDefaultAsync(default(CancellationToken));
 
             return _mapper.Map<DepartmentDto>(departments);

@@ -43,7 +43,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
             _json = json;
         }
 
-        public DbSet<Order> Orders { get; set; }
+        public DbSet<InternalOrder> Orders { get; set; }
 
         public DbSet<Product> Products { get; set; }
 

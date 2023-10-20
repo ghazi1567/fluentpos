@@ -7,11 +7,11 @@ namespace FluentPOS.Modules.Organization.Core.Entities
     public class Store : IEntity<Guid>
     {
         [Key]
-        public Guid UUID { get; set; }
+        public Guid Id { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public Guid OrganizationId { get; set; }
 
@@ -38,7 +38,7 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         protected Store()
         {
-            UUID = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
     }
 }

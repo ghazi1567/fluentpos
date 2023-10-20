@@ -15,9 +15,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
     {
         public SalesProfile()
         {
-            CreateMap<GetSalesResponse, Order>().ReverseMap();
-            CreateMap<GetOrderByIdResponse, Order>().ReverseMap();
-            CreateMap<GetStockInByIdResponse, Order>().ReverseMap();
+            CreateMap<GetSalesResponse, InternalOrder>().ReverseMap();
+            CreateMap<GetOrderByIdResponse, InternalOrder>().ReverseMap();
+            CreateMap<GetStockInByIdResponse, InternalOrder>().ReverseMap();
             CreateMap<PaginatedSalesFilter, GetSalesQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
             CreateMap<VarianceProductReportDto, VarianceProductReport>().ReverseMap();

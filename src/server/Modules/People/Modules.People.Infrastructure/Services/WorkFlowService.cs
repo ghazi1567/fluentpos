@@ -38,7 +38,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
             if (workFlow == null)
             {
-                var employeeDetails = _context.Employees.Where(x => x.UUID == employeeId).FirstOrDefault();
+                var employeeDetails = _context.Employees.Where(x => x.Id == employeeId).FirstOrDefault();
                 if (employeeDetails != null && employeeDetails.ReportingTo != null)
                 {
                     nextApproverResponse.Add(new NextApproverDto
@@ -68,7 +68,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<bool> AssignAprroversAsync(Guid requestId)
         {
-            var request = _context.EmployeeRequests.Where(x => x.UUID == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.Where(x => x.Id == requestId).FirstOrDefault();
             if (request == null)
             {
                 throw new PeopleException(_localizer["Request not found!"], HttpStatusCode.NotFound);
@@ -76,7 +76,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
             List<RequestApproval> requestApprovals = new List<RequestApproval>();
             Guid? workflowId = null;
-            var approvers = GetNextAssignee(request.UUID, request.RequestType, request.EmployeeId);
+            var approvers = GetNextAssignee(request.Id, request.RequestType, request.EmployeeId);
             if (approvers.Count > 0)
             {
                 var firstApprover = approvers.FirstOrDefault();
@@ -103,7 +103,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                         EmployeeRequestId = requestId,
                         BranchId = request.BranchId,
                         OrganizationId = request.OrganizationId,
-                        UUID = Guid.NewGuid()
+                        Id = Guid.NewGuid()
                     });
                 }
                 if (workflowId != null)
@@ -120,7 +120,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<bool> ApproveRequestAsync(Guid requestId, Guid approverId, string comments)
         {
-            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.UUID == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
             if (request == null)
             {
                 throw new PeopleException(_localizer["Request not found!"], HttpStatusCode.NotFound);
@@ -164,7 +164,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     EmployeeRequestId = requestId,
                     BranchId = request.BranchId,
                     OrganizationId = request.OrganizationId,
-                    UUID = Guid.NewGuid()
+                    Id = Guid.NewGuid()
                 });
                 _context.RequestApprovals.AddRange(approvals);
 
@@ -202,7 +202,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
         public async Task<bool> RejectRequestAsync(Guid requestId, Guid approverId, string comments)
         {
-            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.UUID == requestId).FirstOrDefault();
+            var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
             if (request == null)
             {
                 throw new PeopleException(_localizer["Request not found!"], HttpStatusCode.NotFound);
@@ -237,7 +237,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     EmployeeRequestId = requestId,
                     BranchId = request.BranchId,
                     OrganizationId = request.OrganizationId,
-                    UUID = Guid.NewGuid()
+                    Id = Guid.NewGuid()
                 });
                 _context.RequestApprovals.AddRange(approvals);
 

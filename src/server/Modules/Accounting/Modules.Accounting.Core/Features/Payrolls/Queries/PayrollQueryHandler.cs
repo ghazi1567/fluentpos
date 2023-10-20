@@ -51,10 +51,10 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<PaginatedResult<PayrollRequestDto>> Handle(GetPayrollRequestQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var queryable = _context.PayrollRequests.AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
+            var queryable = _context.PayrollRequests.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (request.OrganizationId.HasValue)
             {
@@ -82,7 +82,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
         public async Task<Result<PayrollRequestDto>> Handle(GetPayrollRequestByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var payrollRequest = await _context.PayrollRequests.Where(c => c.UUID == query.Id).FirstOrDefaultAsync(cancellationToken);
+            var payrollRequest = await _context.PayrollRequests.Where(c => c.Id == query.Id).FirstOrDefaultAsync(cancellationToken);
             if (payrollRequest == null)
             {
                 throw new AccountingException(_localizer["Payroll Request Not Found!"], HttpStatusCode.NotFound);

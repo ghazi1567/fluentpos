@@ -64,11 +64,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
         public async Task<Result<Guid>> Handle(RegisterStockOutCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var order = Order.InitializeOrder(command.TimeStamp);
+            var order = InternalOrder.InitializeOrder(command.TimeStamp);
             string referenceNumber = await _referenceService.TrackAsync(order.GetType().Name);
             order.SetReferenceNumber(referenceNumber);
-            order.IsApproved = true;
-            order.Status = OrderStatus.Approved;
             order.OrderType = OrderType.StockOut;
             order.WarehouseId = command.WarehouseId;
             order.SetNote(command.Note); 
@@ -78,33 +76,22 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 if (productResponse.Succeeded)
                 {
                     var product = productResponse.Data;
-                    order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
                 }
             }
 
             await _salesContext.Orders.AddAsync(order, cancellationToken);
             await _salesContext.SaveChangesAsync(cancellationToken);
 
-            foreach (var orderItem in order.Products)
-            {
-                var productResponse = await _productService.GetDetailsAsync(orderItem.ProductId);
-                if (productResponse.Succeeded)
-                {
-                    var product = productResponse.Data;
-                    var factorDate = product.FactorUpdateOn.HasValue ? product.FactorUpdateOn.Value : order.TimeStamp;
-                    await _stockService.RecordTransaction(product.Id, orderItem.Quantity, order.ReferenceNumber, OrderType.StockOut, product.discountFactor, product.Cost, factorDate, order.WarehouseId);
-                }
-            }
+           
 
-            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock Out {0} Created for approval"], order.ReferenceNumber));
+            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock Out {0} Created for approval"], order.ReferenceNumber));
         }
 
         public async Task<Result<Guid>> Handle(ApproveStockOutCommand request, CancellationToken cancellationToken)
         {
             var order = await _salesContext.Orders.AsNoTracking()
-               .Include(x => x.Products)
                .OrderBy(x => x.TimeStamp)
-               .SingleOrDefaultAsync(x => x.UUID == request.OrderId);
+               .SingleOrDefaultAsync(x => x.Id == request.OrderId);
 
             if (order == null)
             {
@@ -112,11 +99,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             }
 
             var po = await _salesContext.PurchaseOrders.AsNoTracking()
-              .SingleOrDefaultAsync(x => x.ReferenceNumber == order.POReferenceNo);
+              .SingleOrDefaultAsync(x => x.ReferenceNumber == order.ReferenceNumber);
 
             order.Status = request.Status;
-            order.ApprovedDate = DateTime.Now;
-            order.ApprovedBy = _user.GetUserEmail();
+        
 
             po.Status = request.Status;
             po.ApproveDate = DateTime.Now;
@@ -126,32 +112,27 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             _salesContext.PurchaseOrders.Update(po);
             await _salesContext.SaveChangesAsync(cancellationToken);
 
-            if (request.Status == OrderStatus.Approved)
+            if (request.Status == OrderStatus.Pending)
             {
-                foreach (var product in order.Products)
-                {
-                    await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber, false);
-                }
+                //foreach (var product in order.Products)
+                //{
+                //    await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber, false);
+                //}
             }
-            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
+            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
         }
 
         public async Task<Result<Guid>> Handle(RemoveStockOutCommand request, CancellationToken cancellationToken)
         {
             var stockOut = await _salesContext.Orders
-                .Include(x => x.Products)
-                .Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
+                .Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockOut != null)
             {
                 _salesContext.Orders.Remove(stockOut);
                 await _salesContext.SaveChangesAsync(cancellationToken);
 
-                foreach (var orderItem in stockOut.Products)
-                {
-                    await _stockService.ReverseTransaction(orderItem.ProductId, orderItem.Quantity, stockOut.ReferenceNumber, OrderType.StockOut, stockOut.WarehouseId);
-                }
 
-                return await Result<Guid>.SuccessAsync(stockOut.UUID, _localizer["Stock Out Deleted"]);
+                return await Result<Guid>.SuccessAsync(stockOut.Id, _localizer["Stock Out Deleted"]);
             }
             else
             {
@@ -162,14 +143,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
         public async Task<Result<Guid>> Handle(UpdateStockOutCommand request, CancellationToken cancellationToken)
         {
             var stockOut = await _salesContext.Orders
-                .Include(x => x.Products)
-                .Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
+                .Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockOut != null)
             {
-                var order = Order.InitializeOrder(request.TimeStamp);
+                var order = InternalOrder.InitializeOrder(request.TimeStamp);
                 order.SetReferenceNumber(stockOut.ReferenceNumber);
-                order.IsApproved = true;
-                order.Status = OrderStatus.Approved;
+               
                 order.OrderType = OrderType.StockOut;
                 order.SetNote(request.Note);
                 order.WarehouseId = request.WarehouseId;
@@ -180,7 +159,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                     if (productResponse.Succeeded)
                     {
                         var product = productResponse.Data;
-                        order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
                     }
                 }
 
@@ -188,23 +166,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 await _salesContext.Orders.AddAsync(order, cancellationToken);
                 await _salesContext.SaveChangesAsync(cancellationToken);
 
-                foreach (var orderItem in stockOut.Products)
-                {
-                    await _stockService.ReverseTransaction(orderItem.ProductId, orderItem.Quantity, stockOut.ReferenceNumber, OrderType.StockOut, order.WarehouseId);
-                }
 
-                foreach (var orderItem in order.Products)
-                {
-                    var productResponse = await _productService.GetDetailsAsync(orderItem.ProductId);
-                    if (productResponse.Succeeded)
-                    {
-                        var product = productResponse.Data;
-                        var factorDate = product.FactorUpdateOn.HasValue ? product.FactorUpdateOn.Value : order.TimeStamp;
-                        await _stockService.RecordTransaction(product.Id, orderItem.Quantity, order.ReferenceNumber, OrderType.StockOut, product.discountFactor, product.Cost, factorDate, order.WarehouseId);
-                    }
-                }
-
-                return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock Out {0} Updated"], order.ReferenceNumber));
+                return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock Out {0} Updated"], order.ReferenceNumber));
             }
             else
             {

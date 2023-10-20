@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands.Validator
     {
         public UpdatePolicyCommandValidator(IStringLocalizer<UpdateCommandValidator> localizer)
         {
-            RuleFor(c => c.UUID)
+            RuleFor(c => c.Id)
                 .NotEqual(Guid.Empty).WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
             RuleFor(c => c.Name)
               .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."])

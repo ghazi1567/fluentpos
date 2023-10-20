@@ -53,11 +53,11 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Queries
         public async Task<PaginatedResult<GetCartItemsResponse>> Handle(GetCartItemsQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<CartItem, GetCartItemsResponse>> expression = e => new GetCartItemsResponse(e.UUID, e.CartId, e.ProductId, e.Quantity);
+            Expression<Func<CartItem, GetCartItemsResponse>> expression = e => new GetCartItemsResponse(e.Id, e.CartId, e.ProductId, e.Quantity);
             var queryable = _context.CartItems.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (request.CartId != null && !request.CartId.Equals(Guid.Empty))
             {
@@ -92,7 +92,7 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var cartItem = await _context.CartItems.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (cartItem == null)

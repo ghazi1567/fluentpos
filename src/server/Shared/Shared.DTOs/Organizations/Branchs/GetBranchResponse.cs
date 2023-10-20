@@ -12,9 +12,9 @@ namespace FluentPOS.Shared.DTOs.Organizations.Branchs
 {
     public record GetBranchResponse(Guid Id,
 
-DateTime? CreatedAt,
+DateTimeOffset? CreatedAt,
 
-DateTime? UpdatedAt,
+DateTimeOffset? UpdatedAt,
 
 Guid OrganizationId,
 
@@ -28,5 +28,6 @@ string EmailAddress,
 
 string Currency,
 
-string Country);
+string Country,
+string storeId);
 }

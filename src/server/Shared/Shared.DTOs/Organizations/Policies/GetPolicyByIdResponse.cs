@@ -12,8 +12,8 @@ using System;
 namespace FluentPOS.Shared.DTOs.Organizations.Policies
 {
     public record GetPolicyByIdResponse(Guid Id,
-DateTime? CreatedAt,
-DateTime? UpdatedAt,
+DateTimeOffset? CreatedAt,
+DateTimeOffset? UpdatedAt,
 Guid OrganizationId,
 Guid BranchId,
 string Name,

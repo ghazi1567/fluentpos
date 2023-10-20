@@ -80,15 +80,15 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             await _context.Employees.AddAsync(employee, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            await _payrollService.InsertBasicSalary(employee.UUID, employee.BasicSalary);
-            return await Result<Guid>.SuccessAsync(employee.UUID, _localizer["Employee Saved"]);
+            await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
+            return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employee = await _context.Employees.Where(c => c.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var employee = await _context.Employees.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (employee != null)
             {
                 employee = _mapper.Map<Employee>(command);
@@ -105,8 +105,8 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 }
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
-                await _payrollService.InsertBasicSalary(employee.UUID, employee.BasicSalary);
-                return await Result<Guid>.SuccessAsync(employee.UUID, _localizer["Employee Updated"]);
+                await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
+                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated"]);
             }
             else
             {
@@ -118,13 +118,13 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         public async Task<Result<Guid>> Handle(RemoveEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employee = await _context.Employees.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var employee = await _context.Employees.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (employee != null)
             {
                 employee.Active = false;
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(employee.UUID, _localizer["Employee Updated to InActive"]);
+                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated to InActive"]);
             }
             else
             {
@@ -160,7 +160,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
             foreach (var item in employees)
             {
-                await _payrollService.InsertBasicSalary(item.UUID, item.BasicSalary);
+                await _payrollService.InsertBasicSalary(item.Id, item.BasicSalary);
             }
 
             var messages = new List<string>();
@@ -172,7 +172,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 
         public async Task<Result<Guid>> Handle(AssignDepartmentCommand command, CancellationToken cancellationToken)
         {
-            var employees = await _context.Employees.Where(x => command.EmployeeIds.Contains(x.UUID)).ToListAsync();
+            var employees = await _context.Employees.Where(x => command.EmployeeIds.Contains(x.Id)).ToListAsync();
 
             foreach (var item in employees)
             {

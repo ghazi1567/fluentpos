@@ -63,7 +63,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Events
             Group = extendedAttribute.Group;
             Description = extendedAttribute.Description;
             IsActive = extendedAttribute.IsActive;
-            AggregateId = extendedAttribute.UUID;
+            AggregateId = extendedAttribute.Id;
             RelatedEntities = new[] { typeof(TEntity) };
         }
     }

@@ -55,12 +55,12 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Queries
         public async Task<PaginatedResult<GetExtendedAttributesResponse<TEntityId>>> Handle(GetExtendedAttributesQuery<TEntityId, TEntity> request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<TExtendedAttribute, GetExtendedAttributesResponse<TEntityId>>> expression = e => new GetExtendedAttributesResponse<TEntityId>(e.UUID, e.EntityId, e.Type, e.Key, e.Decimal, e.Text, e.DateTime, e.Json, e.Boolean, e.Integer, e.ExternalId, e.Group, e.Description, e.IsActive);
+            Expression<Func<TExtendedAttribute, GetExtendedAttributesResponse<TEntityId>>> expression = e => new GetExtendedAttributesResponse<TEntityId>(e.Id, e.EntityId, e.Type, e.Key, e.Decimal, e.Text, e.DateTime, e.Json, e.Boolean, e.Integer, e.ExternalId, e.Group, e.Description, e.IsActive);
 
-            var queryable = _context.ExtendedAttributes.AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
+            var queryable = _context.ExtendedAttributes.AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             // apply filter parameters
             if (request.EntityId != null && !request.EntityId.Equals(default(TEntityId)))
@@ -85,7 +85,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Queries
                         || (x.ExternalId != null && EF.Functions.Like(x.ExternalId.ToLower(), $"%{lowerSearchString}%"))
                         || (x.Group != null && EF.Functions.Like(x.Group.ToLower(), $"%{lowerSearchString}%"))
                         || (x.Description != null && EF.Functions.Like(x.Description.ToLower(), $"%{lowerSearchString}%"))
-                        || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{lowerSearchString}%"));
+                        || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{lowerSearchString}%"));
             }
 
             var extendedAttributeList = await queryable
@@ -106,7 +106,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var extendedAttribute = await _context.ExtendedAttributes.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (extendedAttribute == null)

@@ -48,37 +48,20 @@ export class ProductComponent implements OnInit {
     loadLookups() {
         this.warehouseService.getAll().subscribe((res) => {
             this.warehouseLookups = res.data;
-            this.getStockReport();
         });
     }
     getProducts(): void {
+        this.productParams.pageNumber = 0;
+        this.productParams.pageSize = 1000000;
         this.productService.getProducts(this.productParams).subscribe((result) => {
-            result.data.forEach((p) => {
-                p.availableStock = this.stockReport.get(p.id);
-            });
             this.products = result;
-            this.productData = result.data;
+            this.productsData = result.data;
         });
     }
-
-    initColumns1(): void {
-        this.productColumns = [
-            //{ name: 'Id', dataKey: 'id', isSortable: true, isShowable: true },
-            { name: "Name", dataKey: "name", isSortable: true, isShowable: true },
-            { name: "Product Code", dataKey: "productCode", isSortable: true, isShowable: true },
-            { name: "Barcode", dataKey: "barcodeSymbology", isSortable: true, isShowable: true },
-            { name: "Location", dataKey: "location", isSortable: true, isShowable: true },
-            { name: "Location2", dataKey: "location2", isSortable: true, isShowable: true },
-            { name: "Detail", dataKey: "detail", isSortable: true, isShowable: true },
-            { name: "Price", dataKey: "price", isSortable: true, isShowable: true },
-            { name: "Available Stock", dataKey: "availableStock", isSortable: true, isShowable: true },
-            { name: "Discount Factor", dataKey: "discountFactor", isSortable: true, isShowable: true },
-            // { name: 'Tax', dataKey: 'tax', isSortable: true , isShowable: true},
-            // { name: 'TaxMethod', dataKey: 'taxMethod', isSortable: false , isShowable: false},
-            //{ name: 'BarcodeSymbology', dataKey: 'barcodeSymbology', isSortable: true, isShowable: true },
-            //{ name: 'IsAlert', dataKey: 'isAlert', isSortable: true, isShowable: true },
-            { name: "Action", dataKey: "action", position: "right" }
-        ];
+    syncProducts(): void {
+        this.productService.syncProducts().subscribe((result) => {
+            this.toastr.success('Product sync job started in background.')
+        });
     }
 
     pageChanged(event: PaginatedFilter): void {
@@ -132,75 +115,6 @@ export class ProductComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result) => { });
     }
 
-    getStockReport(): void {
-        let orderParams: any = {
-            productId: "",
-            warehouseId: ""
-        };
-
-        this.reportService.getStockReport(orderParams).subscribe((result) => {
-            result.data.forEach((x) => {
-                var warehouse = this.warehouseLookups.find((obj) => {
-                    return obj.id === x.warehouseId;
-                });
-                if (warehouse) {
-                    x.warehouseName = warehouse.name;
-                }
-            });
-            this.availableStock = result.data;
-            this.stockReport = this.groupBy(result.data, (x) => x.productId);
-            this.getProducts();
-        });
-    }
-
-    groupBy(list, keyGetter) {
-        const map = new Map();
-        list.forEach((item) => {
-            const key = keyGetter(item);
-            let value = map.get(key);
-            if (!value) {
-                map.set(key, `${item.warehouseName} : ${item.availableQuantity} `);
-            } else {
-                map.set(key, `${value}  ${item.warehouseName} : ${item.availableQuantity} `);
-            }
-        });
-        return map;
-    }
-
-    getAvailableStock() { }
-
-    onExport($event) {
-        let exportProductParams = new ProductParams();
-        exportProductParams.pageNumber = 0;
-        exportProductParams.pageSize = this.products.totalCount;
-        this.productService.getProducts(exportProductParams).subscribe((result) => {
-            result.data.forEach((p) => {
-                var productStock = this.availableStock.filter((obj) => {
-                    return obj.productId === p.id;
-                });
-                productStock.forEach((ps) => {
-                    p[ps.warehouseName] = ps.availableQuantity;
-                });
-                delete p.localeName;
-                delete p.categoryName;
-                delete p.categoryId;
-                delete p.taxMethod;
-                delete p.tax;
-                delete p.isAlert;
-                delete p.alertQuantity;
-                delete p.discountFactor;
-                delete p.id;
-                delete p.detail;
-                delete p.brandId;
-                delete p.brandName;
-                delete p.warehouseId;
-                delete p.openingStock;
-
-            });
-            this.csvParserService.exportXls(result.data, "products.xlsx", "Products");
-        });
-    }
-
 
     productsData: any[] = [];
 
@@ -220,75 +134,13 @@ export class ProductComponent implements OnInit {
     }
     initOvertimeColumns(): void {
         this.productColumns = [
-            { headerName: "Employee Name", field: "requestedForName", sortable: true, isShowable: true, width: 256 },
-            {
-                headerName: "Type", field: "overTimeType", sortable: true, isShowable: true, valueFormatter: (params) => {
-                    let value = params.value;
-                    if (value == 1) {
-                        value = 'Hour'
-                    } else {
-                        value = 'Production'
-                    }
-                    return value;
-                },
-                width: 120
-            },
-            {
-                headerName: "Ovetime Date", field: "attendanceDate", sortable: true, isShowable: true, valueFormatter: (params) => {
-                    let value = params.value;
-                    return value;
-                },
-                width: 150
-            },
-            {
-                headerName: "In Time", field: "checkIn", sortable: true, valueFormatter: (params) => {
-                    if (params && params.data && params.data.overTimeType == 2) {
-                        return '-';
-                    }
-                    let value = params.value;
-                   
-                    return value;
-                },
-                width: 120
-            },
-            {
-                headerName: "Out Time", field: "checkOut", sortable: true, valueFormatter: (params) => {
-                    if (params && params.data && params.data.overTimeType == 2) {
-                        return '-';
-                    }
-                    let value = params.value;
-                   
-                    return value;
-                },
-                width: 150
-            },
-            {
-                headerName: "Production / Day", field: "production", sortable: true, valueFormatter: (params) => {
-                    if (params && params.data && params.data.overTimeType == 1) {
-                        return '-';
-                    }
-                    let value = params.value;
-                    return value + ' / ' + params.data.requiredProduction;
-                },
-                width: 160
-            },
-
-            { headerName: "Hours", field: "overtimeHours", sortable: true, width: 160 },
-            { headerName: "Status", field: "statusName", sortable: true, width: 160 },
-            { headerName: "Comments", field: "reason", sortable: true, width: 330 },
-            // {
-            //     headerName: "Action",
-            //     cellRenderer: "buttonRenderer",
-            //     cellRendererParams: {
-            //         buttons: ["Remove"],
-            //         actionButtons: this.actionButtons,
-            //         onClick: this.openDeleteConfirmationDialog.bind(this)
-            //     },
-            //     width: 50,
-            //     pinned: "right"
-            // }
-
-
+            { headerName: "Shopify Id", field: "shopifyId", sortable: true, isShowable: true, width: 256 },
+            { headerName: "Title", field: "title", sortable: true, isShowable: true, width: 256 },
+            { headerName: "Vendor", field: "vendor", sortable: true, width: 160 },
+            { headerName: "Product Type", field: "productType", sortable: true, width: 160 },
+            { headerName: "PublishedScope", field: "publishedScope", sortable: true, width: 330 },
+            { headerName: "Status", field: "status", sortable: true, width: 330 },
+            { headerName: "Tags", field: "tags", sortable: true, width: 330 },
         ];
     }
 }

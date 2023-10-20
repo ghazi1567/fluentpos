@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.RoleExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -35,8 +35,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
@@ -56,9 +56,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
 
@@ -75,16 +72,19 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("EntityId");
 
@@ -93,7 +93,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.UserExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -103,8 +103,8 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
@@ -124,9 +124,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
-
                     b.Property<int?>("Integer")
                         .HasColumnType("int");
 
@@ -143,16 +140,19 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.HasIndex("EntityId");
 
@@ -178,9 +178,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("UUID")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -295,9 +292,6 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UUID")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -317,7 +311,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.UserBranch", b =>
                 {
-                    b.Property<Guid>("UUID")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -327,22 +321,22 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("Id")
-                        .HasColumnType("bigint");
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UUID");
+                    b.HasKey("Id");
 
                     b.ToTable("UserBranchs", "Identity");
                 });

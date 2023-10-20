@@ -6,17 +6,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentPOS.Modules.Catalog.Core.Abstractions;
+using FluentPOS.Modules.Catalog.Core.Entities;
 using FluentPOS.Modules.Catalog.Core.Exceptions;
 using FluentPOS.Shared.Core.Extensions;
+using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Mappings.Converters;
 using FluentPOS.Shared.Core.Settings;
 using FluentPOS.Shared.Core.Wrapper;
@@ -25,70 +20,77 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using ShopifySharp;
+using System;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 {
     internal class ProductQueryHandler :
         IRequestHandler<GetProductsQuery, PaginatedResult<GetProductsResponse>>,
         IRequestHandler<GetProductByIdQuery, Result<GetProductByIdResponse>>,
-        IRequestHandler<GetProductImageQuery, Result<string>>
+        IRequestHandler<GetProductImageQuery, Result<string>>,
+        IRequestHandler<SyncProductCommand, Result<string>>
     {
         private readonly ICatalogDbContext _context;
         private readonly IMapper _mapper;
         private readonly ApplicationSettings _applicationSettings;
         private readonly IStringLocalizer<ProductQueryHandler> _localizer;
+        private readonly IShopifyProductSyncJob _shopifyProductSyncJob;
 
         public ProductQueryHandler(
             ICatalogDbContext context,
             IMapper mapper,
             IOptions<ApplicationSettings> applicationSettings,
-            IStringLocalizer<ProductQueryHandler> localizer)
+            IStringLocalizer<ProductQueryHandler> localizer,
+            IShopifyProductSyncJob shopifyProductSyncJob)
         {
             _context = context;
             _mapper = mapper;
             _applicationSettings = applicationSettings.Value;
             _localizer = localizer;
+            _shopifyProductSyncJob = shopifyProductSyncJob;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<PaginatedResult<GetProductsResponse>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-
-            var service = new ProductService("https://shopbee-online.myshopify.com", "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");
-            var products = await service.ListAsync();
-
+            // _shopifyProductSyncJob.SyncShopifyProducts();
+            Expression<Func<Product, GetProductsResponse>> expression = e => new GetProductsResponse(e.Id, e.ShopifyId, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Title, e.BodyHtml, e.PublishedAt, e.Vendor, e.ProductType, e.Handle, e.PublishedScope, e.Tags, e.Status, e.ReferenceNumber);
 
             var queryable = _context.Products.AsNoTracking()
-                .ProjectTo<GetProductsResponse>(_mapper.ConfigurationProvider)
                 .OrderBy(x => x.Id)
                 .AsQueryable();
 
-            if (request.BrandIds.Any())
-            {
-                queryable = queryable.Where(x => request.BrandIds.Contains(x.BrandId));
-            }
-
-            if (request.CategoryIds.Any())
-            {
-                queryable = queryable.Where(x => request.CategoryIds.Contains(x.CategoryId));
-            }
+            // if (request.BrandIds.Any())
+            // {
+            //     queryable = queryable.Where(x => request.BrandIds.Contains(x.BrandId));
+            // }
+            // if (request.CategoryIds.Any())
+            // {
+            //     queryable = queryable.Where(x => request.CategoryIds.Contains(x.CategoryId));
+            // }
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
-                queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.LocaleName.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Detail.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.BarcodeSymbology.ToLower(), $"%{request.SearchString.ToLower()}%")
+                queryable = queryable.Where(x => EF.Functions.Like(x.Title.ToLower(), $"%{request.SearchString.ToLower()}%")
+                || EF.Functions.Like(x.Vendor.ToLower(), $"%{request.SearchString.ToLower()}%")
+                || EF.Functions.Like(x.ProductType.ToLower(), $"%{request.SearchString.ToLower()}%")
+                || EF.Functions.Like(x.Tags.ToLower(), $"%{request.SearchString.ToLower()}%")
                 || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             var productList = await queryable
                 .AsNoTracking()
+                .Select(expression)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
             if (productList == null)
@@ -104,7 +106,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var product = await _context.Products.AsNoTracking()
-                .Where(p => p.UUID == query.Id)
+                .Where(p => p.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (product == null)
@@ -128,5 +130,14 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
             string data = "";
             return await Result<string>.SuccessAsync(data: $"{_applicationSettings.ApiUrl}{data.Replace(@"\", "/")}");
         }
+
+        public async Task<Result<string>> Handle(SyncProductCommand query, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+
+            var result = _shopifyProductSyncJob.SyncShopifyProducts();
+            return await Result<string>.SuccessAsync(data: result);
+        }
+
     }
 }

@@ -47,16 +47,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features
 
         public async Task<PaginatedResult<GetDesignationResponse>> Handle(GetDesignationsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Designation, GetDesignationResponse>> expression = e => new GetDesignationResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId,e.Name,e.DepartmentId);
+            Expression<Func<Designation, GetDesignationResponse>> expression = e => new GetDesignationResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId,e.Name,e.DepartmentId);
             var queryable = _context.Designations.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             if (request.OrganizationId.HasValue)
@@ -83,7 +83,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features
         public async Task<Result<GetDesignationByIdResponse>> Handle(GetDesignationByIdQuery query, CancellationToken cancellationToken)
         {
             var entity = await _context.Designations.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (entity == null)

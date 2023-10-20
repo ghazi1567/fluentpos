@@ -116,6 +116,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.AddSwaggerDocumentation();
             services.AddCorsPolicy();
             services.AddApplicationSettings(config);
+            services.AddHttpContextAccessor();
             return services;
         }
 
@@ -130,6 +131,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.Configure<TimeZoneSettings>(config.GetSection(nameof(TimeZoneSettings)));
             services.AddTransient<IEventLogService, EventLogService>();
             services.AddTransient<IEntityReferenceService, EntityReferenceService>();
+            services.AddTransient<IWebhookEventService, WebhookEventService>();
             return services;
         }
 

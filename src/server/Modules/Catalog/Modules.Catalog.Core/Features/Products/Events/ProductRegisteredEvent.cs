@@ -58,7 +58,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Events
             //IsAlert = product.IsAlert;
             //AlertQuantity = product.AlertQuantity;
             //Detail = product.Detail;
-            AggregateId = product.UUID;
+            AggregateId = product.Id;
             RelatedEntities = new[] { typeof(Product) };
         }
     }

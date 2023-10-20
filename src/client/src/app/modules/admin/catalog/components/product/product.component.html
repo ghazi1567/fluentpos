@@ -9,14 +9,24 @@
 
 <nb-card>
   <nb-card-header>
-    Smart Table
+    Products
   </nb-card-header>
 
   <nb-card-body>
-    <div style="height: calc(100vh - 150px)" class="ag-theme-alpine">
+    <div style="height: calc(100vh - 217px)" class="ag-theme-alpine">
       <app-ag-grid-base #AgGrid [rowData]="productsData" [columnDefs]="productColumns" [pagination]="true"
         (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
       </app-ag-grid-base>
     </div>
   </nb-card-body>
 </nb-card>
+<nb-layout-footer fixed style="position: fixed;
+bottom: 0;
+width: 100%;">
+  <nb-actions size="small" style="float: right;">
+    <nb-action (click)="syncProducts()">
+      <nb-icon class="action-icon" icon="sync-outline"></nb-icon>
+      <span>Sync</span>
+    </nb-action>
+  </nb-actions>
+</nb-layout-footer>

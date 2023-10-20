@@ -79,16 +79,15 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
         public async Task<Result<GetOrderByIdResponse>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
         {
             var order = await _context.Orders.AsNoTracking()
-                .Include(x => x.Products)
                 .OrderBy(x => x.TimeStamp)
-                .SingleOrDefaultAsync(x => x.UUID == request.Id);
+                .SingleOrDefaultAsync(x => x.Id == request.Id);
 
             if (order == null)
             {
                 throw new SalesException(_localizer["Order Not Found!"], HttpStatusCode.NotFound);
             }
 
-            var mappedData = _mapper.Map<Order, GetOrderByIdResponse>(order);
+            var mappedData = _mapper.Map<InternalOrder, GetOrderByIdResponse>(order);
 
             return await Result<GetOrderByIdResponse>.SuccessAsync(data: mappedData);
 

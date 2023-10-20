@@ -76,8 +76,8 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             foreach (var item in response.Data)
             {
-                item.EmployeeName = myEmployees.FirstOrDefault(x => x.UUID == item.EmployeeId)?.FullName;
-                item.PunchCode = item.PunchCode == null ? myEmployees.FirstOrDefault(x => x.UUID == item.EmployeeId)?.PunchCode : item.PunchCode;
+                item.EmployeeName = myEmployees.FirstOrDefault(x => x.Id == item.EmployeeId)?.FullName;
+                item.PunchCode = item.PunchCode == null ? myEmployees.FirstOrDefault(x => x.Id == item.EmployeeId)?.PunchCode : item.PunchCode;
                 item.StartTimeSpan = item.StartTime.TimeOfDay;
                 item.EndTimeSpan = item.EndTime.TimeOfDay;
             }

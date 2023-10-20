@@ -71,7 +71,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
             brand.AddDomainEvent(new BrandRegisteredEvent(brand));
             await _context.Brands.AddAsync(brand, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(brand.UUID, _localizer["Brand Saved"]);
+            return await Result<Guid>.SuccessAsync(brand.Id, _localizer["Brand Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -84,7 +84,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
                 throw new CatalogException(_localizer["Deletion Not Allowed"], HttpStatusCode.BadRequest);
             }
 
-            var brand = await _context.Brands.FirstOrDefaultAsync(b => b.UUID == command.Id, cancellationToken);
+            var brand = await _context.Brands.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
             if (brand == null)
             {
                 throw new CatalogException(_localizer["Brand Not Found"], HttpStatusCode.NotFound);
@@ -94,20 +94,20 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
             brand.AddDomainEvent(new BrandRemovedEvent(command.Id));
             await _context.SaveChangesAsync(cancellationToken);
             await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Brand>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(brand.UUID, _localizer["Brand Deleted"]);
+            return await Result<Guid>.SuccessAsync(brand.Id, _localizer["Brand Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateBrandCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var brand = await _context.Brands.Where(b => b.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var brand = await _context.Brands.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (brand == null)
             {
                 throw new CatalogException(_localizer["Brand Not Found!"], HttpStatusCode.NotFound);
             }
 
-            if (await _context.Brands.AnyAsync(c => c.UUID != command.Id && c.Name == command.Name, cancellationToken))
+            if (await _context.Brands.AnyAsync(c => c.Id != command.Id && c.Name == command.Name, cancellationToken))
             {
                 throw new CatalogException(_localizer["Brand with the same name already exists."], HttpStatusCode.BadRequest);
             }
@@ -124,12 +124,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
             _context.Brands.Update(brand);
             await _context.SaveChangesAsync(cancellationToken);
             await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Brand>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(brand.UUID, _localizer["Brand Updated"]);
+            return await Result<Guid>.SuccessAsync(brand.Id, _localizer["Brand Updated"]);
         }
 
         private async Task<bool> IsBrandUsedAsync(Guid brandId)
         {
-            return await _context.Products.AnyAsync(b => b.UUID == brandId);
+            return await _context.Products.AnyAsync(b => b.Id == brandId);
         }
     }
 }

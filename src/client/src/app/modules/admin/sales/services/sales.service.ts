@@ -30,5 +30,10 @@ export class SalesService {
     return this.api.getById(id)
       .pipe(map((response: Result<Order>) => response));
   }
+  
+  syncOrders(): Observable<Result<Order>> {
+    return this.api.syncOrders()
+      .pipe(map((response: Result<Order>) => response));
+  }
 
 }

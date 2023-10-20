@@ -98,5 +98,8 @@ namespace FluentPOS.Modules.Catalog.Core.Entities
         /// Uses include: Creating, updating, & deserializing webhook bodies that include them.
         /// </summary>
         //public IEnumerable<MetaField> Metafields { get; set; }
+
+
+        public string ReferenceNumber { get; set; }
     }
 }

@@ -40,6 +40,9 @@ export class AuthService {
     public get getBranchId(): string {
         return this.localStorage.getItem("branchId");
     }
+    public get getStoreId(): string {
+        return this.localStorage.getItem("storeId");
+    }
 
     public get getOrganizationId(): string {
         return this.localStorage.getItem("organizationId");

@@ -6,15 +6,15 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Reflection;
 using AutoMapper;
 using FluentPOS.Shared.Core.Domain;
 using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands;
 using FluentPOS.Shared.Core.Features.ExtendedAttributes.Queries;
 using FluentPOS.Shared.DTOs.ExtendedAttributes;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace FluentPOS.Shared.Core.Extensions
 {
@@ -76,6 +76,22 @@ namespace FluentPOS.Shared.Core.Extensions
             }
 
             return profile;
+        }
+
+        public static IMappingExpression<TSource, TDestination> IgnoreAllNonExisting<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression)
+        {
+            var flags = BindingFlags.Public | BindingFlags.Instance;
+            var sourceType = typeof(TSource);
+            var destinationProperties = typeof(TDestination).GetProperties(flags);
+
+            foreach (var property in destinationProperties)
+            {
+                if (sourceType.GetProperty(property.Name, flags) == null)
+                {
+                    expression.ForMember(property.Name, opt => opt.Ignore());
+                }
+            }
+            return expression;
         }
     }
 }

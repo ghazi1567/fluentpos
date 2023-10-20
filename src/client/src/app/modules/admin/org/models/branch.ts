@@ -9,4 +9,7 @@ export interface Branch {
     emailAddress: string;
     currency: string;
     country: string;
+    shopifyUrl: string;
+    accessToken: string;
+
 }

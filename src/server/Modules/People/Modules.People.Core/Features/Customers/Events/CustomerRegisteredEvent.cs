@@ -33,8 +33,8 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Events
             Email = customer.Email;
             ImageUrl = customer.ImageUrl;
             Type = customer.Type;
-            Id = customer.UUID;
-            AggregateId = customer.UUID;
+            Id = customer.Id;
+            AggregateId = customer.Id;
             RelatedEntities = new[] { typeof(Customer) };
         }
     }

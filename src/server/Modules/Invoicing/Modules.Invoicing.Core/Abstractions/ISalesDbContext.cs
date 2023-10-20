@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
 {
     public interface ISalesDbContext : IDbContext
     {
-        public DbSet<Order> Orders { get; set; }
+        public DbSet<InternalOrder> Orders { get; set; }
 
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 

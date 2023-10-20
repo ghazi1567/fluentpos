@@ -22,7 +22,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands.Validators
             RuleFor(c => c.AttendanceDate)
                 .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."]);
 
-            RuleFor(c => c.UUID)
+            RuleFor(c => c.Id)
                 .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."]);
 
             When(customer => customer.AttendanceStatus == Shared.DTOs.Enums.AttendanceStatus.Present, () => {

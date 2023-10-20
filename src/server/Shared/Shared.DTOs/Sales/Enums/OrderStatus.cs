@@ -9,9 +9,14 @@ namespace FluentPOS.Shared.DTOs.Sales.Enums
     public enum OrderStatus : byte
     {
         Pending = 1,
-        InProgress = 2,
-        PendingApproval = 3,
-        Approved = 4,
-        Rejected = 5
+        AssignToOutlet = 2,
+        Verifying = 3,
+        Preparing = 4,
+        ReadyToShip = 5,
+        Shipped = 6,
+        Cancelled = 7,
+        Approved = 8,
+        InProgress = 9,
+        PendingApproval = 10,
     }
 }

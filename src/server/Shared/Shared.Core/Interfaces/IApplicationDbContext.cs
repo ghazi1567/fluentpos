@@ -19,5 +19,7 @@ namespace FluentPOS.Shared.Core.Interfaces
         public DbSet<EntityReference> EntityReferences { get; set; }
 
         public DbSet<RemoteClient> RemoteClients { get; set; }
+
+        public DbSet<WebhookEvent> WebhookEvents { get; set; }
     }
 }

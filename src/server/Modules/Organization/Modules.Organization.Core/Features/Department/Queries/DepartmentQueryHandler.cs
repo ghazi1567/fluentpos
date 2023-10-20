@@ -48,16 +48,16 @@ namespace FluentPOS.Modules.Organizations.Core.Features
 
         public async Task<PaginatedResult<DepartmentDto>> Handle(GetDepartmentsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Department, GetDepartmentResponse>> expression = e => new GetDepartmentResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.IsGlobalDepartment, e.Description, e.HeadOfDepartment, e.Production, e.PolicyId, e.ParentId);
+            Expression<Func<Department, GetDepartmentResponse>> expression = e => new GetDepartmentResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, e.Name, e.IsGlobalDepartment, e.Description, e.HeadOfDepartment, e.Production, e.PolicyId, e.ParentId);
             var queryable = _context.Departments.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             // if (request.OrganizationId.HasValue)
@@ -79,13 +79,13 @@ namespace FluentPOS.Modules.Organizations.Core.Features
             }
 
             var parentIds = brandList.Data.Where(x => x.ParentId != Guid.Empty && x.ParentId != null).Select(x => x.ParentId.Value).ToList();
-            var parentDepartment = _context.Departments.Where(x => parentIds.Contains(x.UUID)).AsNoTracking().ToList();
+            var parentDepartment = _context.Departments.Where(x => parentIds.Contains(x.Id)).AsNoTracking().ToList();
             var response = _mapper.Map<PaginatedResult<DepartmentDto>>(brandList);
             foreach (var item in response.Data)
             {
                 if (item.ParentId != Guid.Empty && item.ParentId != null)
                 {
-                    item.ParentDept = parentDepartment.FirstOrDefault(x => x.UUID == item.ParentId)?.Name;
+                    item.ParentDept = parentDepartment.FirstOrDefault(x => x.Id == item.ParentId)?.Name;
                 }
             }
 
@@ -95,7 +95,7 @@ namespace FluentPOS.Modules.Organizations.Core.Features
         public async Task<Result<GetDepartmentByIdResponse>> Handle(GetDepartmentByIdQuery query, CancellationToken cancellationToken)
         {
             var entity = await _context.Departments.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (entity == null)

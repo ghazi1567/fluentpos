@@ -163,10 +163,10 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             var role = await _roleManager.FindByIdAsync(roleId);
             if (role != null)
             {
-                response.RoleId = role.UUID;
+                response.RoleId = role.Id;
                 response.RoleName = role.Name;
                 var allRoleClaims = await GetAllAsync();
-                var roleClaimsResult = await GetAllByRoleIdAsync(role.UUID);
+                var roleClaimsResult = await GetAllByRoleIdAsync(role.Id);
                 if (roleClaimsResult.Succeeded)
                 {
                     var roleClaims = roleClaimsResult.Data;
@@ -233,7 +233,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 {
                     if (role.Name == RoleConstants.SuperAdmin)
                     {
-                        var currentUser = await _userManager.Users.SingleAsync(x => x.UUID == _currentUserService.GetUserId().ToString());
+                        var currentUser = await _userManager.Users.SingleAsync(x => x.Id == _currentUserService.GetUserId().ToString());
                         if (!await _userManager.IsInRoleAsync(currentUser, RoleConstants.SuperAdmin))
                         {
                             return await Result<string>.FailAsync(_localizer["Not allowed to modify Permissions for this Role."]);

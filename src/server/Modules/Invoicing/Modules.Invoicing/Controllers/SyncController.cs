@@ -1,5 +1,6 @@
 ﻿using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Modules.Invoicing.Core.Services;
+using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace FluentPOS.Modules.Invoicing.Controllers
     internal class SyncController : BaseController
     {
         private readonly ISyncService _syncService;
+        private readonly IShopifyOrderSyncJob _shopifyOrderSyncJob;
 
-        public SyncController(ISyncService syncService)
+        public SyncController(ISyncService syncService, IShopifyOrderSyncJob shopifyOrderSyncJob)
         {
             _syncService = syncService;
+            _shopifyOrderSyncJob = shopifyOrderSyncJob;
         }
 
         [HttpGet("NewPurchaseOrder/{clientId}")]
@@ -41,6 +44,12 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         public async Task<IActionResult> UpdateLogs(SyncLog syncLog)
         {
             return Ok(await _syncService.UpdateLogs(syncLog));
+        }
+
+        [HttpGet("SyncOrders")]
+        public IActionResult SyncOrders()
+        {
+            return Ok(_shopifyOrderSyncJob.SyncShopifyOrders());
         }
     }
 }

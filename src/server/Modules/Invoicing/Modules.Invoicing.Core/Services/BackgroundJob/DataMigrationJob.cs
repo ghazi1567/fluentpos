@@ -111,7 +111,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                     {
                         bool result = true;
 
-                        if (!await poService.AlreadyExist(item.UUID))
+                        if (!await poService.AlreadyExist(item.Id))
                         {
                             result = await poService.SavePurchaseOrder(item);
                         }
@@ -121,7 +121,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                             var logs = new SyncLog
                             {
                                 CreatedAt = DateTime.Now,
-                                EntryId = item.UUID,
+                                EntryId = item.Id,
                                 RemoteClientId = _clientId,
                                 EntryType = "PurchaseOrder",
                                 LastUpdateOn = DateTime.Now,
@@ -140,7 +140,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
         private async Task GetNewStockInOrder()
         {
             string url = $"{_url}/NewStockIn/{_clientId}";
-            var purchaseOrders = await GetApiData<List<Order>>(url);
+            var purchaseOrders = await GetApiData<List<InternalOrder>>(url);
             if (purchaseOrders.Count > 0)
             {
                 using (IServiceScope scope = _serviceProvider.CreateScope())
@@ -151,7 +151,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                     {
                         bool result = true;
 
-                        if (!await service.AlreadyExist(item.UUID))
+                        if (!await service.AlreadyExist(item.Id))
                         {
                             result = await service.SaveStockIn(item);
                         }
@@ -161,7 +161,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                             var logs = new SyncLog
                             {
                                 CreatedAt = DateTime.Now,
-                                EntryId = item.UUID,
+                                EntryId = item.Id,
                                 RemoteClientId = _clientId,
                                 EntryType = "StockIn",
                                 LastUpdateOn = DateTime.Now,
@@ -180,7 +180,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
         private async Task GetNewStockOutOrder()
         {
             string url = $"{_url}/NewStockOut/{_clientId}";
-            var purchaseOrders = await GetApiData<List<Order>>(url);
+            var purchaseOrders = await GetApiData<List<InternalOrder>>(url);
             if (purchaseOrders.Count > 0)
             {
                 using (IServiceScope scope = _serviceProvider.CreateScope())
@@ -191,7 +191,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                     {
                         bool result = true;
 
-                        if (!await service.AlreadyExist(item.UUID))
+                        if (!await service.AlreadyExist(item.Id))
                         {
                             result = await service.Save(item);
                         }
@@ -201,7 +201,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
                             var logs = new SyncLog
                             {
                                 CreatedAt = DateTime.Now,
-                                EntryId = item.UUID,
+                                EntryId = item.Id,
                                 RemoteClientId = _clientId,
                                 EntryType = "StockOut",
                                 LastUpdateOn = DateTime.Now,

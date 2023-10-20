@@ -6,19 +6,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.Catalog.Core.Abstractions;
 using FluentPOS.Modules.Catalog.Core.Entities;
-using FluentPOS.Modules.Catalog.Core.Exceptions;
 using FluentPOS.Modules.Catalog.Core.Features.Products.Events;
-using FluentPOS.Shared.Core.Constants;
-using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
 using FluentPOS.Shared.Core.Interfaces.Services;
@@ -27,6 +18,9 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 {
@@ -68,28 +62,29 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
         public async Task<Result<Guid>> Handle(RegisterProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            //if (await _context.Products.AnyAsync(p => p.BarcodeSymbology == command.BarcodeSymbology, cancellationToken))
-            //{
-            //    throw new CatalogException(_localizer["Barcode already exists."], HttpStatusCode.BadRequest);
-            //}
+            if (command.ShopifyId != null && await _context.Products.AnyAsync(p => p.ShopifyId == command.ShopifyId, cancellationToken))
+            {
+                return Result<Guid>.ReturnError(_localizer[$"Shopify Product with id: {command.ShopifyId} already exists."]);
+            }
 
-            //var product = _mapper.Map<Product>(command);
-            //product.ReferenceNumber = await _referenceService.TrackAsync(product.GetType().Name);
-            //var uploadRequest = command.UploadRequest;
-            //if (uploadRequest != null)
-            //{
-            //    uploadRequest.FileName = $"P-{command.BarcodeSymbology}.{uploadRequest.Extension}";
-            //    product.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
-            //}
+            var product = _mapper.Map<Product>(command);
+            product.ReferenceNumber = await _referenceService.TrackAsync(product.GetType().Name);
 
-            //product.AddDomainEvent(new ProductRegisteredEvent(product));
-            //await _context.Products.AddAsync(product, cancellationToken);
-            //await _context.SaveChangesAsync(cancellationToken);
+            // var uploadRequest = command.UploadRequest;
+            // if (uploadRequest != null)
+            // {
+            //     uploadRequest.FileName = $"P-{command.BarcodeSymbology}.{uploadRequest.Extension}";
+            //     product.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
+            // }
 
-            //if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
-            //{
-            //    await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber,  product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
-            //}
+            // product.AddDomainEvent(new ProductRegisteredEvent(product));
+            await _context.Products.AddAsync(product, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            // if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            // {
+            //     await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
+            // }
 
             return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
         }

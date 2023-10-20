@@ -12,6 +12,8 @@ using FluentPOS.Modules.Invoicing.Core.Features.PO.Service;
 using FluentPOS.Modules.Invoicing.Core.Services;
 using FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob;
 using FluentPOS.Modules.Invoicing.Infrastructure.Persistence;
+using FluentPOS.Modules.Invoicing.Infrastructure.Services;
+using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Infrastructure.Extensions;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Extensions
             services.AddTransient<IPOService, POService>();
             services.AddTransient<ISyncService, SyncService>();
             services.AddHostedService<DataMigrationJob>();
+            services.AddTransient<IShopifyOrderSyncJob, ShopifyOrderSyncJob>();
+            services.AddTransient<IWebhookService, WebhookService>();
             return services;
         }
 

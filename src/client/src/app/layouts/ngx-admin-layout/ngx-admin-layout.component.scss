@@ -28,5 +28,12 @@
       padding: $custom-layout-padding;
 
     }
+
+    nb-layout .layout .layout-container .content nb-layout-footer nav {
+      justify-content: flex-start !important
+    }
+    nb-layout .layout .layout-container .content nb-layout-footer nav nb-action {
+      cursor: pointer;
+    }
   }
 }

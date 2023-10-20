@@ -90,21 +90,21 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
                 }
             }
 
-            return await Result<Guid>.SuccessAsync(salaryPerks.UUID, _localizer["Salary Perks Saved"]);
+            return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateSalaryPerksCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var salaryPerks = await _context.SalaryPerks.Where(c => c.UUID == command.UUID).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var salaryPerks = await _context.SalaryPerks.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (salaryPerks != null)
             {
                 salaryPerks = _mapper.Map<SalaryPerks>(command);
 
                 _context.SalaryPerks.Update(salaryPerks);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salaryPerks.UUID, _localizer["Salary Perks Updated"]);
+                return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Updated"]);
             }
             else
             {
@@ -116,12 +116,12 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         public async Task<Result<Guid>> Handle(RemoveSalaryPerksCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var salaryPerks = await _context.SalaryPerks.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var salaryPerks = await _context.SalaryPerks.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (salaryPerks != null && (salaryPerks.Type == Shared.DTOs.Enums.SalaryPerksType.Incentives || salaryPerks.Type == Shared.DTOs.Enums.SalaryPerksType.Deductions))
             {
                 _context.SalaryPerks.Remove(salaryPerks);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salaryPerks.UUID, _localizer["Salary Perks Deleted"]);
+                return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Deleted"]);
             }
             else
             {

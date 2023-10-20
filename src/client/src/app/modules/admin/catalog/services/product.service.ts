@@ -12,7 +12,7 @@ import { ProductParams } from "../models/productParams";
 
 @Injectable()
 export class ProductService {
-    constructor(private api: ProductApiService) {}
+    constructor(private api: ProductApiService) { }
 
     getProducts(productParams: ProductParams): Observable<PaginatedResult<Product>> {
         let params = new HttpParams();
@@ -56,5 +56,8 @@ export class ProductService {
 
     importProduct(model: any): Observable<IResult<Product>> {
         return this.api.import(model).pipe(map((response: IResult<Product>) => response));
+    }
+    syncProducts(): Observable<Result<string>> {
+        return this.api.syncProducts().pipe(map((response: Result<string>) => response));
     }
 }

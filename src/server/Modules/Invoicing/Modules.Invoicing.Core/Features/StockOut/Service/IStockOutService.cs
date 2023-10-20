@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
     {
         Task<bool> AlreadyExist(Guid id);
 
-        Task<bool> Save(Order order, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> Save(InternalOrder order, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<Result<Guid>> Update(UpdateStockOutCommand request, CancellationToken cancellationToken);
 

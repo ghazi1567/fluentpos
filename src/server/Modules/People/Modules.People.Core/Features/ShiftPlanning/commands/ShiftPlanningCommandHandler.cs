@@ -66,7 +66,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         public async Task<Result<Guid>> Handle(RemoveShiftPlanningCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var shiftPlanner = await _context.ShiftPlanners.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var shiftPlanner = await _context.ShiftPlanners.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (shiftPlanner != null)
             {
                 _context.ShiftPlanners.Remove(shiftPlanner);

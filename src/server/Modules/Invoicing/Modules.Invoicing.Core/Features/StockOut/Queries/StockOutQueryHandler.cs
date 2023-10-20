@@ -40,16 +40,15 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
         public async Task<Result<GetStockInByIdResponse>> Handle(GetStockOutByIdQuery request, CancellationToken cancellationToken)
         {
             var order = await _context.Orders.AsNoTracking()
-                .Include(x => x.Products)
                 .OrderBy(x => x.TimeStamp)
-                .SingleOrDefaultAsync(x => x.UUID == request.Id);
+                .SingleOrDefaultAsync(x => x.Id == request.Id);
 
             if (order == null)
             {
                 throw new SalesException(_localizer["Stock Out Not Found!"], HttpStatusCode.NotFound);
             }
 
-            var mappedData = _mapper.Map<Order, GetStockInByIdResponse>(order);
+            var mappedData = _mapper.Map<InternalOrder, GetStockInByIdResponse>(order);
 
             foreach (var item in mappedData.Products)
             {

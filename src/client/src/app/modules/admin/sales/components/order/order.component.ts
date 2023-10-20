@@ -37,6 +37,8 @@ export class OrderComponent implements OnInit {
     this.saleService.getSales(this.orderParams).subscribe((result) => {
       this.dataSource = result;
     });
+    this.saleService.syncOrders().subscribe((result) => {
+    });
   }
 
   pageChanged(event: PaginatedFilter): void {

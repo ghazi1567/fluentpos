@@ -70,7 +70,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             bool result = await _attendanceService.UpdateAttendance(command);
             if (result)
             {
-                return await Result<Guid>.SuccessAsync(command.UUID.Value, _localizer["Request Updated"]);
+                return await Result<Guid>.SuccessAsync(command.Id.Value, _localizer["Request Updated"]);
             }
             else
             {

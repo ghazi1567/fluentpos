@@ -72,14 +72,14 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
             customer.AddDomainEvent(new CustomerRegisteredEvent(customer));
             await _context.Customers.AddAsync(customer, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(customer.UUID, _localizer["Customer Saved"]);
+            return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<Result<Guid>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var customer = await _context.Customers.Where(c => c.UUID == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+            var customer = await _context.Customers.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
             if (customer != null)
             {
                 customer = _mapper.Map<Customer>(command);
@@ -99,7 +99,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
                 _context.Customers.Update(customer);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(customer.UUID, _localizer["Customer Updated"]);
+                return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Updated"]);
             }
             else
             {
@@ -111,12 +111,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
         public async Task<Result<Guid>> Handle(RemoveCustomerCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var customer = await _context.Customers.FirstOrDefaultAsync(b => b.UUID == command.Id, cancellationToken);
-            customer.AddDomainEvent(new CustomerRemovedEvent(customer.UUID));
+            var customer = await _context.Customers.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
+            customer.AddDomainEvent(new CustomerRemovedEvent(customer.Id));
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync(cancellationToken);
             await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(customer.UUID, _localizer["Customer Deleted"]);
+            return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Deleted"]);
         }
     }
 }

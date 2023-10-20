@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features
             var queryable = _context.Jobs.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             var brandList = await queryable.ToPaginatedListAsync(request.PageNumber, request.PageSize);
             if (brandList == null)

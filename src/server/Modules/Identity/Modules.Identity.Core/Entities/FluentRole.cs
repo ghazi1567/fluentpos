@@ -18,8 +18,6 @@ namespace FluentPOS.Modules.Identity.Core.Entities
     {
         public string Description { get; set; }
 
-        public string UUID { get; set; }
-        
         public virtual ICollection<FluentRoleClaim> RoleClaims { get; set; }
 
         public virtual ICollection<RoleExtendedAttribute> ExtendedAttributes { get; set; }

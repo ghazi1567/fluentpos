@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
         Task<Result<Guid>> Save(RegisterStockInCommand command, CancellationToken cancellationToken);
 
-        Task<bool> SaveStockIn(Order order, CancellationToken cancellationToken = default(CancellationToken));
+        Task<bool> SaveStockIn(InternalOrder order, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<Result<Guid>> Approve(ApproveStockInCommand request, CancellationToken cancellationToken);
 

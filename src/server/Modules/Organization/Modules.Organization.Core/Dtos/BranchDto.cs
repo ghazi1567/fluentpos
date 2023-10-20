@@ -10,9 +10,9 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
     {
         public Guid? Id { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public Guid OrganizationId { get; set; }
 
@@ -27,6 +27,15 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
         public string Currency { get; set; }
 
         public string Country { get; set; }
+
+        public string ShopifyUrl { get; set; }
+
+        public string AccessToken { get; set; }
+
+        public string ShopifyAdminEmail { get; set; }
+
+        // TODO: password should be encrypted
+        public string ShopifyAdminPassword { get; set; }
 
     }
 }

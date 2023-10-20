@@ -13,8 +13,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
 
         Task<bool> UpdateLogs(SyncLog syncLog);
 
-        Task<List<Order>> GetPendingStockInAsync(Guid clientId);
+        Task<List<InternalOrder>> GetPendingStockInAsync(Guid clientId);
 
-        Task<List<Order>> GetPendingStockOutAsync(Guid clientId);
+        Task<List<InternalOrder>> GetPendingStockOutAsync(Guid clientId);
     }
 }

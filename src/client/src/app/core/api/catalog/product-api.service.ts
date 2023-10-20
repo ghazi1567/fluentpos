@@ -39,4 +39,7 @@ export class ProductApiService {
     updatePromotion(model: any) {
       return this.http.post(this.baseUrl+ `updatePromotion`, model);
     }
+    syncProducts() {
+        return this.http.get(this.baseUrl + `sync`);
+    }
 }

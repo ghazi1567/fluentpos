@@ -11,8 +11,8 @@ using System;
 namespace FluentPOS.Shared.DTOs.Organizations.Departments
 {
     public record GetDepartmentByIdResponse(Guid Id,
-DateTime? CreatedAt,
-DateTime? UpdatedAt,
+DateTimeOffset? CreatedAt,
+DateTimeOffset? UpdatedAt,
 Guid OrganizationId,
 Guid BranchId,
 string Name,

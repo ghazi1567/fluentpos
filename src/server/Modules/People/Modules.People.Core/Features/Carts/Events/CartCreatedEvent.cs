@@ -24,8 +24,8 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Events
         {
             CustomerId = cart.CustomerId;
             Timestamp = cart.Timestamp;
-            Id = cart.UUID;
-            AggregateId = cart.UUID;
+            Id = cart.Id;
+            AggregateId = cart.Id;
             RelatedEntities = new[] { typeof(Cart) };
         }
     }

@@ -19,6 +19,7 @@ using FluentPOS.Modules.Organization.Core.Entities;
 using FluentPOS.Modules.Organization.Core.Exceptions;
 using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.Mappings.Converters;
+using FluentPOS.Shared.Core.Utilities;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Organizations.Branchs;
 using MediatR;
@@ -47,16 +48,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
 
         public async Task<PaginatedResult<GetBranchResponse>> Handle(GetBranchsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Store, GetBranchResponse>> expression = e => new GetBranchResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country);
+            Expression<Func<Store, GetBranchResponse>> expression = e => new GetBranchResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country, EncryptionUtilities.EncryptString($"{e.ShopifyUrl}:{e.AccessToken}"));
             var queryable = _context.Stores.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             var brandList = await queryable
@@ -72,8 +73,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
 
         public async Task<Result<GetBranchByIdResponse>> Handle(GetBranchByIdQuery query, CancellationToken cancellationToken)
         {
+            Expression<Func<Store, GetBranchByIdResponse>> expression = e => new GetBranchByIdResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country, EncryptionUtilities.EncryptString($"{e.ShopifyUrl}|{e.AccessToken}"));
+
             var brand = await _context.Stores.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
+                .Select(expression)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (brand == null)
@@ -81,8 +85,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
                 throw new OrganizationException(_localizer[$"{nameof(Store)} Not Found!"], HttpStatusCode.NotFound);
             }
 
-            var mappedBrand = _mapper.Map<GetBranchByIdResponse>(brand);
-            return await Result<GetBranchByIdResponse>.SuccessAsync(mappedBrand);
+            return await Result<GetBranchByIdResponse>.SuccessAsync(brand);
         }
 
 

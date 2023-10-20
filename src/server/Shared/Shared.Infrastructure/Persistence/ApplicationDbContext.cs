@@ -38,6 +38,8 @@ namespace FluentPOS.Shared.Infrastructure.Persistence
 
         public DbSet<RemoteClient> RemoteClients { get; set; }
 
+        public DbSet<WebhookEvent> WebhookEvents { get; set; }
+
         public string OperationName { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

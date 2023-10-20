@@ -51,7 +51,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
         public async Task<Result<Guid>> Handle(RegisterSaleCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var order = Order.InitializeOrder();
+            var order = InternalOrder.InitializeOrder();
             string referenceNumber = await _referenceService.TrackAsync(order.GetType().Name);
             order.SetReferenceNumber(referenceNumber);
             var cartDetails = await _cartService.GetDetailsAsync(command.CartId);
@@ -69,19 +69,19 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
                 if (productResponse.Succeeded)
                 {
                     var product = productResponse.Data;
-                    order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
+                    //order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
                 }
             }
 
             await _salesContext.Orders.AddAsync(order, cancellationToken);
             await _salesContext.SaveChangesAsync(cancellationToken);
             await _cartService.RemoveCartAsync(command.CartId);
-            foreach (var product in order.Products)
-            {
-                await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber);
-            }
+            //foreach (var product in order.Products)
+            //{
+            //    await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber);
+            //}
 
-            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
+            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
         }
     }
 }

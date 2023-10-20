@@ -46,6 +46,7 @@ export class WelcomeComponent implements OnInit {
         this.selectedBranch = JSON.parse(this.localStorage.getItem("selectedBranch"));
         if (this.selectedBranch) {
             this.branchId = this.selectedBranch.id;
+            
             this.isSelectedBranch = true;
             this.showBranch = false;
         }
@@ -73,6 +74,7 @@ export class WelcomeComponent implements OnInit {
         this.localStorage.setItem("selectedBranch", JSON.stringify(branch));
         this.localStorage.setItem("branchId", branch.id);
         this.localStorage.setItem("organizationId", branch.organizationId);
+        this.localStorage.setItem("storeId", branch.storeId);
         this.selectedBranch = branch;
         this.isSelectedBranch = true;
         this.showBranch = false;

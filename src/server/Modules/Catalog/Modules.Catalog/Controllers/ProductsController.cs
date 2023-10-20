@@ -81,5 +81,12 @@ namespace FluentPOS.Modules.Catalog.Controllers
         {
             return Ok(await Mediator.Send(command));
         }
+
+        [HttpGet("Sync")]
+        [Authorize(Policy = Permissions.Products.Register)]
+        public async Task<IActionResult> SyncProductAsync()
+        {
+            return Ok(await Mediator.Send(new SyncProductCommand()));
+        }
     }
 }

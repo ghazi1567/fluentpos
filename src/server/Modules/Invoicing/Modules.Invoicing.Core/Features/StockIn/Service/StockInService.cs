@@ -69,12 +69,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
 
 
-            var order = Order.InitializeOrder(command.TimeStamp);
+            var order = InternalOrder.InitializeOrder(command.TimeStamp);
             string referenceNumber = await _referenceService.TrackAsync(order.GetType().Name);
             order.SetReferenceNumber(referenceNumber);
-            order.SetPOReferenceNumber(command.ReferenceNumber);
-            order.IsApproved = false;
-            order.Status = OrderStatus.PendingApproval;
+            //order.SetPOReferenceNumber(command.ReferenceNumber);
+            //order.IsApproved = false;
+            //order.Status = OrderStatus.PendingApproval;
             order.OrderType = OrderType.StockIn;
             order.WarehouseId = command.WarehouseId;
             order.SetNote(command.Note);
@@ -84,11 +84,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 if (productResponse.Succeeded)
                 {
                     var product = productResponse.Data;
-                    order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
+                    //order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
                 }
             }
 
-            po.Status = OrderStatus.InProgress;
+            //po.Status = OrderStatus.InProgress;
             bool result = await SaveStockIn(order, cancellationToken);
 
             if (true)
@@ -97,10 +97,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 await _salesContext.SaveChangesAsync(cancellationToken);
             }
 
-            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock In {0} Created for approval"], order.ReferenceNumber));
+            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock In {0} Created for approval"], order.ReferenceNumber));
         }
 
-        public async Task<bool> SaveStockIn(Order order, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<bool> SaveStockIn(InternalOrder order, CancellationToken cancellationToken = default(CancellationToken))
         {
             await _salesContext.Orders.AddAsync(order, cancellationToken);
             await _salesContext.SaveChangesAsync(cancellationToken);
@@ -110,9 +110,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
         public async Task<Result<Guid>> Approve(ApproveStockInCommand request, CancellationToken cancellationToken)
         {
             var order = await _salesContext.Orders.AsNoTracking()
-               .Include(x => x.Products)
                .OrderBy(x => x.TimeStamp)
-               .SingleOrDefaultAsync(x => x.UUID == request.OrderId);
+               .SingleOrDefaultAsync(x => x.Id == request.OrderId);
 
             if (order == null)
             {
@@ -120,11 +119,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             }
 
             var po = await _salesContext.PurchaseOrders.AsNoTracking()
-              .SingleOrDefaultAsync(x => x.ReferenceNumber == order.POReferenceNo);
+              .SingleOrDefaultAsync(x => x.ReferenceNumber == order.ReferenceNumber);
 
             order.Status = request.Status;
-            order.ApprovedDate = DateTime.Now;
-            order.ApprovedBy = _user.GetUserEmail();
+            //order.ApprovedDate = DateTime.Now;
+            //order.ApprovedBy = _user.GetUserEmail();
 
             po.Status = request.Status;
             po.ApproveDate = DateTime.Now;
@@ -136,34 +135,34 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
             if (request.Status == OrderStatus.Approved)
             {
-                foreach (var orderItem in order.Products)
-                {
-                    var productResponse = await _productService.GetDetailsAsync(orderItem.ProductId);
-                    if (productResponse.Succeeded)
-                    {
-                        var product = productResponse.Data;
-                        var factorDate = product.FactorUpdateOn.HasValue ? product.FactorUpdateOn.Value : order.TimeStamp;
-                        await _stockService.RecordTransaction(product.Id, orderItem.Quantity, order.ReferenceNumber, OrderType.StockIn, product.discountFactor, product.Cost, factorDate, order.WarehouseId);
-                    }
-                }
+                //foreach (var orderItem in order.Products)
+                //{
+                //    var productResponse = await _productService.GetDetailsAsync(orderItem.ProductId);
+                //    if (productResponse.Succeeded)
+                //    {
+                //        var product = productResponse.Data;
+                //        var factorDate = product.FactorUpdateOn.HasValue ? product.FactorUpdateOn.Value : order.TimeStamp;
+                //        await _stockService.RecordTransaction(product.Id, orderItem.Quantity, order.ReferenceNumber, OrderType.StockIn, product.discountFactor, product.Cost, factorDate, order.WarehouseId);
+                //    }
+                //}
             }
 
-            return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
+            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
         }
 
         public async Task<Result<Guid>> Delete(RemoveStockInCommand request, CancellationToken cancellationToken)
         {
-            var stockIn = await _salesContext.Orders.Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
+            var stockIn = await _salesContext.Orders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockIn != null)
             {
-                if (stockIn.Status == OrderStatus.Approved)
+                if (stockIn.Status == OrderStatus.Pending)
                 {
                     throw new SalesException(_localizer["Stock In Already Approved. Can't able to delete!"], HttpStatusCode.Gone);
                 }
 
                 _salesContext.Orders.Remove(stockIn);
                 await _salesContext.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(stockIn.UUID, _localizer["Stock In Deleted"]);
+                return await Result<Guid>.SuccessAsync(stockIn.Id, _localizer["Stock In Deleted"]);
             }
             else
             {
@@ -173,13 +172,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
         public async Task<Result<Guid>> Update(UpdateStockInCommand request, CancellationToken cancellationToken)
         {
-            var stockIn = await _salesContext.Orders.Where(p => p.UUID == request.Id).FirstOrDefaultAsync(cancellationToken);
+            var stockIn = await _salesContext.Orders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockIn != null)
             {
-                var order = Order.InitializeOrder(request.TimeStamp);
+                var order = InternalOrder.InitializeOrder(request.TimeStamp);
                 order.SetReferenceNumber(stockIn.ReferenceNumber);
-                order.SetPOReferenceNumber(stockIn.POReferenceNo);
-                order.IsApproved = false;
                 order.Status = OrderStatus.PendingApproval;
                 order.OrderType = OrderType.StockIn;
                 order.SetNote(request.Note);
@@ -191,14 +188,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                     if (productResponse.Succeeded)
                     {
                         var product = productResponse.Data;
-                        order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
+                        //order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
                     }
                 }
 
                 _salesContext.Orders.Remove(stockIn);
                 await _salesContext.Orders.AddAsync(order, cancellationToken);
                 await _salesContext.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(order.UUID, string.Format(_localizer["Stock In {0} Updated"], order.ReferenceNumber));
+                return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock In {0} Updated"], order.ReferenceNumber));
             }
             else
             {
@@ -208,7 +205,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
         public async Task<bool> AlreadyExist(Guid id)
         {
-            return await _salesContext.Orders.AnyAsync(x => x.UUID == id);
+            return await _salesContext.Orders.AnyAsync(x => x.Id == id);
         }
     }
 }

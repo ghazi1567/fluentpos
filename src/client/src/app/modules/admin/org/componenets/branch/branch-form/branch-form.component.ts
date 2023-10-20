@@ -47,7 +47,9 @@ export class branchFormComponent implements OnInit {
             phoneNo: [this.data && this.data.phoneNo],
             emailAddress: [this.data && this.data.emailAddress],
             currency: [this.data && this.data.currency],
-            country: [this.data && this.data.country]
+            country: [this.data && this.data.country],
+            shopifyUrl: [this.data && this.data.shopifyUrl],
+            accessToken: [this.data && this.data.accessToken],
         });
         if (this.branchForm.get("id").value === "" || this.branchForm.get("id").value == null) {
             this.formTitle = "Register Branch";

@@ -9,19 +9,26 @@ import { AuthService } from "../services/auth.service";
 export class LoadingInterceptor implements HttpInterceptor {
     ignorePath: string[] = [""];
 
-    constructor(private busyService: BusyService, private authService: AuthService) {}
+    constructor(private busyService: BusyService, private authService: AuthService) { }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         var pathName = request.url.endsWith(".json") ? "json" : new URL(request.url).pathname;
         if (!this.ignorePath.find((x) => x == pathName) && pathName != "json") {
+            var branchId = this.authService.getBranchId;
+            var storeId = this.authService.getStoreId;
+            if(storeId){
+                request = request.clone({
+                    headers: request.headers.set('store-id', storeId)
+                });
+            }
             if (request.method.toLowerCase() === "post" || request.method.toLowerCase() === "put") {
                 if (request.body instanceof FormData) {
                     request = request.clone({
-                        body: request.body.append("branchId", this.authService.getBranchId)
+                        body: request.body.append("branchId", branchId)
                     });
                 } else {
                     const foo = {};
-                    foo["branchId"] = this.authService.getBranchId;
+                    foo["branchId"] = branchId;
                     foo["organizationId"] = this.authService.getOrganizationId;
                     foo["userId"] = this.authService.getUserId;
                     foo["ipAddress"] = this.authService.getIpAddress;
@@ -32,12 +39,12 @@ export class LoadingInterceptor implements HttpInterceptor {
                 }
             }
             if (request.method.toLowerCase() === "get") {
-                if(!request.params.get('branchId')){
+                if (!request.params.get('branchId')) {
                     request = request.clone({
-                        params: request.params.set("branchId", this.authService.getBranchId)
+                        params: request.params.set("branchId", branchId)
                     });
                 }
-                
+
                 request = request.clone({
                     params: request.params.set("organizationId", this.authService.getOrganizationId)
                 });

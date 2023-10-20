@@ -13,7 +13,7 @@ const routes: Routes = [
         component: SetupComponent
     },
     {
-        path: "branch",
+        path: "store",
         component: BranchComponent
     },
     {

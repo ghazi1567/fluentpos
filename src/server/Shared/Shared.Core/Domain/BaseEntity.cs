@@ -16,13 +16,13 @@ namespace FluentPOS.Shared.Core.Domain
     public abstract class BaseEntity : IEntity<Guid>, IBaseEntity
     {
         [Key]
-        public Guid UUID { get; set; }
+        public Guid Id { get; set; }
 
-        public long? Id { get; set; }
+        public long? ShopifyId { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTimeOffset? CreatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public DateTimeOffset? UpdatedAt { get; set; }
 
         public Guid OrganizationId { get; set; }
 
@@ -30,7 +30,7 @@ namespace FluentPOS.Shared.Core.Domain
 
         protected BaseEntity()
         {
-            UUID = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         private List<Event> _domainEvents;

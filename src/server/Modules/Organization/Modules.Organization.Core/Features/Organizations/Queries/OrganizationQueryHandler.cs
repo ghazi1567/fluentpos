@@ -47,16 +47,16 @@ namespace FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries
 
         public async Task<PaginatedResult<GetOrganizationResponse>> Handle(GetOrganizationsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Organisation, GetOrganizationResponse>> expression = e => new GetOrganizationResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country);
+            Expression<Func<Organisation, GetOrganizationResponse>> expression = e => new GetOrganizationResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.Name, e.Address, e.PhoneNo, e.EmailAddress, e.Currency, e.Country);
             var queryable = _context.Organisations.AsNoTracking().AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
                 queryable = queryable.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.UUID.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
             }
 
             var brandList = await queryable
@@ -73,7 +73,7 @@ namespace FluentPOS.Modules.Organizations.Core.Features.Organizations.Queries
         public async Task<Result<GetOrganizationByIdResponse>> Handle(GetOrganizationByIdQuery query, CancellationToken cancellationToken)
         {
             var brand = await _context.Organisations.AsNoTracking()
-                .Where(b => b.UUID == query.Id)
+                .Where(b => b.Id == query.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (brand == null)

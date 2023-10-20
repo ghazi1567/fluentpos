@@ -12,7 +12,7 @@ namespace FluentPOS.Shared.Core.Contracts
 {
     public interface IEntity<TEntityId> : IEntity
     {
-        public TEntityId UUID { get; set; }
+        public TEntityId Id { get; set; }
     }
 
     public interface IEntity

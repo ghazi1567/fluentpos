@@ -52,12 +52,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<PaginatedResult<EmployeeRequestDto>> Handle(GetEmployeeRequestsQuery request, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
+            Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
 
-            var queryable = _context.EmployeeRequests.Where(x => x.EmployeeId == request.EmployeeId || x.RequestedBy == request.EmployeeId).AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
+            var queryable = _context.EmployeeRequests.Where(x => x.EmployeeId == request.EmployeeId || x.RequestedBy == request.EmployeeId).AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.UUID);
+            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
             if (!string.IsNullOrEmpty(request.SearchString))
             {
@@ -85,13 +85,13 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             var requests = await (from r in queryable
                                   join e in _context.Employees
-                                  on r.EmployeeId equals e.UUID
+                                  on r.EmployeeId equals e.Id
                                   join rbe in _context.Employees
-                                  on r.RequestedBy equals rbe.UUID into rb
+                                  on r.RequestedBy equals rbe.Id into rb
                                   from b in rb.DefaultIfEmpty()
                                   select new EmployeeRequestDto
                                   {
-                                      UUID = r.UUID,
+                                      Id = r.Id,
                                       BranchId = r.BranchId,
                                       CreatedAt = r.CreatedAt,
                                       OrganizationId = r.OrganizationId,
@@ -137,7 +137,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
         public async Task<Result<GetEmployeeRequestByIdResponse>> Handle(GetEmployeeRequestByIdQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            var employee = await _context.EmployeeRequests.Where(c => c.UUID == query.Id).FirstOrDefaultAsync(cancellationToken);
+            var employee = await _context.EmployeeRequests.Where(c => c.Id == query.Id).FirstOrDefaultAsync(cancellationToken);
             if (employee == null)
             {
                 throw new PeopleException(_localizer["Request Not Found!"], HttpStatusCode.NotFound);
@@ -149,9 +149,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public async Task<PaginatedResult<EmployeeRequestDto>> Handle(GetMyQueueQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.UUID, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
+            Expression<Func<EmployeeRequest, GetEmployeeRequestsResponse>> expression = e => new GetEmployeeRequestsResponse(e.Id, e.CreatedAt, e.UpdatedAt, e.OrganizationId, e.BranchId, Guid.Empty, e.EmployeeId, e.DepartmentId, e.PolicyId, e.DesignationId, e.RequestType, e.RequestedOn, e.RequestedBy, e.AttendanceDate, e.CheckIn, e.CheckOut, e.OvertimeHours, e.OverTimeType, e.Reason);
 
-            var queryable = _context.EmployeeRequests.Where(x => (x.Status == Shared.DTOs.Enums.RequestStatus.Pending || x.Status == Shared.DTOs.Enums.RequestStatus.InProgress)).AsNoTracking().OrderBy(x => x.UUID).AsQueryable();
+            var queryable = _context.EmployeeRequests.Where(x => (x.Status == Shared.DTOs.Enums.RequestStatus.Pending || x.Status == Shared.DTOs.Enums.RequestStatus.InProgress)).AsNoTracking().OrderBy(x => x.Id).AsQueryable();
 
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.AttendanceDate);
@@ -185,13 +185,13 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             var myQueueRequests = await (from r in queryable
                                          join e in _context.Employees
-                                         on r.EmployeeId equals e.UUID
+                                         on r.EmployeeId equals e.Id
                                          join rbe in _context.Employees
-                                         on r.RequestedBy equals rbe.UUID into rb
+                                         on r.RequestedBy equals rbe.Id into rb
                                          from b in rb.DefaultIfEmpty()
                                          select new EmployeeRequestDto
                                          {
-                                             UUID = r.UUID,
+                                             Id = r.Id,
                                              BranchId = r.BranchId,
                                              CreatedAt = r.CreatedAt,
                                              OrganizationId = r.OrganizationId,
@@ -236,7 +236,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public async Task<List<RequestApprovalDto>> Handle(GetRequestApproverListQuery request, CancellationToken cancellationToken)
         {
-            var employeeRequest = await _context.EmployeeRequests.Where(c => c.UUID == request.RequestId).FirstOrDefaultAsync(cancellationToken);
+            var employeeRequest = await _context.EmployeeRequests.Where(c => c.Id == request.RequestId).FirstOrDefaultAsync(cancellationToken);
             if (employeeRequest == null)
             {
                 throw new PeopleException(_localizer["Request Not Found!"], HttpStatusCode.NotFound);
@@ -244,12 +244,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
             var approvalDtos = (from r in _context.RequestApprovals
                                 join e in _context.Employees
-                                on r.ApproverId equals e.UUID
-                                where r.EmployeeRequestId == employeeRequest.UUID
+                                on r.ApproverId equals e.Id
+                                where r.EmployeeRequestId == employeeRequest.Id
                                 select new RequestApprovalDto
                                 {
-                                    UUID = e.UUID,
-                                    EmployeeRequestId = employeeRequest.UUID,
+                                    Id = e.Id,
+                                    EmployeeRequestId = employeeRequest.Id,
                                     ApproverId = r.ApproverId,
                                     ApprovalIndex = r.ApprovalIndex,
                                     BranchId = r.BranchId,
