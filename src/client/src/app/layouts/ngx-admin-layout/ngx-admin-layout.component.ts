@@ -72,6 +72,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ]
     },
     {
+        title: "Warehouses",
+        icon: "settings-outline",
+        children: [
+            {
+                title: "Locations",
+                link: "sales/locations"
+            },
+            {
+                title: "Inventory Import",
+                link: "sales/inventory-import"
+            },
+        ]
+    },
+    {
         title: "Organization",
         icon: "settings-outline",
         children: [

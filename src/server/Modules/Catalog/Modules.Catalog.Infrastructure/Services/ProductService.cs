@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentPOS.Modules.Catalog.Core.Features.Products.Queries;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
@@ -28,6 +29,16 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Services
         public async Task<Result<GetProductByIdResponse>> GetDetailsAsync(Guid productId)
         {
             return await _mediator.Send(new GetProductByIdQuery(productId, false));
+        }
+
+        public async Task<Result<List<GetProductVariantResponse>>> GetProductBySKUs(List<string> SKUs)
+        {
+            return await _mediator.Send(new GetProductBySKUsQuery(SKUs));
+        }
+
+        public async Task<Result<List<GetProductImageByIdResponse>>> GetProductImages(List<long?> productId)
+        {
+            return await _mediator.Send(new GetProductImageByIdsQuery(productId));
         }
     }
 }

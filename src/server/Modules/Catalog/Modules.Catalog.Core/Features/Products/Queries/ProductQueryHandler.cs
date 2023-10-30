@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
@@ -34,7 +35,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         IRequestHandler<GetProductsQuery, PaginatedResult<GetProductsResponse>>,
         IRequestHandler<GetProductByIdQuery, Result<GetProductByIdResponse>>,
         IRequestHandler<GetProductImageQuery, Result<string>>,
-        IRequestHandler<SyncProductCommand, Result<string>>
+        IRequestHandler<SyncProductCommand, Result<string>>,
+        IRequestHandler<GetProductImageByIdsQuery, Result<List<GetProductImageByIdResponse>>>,
+        IRequestHandler<GetProductBySKUsQuery, Result<List<GetProductVariantResponse>>>
     {
         private readonly ICatalogDbContext _context;
         private readonly IMapper _mapper;
@@ -122,13 +125,32 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public async Task<Result<string>> Handle(GetProductImageQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            //string data = await _context.Products.AsNoTracking()
-            //    .Where(p => p.Id == query.Id)
-            //    .Select(x => x.ImageUrl)
-            //    .FirstOrDefaultAsync(cancellationToken);
+            var productImageQueryable = _context.ProductImage.AsQueryable();
+            string data = string.Empty;
+            data = await productImageQueryable.Where(p => p.Id == query.Id.Value)
+                .OrderBy(x => x.Position)
+                .Select(x => x.Src)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            string data = "";
-            return await Result<string>.SuccessAsync(data: $"{_applicationSettings.ApiUrl}{data.Replace(@"\", "/")}");
+
+            return await Result<string>.SuccessAsync(data);
+        }
+
+
+#pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
+        public async Task<Result<List<GetProductImageByIdResponse>>> Handle(GetProductImageByIdsQuery query, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+            Expression<Func<ProductImage, GetProductImageByIdResponse>> expression = e => new GetProductImageByIdResponse(e.Id, e.ShopifyId, e.ProductId, e.Position, e.Src, e.Filename, e.Attachment, e.Height, e.Width, e.Alt);
+
+            var productImageQueryable = _context.ProductImage.AsQueryable();
+            List<GetProductImageByIdResponse> data = await productImageQueryable.Where(p => query.shopifyIds.Contains(p.ProductId))
+                .AsNoTracking()
+                .OrderBy(x => x.Position)
+                .Select(expression)
+                .ToListAsync(cancellationToken);
+
+            return await Result<List<GetProductImageByIdResponse>>.SuccessAsync(data);
         }
 
         public async Task<Result<string>> Handle(SyncProductCommand query, CancellationToken cancellationToken)
@@ -139,5 +161,18 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
             return await Result<string>.SuccessAsync(data: result);
         }
 
+#pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
+        public async Task<Result<List<GetProductVariantResponse>>> Handle(GetProductBySKUsQuery query, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+            Expression<Func<ProductVariant, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, e.ProductId, e.Title, e.SKU, e.InventoryItemId);
+
+            var products = await _context.ProductVariant.AsNoTracking()
+                .Where(p => query.SKUs.Contains(p.SKU))
+                .Select(expression)
+                .ToListAsync(cancellationToken);
+
+            return await Result<List<GetProductVariantResponse>>.SuccessAsync(products);
+        }
     }
 }

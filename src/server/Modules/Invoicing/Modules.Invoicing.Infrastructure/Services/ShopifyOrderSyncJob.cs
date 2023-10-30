@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
-using FluentPOS.Modules.Invoicing.Core.Abstractions;
-using FluentPOS.Modules.Invoicing.Core.Dtos;
+using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands;
+using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Interfaces.Serialization;
 using FluentPOS.Shared.Core.Utilities;
+using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.Infrastructure.Services;
+using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using ShopifySharp.Filters;
 using ShopifySharp.Lists;
 using System;
@@ -18,15 +21,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 {
     public class ShopifyOrderSyncJob : HangfireService, IShopifyOrderSyncJob
     {
-        // private readonly ISalesDbContext _context;
-        // private readonly IMapper _mapper;
-        // public ShopifyOrderSyncJob(
-        //     ISalesDbContext context,
-        //     IMapper mapper)
-        // {
-        //     _context = context;
-        //     _mapper = mapper;
-        // }
+        private const string WebhookOrderJobId = "ShopifyOrderJob1";
 
         private readonly IHttpContextAccessor _accessor;
 
@@ -37,14 +32,15 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IJsonSerializer _jsonSerializer;
+        private readonly IWebhookEventService _webhookEventService;
 
-        public ShopifyOrderSyncJob(IHttpContextAccessor accessor, IMapper mapper, IMediator mediator, IJsonSerializer jsonSerializer)
+        public ShopifyOrderSyncJob(IHttpContextAccessor accessor, IMapper mapper, IMediator mediator, IJsonSerializer jsonSerializer, IWebhookEventService webhookEventService)
         {
             _accessor = accessor;
             _mapper = mapper;
             _mediator = mediator;
             _jsonSerializer = jsonSerializer;
-
+            _webhookEventService = webhookEventService;
             StoreId = _accessor.HttpContext?.Request?.Headers["store-id"];
             if (!string.IsNullOrEmpty(StoreId))
             {
@@ -103,6 +99,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     try
                     {
                         var order = _mapper.Map<RegisterOrderCommand>(shopifyProduct);
+                        order.Status = Shared.DTOs.Sales.Enums.OrderStatus.Pending;
                         var response = await _mediator.Send(order);
                         // Console.WriteLine(response.Messages);
                     }
@@ -112,6 +109,46 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     }
                 }
             }
+        }
+
+
+        public string RunOrderWebhook()
+        {
+            RemoveIfExists(WebhookOrderJobId);
+            ScheduleRecurring(methodCall: () => FetchWebhookEvents(), recurringJobId: WebhookOrderJobId, cronExpression: Cron.MinuteInterval(5));
+            return WebhookOrderJobId;
+        }
+
+        public async Task FetchWebhookEvents()
+        {
+            var pendingOrders = await _webhookEventService.FetchPendingOrders();
+            foreach (var order in pendingOrders)
+            {
+                try
+                {
+                    var shopifyOrder = JsonConvert.DeserializeObject<ShopifySharp.Order>(order.JsonBody);
+                    var command = _mapper.Map<RegisterOrderCommand>(shopifyOrder);
+                    var response = await SaveOrder(command);
+                    if (response.Succeeded)
+                    {
+                        await _webhookEventService.UpdateStatus(order.Id, "Completed", "Order Saved Successully", command.ShopifyId);
+                    }
+                    else
+                    {
+                        string msg = string.Join(", ", response.Messages);
+                        await _webhookEventService.UpdateStatus(order.Id, msg.Contains("Duplicate") ? "Duplicate" : "Failed", msg, command.ShopifyId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await _webhookEventService.UpdateStatus(order.Id, "Failed", ex.Message, null);
+                }
+            }
+        }
+
+        public async Task<Result<Guid>> SaveOrder(RegisterOrderCommand registerOrderCommand)
+        {
+            return await _mediator.Send(registerOrderCommand);
         }
     }
 }

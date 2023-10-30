@@ -9,6 +9,7 @@ import { UploadType } from 'src/app/core/models/uploads/upload-type';
 })
 export class UploaderComponent implements OnInit {
   @Input() url: any;
+  @Input() showUploader: boolean = true;
   @Output() onLoadFile = new EventEmitter<Upload>();
 
   upload = new Upload();

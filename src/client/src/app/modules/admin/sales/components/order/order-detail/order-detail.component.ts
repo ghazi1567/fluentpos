@@ -10,6 +10,9 @@ import { ProductParams } from "src/app/modules/admin/catalog/models/productParam
 import { ProductService } from "src/app/modules/admin/catalog/services/product.service";
 import { Order } from "../../../models/order";
 import { SalesService } from "../../../services/sales.service";
+import { OrderStatusMapping } from "src/app/core/enums/OrderStatus";
+import { ActivatedRoute } from "@angular/router";
+import { OrdersService } from "../../../services/orders.service";
 
 @Component({
     selector: "app-order-detail",
@@ -17,23 +20,48 @@ import { SalesService } from "../../../services/sales.service";
     styleUrls: ["./order-detail.component.scss"]
 })
 export class OrderDetailComponent implements OnInit {
-    order: Order;
+    orderId: any;
+    order: any;
     products: Product[];
     displayedColumns: string[] = ["barcodeSymbology", "productName", "quantity", "price", "total"];
-    constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private toastr: ToastrService, private saleService: SalesService, private productApi: ProductService) {}
+    public OrderStatusMapping = OrderStatusMapping;
+    constructor(private toastr: ToastrService,
+        private orderService: OrdersService,
+        private productApi: ProductService,
+        private route: ActivatedRoute) {
+        this.orderId = this.route.snapshot.params['id'];
+    }
 
     ngOnInit(): void {
-        this.getProducts();
+        this.getOrder();
     }
+
     getOrder() {
-        this.saleService.getById(this.data.id).subscribe((response) => {
-            response.data.products.forEach((x) => {
-                x.productName = this.getProductName(x.productId);
-                x.barcodeSymbology = this.getProductBarcode(x.productId);
-            });
+        this.orderService.getById(this.orderId).subscribe((response) => {
             this.order = response.data;
         });
     }
+
+    cancelOrder() {
+        var model = {
+            id: this.order.id,
+            shopifyId: this.order.shopifyId,
+            reason: ''
+        }
+        this.orderService.cancelOrder(model).subscribe((res) => {
+            if (res.succeeded) {
+                this.toastr.success(res.messages[0]);
+            } else {
+
+            }
+        },
+            error => {
+                console.log('oops', error)
+                this.toastr.error(error);
+            }
+        );
+    }
+
     getProducts() {
         let params = new ProductParams();
         params.pageSize = 10000;

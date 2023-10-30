@@ -25,6 +25,9 @@ namespace FluentPOS.Shared.DTOs.Upload
         Customer,
 
         [Description(@"Images\People\Employees")]
-        Employee
+        Employee,
+
+        [Description(@"Images\Inventory\Import")]
+        Inventory
     }
 }

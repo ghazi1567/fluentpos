@@ -49,7 +49,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         [HttpGet("SyncOrders")]
         public IActionResult SyncOrders()
         {
-            return Ok(_shopifyOrderSyncJob.SyncShopifyOrders());
+            return Ok(_shopifyOrderSyncJob.RunOrderWebhook());
         }
     }
 }

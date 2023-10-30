@@ -10,9 +10,12 @@ import { Warehouse } from "../models/warehouse";
     providedIn: "root"
 })
 export class WarehouseService {
-    constructor(private api: WarehouseApiService) {}
+    constructor(private api: WarehouseApiService) { }
 
-    getAll(): Observable<Result<Warehouse[]>> {
-        return this.api.getAlls().pipe(map((response: Result<Warehouse[]>) => response));
+    getAll(): Observable<Result<any[]>> {
+        return this.api.getAlls().pipe(map((response: Result<any[]>) => response));
+    }
+    syncLocations(): Observable<Result<any[]>> {
+        return this.api.syncLocations().pipe(map((response: Result<any[]>) => response));
     }
 }

@@ -46,5 +46,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
         bool Requeue(string jobId);
 
         bool Requeue(string jobId, string fromState);
+
+        void ScheduleRecurring(string recurringJobId, Expression<Func<Task>> methodCall, string cronExpression);
     }
 }

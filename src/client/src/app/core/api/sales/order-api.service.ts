@@ -13,10 +13,18 @@ export class OrderApiService {
   }
 
   getAlls(params: HttpParams) {
-    return this.http.get(this.baseUrl, {params: params});
+    return this.http.get(this.baseUrl, { params: params });
   }
 
   getById(id: string) {
     return this.http.get(this.baseUrl + id);
+  }
+
+  syncOrders() {
+    return this.http.get(environment.apiUrl + 'invoicing/Sync/SyncOrders');
+  }
+
+  cancelOrder(model: any) {
+    return this.http.post(`${this.baseUrl}CancelOrder`, model);
   }
 }

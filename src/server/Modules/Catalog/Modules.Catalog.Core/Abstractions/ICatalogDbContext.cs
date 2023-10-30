@@ -16,8 +16,12 @@ namespace FluentPOS.Modules.Catalog.Core.Abstractions
     {
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<ProductVariant> ProductVariant { get; set; }
+
         public DbSet<Brand> Brands { get; set; }
 
         public DbSet<Category> Categories { get; set; }
+
+        public DbSet<ProductImage> ProductImage { get; set; }
     }
 }

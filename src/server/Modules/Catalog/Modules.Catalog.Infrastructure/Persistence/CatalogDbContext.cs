@@ -51,6 +51,8 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<ProductImage> ProductImage { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -68,5 +70,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence
         DbSet<CategoryExtendedAttribute> IExtendedAttributeDbContext<Guid, Category, CategoryExtendedAttribute>.ExtendedAttributes { get; set; }
 
         DbSet<ProductExtendedAttribute> IExtendedAttributeDbContext<Guid, Product, ProductExtendedAttribute>.ExtendedAttributes { get; set; }
+
+        public DbSet<ProductVariant> ProductVariant { get; set; }
     }
 }

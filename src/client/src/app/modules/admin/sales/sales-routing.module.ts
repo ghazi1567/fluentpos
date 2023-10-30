@@ -14,11 +14,18 @@ import { StockOutEditComponent } from './components/stockout/stock-out-edit/stoc
 import { VarianceReportComponent } from './reports/variance-report/variance-report.component';
 import { StockReportComponent } from './reports/stock-report/stock-report.component';
 import { StockOutReportComponent } from './reports/stock-out-report/stock-out-report.component';
+import { OrderDetailComponent } from './components/order/order-detail/order-detail.component';
+import { WarehouseComponent } from './components/warehouse/warehouse.component';
+import { InventoryImportComponent } from './components/inventory-import/inventory-import.component';
 
 const routes: Routes = [
   {
     path: 'orders',
     component: OrderComponent
+  },
+  {
+    path: 'order-detail/:id',
+    component: OrderDetailComponent
   },
   {
     path: 'purchase-order',
@@ -71,6 +78,14 @@ const routes: Routes = [
   {
     path: 'stock-out-report',
     component: StockOutReportComponent
+  },
+  {
+    path: 'locations',
+    component: WarehouseComponent
+  },
+  {
+    path: 'inventory-import',
+    component: InventoryImportComponent
   },
 ];
 

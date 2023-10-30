@@ -35,5 +35,10 @@ namespace FluentPOS.Shared.Core.Entities
 
         public long? ShopifyId { get; set; }
 
+        public string Status { get; set; }
+
+        public DateTimeOffset UpdatedAt { get; set; }
+
+        public string Note { get; set; }
     }
 }

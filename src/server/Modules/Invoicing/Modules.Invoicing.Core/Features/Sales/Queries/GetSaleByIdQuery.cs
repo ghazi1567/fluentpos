@@ -8,7 +8,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
-    public class GetOrderByIdQuery : IRequest<Result<GetOrderByIdResponse>>
+    public class GetSaleByIdQuery : IRequest<Result<GetOrderByIdResponse>>
     {
         public Guid Id { get; set; }
 

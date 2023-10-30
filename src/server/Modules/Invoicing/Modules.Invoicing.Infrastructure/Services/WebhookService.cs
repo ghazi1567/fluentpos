@@ -60,7 +60,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     WebhookId = webhookId,
                     ShopDomain = shopDomain,
                     ApiVersion = apiVersion,
-                    IsTest = bool.Parse(isTest)
+                    IsTest = bool.Parse(isTest),
+                    Status = "Pending"
                 };
             }
             catch (System.Exception)

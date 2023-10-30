@@ -16,4 +16,8 @@ export class WarehouseApiService {
     return this.http.get(this.baseUrl);
   }
 
+  syncLocations() {
+    return this.http.get(`${this.baseUrl}Sync`);
+  }
+
 }

@@ -41,6 +41,12 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence
 
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
+        public DbSet<ImportFile> ImportFiles { get; set; }
+
+        public DbSet<ImportRecord> ImportRecords { get; set; }
+
+        public DbSet<InternalInventoryLevel> InventoryLevels { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

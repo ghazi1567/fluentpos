@@ -9,6 +9,7 @@
 using FluentPOS.Modules.Inventory.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using FluentPOS.Shared.Core.Interfaces;
+using FluentPOS.Modules.Inventory.Core.Dtos;
 
 namespace FluentPOS.Modules.Inventory.Core.Abstractions
 {
@@ -17,5 +18,11 @@ namespace FluentPOS.Modules.Inventory.Core.Abstractions
         public DbSet<Stock> Stocks { get; set; }
 
         public DbSet<StockTransaction> StockTransactions { get; set; }
+
+        public DbSet<ImportFile> ImportFiles { get; set; }
+
+        public DbSet<ImportRecord> ImportRecords { get; set; }
+
+        public DbSet<InternalInventoryLevel> InventoryLevels { get; set; }
     }
 }

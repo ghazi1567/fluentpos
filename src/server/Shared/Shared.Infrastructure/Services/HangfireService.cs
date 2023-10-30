@@ -63,5 +63,12 @@ namespace FluentPOS.Shared.Infrastructure.Services
 
         public string Schedule<T>(Expression<Func<T, Task>> methodCall, DateTimeOffset enqueueAt) =>
             BackgroundJob.Schedule(methodCall, enqueueAt);
+
+        public void ScheduleRecurring(string recurringJobId, Expression<Func<Task>> methodCall, string cronExpression) =>
+           RecurringJob.AddOrUpdate(recurringJobId, methodCall, cronExpression);
+
+        public void RemoveIfExists(string recurringJobId) =>
+           RecurringJob.RemoveIfExists(recurringJobId);
+
     }
 }

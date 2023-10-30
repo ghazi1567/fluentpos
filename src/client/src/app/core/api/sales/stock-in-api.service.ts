@@ -5,37 +5,37 @@ import { environment } from 'src/environments/environment';
 import { Result } from '../../models/wrappers/Result';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class StockInApiService {
-  baseUrl = environment.apiUrl + "invoicing/StockIn/";
+    baseUrl = environment.apiUrl + "invoicing/StockIn/";
 
-  constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-  getAlls(params: HttpParams) {
-      return this.http.get(this.baseUrl, { params: params });
-  }
+    getAlls(params: HttpParams) {
+        return this.http.get(this.baseUrl, { params: params });
+    }
 
-  getById(id: string) {
-      return this.http.get<Result<Order>>(this.baseUrl + id);
-  }
+    getById(id: string) {
+        return this.http.get<Result<Order>>(this.baseUrl + id);
+    }
 
-  getImageById(id: string) {
-      return this.http.get(this.baseUrl + `image/${id}`);
-  }
+    getImageById(id: string) {
+        return this.http.get(this.baseUrl + `image/${id}`);
+    }
 
-  create(product: Order) {
-      return this.http.post(this.baseUrl, product);
-  }
+    create(product: Order) {
+        return this.http.post(this.baseUrl, product);
+    }
 
-  update(product: Order) {
-      return this.http.put(this.baseUrl, product);
-  }
+    update(product: Order) {
+        return this.http.put(this.baseUrl, product);
+    }
 
-  delete(id: string) {
-      return this.http.delete(this.baseUrl + id);
-  }
-  approve(product: any) {
-    return this.http.post(this.baseUrl + 'Approve', product);
-}
+    delete(id: string) {
+        return this.http.delete(this.baseUrl + id);
+    }
+    approve(product: any) {
+        return this.http.post(this.baseUrl + 'Approve', product);
+    }
 }

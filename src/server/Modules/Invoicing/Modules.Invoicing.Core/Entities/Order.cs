@@ -9,6 +9,7 @@
 using FluentPOS.Shared.Core.Domain;
 using FluentPOS.Shared.DTOs.People.Customers;
 using FluentPOS.Shared.DTOs.Sales.Enums;
+using ShopifySharp;
 using System;
 using System.Collections.Generic;
 
@@ -336,6 +337,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// Whether this order was exempt from taxes.
         /// </summary>
         public bool? TaxExempt { get; set; }
+
+        public decimal? TotalShippingPrice { get; set; }
 
         // public string ShippingAddress1 { get; set; }
         // public string ShippingAddress2 { get; set; }

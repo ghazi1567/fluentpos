@@ -32,8 +32,24 @@
     nb-layout .layout .layout-container .content nb-layout-footer nav {
       justify-content: flex-start !important
     }
+
     nb-layout .layout .layout-container .content nb-layout-footer nav nb-action {
       cursor: pointer;
     }
+
+    nb-layout.with-scroll .scrollable-container {
+      overflow: hidden;
+      /* height: 100vh; */
+      display: block;
+    }
+
+    nb-list-item {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    
   }
+
 }

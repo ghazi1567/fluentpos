@@ -154,5 +154,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// </summary>
         [JsonProperty("fulfillment_line_item_id")]
         public long? FulfillmentLineItemId { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

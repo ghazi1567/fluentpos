@@ -8,11 +8,11 @@
 
 using System;
 using System.Threading.Tasks;
+using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.PO;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries;
 using FluentPOS.Shared.Core.Constants;
-using FluentPOS.Shared.DTOs.Sales.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +24,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
         [HttpGet]
         [Authorize(Policy = Permissions.Sales.ViewAll)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] GetSalesQuery request)
+        public async Task<IActionResult> GetAllAsync([FromQuery] GetOrdersQuery request)
         {
             var sales = await Mediator.Send(request);
             return Ok(sales);
@@ -44,9 +44,10 @@ namespace FluentPOS.Modules.Invoicing.Controllers
             return Ok(await Mediator.Send(command));
         }
 
-        [HttpPost("PO")]
-        [Authorize(Policy = Permissions.Sales.Register)]
-        public async Task<IActionResult> RegisterPOAsync(RegisterPOCommand command)
+
+        [HttpPost("CancelOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> CancelOrderAsync(CancelledOrderCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

@@ -6,17 +6,18 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System.Reflection;
 using FluentPOS.Modules.Invoicing.Core.Abstractions;
 using FluentPOS.Modules.Invoicing.Core.Features.PO.Service;
 using FluentPOS.Modules.Invoicing.Core.Services;
 using FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob;
 using FluentPOS.Modules.Invoicing.Infrastructure.Persistence;
 using FluentPOS.Modules.Invoicing.Infrastructure.Services;
+using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Infrastructure.Extensions;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace FluentPOS.Modules.Invoicing.Infrastructure.Extensions
 {
@@ -34,6 +35,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Extensions
             services.AddHostedService<DataMigrationJob>();
             services.AddTransient<IShopifyOrderSyncJob, ShopifyOrderSyncJob>();
             services.AddTransient<IWebhookService, WebhookService>();
+            services.AddTransient<IShopifyOrderService, ShopifyOrderService>();
+            services.AddTransient<IShopifyLocationService, ShopifyLocationService>();
+            services.AddTransient<IWarehouseService, WarehouseService>();
+            
             return services;
         }
 

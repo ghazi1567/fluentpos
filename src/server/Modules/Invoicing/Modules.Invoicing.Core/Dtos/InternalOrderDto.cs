@@ -9,7 +9,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
     {
         public string ReferenceNumber { get; set; }
 
-        public OrderStatus Status { get; set; }
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
         public OrderType OrderType { get; set; }
 
@@ -24,7 +24,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         public string CustomerEmail { get; set; }
 
 
-        public string Note { get; private set; }
+        public string Note { get;  set; }
 
         public InternalCustomerDto? Customer { get; set; }
 
@@ -309,5 +309,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// </summary>
         public bool? TaxExempt { get; set; }
 
+        public decimal? TotalShippingPrice { get; set; }
     }
 }

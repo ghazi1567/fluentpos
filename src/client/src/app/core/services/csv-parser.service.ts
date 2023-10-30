@@ -136,6 +136,10 @@ export class CsvParserService {
         const ngcCSVParserError: NgxCSVParserError = this.errorBuilder("NOT_A_CSV_FILE", "Selected file is not a csv File Type.", 2);
         observer.error(ngcCSVParserError);
     }
+    notXLSXFileErrorHandler(observer: Observer<any>) {
+        const ngcCSVParserError: NgxCSVParserError = this.errorBuilder("NOT_A_xlsx_FILE", "Selected file is not a xlsx File Type.", 2);
+        observer.error(ngcCSVParserError);
+    }
 
     unknownCSVParserErrorHandler(observer: Observer<any>) {
         const ngcCSVParserError: NgxCSVParserError = this.errorBuilder("UNKNOWN_ERROR", "Unknown error. Please refer to official documentation for library usage.", 404);

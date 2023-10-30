@@ -9,7 +9,8 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
       public record GetWarehouseResponse
       (
              Guid Id,
+             long? ShopifyId,
              string Name,
-             bool Active
+             bool? Active
       );
 }

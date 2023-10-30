@@ -11,7 +11,7 @@ using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 
-namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
+namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
     public class RegisterOrderCommand : InternalOrderDto, IRequest<Result<Guid>>
     {

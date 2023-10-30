@@ -3,4 +3,5 @@ export enum UploadType {
   Brand,
   Category,
   Customer,
+  Inventory
 }

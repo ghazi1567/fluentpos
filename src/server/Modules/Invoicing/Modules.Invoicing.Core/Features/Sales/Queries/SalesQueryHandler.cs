@@ -21,7 +21,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     internal class SalesQueryHandler :
                 IRequestHandler<GetSalesQuery, PaginatedResult<GetSalesResponse>>,
-                IRequestHandler<GetOrderByIdQuery, Result<GetOrderByIdResponse>>
+                IRequestHandler<GetSaleByIdQuery, Result<GetOrderByIdResponse>>
     {
         private readonly ISalesDbContext _context;
         private readonly IMapper _mapper;
@@ -76,7 +76,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 
         }
 
-        public async Task<Result<GetOrderByIdResponse>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<GetOrderByIdResponse>> Handle(GetSaleByIdQuery request, CancellationToken cancellationToken)
         {
             var order = await _context.Orders.AsNoTracking()
                 .OrderBy(x => x.TimeStamp)

@@ -10,6 +10,7 @@ using FluentPOS.Modules.Inventory.Core.Abstractions;
 using FluentPOS.Modules.Inventory.Infrastructure.Persistence;
 using FluentPOS.Modules.Inventory.Infrastructure.Services;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
+using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +32,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Extensions
                  .AddDatabaseContext<InventoryDbContext>()
                  .AddScoped<IInventoryDbContext>(provider => provider.GetService<InventoryDbContext>());
             services.AddTransient<IStockService, StockService>();
+            services.AddTransient<IShopifyInventoryService, ShopifyInventoryService>();
             return services;
         }
     }

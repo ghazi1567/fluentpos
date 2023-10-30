@@ -92,14 +92,23 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.Property<string>("JsonBody")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ShopDomain")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ShopifyId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("TriggeredAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("WebhookId")
                         .HasColumnType("nvarchar(max)");

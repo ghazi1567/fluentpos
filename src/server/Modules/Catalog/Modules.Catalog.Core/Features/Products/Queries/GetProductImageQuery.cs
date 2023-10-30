@@ -6,19 +6,31 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
 using FluentPOS.Shared.Core.Wrapper;
+using FluentPOS.Shared.DTOs.Catalogs.Products;
 using MediatR;
+using System;
+using System.Collections.Generic;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 {
     public class GetProductImageQuery : IRequest<Result<string>>
     {
-        public Guid Id { get; }
+        public Guid? Id { get; }
 
         public GetProductImageQuery(Guid productId)
         {
             Id = productId;
+        }
+    }
+
+    public class GetProductImageByIdsQuery : IRequest<Result<List<GetProductImageByIdResponse>>>
+    {
+        public List<long?> shopifyIds { get; }
+
+        public GetProductImageByIdsQuery(List<long?> productId)
+        {
+            shopifyIds = productId;
         }
     }
 }

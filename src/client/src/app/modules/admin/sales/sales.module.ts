@@ -23,6 +23,9 @@ import { VarianceReportComponent } from './reports/variance-report/variance-repo
 import { UpdatePromotionComponent } from './reports/variance-report/update-promotion/update-promotion.component';
 import { StockReportComponent } from './reports/stock-report/stock-report.component';
 import { StockOutReportComponent } from './reports/stock-out-report/stock-out-report.component';
+import { ThemeModule } from 'src/app/theme/theme.module';
+import { WarehouseComponent } from './components/warehouse/warehouse.component';
+import { InventoryImportComponent } from './components/inventory-import/inventory-import.component';
 
 @NgModule({
   declarations: [
@@ -45,13 +48,16 @@ import { StockOutReportComponent } from './reports/stock-out-report/stock-out-re
     VarianceReportComponent,
     UpdatePromotionComponent,
     StockReportComponent,
-    StockOutReportComponent
+    StockOutReportComponent,
+    WarehouseComponent,
+    InventoryImportComponent
   ],
   imports: [
     CommonModule,
     SalesRoutingModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
+    ThemeModule
   ]
 })
 export class SalesModule { }
