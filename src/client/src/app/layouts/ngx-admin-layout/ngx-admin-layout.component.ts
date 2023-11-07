@@ -6,7 +6,7 @@ import { NbMenuItem } from "@nebular/theme";
     styleUrls: ["./ngx-admin-layout.component.scss"],
     template: `
         <ngx-one-column-layout>
-            <nb-menu [items]="menu"></nb-menu>
+            <nb-menu expanded="false" [items]="menu"></nb-menu>
             <router-outlet></router-outlet>
         </ngx-one-column-layout>
     `
@@ -81,7 +81,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
             },
             {
                 title: "Inventory Import",
-                link: "sales/inventory-import"
+                link: "sales/inventory-import-files"
+            },
+            {
+                title: "Stock Report",
+                link: "sales/stock-report"
             },
         ]
     },

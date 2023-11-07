@@ -1,4 +1,5 @@
 ﻿using FluentPOS.Shared.Core.Domain;
+using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
@@ -78,5 +79,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// The localized name of the location's region. Typically a province, state, or prefecture.
         /// </summary>
         public string LocalizedProvinceName { get; set; }
+
+        public Guid? ParentId { get; set; }
+
+        public string Code { get; set; }
     }
 }

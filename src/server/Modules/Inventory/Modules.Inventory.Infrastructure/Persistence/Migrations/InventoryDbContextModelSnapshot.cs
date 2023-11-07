@@ -76,6 +76,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<bool>("IgnoreRackCheck")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("ImportFileId")
                         .HasColumnType("uniqueidentifier");
 
@@ -90,6 +93,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("Qty")
                         .HasColumnType("int");
+
+                    b.Property<string>("Rack")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SKU")
                         .HasColumnType("nvarchar(max)");
@@ -154,23 +160,35 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("AvailableQuantity")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<long>("AvailableQuantity")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long>("Committed")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<long>("InventoryItemId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("LastUpdatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<long>("OnHand")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Rack")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ShopifyId")
                         .HasColumnType("bigint");
@@ -204,6 +222,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("FactorDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("InventoryItemId")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
@@ -213,8 +234,8 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("PurchasePrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ReferenceNumber")
                         .HasColumnType("nvarchar(max)");

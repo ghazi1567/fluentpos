@@ -11,3 +11,8 @@
     font-size: 34px;
     padding: 4px;
 }
+
+
+tbody tr:nth-child(even) {
+	background: #ddd;
+}

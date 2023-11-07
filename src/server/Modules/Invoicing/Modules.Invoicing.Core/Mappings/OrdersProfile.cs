@@ -2,7 +2,6 @@ using AutoMapper;
 using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
-using FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries;
 using FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands;
 using FluentPOS.Shared.Core.Extensions;
@@ -41,11 +40,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
                 .IgnoreAllNonExisting()
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.TotalShippingPrice, opt => opt.MapFrom(src => src.TotalShippingPriceSet.ShopMoney.Amount))
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.PaymentGatewayNames, opt => opt.MapFrom(src => string.Join(", ", src.PaymentGatewayNames.ToArray())));
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
 
-            CreateMap<RegisterOrderCommand, InternalOrder>(MemberList.Source).ReverseMap();
-
+            CreateMap<RegisterOrderCommand, InternalOrder>(MemberList.Source)
+            .ForMember(dest => dest.PaymentGatewayNames, opt => opt.MapFrom(src => string.Join(", ", src.PaymentGatewayNames.ToArray())));
             CreateMap<ShopifySharp.Customer, InternalCustomerDto>(MemberList.Source)
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
@@ -60,7 +58,17 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
+            CreateMap<ShopifySharp.Fulfillment, OrderFulfillment>(MemberList.Source)
+               .IgnoreAllNonExisting()
+               .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
+               .ForMember(dest => dest.Id, opt => opt.Ignore());
+
             CreateMap<ShopifySharp.LineItem, OrderLineItemDto>(MemberList.Source)
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<ShopifySharp.LineItem, OrderLineItem>(MemberList.Source)
                 .IgnoreAllNonExisting()
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
@@ -77,6 +85,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
               .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<RegisterLocationCommand, Warehouse>().ReverseMap();
+
+            CreateMap<ShopifySharp.FulfillmentOrder, InternalFulfillmentOrderDto>()
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
         }
     }
 }

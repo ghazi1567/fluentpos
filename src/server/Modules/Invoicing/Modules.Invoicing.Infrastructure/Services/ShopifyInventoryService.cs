@@ -1,15 +1,12 @@
 ﻿using FluentPOS.Shared.Core.IntegrationServices.Shopify;
-using FluentPOS.Shared.Core.Utilities;
 using Microsoft.AspNetCore.Http;
 using ShopifySharp;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 {
-    public class ShopifyInventoryService 
+    public class ShopifyInventoryService
     {
-        private readonly IHttpContextAccessor _accessor;
-
         public readonly string StoreId;
         public readonly string _shopifyUrl;
 
@@ -17,16 +14,11 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         public readonly InventoryLevelService _inventoryLevelService;
         public readonly LocationService _locationService;
 
-        public ShopifyInventoryService(IHttpContextAccessor accessor)
+        public ShopifyInventoryService(IStoreService storeService)
         {
-            _accessor = accessor;
-            StoreId = _accessor.HttpContext?.Request?.Headers["store-id"];
-            if (!string.IsNullOrEmpty(StoreId))
-            {
-                string shopifyCreds = EncryptionUtilities.DecryptString(StoreId);
-                _shopifyUrl = shopifyCreds.Split("|")[0];
-                _accessToken = shopifyCreds.Split("|")[1];
-            }
+            string shopifyCreds = storeService.StoreId();
+            _shopifyUrl = shopifyCreds.Split("|")[0];
+            _accessToken = shopifyCreds.Split("|")[1];
 
             if (!string.IsNullOrEmpty(_shopifyUrl) && !string.IsNullOrEmpty(_accessToken))
             {

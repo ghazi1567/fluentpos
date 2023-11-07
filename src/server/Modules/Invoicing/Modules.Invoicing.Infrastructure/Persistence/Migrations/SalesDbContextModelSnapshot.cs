@@ -109,6 +109,12 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<long?>("AppId")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTimeOffset?>("ApprovedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ApprovedBy")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("BillingAddressId")
                         .HasColumnType("uniqueidentifier");
 
@@ -331,7 +337,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("InternalOrderId")
+                    b.Property<Guid>("InternalOrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("LocationId")
@@ -773,6 +779,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
@@ -798,6 +807,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Phone")
@@ -842,7 +854,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", null)
                         .WithMany("Fulfillments")
-                        .HasForeignKey("InternalOrderId");
+                        .HasForeignKey("InternalOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderLineItem", b =>

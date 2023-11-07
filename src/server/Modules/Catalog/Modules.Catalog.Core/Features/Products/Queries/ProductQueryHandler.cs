@@ -165,7 +165,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public async Task<Result<List<GetProductVariantResponse>>> Handle(GetProductBySKUsQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<ProductVariant, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, e.ProductId, e.Title, e.SKU, e.InventoryItemId);
+            Expression<Func<ProductVariant, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, e.ProductId, e.Title, e.SKU, e.InventoryItemId, e.ProductId1);
 
             var products = await _context.ProductVariant.AsNoTracking()
                 .Where(p => query.SKUs.Contains(p.SKU))

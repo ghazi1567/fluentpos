@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
-using FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Interfaces.Serialization;
@@ -34,7 +33,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IWebhookEventService _webhookEventService;
 
-        public ShopifyOrderSyncJob(IHttpContextAccessor accessor, IMapper mapper, IMediator mediator, IJsonSerializer jsonSerializer, IWebhookEventService webhookEventService)
+
+        public ShopifyOrderSyncJob(IHttpContextAccessor accessor, IMapper mapper, IMediator mediator, IJsonSerializer jsonSerializer, IWebhookEventService webhookEventService, IStoreService storeService)
         {
             _accessor = accessor;
             _mapper = mapper;
@@ -45,6 +45,12 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             if (!string.IsNullOrEmpty(StoreId))
             {
                 string shopifyCreds = EncryptionUtilities.DecryptString(StoreId);
+                _shopifyUrl = shopifyCreds.Split("|")[0];
+                _accessToken = shopifyCreds.Split("|")[1];
+            }
+            else
+            {
+                string shopifyCreds = storeService.StoreId();
                 _shopifyUrl = shopifyCreds.Split("|")[0];
                 _accessToken = shopifyCreds.Split("|")[1];
             }

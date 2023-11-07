@@ -1,0 +1,22 @@
+<nb-card>
+    <nb-card-header>
+        Inventory Import Files
+        <nb-actions size="medium" style="float: right;">
+
+            <nb-action>
+                <a [routerLink]="['/admin/sales/inventory-import']">
+                    <nb-icon class="action-icon" status="primary" icon="plus-circle-outline"></nb-icon>
+                </a>
+            </nb-action>
+        </nb-actions>
+
+    </nb-card-header>
+
+    <nb-card-body>
+        <div style="height: calc(100vh - 217px)" class="ag-theme-alpine">
+            <app-ag-grid-base #AgGrid [rowData]="importFilesData" [columnDefs]="importFilesColumns" [pagination]="true"
+                (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+            </app-ag-grid-base>
+        </div>
+    </nb-card-body>
+</nb-card>

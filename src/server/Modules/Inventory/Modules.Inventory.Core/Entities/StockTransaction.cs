@@ -6,16 +6,25 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using FluentPOS.Modules.Inventory.Core.Enums;
 using FluentPOS.Shared.Core.Domain;
 using FluentPOS.Shared.DTOs.Sales.Enums;
+using System;
 
 namespace FluentPOS.Modules.Inventory.Core.Entities
 {
     public class StockTransaction : BaseEntity
     {
-        public StockTransaction(Guid productId, decimal quantity, OrderType type, string referenceNumber)
+        public StockTransaction(Guid productId, long inventoryItemId, long quantity, OrderType type, Guid warehouseId)
+        {
+            ProductId = productId;
+            Quantity = quantity;
+            Type = type;
+            InventoryItemId = inventoryItemId;
+            Timestamp = DateTime.Now;
+            WarehouseId = warehouseId;
+        }
+
+        public StockTransaction(Guid productId, long quantity, OrderType type, string referenceNumber)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -24,7 +33,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             Timestamp = DateTime.Now;
         }
 
-        public StockTransaction(Guid productId, decimal quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate)
+        public StockTransaction(Guid productId, long quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -36,7 +45,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             FactorDate = factorDate;
         }
 
-        public StockTransaction(Guid productId, decimal quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, DateTime timestamp)
+        public StockTransaction(Guid productId, long quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, DateTime timestamp)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -50,9 +59,11 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 
         public Guid ProductId { get; private set; }
 
+        public long InventoryItemId { get; set; }
+
         public DateTime Timestamp { get; private set; }
 
-        public decimal Quantity { get;  set; }
+        public long Quantity { get; set; }
 
         public OrderType Type { get; private set; }
 

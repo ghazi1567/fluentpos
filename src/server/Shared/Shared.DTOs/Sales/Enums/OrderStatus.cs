@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FluentPOS.Shared.DTOs.Sales.Enums
+﻿namespace FluentPOS.Shared.DTOs.Sales.Enums
 {
     public enum OrderStatus : byte
     {
+        PendingApproval = 0,
         Pending = 1,
-        AssignToOutlet = 2,
-        Verifying = 3,
-        Preparing = 4,
-        ReadyToShip = 5,
-        Shipped = 6,
-        Cancelled = 7,
-        Approved = 8,
+        Cancelled = 2,
+        Approved = 3,
+        AssignToOutlet = 4,
+        Verifying = 5,
+        Preparing = 6,
+        ReadyToShip = 7,
+        Shipped = 8,
         InProgress = 9,
-        PendingApproval = 10,
     }
 }

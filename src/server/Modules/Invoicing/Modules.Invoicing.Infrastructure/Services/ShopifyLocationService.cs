@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
-using FluentPOS.Shared.Core.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using ShopifySharp;
@@ -24,18 +23,13 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         public readonly string _accessToken;
         public readonly LocationService _locationService;
 
-        public ShopifyLocationService(IHttpContextAccessor accessor, IMapper mapper, IMediator mediator)
+        public ShopifyLocationService(IStoreService storeService, IMapper mapper, IMediator mediator)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _accessor = accessor;
-            StoreId = _accessor.HttpContext?.Request?.Headers["store-id"];
-            if (!string.IsNullOrEmpty(StoreId))
-            {
-                string shopifyCreds = EncryptionUtilities.DecryptString(StoreId);
-                _shopifyUrl = shopifyCreds.Split("|")[0];
-                _accessToken = shopifyCreds.Split("|")[1];
-            }
+            string shopifyCreds = storeService.StoreId();
+            _shopifyUrl = shopifyCreds.Split("|")[0];
+            _accessToken = shopifyCreds.Split("|")[1];
 
             if (!string.IsNullOrEmpty(_shopifyUrl) && !string.IsNullOrEmpty(_accessToken))
             {

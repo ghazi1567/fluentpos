@@ -57,6 +57,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
 
         public DbSet<SyncLog> SyncLogs { get; set; }
 
+        public DbSet<OrderFulfillment> OrderFulfillment { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

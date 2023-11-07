@@ -26,6 +26,8 @@ import { StockOutReportComponent } from './reports/stock-out-report/stock-out-re
 import { ThemeModule } from 'src/app/theme/theme.module';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { InventoryImportComponent } from './components/inventory-import/inventory-import.component';
+import { InventoryImportListComponent } from './components/inventory-import-list/inventory-import-list.component';
+import { SplitOrderComponent } from './components/order/split-order/split-order.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { InventoryImportComponent } from './components/inventory-import/inventor
     StockReportComponent,
     StockOutReportComponent,
     WarehouseComponent,
-    InventoryImportComponent
+    InventoryImportComponent,
+    InventoryImportListComponent,
+    SplitOrderComponent
   ],
   imports: [
     CommonModule,

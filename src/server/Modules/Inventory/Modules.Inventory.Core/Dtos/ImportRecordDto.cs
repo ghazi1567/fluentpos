@@ -11,5 +11,9 @@ namespace FluentPOS.Modules.Inventory.Core.Dtos
         public int Qty { get; set; }
 
         public string Warehouse { get; set; }
+
+        public string Rack { get; set; }
+
+        public bool IgnoreRackCheck { get; set; }
     }
 }

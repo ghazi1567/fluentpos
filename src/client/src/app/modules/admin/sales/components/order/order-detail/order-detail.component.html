@@ -2,11 +2,22 @@
     <nb-card-header>
         Order {{order.name}} |
         <nb-actions size="medium" style="float: right;">
-            <nb-action>
-                <nb-icon class="action-icon" status="primary" icon="checkmark-outline"></nb-icon>
+            <nb-action *ngIf="order.status>=3">
+                <nb-icon class="action-icon" (click)="splitOrderPopup()" status="primary"
+                    icon="scissors-outline"></nb-icon>
+                <span>Split</span>
+            </nb-action>
+            <!-- <nb-action *ngIf="order.status>=3">
+                <nb-icon class="action-icon" (click)="fulFillOrder()" status="primary"
+                    icon="done-all-outline"></nb-icon>
+                <span>FulFill</span>
+            </nb-action> -->
+            <nb-action *ngIf="order.status < 2">
+                <nb-icon class="action-icon" (click)="approveOrder()" status="primary"
+                    icon="checkmark-outline"></nb-icon>
                 <span>Approve</span>
             </nb-action>
-            <nb-action>
+            <nb-action *ngIf="order.status != 2">
                 <nb-icon class="action-icon" (click)="cancelOrder()" status="danger"
                     icon="close-circle-outline"></nb-icon>
                 <span>Cancel</span>
@@ -125,62 +136,78 @@
             </table>
 
         </div>
-        <nb-card>
+
+        <nb-card *ngFor="let fulfillmentOrder of order.fulfillmentOrders">
+            <nb-card-header style="position: relative;">
+                <nb-badge text="{{getLocationName(fulfillmentOrder.assigned_location_id)}}" status="success"
+                    position="top left"></nb-badge>
+                <nb-badge *ngIf="fulfillmentOrder.status == 'closed'" text="FulFilled" status="info"
+                    position="top right"></nb-badge>
+                <nb-actions size="medium" style="float: right;">
+                    <nb-action *ngIf="order.status>=3 && fulfillmentOrder.status == 'open'">
+                        <nb-icon class="action-icon" (click)="fulFillOrder(fulfillmentOrder)" status="primary"
+                            icon="done-all-outline"></nb-icon>
+                        <span>FulFill</span>
+                    </nb-action>
+                </nb-actions>
+
+            </nb-card-header>
             <nb-card-body>
-
-                <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
-                    <tbody>
-
-                        <tr class="heading " style="background: #F3F2F7;">
-                            <td
-                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                Product Name
-                            </td>
-                            <td
-                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                SKU
-                            </td>
-                            <td
-                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                QTY
-                            </td>
-                            <td
-                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                Price
-                            </td>
-                            <td
-                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                Discount
-                            </td>
-                            <td
-                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                Subtotal
-                            </td>
-                        </tr>
-                        <tr *ngFor="let item of order.lineItems" class="details"
-                            style="border-bottom:1px solid #E9ECEF ;">
-                            <td style="padding: 10px;vertical-align: top; display: flex;align-items: center;">
-                                <img src="{{item.imageUrl}}" alt="img" class="me-2" style="width:40px;height:40px;">
-                                {{item.name}}
-                            </td>
-                            <td style="padding: 10px;vertical-align: top; ">
-                                {{item.sku}}
-                            </td>
-                            <td style="padding: 10px;vertical-align: top; ">
-                                {{item.quantity}}
-                            </td>
-                            <td style="padding: 10px;vertical-align: top; ">
-                                {{item.price}}
-                            </td>
-                            <td style="padding: 10px;vertical-align: top; ">
-                                {{item.total_discount}}
-                            </td>
-                            <td style="padding: 10px;vertical-align: top; ">
-                                {{item.quantity * item.price}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="product-grid">
+                    <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+                        <tbody>
+                            <tr class="heading " style="background: #F3F2F7;">
+                                <td
+                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                    Product Name
+                                </td>
+                                <td
+                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                    SKU
+                                </td>
+                                <td
+                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                    QTY
+                                </td>
+                                <td
+                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                    Price
+                                </td>
+                                <td
+                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                    Discount
+                                </td>
+                                <td
+                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                    Subtotal
+                                </td>
+                            </tr>
+                            <tr *ngFor="let item of fulfillmentOrder.line_items" class="details"
+                                style="border-bottom:1px solid #E9ECEF ;">
+                                <td style="padding: 10px;vertical-align: top; display: flex;align-items: center;">
+                                    <img src="{{getLineItemDetail(item,'imageUrl')}}" alt="img" class="me-2"
+                                        style="width:40px;height:40px;">
+                                    {{getLineItemDetail(item,'name')}}
+                                </td>
+                                <td style="padding: 10px;vertical-align: top; ">
+                                    {{getLineItemDetail(item,'sku')}}
+                                </td>
+                                <td style="padding: 10px;vertical-align: top; ">
+                                    {{getLineItemDetail(item,'quantity')}}
+                                </td>
+                                <td style="padding: 10px;vertical-align: top; ">
+                                    {{getLineItemDetail(item,'price')}}
+                                </td>
+                                <td style="padding: 10px;vertical-align: top; ">
+                                    {{getLineItemDetail(item,'total_discount')}}
+                                </td>
+                                <td style="padding: 10px;vertical-align: top; ">
+                                    {{getLineItemDetail(item,'quantity') * getLineItemDetail(item,'price')}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </nb-card-body>
         </nb-card>
     </nb-card-body>

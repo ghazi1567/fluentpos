@@ -17,6 +17,7 @@ import { StockOutReportComponent } from './reports/stock-out-report/stock-out-re
 import { OrderDetailComponent } from './components/order/order-detail/order-detail.component';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { InventoryImportComponent } from './components/inventory-import/inventory-import.component';
+import { InventoryImportListComponent } from './components/inventory-import-list/inventory-import-list.component';
 
 const routes: Routes = [
   {
@@ -86,6 +87,10 @@ const routes: Routes = [
   {
     path: 'inventory-import',
     component: InventoryImportComponent
+  },
+  {
+    path: 'inventory-import-files',
+    component: InventoryImportListComponent
   },
 ];
 

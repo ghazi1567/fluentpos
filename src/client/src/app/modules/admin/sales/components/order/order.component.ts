@@ -13,6 +13,7 @@ import { AgGridBaseComponent } from 'src/app/core/shared/components/ag-grid-base
 import { OrderStatusMapping } from 'src/app/core/enums/OrderStatus';
 import { CustomAction } from 'src/app/core/shared/components/table/custom-action';
 import { Router } from '@angular/router';
+import * as moment from "moment";
 
 @Component({
   selector: 'app-order',
@@ -40,6 +41,9 @@ export class OrderComponent implements OnInit {
   }
 
   getOrders(): void {
+    this.orderParams.pageNumber = 0;
+    this.orderParams.pageSize = 100;
+
     this.saleService.getSales(this.orderParams).subscribe((result) => {
       this.dataSource = result;
       this.orderData = result.data;
@@ -99,6 +103,7 @@ export class OrderComponent implements OnInit {
     }
   }
   gridReady(event): void {
+    event.api.sizeColumnsToFit();
     if (this.AgGrid) {
       // this.AgGrid.gridApi.setDatasource(this.scrollBarDataSource);
     }
@@ -127,38 +132,65 @@ export class OrderComponent implements OnInit {
         width: 60,
         pinned: "left"
       },
-      { headerName: "Id", field: "shopifyId", sortable: true, isShowable: true, width: 100 },
+      { headerName: "Shopify Id", field: "shopifyId", sortable: true, isShowable: true, width: 140 },
+      { headerName: "Order#", field: "name", sortable: true, isShowable: true, width: 100 },
       {
-        headerName: "Customer Name", field: "customerName", sortable: true, isShowable: true, width: 256,
-        valueGetter: 'data.shippingAddress.name'
-      },
-      { headerName: "Customer Phone", field: "phone", sortable: true, isShowable: true, width: 256 },
-      { headerName: "Customer Email", field: "email", sortable: true, isShowable: true, width: 120 },
-      {
-        headerName: "Status", field: "status", sortable: true, isShowable: true,
+        headerName: "Status", field: "status", sortable: true, isShowable: true, width: 140,
+        wrapText: true,
+        autoHeight: true,
         valueGetter: params => {
           return OrderStatusMapping[params.data.status];;
         }
       },
+      {
+        headerName: "Cust. Name", field: "customerName", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+        valueGetter: 'data.shippingAddress.name'
+      },
+      { headerName: "Cust. Phone", field: "phone", sortable: true, isShowable: true, width: 140 },
+      {
+        headerName: "Cust. Email", field: "email", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+      },
+
       { headerName: "Note", field: "note", sortable: true, isShowable: true, },
-      { headerName: "Confirmed", field: "confirmed", sortable: true, isShowable: true, },
-      { headerName: "CreatedAt", field: "createdAt", sortable: true, isShowable: true, },
+      // { headerName: "Confirmed", field: "confirmed", sortable: true, isShowable: true, },
+      {
+        headerName: "CreatedAt", field: "createdAt", sortable: true, isShowable: true,
+        valueFormatter: (params) => {
+          let value = params.value;
+          let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+          if (date.isValid()) {
+            value = date.format("DD-MM-YYYY hh:mm:ss");
+          }
+          return value;
+        }
+      },
       { headerName: "Currency", field: "currency", sortable: true, isShowable: true, },
-      { headerName: "CustomerLocale", field: "customerLocale", sortable: true, isShowable: true, },
-      { headerName: "Email", field: "email", sortable: true, isShowable: true, },
+      // { headerName: "CustomerLocale", field: "customerLocale", sortable: true, isShowable: true, },
+      // { headerName: "Email", field: "email", sortable: true, isShowable: true, },
       { headerName: "FinancialStatus", field: "financialStatus", sortable: true, isShowable: true, },
       { headerName: "FulfillmentStatus", field: "fulfillmentStatus", sortable: true, isShowable: true, },
-      { headerName: "Phone", field: "phone", sortable: true, isShowable: true, },
-      { headerName: "Tags", field: "tags", sortable: true, isShowable: true, },
-      { headerName: "LandingSite", field: "landingSite", sortable: true, isShowable: true, },
+      // { headerName: "Phone", field: "phone", sortable: true, isShowable: true, },
+      // { headerName: "Tags", field: "tags", sortable: true, isShowable: true, },
       { headerName: "LocationId", field: "locationId", sortable: true, isShowable: true, },
-      { headerName: "Name", field: "name", sortable: true, isShowable: true, },
-      { headerName: "OrderNumber", field: "orderNumber", sortable: true, isShowable: true, },
-      { headerName: "OrderStatusUrl", field: "orderStatusUrl", sortable: true, isShowable: true, },
+      // { headerName: "OrderNumber", field: "orderNumber", sortable: true, isShowable: true, },
       {
-        headerName: "PaymentGatewayNames", field: "paymentGatewayNames", sortable: true, isShowable: true,
+        headerName: "Payment Method", field: "paymentGatewayNames", sortable: true, isShowable: true,
       },
-      { headerName: "ProcessedAt", field: "processedAt", sortable: true, isShowable: true, },
+      {
+        headerName: "ProcessedAt", field: "processedAt", sortable: true, isShowable: true,
+        valueFormatter: (params) => {
+          let value = params.value;
+          let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+          if (date.isValid()) {
+            value = date.format("DD-MM-YYYY hh:mm:ss");
+          }
+          return value;
+        }
+      },
       { headerName: "ProcessingMethod", field: "processingMethod", sortable: true, isShowable: true, },
       // { headerName: "ShippingAddress", field: "shippingAddress", sortable: true, isShowable: true, },
       { headerName: "SubtotalPrice", field: "subtotalPrice", sortable: true, isShowable: true, },
@@ -179,7 +211,17 @@ export class OrderComponent implements OnInit {
       { headerName: "CurrentTotalTax", field: "currentTotalTax", sortable: true, isShowable: true, },
       { headerName: "TaxExempt", field: "taxExempt", sortable: true, isShowable: true, },
       { headerName: "CancelReason", field: "cancelReason", sortable: true, isShowable: true, },
-      { headerName: "CancelledAt", field: "cancelledAt", sortable: true, isShowable: true, },
+      {
+        headerName: "CancelledAt", field: "cancelledAt", sortable: true, isShowable: true,
+        valueFormatter: (params) => {
+          let value = params.value;
+          let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+          if (date.isValid()) {
+            value = date.format("DD-MM-YYYY hh:mm:ss");
+          }
+          return value;
+        }
+      },
     ];
   }
   syncOrders() {

@@ -7,10 +7,8 @@
 // --------------------------------------------------------------------------------------------------
 
 using FluentPOS.Modules.Invoicing.Core.Entities;
-using Microsoft.EntityFrameworkCore;
 using FluentPOS.Shared.Core.Interfaces;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FluentPOS.Modules.Invoicing.Core.Abstractions
 {
@@ -29,5 +27,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
         public DbSet<Warehouse> Warehouses { get; set; }
 
         public DbSet<SyncLog> SyncLogs { get; set; }
+
+        public DbSet<OrderFulfillment> OrderFulfillment { get; set; }
     }
 }

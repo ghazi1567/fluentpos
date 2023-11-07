@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{ "dialogs.delete.title" | translate }}</h2>
+<mat-dialog-content class="mat-typography">
+    <div class="row">
+        <div class="col-xs-12 col-md-2">
+            <mat-form-field appearance="outline">
+                <mat-label>Warehouse</mat-label>
+                <mat-select [(ngModel)]="selectedObject.locationId" name="warehouse" required>
+                    <mat-option *ngFor="let warehouse of warehouseData" [value]="warehouse.shopifyId">
+                        {{ warehouse.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button (click)="changeOrderLocation()" cdkFocusInitial color="primary">Save</button>
+</mat-dialog-actions>

@@ -5,10 +5,12 @@ using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
+using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -25,24 +27,26 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<SalesQueryHandler> _localizer;
         private readonly IProductService _productService;
+        private readonly IShopifyOrderFulFillmentService _shopifyOrderFulFillmentService;
 
         public OrdersQueryHandler(
             ISalesDbContext context,
             IMapper mapper,
             IStringLocalizer<SalesQueryHandler> localizer,
+            IShopifyOrderFulFillmentService shopifyOrderFulFillmentService,
             IProductService productService)
         {
             _context = context;
             _mapper = mapper;
             _localizer = localizer;
             _productService = productService;
+            _shopifyOrderFulFillmentService = shopifyOrderFulFillmentService;
         }
 
         public async Task<PaginatedResult<InternalOrderDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
         {
             var queryable = _context.Orders.AsNoTracking()
                 .Include(x => x.ShippingAddress)
-                .OrderBy(x => x.CreatedAt)
                 .AsQueryable();
 
             // string ordering = new OrderByConverter().Convert(request.OrderBy);
@@ -66,6 +70,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 
             var saleList = await queryable
                 .AsNoTracking()
+                .OrderByDescending(x => x.CreatedAt)
                 .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
             if (saleList == null)
@@ -97,9 +102,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             var productImages = await _productService.GetProductImages(ids);
             foreach (var item in mappedData.LineItems)
             {
-                item.ImageUrl = productImages.Data.OrderBy(x => x.Position).FirstOrDefault(x=>x.productId == item.ProductId)?.src;
+                item.ImageUrl = productImages.Data.OrderBy(x => x.Position).FirstOrDefault(x => x.productId == item.ProductId)?.src;
             }
 
+            var fulfillmentOrders = await _shopifyOrderFulFillmentService.GetFulFillOrder(order.ShopifyId.Value);
+            mappedData.FulfillmentOrders = _mapper.Map<List<InternalFulfillmentOrderDto>>(fulfillmentOrders);
             return await Result<InternalOrderDto>.SuccessAsync(data: mappedData);
 
         }

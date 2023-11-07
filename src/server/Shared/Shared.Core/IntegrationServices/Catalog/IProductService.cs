@@ -21,5 +21,7 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Catalog
         Task<Result<List<GetProductImageByIdResponse>>> GetProductImages(List<long?> productId);
 
         Task<Result<List<GetProductVariantResponse>>> GetProductBySKUs(List<string> SKUs);
+
+        Task<GetProductVariantResponse> GetProductBySKU(string SKU);
     }
 }

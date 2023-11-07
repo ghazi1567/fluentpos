@@ -129,6 +129,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.Configure<MailSettings>(config.GetSection(nameof(MailSettings)));
             services.Configure<SmsSettings>(config.GetSection(nameof(SmsSettings)));
             services.Configure<TimeZoneSettings>(config.GetSection(nameof(TimeZoneSettings)));
+            services.Configure<StoreSettings>(config.GetSection(nameof(StoreSettings)));
             services.AddTransient<IEventLogService, EventLogService>();
             services.AddTransient<IEntityReferenceService, EntityReferenceService>();
             services.AddTransient<IWebhookEventService, WebhookEventService>();

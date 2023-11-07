@@ -6,8 +6,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
 using FluentPOS.Shared.Core.Domain;
+using System;
 
 namespace FluentPOS.Modules.Inventory.Core.Entities
 {
@@ -30,23 +30,62 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             WarehouseId = warehouseId;
         }
 
+        public Stock(Guid productId, long inventoryItemId, Guid warehouseId)
+        {
+            ProductId = productId;
+            InventoryItemId = inventoryItemId;
+            LastUpdatedOn = DateTime.Now;
+            WarehouseId = warehouseId;
+        }
+
         public Guid ProductId { get; private set; }
 
-        public decimal AvailableQuantity { get; private set; }
+        public long InventoryItemId { get; set; }
+
+        public long AvailableQuantity { get; private set; }
+
+        public long Committed { get; private set; }
+
+        public long OnHand { get; private set; }
+
+        public string Rack { get; set; }
 
         public DateTime LastUpdatedOn { get; private set; }
 
         public Guid WarehouseId { get; set; }
 
-        public void IncreaseQuantity(decimal quantity)
+        public void IncreaseQuantity(long quantity)
         {
             AvailableQuantity += quantity;
+            OnHand += quantity;
             LastUpdatedOn = DateTime.Now;
         }
 
-        public void ReduceQuantity(decimal quantity)
+        public void UpdateQuantity(long quantity)
+        {
+            AvailableQuantity = quantity - Committed;
+            OnHand = quantity;
+            LastUpdatedOn = DateTime.Now;
+        }
+
+        public void IncreaseCommittedQuantity(long quantity)
         {
             AvailableQuantity -= quantity;
+            Committed += quantity;
+            LastUpdatedOn = DateTime.Now;
+        }
+
+        public void ReduceCommittedQuantity(long quantity)
+        {
+            AvailableQuantity += quantity;
+            Committed -= quantity;
+            LastUpdatedOn = DateTime.Now;
+        }
+
+        public void FulFillCommittedQuantity(long quantity)
+        {
+            Committed -= quantity;
+            OnHand -= quantity;
             LastUpdatedOn = DateTime.Now;
         }
     }

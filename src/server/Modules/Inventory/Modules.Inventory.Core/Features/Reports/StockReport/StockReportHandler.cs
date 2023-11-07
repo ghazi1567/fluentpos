@@ -3,7 +3,6 @@ using FluentPOS.Modules.Inventory.Core.Abstractions;
 using FluentPOS.Modules.Inventory.Core.Dtos;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
 using FluentPOS.Shared.Core.Wrapper;
-using FluentPOS.Shared.DTOs.Sales.Orders;
 using MediatR;
 using Microsoft.Extensions.Localization;
 using System;
@@ -36,6 +35,13 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
         public async Task<Result<List<StockDto>>> Handle(StockReportQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Stocks.AsQueryable();
+            var product = await _productService.GetProductBySKU(request.SKU);
+
+            if (product != null)
+            {
+                query = query.Where(x => x.InventoryItemId == product.InventoryItemId);
+            }
+
             if (!string.IsNullOrEmpty(request.ProductId))
             {
                 var productId = Guid.Parse(request.ProductId);

@@ -39,4 +39,16 @@ export class OrdersService {
     return this.api.cancelOrder(model)
       .pipe(map((response: Result<string>) => response));
   }
+  fulFillOrder(model: any): Observable<Result<string>> {
+    return this.api.fulFillOrder(model)
+      .pipe(map((response: Result<string>) => response));
+  }
+  approveOrder(model: any): Observable<Result<string>> {
+    return this.api.approveOrder(model)
+      .pipe(map((response: Result<string>) => response));
+  }
+  moveLocation(model: any): Observable<Result<string>> {
+    return this.api.moveLocation(model)
+      .pipe(map((response: Result<string>) => response));
+  }
 }

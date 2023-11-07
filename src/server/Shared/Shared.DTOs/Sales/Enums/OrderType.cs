@@ -11,6 +11,10 @@ namespace FluentPOS.Shared.DTOs.Sales.Enums
         StockIn = 1,
         StockOut = 2,
         StockReturn = 3,
-        OpeningStock = 4
+        OpeningStock = 4,
+        Commited = 5,
+        FulFill = 6,
+        uncommitted = 7,
+        StockUpdate = 8,
     }
 }

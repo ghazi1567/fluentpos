@@ -38,7 +38,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Extensions
             services.AddTransient<IShopifyOrderService, ShopifyOrderService>();
             services.AddTransient<IShopifyLocationService, ShopifyLocationService>();
             services.AddTransient<IWarehouseService, WarehouseService>();
-            
+            services.AddTransient<IShopifyOrderFulFillmentService, ShopifyOrderFulFillmentService>();
+            services.AddTransient<IStoreService, StoreService>();
+
             return services;
         }
 

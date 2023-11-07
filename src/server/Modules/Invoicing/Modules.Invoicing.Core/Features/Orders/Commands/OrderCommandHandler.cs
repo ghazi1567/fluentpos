@@ -26,7 +26,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
     internal sealed class OrderCommandHandler :
         IRequestHandler<RegisterOrderCommand, Result<Guid>>,
-        IRequestHandler<CancelledOrderCommand, Result<string>>
+        IRequestHandler<CancelledOrderCommand, Result<string>>,
+        IRequestHandler<FulFillOrderCommand, Result<string>>,
+        IRequestHandler<ApproveOrderCommand, Result<string>>,
+        IRequestHandler<MoveLocationCommand, Result<string>>
     {
         private readonly IEntityReferenceService _referenceService;
         private readonly IStockService _stockService;
@@ -36,6 +39,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         private readonly IStringLocalizer<OrderCommandHandler> _localizer;
         private readonly IMapper _mapper;
         private readonly IShopifyOrderService _shopifyOrderService;
+        private readonly IShopifyOrderFulFillmentService _shopifyOrderFulFillmentService;
 
         public OrderCommandHandler(
             IStringLocalizer<OrderCommandHandler> localizer,
@@ -45,7 +49,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             IStockService stockService,
             IEntityReferenceService referenceService,
             IMapper mapper,
-            IShopifyOrderService shopifyOrderService)
+            IShopifyOrderService shopifyOrderService,
+            IShopifyOrderFulFillmentService shopifyOrderFulFillmentService)
         {
             _localizer = localizer;
             _salesContext = salesContext;
@@ -55,6 +60,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             _referenceService = referenceService;
             _mapper = mapper;
             _shopifyOrderService = shopifyOrderService;
+            _shopifyOrderFulFillmentService = shopifyOrderFulFillmentService;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -106,6 +112,63 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             await _salesContext.SaveChangesAsync(cancellationToken);
 
             return await Result<string>.SuccessAsync("Order Cancelled", string.Format(_localizer["Order {0} Cancelled"], order.ShopifyId));
+        }
+
+        public async Task<Result<string>> Handle(FulFillOrderCommand command, CancellationToken cancellationToken)
+        {
+            var order = await _salesContext.Orders.SingleOrDefaultAsync(x => x.Id == command.Id);
+            if (order == null)
+            {
+                return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
+            }
+
+            var trackingInfo = new ShopifySharp.TrackingInfo
+            {
+                Company = "TCS",
+                Number = "123456",
+                Url = "tcs.com"
+            };
+
+            var fulFillment = await _shopifyOrderFulFillmentService.CompleteFulFillOrderAsync(order.ShopifyId.Value,command.FulFillOrderId, trackingInfo);
+
+            var orderFulfillment = _mapper.Map<OrderFulfillment>(fulFillment);
+
+            orderFulfillment.InternalOrderId = order.Id;
+            order.Status = Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip;
+            _salesContext.Orders.Update(order);
+            await _salesContext.OrderFulfillment.AddAsync(orderFulfillment);
+            await _salesContext.SaveChangesAsync();
+            return await Result<string>.SuccessAsync("Order Cancelled", string.Format(_localizer["Order {0} Cancelled"], order.ShopifyId));
+        }
+
+        public async Task<Result<string>> Handle(ApproveOrderCommand command, CancellationToken cancellationToken)
+        {
+            var order = await _salesContext.Orders.SingleOrDefaultAsync(x => x.Id == command.Id);
+            if (order == null)
+            {
+                return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
+            }
+
+            order.Status = Shared.DTOs.Sales.Enums.OrderStatus.Approved;
+            order.ApprovedAt = DateTimeOffset.Now;
+            order.ApprovedBy = "test"; // TODO: set logged in user id.
+            _salesContext.Orders.Update(order);
+            await _salesContext.SaveChangesAsync(cancellationToken);
+
+            return await Result<string>.SuccessAsync("Order Approved", string.Format(_localizer["Order {0} Approved"], order.ShopifyId));
+        }
+
+        public async Task<Result<string>> Handle(MoveLocationCommand command, CancellationToken cancellationToken)
+        {
+            var order = await _salesContext.Orders.SingleOrDefaultAsync(x => x.Id == command.Id);
+            if (order == null)
+            {
+                return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
+            }
+
+            bool status = await _shopifyOrderFulFillmentService.ChangeLocationAsync(order.ShopifyId.Value, command.NewLocationId);
+
+            return await Result<string>.SuccessAsync("Order Warehouse Location Changed", string.Format(_localizer["Order {0} Warehouse Location Changed"], order.ShopifyId));
         }
     }
 }

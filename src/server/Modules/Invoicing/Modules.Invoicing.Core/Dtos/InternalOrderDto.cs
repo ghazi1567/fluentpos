@@ -310,5 +310,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         public bool? TaxExempt { get; set; }
 
         public decimal? TotalShippingPrice { get; set; }
+
+        public List<InternalFulfillmentOrderDto> FulfillmentOrders { get; set; }
+
     }
 }

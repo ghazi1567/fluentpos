@@ -27,4 +27,14 @@ export class OrderApiService {
   cancelOrder(model: any) {
     return this.http.post(`${this.baseUrl}CancelOrder`, model);
   }
+
+  fulFillOrder(model: any) {
+    return this.http.post(`${this.baseUrl}FulFillOrder`, model);
+  }
+  approveOrder(model: any) {
+    return this.http.post(`${this.baseUrl}ApproveOrder`, model);
+  }
+  moveLocation(model: any) {
+    return this.http.post(`${this.baseUrl}MoveLocation`, model);
+  }
 }

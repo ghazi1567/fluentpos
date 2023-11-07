@@ -340,6 +340,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public decimal? TotalShippingPrice { get; set; }
 
+        public DateTimeOffset? ApprovedAt { get; set; }
+
+        public string ApprovedBy { get; set; }
+
         // public string ShippingAddress1 { get; set; }
         // public string ShippingAddress2 { get; set; }
         // public string ShippingCity { get; set; }

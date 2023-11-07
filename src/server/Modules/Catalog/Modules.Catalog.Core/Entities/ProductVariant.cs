@@ -1,9 +1,12 @@
 ﻿using FluentPOS.Shared.Core.Domain;
+using System;
 
 namespace FluentPOS.Modules.Catalog.Core.Entities
 {
     public class ProductVariant : BaseEntity
     {
+        public Guid ProductId1 { get; set; }
+
         /// <summary>
         /// The unique numeric identifier for the product.
         /// </summary>

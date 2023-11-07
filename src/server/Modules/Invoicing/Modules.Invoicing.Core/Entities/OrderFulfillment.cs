@@ -96,5 +96,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public string ShipmentStatus { get; set; }
 
         public string Name { get; set; }
+
+        public Guid InternalOrderId { get; set; }
     }
 }

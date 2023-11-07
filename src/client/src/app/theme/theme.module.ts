@@ -20,7 +20,9 @@ import {
     NbRadioModule,
     NbDatepickerModule,
     NbListModule,
-    
+    NbBadgeModule,
+    NbTabsetModule,
+
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 import { NbSecurityModule } from "@nebular/security";
@@ -52,7 +54,9 @@ const NB_MODULES = [
     NbRadioModule,
     NbDatepickerModule,
     ngFormsModule,
-    NbListModule
+    NbListModule,
+    NbBadgeModule,
+    NbTabsetModule
 ];
 @NgModule({
     declarations: [...COMPONENTS, ...PIPES],

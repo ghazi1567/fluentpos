@@ -19,5 +19,9 @@ namespace FluentPOS.Shared.Core.Wrapper
         public DateTime? StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
+        public string SKU { get; set; }
+
+        public string Barcode { get; set; }
     }
 }

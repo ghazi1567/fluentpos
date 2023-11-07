@@ -6,15 +6,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
 using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
-using FluentPOS.Modules.Invoicing.Core.Features.PO;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries;
 using FluentPOS.Shared.Core.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Invoicing.Controllers
 {
@@ -34,7 +33,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         [Authorize(Policy = Permissions.Sales.View)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            return Ok(await Mediator.Send(new GetOrderByIdQuery {Id = id }));
+            return Ok(await Mediator.Send(new GetOrderByIdQuery { Id = id }));
         }
 
         [HttpPost]
@@ -44,10 +43,30 @@ namespace FluentPOS.Modules.Invoicing.Controllers
             return Ok(await Mediator.Send(command));
         }
 
+        [HttpPost("ApproveOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> CancelOrderAsync(ApproveOrderCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
 
         [HttpPost("CancelOrder")]
         [Authorize(Policy = Permissions.Sales.Update)]
         public async Task<IActionResult> CancelOrderAsync(CancelledOrderCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("FulFillOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> FulFillOrderAsync(FulFillOrderCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("MoveLocation")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> MoveLocationAsync(MoveLocationCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

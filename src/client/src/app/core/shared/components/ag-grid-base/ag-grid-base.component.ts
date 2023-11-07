@@ -137,7 +137,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
             },
             // enableFilter: true,
             defaultColDef: {
-                floatingFilter: true
+                floatingFilter: true,
+                // wrapText: true,     // <-- HERE
+                // autoHeight: true,   // <-- & HERE    
 
                 // editable: true
                 // stopEditingWhenGridLosesFocus=true,
@@ -218,19 +220,19 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
         this.agGridRowSelected.emit(this.gridApi.getSelectedRows());
     }
 
-    selectEditorValueChange($event) {}
+    selectEditorValueChange($event) { }
 
     onRowUpdateComplete(event) {
         event.context.validateSheetContext.rowEditComplete.emit(event.data);
     }
 
-    onCellMouseOver() {}
+    onCellMouseOver() { }
 
     onFilterTextBoxChanged($event: any) {
         this.gridOptions.api.setQuickFilter(this.globalFilter);
     }
 
-    onGridModelUpdated($event: any) {}
+    onGridModelUpdated($event: any) { }
 
     showOverlay() {
         if (this.gridApi) {
@@ -288,7 +290,7 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
         try {
             filterSortModel.listOfFilters = listOfFilters;
             filterSortModel.listOfSort = listOfSort;
-        } catch (error) {}
+        } catch (error) { }
         return filterSortModel;
     }
 

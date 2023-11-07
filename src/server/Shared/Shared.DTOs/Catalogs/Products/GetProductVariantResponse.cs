@@ -16,5 +16,6 @@ namespace FluentPOS.Shared.DTOs.Catalogs.Products
         long? ProductId,
         string Title,
         string SKU,
-        long? InventoryItemId);
+        long? InventoryItemId,
+        Guid ProductId1);
 }

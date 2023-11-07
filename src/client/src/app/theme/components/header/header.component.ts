@@ -47,7 +47,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private themeService: NbThemeService,
         private layoutService: LayoutService,
         private breakpointService: NbMediaBreakpointsService
-    ) {}
+    ) { }
 
     ngOnInit() {
         this.currentTheme = this.themeService.currentTheme;
@@ -68,6 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroy$)
             )
             .subscribe((themeName) => (this.currentTheme = themeName));
+        this.toggleSidebar();
     }
 
     ngOnDestroy() {

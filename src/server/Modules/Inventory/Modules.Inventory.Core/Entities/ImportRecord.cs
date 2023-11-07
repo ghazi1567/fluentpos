@@ -15,5 +15,9 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
         public string Status { get; set; } = "Pending";
 
         public string Note { get; set; }
+
+        public string Rack { get; set; } = "Open";
+
+        public bool IgnoreRackCheck { get; set; }
     }
 }

@@ -4,6 +4,8 @@ import { UploadType } from 'src/app/core/models/uploads/upload-type';
 import { CsvMapping, CsvParserService, NgxCSVParserError } from 'src/app/core/services/csv-parser.service';
 import { AgGridBaseComponent } from 'src/app/core/shared/components/ag-grid-base/ag-grid-base.component';
 import { InventoryLevelService } from '../../services/inventory-level.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inventory-import',
@@ -28,12 +30,21 @@ export class InventoryImportComponent implements OnInit {
     {
       csvColumn: "warehouse",
       gridColumn: "warehouse"
-    }
+    },
+    {
+      csvColumn: "rack",
+      gridColumn: "rack"
+    },
+    {
+      csvColumn: "IgnoreRackCheck",
+      gridColumn: "ignoreRackCheck"
+    },
   ];
   inventoryColumns: any[] = [];
 
   inventoryData: any[] = [];
-  constructor(private csvParser: CsvParserService, private inventoryLevelService: InventoryLevelService) { }
+  constructor(private csvParser: CsvParserService, private inventoryLevelService: InventoryLevelService,
+    private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
     this.initInventoryColumns();
@@ -57,10 +68,12 @@ export class InventoryImportComponent implements OnInit {
 
   initInventoryColumns(): void {
     this.inventoryColumns = [
-      { headerName: "Location", field: "location", sortable: true, isShowable: true, width: 256 },
       { headerName: "Qty", field: "qty", sortable: true, isShowable: true, width: 256 },
       { headerName: "SKU", field: "sku", sortable: true, width: 160 },
       { headerName: "Warehouse", field: "warehouse", sortable: true, width: 160 },
+      { headerName: "Rack", field: "rack", sortable: true, isShowable: true, width: 256 },
+      { headerName: "IgnoreRackCheck", field: "ignoreRackCheck", sortable: true, isShowable: true, width: 256 },
+
     ];
   }
 
@@ -98,7 +111,7 @@ export class InventoryImportComponent implements OnInit {
       }
 
       this.csvParser
-        .parse(event.target.files[0], {
+        .parseXlsx(event.target.files[0], {
           header: true,
           delimiter: ",",
           mapping: this.csvMapping
@@ -128,7 +141,13 @@ export class InventoryImportComponent implements OnInit {
       }
     }
     this.inventoryLevelService.ImportFile(model).subscribe(res => {
-      console.log(res)
+      if (res.succeeded) {
+        this.toastr.success(res.messages[0])
+        this.router.navigateByUrl('/admin/sales/inventory-import-files'); 
+      }
+      else {
+        this.toastr.error(res.messages[0])
+      }
     })
   }
 }
