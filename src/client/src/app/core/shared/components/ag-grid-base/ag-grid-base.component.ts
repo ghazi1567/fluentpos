@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output, OnChanges } from "@angu
 import { GridOptions, GridApi, IGetRowsParams, ExcelExportParams, SideBarDef } from "ag-grid-community";
 import { FormControl } from "@angular/forms";
 import { GridOverlayComponent } from "./grid-overlay/grid-overlay.component";
-import { FilterModel, SortModel } from "./ag-grid.models";
+import { FilterModel, RemoteGridApi, SortModel } from "./ag-grid.models";
 import { GridNorowOverlayComponent } from "./grid-norow-overlay/grid-norow-overlay.component";
 import { ButtonRendererComponent } from "./button-renderer/button-renderer.component";
 
@@ -64,6 +64,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     @Input()
     public pivotRowTotals: "after" | "before";
 
+    @Output()
+    remoteGridReady: any = new EventEmitter<any>();
+
     gridColumnApi: any;
     gridApi: GridApi;
 
@@ -75,8 +78,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     @Input()
     rowModelType: string = ""; // normal|infinite
     @Input()
-    paginationPageSize: number = 100;
+    paginationPageSize: number = 5;
     cacheOverflowSize: number;
+    cacheBlockSize: number;
     maxConcurrentDatasourceRequests: number;
     infiniteInitialRowCount: number;
     maxBlocksInCache: number;
@@ -108,6 +112,10 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
 
     @Input()
     enablePivotMode: boolean = false;
+
+    @Input()
+    remoteGridBinding: RemoteGridApi;
+
     constructor() {
         this.overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while your data is loading...</span>';
     }
@@ -115,11 +123,13 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     private initInfiniteScroll() {
         if (this.rowModelType === "infinite") {
             this.rowBuffer = 0;
-            this.paginationPageSize = 100;
+            // this.paginationPageSize = this.paginationPageSize;
             this.cacheOverflowSize = 2;
             this.maxConcurrentDatasourceRequests = 1;
             this.infiniteInitialRowCount = 1;
             this.rowData = undefined;
+            this.cacheBlockSize = 17;
+            this.paginationPageSize = 17;
         }
     }
 
@@ -145,7 +155,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
                 // stopEditingWhenGridLosesFocus=true,
             },
             onRowEditingStopped: this.onRowUpdateComplete,
-            onCellMouseOver: this.onCellMouseOver
+            onCellMouseOver: this.onCellMouseOver,
+            paginationPageSize: this.paginationPageSize,
+            cacheBlockSize: this.cacheBlockSize
         };
         this.gridOptions.defaultColDef.sortable = true;
         this.gridOptions.defaultColDef.filter = true;
@@ -192,7 +204,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
             }
         }
     }
+    onRemoteGridReady(params: any) {
 
+    }
     onGridReady(params: any) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;

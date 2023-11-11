@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Sort } from "@angular/material/sort";
 import { ToastrService } from "ngx-toastr";
@@ -10,6 +10,8 @@ import { StockReport } from "../../../catalog/models/stockReport";
 import { PurchaseOrderService } from "../../services/purchase-order.service";
 import { ReportService } from "../../services/report.service";
 import { WarehouseService } from "../../services/warehouse.service";
+import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
+import { ColDef } from "ag-grid-community";
 
 @Component({
     selector: "app-stock-report",
@@ -36,10 +38,10 @@ export class StockReportComponent implements OnInit {
         public dialog: MatDialog,
         public toastr: ToastrService,
         private warehouseService: WarehouseService
-    ) {}
+    ) { }
 
     ngOnInit(): void {
-        this.loadLookups();
+        this.initStockReportColumns();
     }
     loadLookups() {
         let model = <ProductParams>{
@@ -64,61 +66,50 @@ export class StockReportComponent implements OnInit {
             this.filteredproducts = this.productLookups.filter((option) => option.name.toLowerCase().includes(filterValue) || option.barcodeSymbology.toLowerCase().includes(filterValue));
         }
     }
-    getOrders(): void {
-        this.reportService.getStockReport(this.orderParams).subscribe((result) => {
-         
-            result.data.forEach((x) => {
-                var product = this.productLookups.find((obj) => {
-                    return obj.id === x.productId;
-                });
-                if(product){
-                    x.productName = product.name;
-                }
 
-                var warehouse = this.warehouseLookups.find((obj) => {
-                    return obj.id === x.warehouseId;
-                });
-                if (warehouse) {
-                    x.warehouseName = warehouse.name;
-                }
-            });
-            this.dataSource = result;
+
+    stockReportColumns: any[] = [];
+    stockReportData: any[] = [];
+    enablePivotMode = false
+    public autoGroupColumnDef: ColDef = {
+        minWidth: 250,
+    };
+    initStockReportColumns(): void {
+        this.stockReportColumns = [
+            { headerName: "Product", field: "title", sortable: true, isShowable: true, width: 235, },
+            { headerName: "SKU", field: "sku", sortable: true, isShowable: true, },
+            { headerName: "Warehouse", field: "warehouseName", sortable: true, isShowable: true, },
+            { headerName: "Committed", field: "committed", sortable: true, isShowable: true, aggFunc: 'sum', type: 'numericColumn', width: 120, },
+            { headerName: "Available", field: "availableQuantity", sortable: true, isShowable: true, aggFunc: 'sum', type: 'numericColumn', width: 120, },
+            { headerName: "On Hand", field: "onHand", sortable: true, isShowable: true, aggFunc: 'sum', type: 'numericColumn', width: 120, },
+            { headerName: "Rack", field: "rack", sortable: true, isShowable: true, width: 120, },
+            { headerName: "Last Update", field: "lastUpdatedOn", sortable: true, isShowable: true, },
+
+        ];
+    }
+
+    private AgGrid: AgGridBaseComponent;
+    @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
+        if (content) {
+            // initially setter gets called with undefined
+            this.AgGrid = content;
+        }
+    }
+
+    gridReady(event): void {
+        this.getStockReport();
+    }
+
+    getStockReport() {
+        this.orderParams = {};
+        this.reportService.getStockReport(this.orderParams).subscribe((result) => {
+            this.stockReportData = result.data;
         });
     }
 
-    pageChanged(event: PaginatedFilter): void {
-        this.orderParams.pageNumber = event.pageNumber;
-        this.orderParams.pageSize = event.pageSize;
-        this.getOrders();
-    }
-
-    sort($event: Sort): void {
-        this.orderParams.orderBy = $event.active + " " + $event.direction;
-        console.log(this.orderParams.orderBy);
-        this.getOrders();
-    }
-
-    filter($event: string): void {
-        this.orderParams.searchString = $event.trim().toLocaleLowerCase();
-        this.orderParams.pageNumber = 0;
-        this.orderParams.pageSize = 0;
-        this.getOrders();
-    }
-
-    reload(): void {
-        this.orderParams.searchString = "";
-        this.orderParams.pageNumber = 0;
-        this.orderParams.pageSize = 0;
-        this.getOrders();
-    }
-    search(): void {
-        // if (!this.selectedProduct.productName || typeof this.selectedProduct.productName !== "object") {
-        //     this.toastr.error("Select valid product.");
-        //     return;
-        // }
-        this.orderParams = {};
-        this.orderParams.productId = this.selectedProduct.productName.id;
-        this.orderParams.warehouseId = this.selectedProduct.warehouseId;
-        this.getOrders();
+    onFilterTextBoxChanged() {
+        this.AgGrid.gridApi.setQuickFilter(
+            (document.getElementById('filter-text-box') as HTMLInputElement).value
+        );
     }
 }

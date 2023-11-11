@@ -1,5 +1,6 @@
 ﻿using FluentPOS.Shared.DTOs.Dtos;
 using Newtonsoft.Json;
+using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Dtos
 {
@@ -156,5 +157,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         public long? FulfillmentLineItemId { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public long? ConfirmedQty { get; set; }
+
+        public DateTimeOffset? ConfirmedAt { get; set; }
+
+        public Guid? WarehouseId { get; set; }
     }
 }

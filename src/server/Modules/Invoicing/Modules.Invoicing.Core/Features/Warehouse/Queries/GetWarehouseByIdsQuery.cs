@@ -1,17 +1,18 @@
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Sales.Orders;
 using MediatR;
+using System;
 using System.Collections.Generic;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
-    public class GetWarehouseByNamesQuery : IRequest<Result<List<GetWarehouseResponse>>>
+    public class GetWarehouseByIdsQuery : IRequest<Result<List<GetWarehouseResponse>>>
     {
-        public List<string> Names { get; set; }
+        public List<Guid> Ids { get; set; }
 
-        public GetWarehouseByNamesQuery(List<string> name)
+        public GetWarehouseByIdsQuery(List<Guid> ids)
         {
-            Names = name;
+            Ids = ids;
         }
     }
 }

@@ -37,4 +37,22 @@ export class OrderApiService {
   moveLocation(model: any) {
     return this.http.post(`${this.baseUrl}MoveLocation`, model);
   }
+
+  getByOrderNo(id: string) {
+    var url = `${this.baseUrl}GetByOrderNo/${id}`;
+    return this.http.get(url);
+  }
+  getOrderForConfirm(id: string) {
+    var url = `${this.baseUrl}GetOrderForConfirm/${id}`;
+    return this.http.get(url);
+  }
+  confirmOrder(model: any) {
+    return this.http.post(`${this.baseUrl}ConfirmOrder`, model);
+  }
+  acceptOrder(model: any) {
+    return this.http.post(`${this.baseUrl}AcceptOrder`, model);
+  }
+  rejectOrder(model: any) {
+    return this.http.post(`${this.baseUrl}RejectOrder`, model);
+  }
 }

@@ -64,7 +64,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             foreach (var item in importFile.ImportRecords)
             {
                 var inventoryItem = inventoryItems.Data.Where(x => x.SKU == item.SKU).FirstOrDefault();
-                var location = locations.Data.Where(x => x.Name == item.Warehouse).FirstOrDefault();
+                var location = locations.Data.Where(x => x.Name.Trim() == item.Warehouse).FirstOrDefault();
                 try
                 {
                     if (location != null && inventoryItem != null)
@@ -77,7 +77,9 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
                             quantity = item.Qty,
                             Rack = item.Rack,
                             type = Shared.DTOs.Sales.Enums.OrderType.StockUpdate,
-                            warehouseId = location.Id
+                            warehouseId = location.Id,
+                            SKU = item.SKU,
+                            VariantId = item.ShopifyId
                         });
 
                         if (response.Succeeded)

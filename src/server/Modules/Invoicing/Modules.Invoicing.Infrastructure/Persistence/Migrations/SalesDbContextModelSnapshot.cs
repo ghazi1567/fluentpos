@@ -304,6 +304,15 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<long?>("TotalWeight")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TrackingCompany")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -320,6 +329,44 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Orders", "Invoicing");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OperationCity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("CanDeliver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanPickup")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CountryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OperationCity", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderFulfillment", b =>
@@ -406,6 +453,12 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("ConfirmedQty")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
@@ -496,6 +549,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Vendor")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -794,6 +850,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<bool>("Default")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("Legacy")
                         .HasColumnType("bit");
 
@@ -814,6 +873,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
 
                     b.Property<string>("Province")
                         .HasColumnType("nvarchar(max)");

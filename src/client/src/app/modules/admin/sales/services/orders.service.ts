@@ -31,6 +31,16 @@ export class OrdersService {
       .pipe(map((response: Result<Order>) => response));
   }
 
+  getByOrderNo(id: string): Observable<Result<Order>> {
+    return this.api.getByOrderNo(id)
+      .pipe(map((response: Result<Order>) => response));
+  }
+
+  getOrderForConfirm(id: string): Observable<Result<Order>> {
+    return this.api.getOrderForConfirm(id)
+      .pipe(map((response: Result<Order>) => response));
+  }
+
   syncOrders(): Observable<Result<Order>> {
     return this.api.syncOrders()
       .pipe(map((response: Result<Order>) => response));
@@ -49,6 +59,18 @@ export class OrdersService {
   }
   moveLocation(model: any): Observable<Result<string>> {
     return this.api.moveLocation(model)
+      .pipe(map((response: Result<string>) => response));
+  }
+  confirmOrder(model: any): Observable<Result<string>> {
+    return this.api.confirmOrder(model)
+      .pipe(map((response: Result<string>) => response));
+  }
+  acceptOrder(model: any): Observable<Result<string>> {
+    return this.api.acceptOrder(model)
+      .pipe(map((response: Result<string>) => response));
+  }
+  rejectOrder(model: any): Observable<Result<string>> {
+    return this.api.rejectOrder(model)
       .pipe(map((response: Result<string>) => response));
   }
 }

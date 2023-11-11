@@ -1,3 +1,6 @@
+import { IGetRowsParams, GridApi } from "ag-grid-community";
+import { Observable } from "rxjs";
+
 export class FilterModel {
     key: string;
     value: string;
@@ -26,4 +29,10 @@ export class FilterSort {
 
 export class FilterModelOptions {
     static agNumberFilterOptions: string[] = ['equals', 'notEqual', 'lessThan', 'lessThanOrEqual', 'greaterThan', 'greaterThanOrEqual'];
+}
+
+export interface RemoteGridApi {
+    getData: (params: IGetRowsParams) => Observable<{ data; totalCount }>;
+    getDataError?: (err) => void;
+    gridApi: GridApi;
 }

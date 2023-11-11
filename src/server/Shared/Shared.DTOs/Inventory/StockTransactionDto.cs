@@ -18,5 +18,9 @@ namespace FluentPOS.Shared.DTOs.Inventory
         public string Rack { get; set; }
 
         public bool IgnoreRackCheck { get; set; }
+
+        public string SKU { get; set; }
+
+        public long? VariantId { get; set; }
     }
 }

@@ -47,5 +47,17 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Services
         {
             return await _mediator.Send(new GetProductImageByIdsQuery(productId));
         }
+
+        public async Task<List<GetProductVariantResponse>> GetProductByInventoryItemIds(List<long> inventoryItemIds)
+        {
+            var result = await _mediator.Send(new GetProductsByInventoryItemIds(inventoryItemIds));
+            return result.Data;
+        }
+
+        public async Task<List<GetProductVariantResponse>> GetProductByIds(List<Guid> inventoryItemIds)
+        {
+            var result = await _mediator.Send(new GetProductsByIds(inventoryItemIds));
+            return result.Data;
+        }
     }
 }

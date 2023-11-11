@@ -54,6 +54,10 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 
         public Guid WarehouseId { get; set; }
 
+        public string SKU { get; set; }
+
+        public long? VariantId { get; set; }
+
         public void IncreaseQuantity(long quantity)
         {
             AvailableQuantity += quantity;

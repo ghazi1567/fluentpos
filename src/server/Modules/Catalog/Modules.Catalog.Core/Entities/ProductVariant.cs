@@ -5,12 +5,12 @@ namespace FluentPOS.Modules.Catalog.Core.Entities
 {
     public class ProductVariant : BaseEntity
     {
-        public Guid ProductId1 { get; set; }
+        public Guid ProductId { get; set; }
 
         /// <summary>
         /// The unique numeric identifier for the product.
         /// </summary>
-        public long? ProductId { get; set; }
+        public long? ShopifyProductId { get; set; }
 
         /// <summary>
         /// The title of the product variant.

@@ -36,6 +36,7 @@ import { GridOverlayComponent } from "./components/ag-grid-base/grid-overlay/gri
 import { GridNorowOverlayComponent } from "./components/ag-grid-base/grid-norow-overlay/grid-norow-overlay.component";
 import { ButtonRendererComponent } from './components/ag-grid-base/button-renderer/button-renderer.component';
 import { AutoCompleteComponent } from './components/auto-complete/auto-complete.component';
+import { RemoteGridBindingDirective } from "./components/ag-grid-base/remote-grid-binding.directive";
 
 export const MY_FORMATS = {
     parse: {
@@ -68,7 +69,8 @@ export const MY_FORMATS = {
         GridOverlayComponent,
         GridNorowOverlayComponent,
         ButtonRendererComponent,
-        AutoCompleteComponent
+        AutoCompleteComponent,
+        RemoteGridBindingDirective
     ],
     imports: [
         CommonModule,
@@ -121,7 +123,8 @@ export const MY_FORMATS = {
         AgGridBaseComponent,
         GridOverlayComponent,
         GridNorowOverlayComponent,
-        AutoCompleteComponent
+        AutoCompleteComponent,
+        RemoteGridBindingDirective,
     ]
 })
-export class SharedModule {}
+export class SharedModule { }

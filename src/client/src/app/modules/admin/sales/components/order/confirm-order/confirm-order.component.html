@@ -1,0 +1,118 @@
+<nb-card>
+    <nb-card-body>
+        <nb-stepper #stepper [linear]="linearMode">
+            <nb-step [stepControl]="firstForm" label="Search Order">
+                <div class="col-md-6 offset-md-5">
+                    <form [formGroup]="firstForm" (ngSubmit)="onFirstSubmit()" class="step-container">
+                        <p class="lorem">
+                            Enter or scan order#
+                        </p>
+                        <div class="input-group">
+                            <input nbInput type="text" placeholder="Enter order#" class="form-control col-md-6 "
+                                formControlName="orderNo"
+                                [ngClass]="{'form-control-danger': firstForm.invalid && (firstForm.dirty || firstForm.touched)}">
+                        </div>
+                    </form>
+                </div>
+
+            </nb-step>
+            <nb-step [stepControl]="secondForm" label="Scan Products">
+                <div class="col-md-5 offset-md-5">
+                    <form [formGroup]="secondForm" (ngSubmit)="onSecondSubmit()" class="step-container">
+                        <p class="lorem">
+                            Scan order products...
+                        </p>
+                        <div class="input-group">
+                            <input nbInput type="text" placeholder="Scan product sku" class="form-control col-md-6 "
+                                formControlName="barcode"
+                                [ngClass]="{'form-control-danger': secondForm.invalid && (secondForm.dirty || secondForm.touched)}">
+                        </div>
+                    </form>
+                </div>
+
+            </nb-step>
+            <nb-step [stepControl]="secondForm" label="Completed">
+                <div class="step-container col-md-5 offset-md-5" [nbSpinner]="isSppiner" nbSpinnerStatus="success"
+                    nbSpinnerSize="giant">
+                    <div *ngIf="order && !isSppiner">
+                        <font style="vertical-align: inherit;margin-bottom:25px;">
+                            <font
+                                style="vertical-align: inherit;font-size:14px;color:#7367F0;font-weight:600;line-height: 35px; ">
+                                Order {{order.name}} Confirmed
+                                <nb-icon class="action-icon" style="font-size:4rem" status="primary"
+                                    icon="checkmark-outline"></nb-icon>
+                            </font>
+                        </font>
+                    </div>
+                </div>
+            </nb-step>
+        </nb-stepper>
+    </nb-card-body>
+</nb-card>
+<nb-card *ngIf="order">
+    <nb-card-header>
+        <font style="vertical-align: inherit;margin-bottom:25px;">
+            <font style="vertical-align: inherit;font-size:14px;color:#7367F0;font-weight:600;line-height: 35px; ">
+                Order {{order.name}}</font>
+        </font>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="invoice-box table-height"
+            style="max-width: 1600px;width:100%;overflow: auto;margin:15px auto;padding: 0;font-size: 14px;line-height: 24px;color: #555;">
+
+            <div class="product-grid">
+                <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
+                    <tbody>
+                        <tr class="heading " style="background: #F3F2F7;">
+                            <td
+                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                Product Name
+                            </td>
+                            <td
+                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                SKU
+                            </td>
+                            <td
+                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                QTY Ordered
+                            </td>
+                            <td
+                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                QTY Confirmed
+                            </td>
+                            <td
+                                style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
+                                Status
+                            </td>
+                        </tr>
+                        <tr *ngFor="let item of order.lineItems" class="details"
+                            style="border-bottom:1px solid #E9ECEF ;">
+                            <td style="padding: 10px;vertical-align: top; display: flex;align-items: center;">
+                                <img src="{{item.imageUrl}}" alt="img" class="me-2" style="width:40px;height:40px;">
+                                {{item.name}}
+                            </td>
+                            <td style="padding: 10px;vertical-align: top; ">
+                                {{item.sku}}
+                            </td>
+                            <td style="padding: 10px;vertical-align: top; ">
+                                {{item.quantity}}
+                            </td>
+                            <td style="padding: 10px;vertical-align: top; ">
+                                {{item.confirmedQty}}
+                            </td>
+                            <td style="position: relative;">
+                                <nb-badge text="Completed" *ngIf="item.quantity == item.confirmedQty" status="success"
+                                    position="center left"></nb-badge>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+
+
+    </nb-card-body>
+</nb-card>

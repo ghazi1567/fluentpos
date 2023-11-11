@@ -2,6 +2,7 @@
 using FluentPOS.Modules.Inventory.Core.Abstractions;
 using FluentPOS.Modules.Inventory.Core.Dtos;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
+using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.Extensions.Localization;
@@ -19,17 +20,20 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<StockReportHandler> _localizer;
         private readonly IProductService _productService;
+        private readonly IWarehouseService _warehouseService;
 
         public StockReportHandler(
             IInventoryDbContext context,
             IMapper mapper,
             IStringLocalizer<StockReportHandler> localizer,
-            IProductService productService)
+            IProductService productService,
+            IWarehouseService warehouseService)
         {
             _context = context;
             _mapper = mapper;
             _localizer = localizer;
             _productService = productService;
+            _warehouseService = warehouseService;
         }
 
         public async Task<Result<List<StockDto>>> Handle(StockReportQuery request, CancellationToken cancellationToken)
@@ -55,8 +59,28 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
             }
 
             var result = query.ToList();
+            var stockListDto = _mapper.Map<List<StockDto>>(result);
+            var productIds = stockListDto.Select(x => x.ProductId).Distinct().ToList();
 
-            return await Result<List<StockDto>>.SuccessAsync(data: _mapper.Map<List<StockDto>>(result));
+            var paroducts = await _productService.GetProductByIds(productIds);
+            var warehouses = await _warehouseService.GetWarehouse(new List<string>());
+            foreach (var item in stockListDto)
+            {
+                var productVariant = paroducts.FirstOrDefault(x => x.InventoryItemId == item.InventoryItemId);
+                if (productVariant != null)
+                {
+                    item.Title = productVariant.Title;
+                    item.SKU = productVariant.SKU;
+                }
+
+                var warehouse = warehouses.Data.FirstOrDefault(x => x.Id == item.WarehouseId);
+                if (warehouse != null)
+                {
+                    item.WarehouseName = warehouse.Name;
+                }
+            }
+
+            return await Result<List<StockDto>>.SuccessAsync(data: stockListDto);
         }
     }
 }

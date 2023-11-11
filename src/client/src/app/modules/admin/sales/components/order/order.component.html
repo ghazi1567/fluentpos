@@ -1,36 +1,59 @@
 <nb-card>
   <nb-card-body>
-    <nb-tabset>
-      <nb-tab tabTitle="All Orders" badgeText="99+" badgeStatus="danger">
+    <nb-tabset (changeTab)="tabSelection($event)">
+      <nb-tab tabTitle="All" tabId="0" badgeText="{{orderData.length}}" badgeStatus="success">
         <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
           <app-ag-grid-base #AgGrid [rowData]="orderData" [columnDefs]="orderColumns" [pagination]="true"
             (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
           </app-ag-grid-base>
         </div>
       </nb-tab>
-      <nb-tab tabTitle="Pending" badgeText="12" badgePosition="bottom right" badgeStatus="warning">
-        <p>List of <strong>orders</strong>.</p>
+      <nb-tab tabTitle="Pending" tabId="1" badgeText="{{pendingOrderData.length}}" badgeStatus="warning">
+        <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
+          <app-ag-grid-base #AgGrid [rowData]="pendingOrderData" [columnDefs]="orderColumns" [pagination]="true"
+            (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+          </app-ag-grid-base>
+        </div>
       </nb-tab>
-      <nb-tab tabTitle="City Issue" badgeDot badgePosition="center start" badgeStatus="danger">
-        <p>List of <strong>notifications</strong>.</p>
+      <nb-tab tabTitle="City Issue" tabId="3" badgeText="{{cityCorrectionOrderData.length}}" badgeStatus="danger">
+        <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
+          <app-ag-grid-base #AgGrid [rowData]="cityCorrectionOrderData" [columnDefs]="orderColumns" [pagination]="true"
+            (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+          </app-ag-grid-base>
+        </div>
       </nb-tab>
-      <nb-tab tabTitle="Approved" badgeText="new" badgePosition="top right" badgeStatus="success">
+      <nb-tab tabTitle="Approved" tabId="5" badgeText="{{approvedOrderData.length}}" badgeStatus="success">
+        <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
+          <app-ag-grid-base #AgGrid [rowData]="approvedOrderData" [columnDefs]="orderColumns" [pagination]="true"
+            (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+          </app-ag-grid-base>
+        </div>
+      </nb-tab>
+      <nb-tab tabTitle="Dispatched" tabId="0" badgeText="new" badgePosition="top right" badgeStatus="success">
         <p>List of <strong>transactions</strong>.</p>
       </nb-tab>
-      <nb-tab tabTitle="Dispatched" badgeText="new" badgePosition="top right" badgeStatus="success">
+      <nb-tab tabTitle="Delivered" tabId="0" badgeText="new" badgePosition="top right" badgeStatus="success">
         <p>List of <strong>transactions</strong>.</p>
       </nb-tab>
-      <nb-tab tabTitle="Delivered" badgeText="new" badgePosition="top right" badgeStatus="success">
+      <nb-tab tabTitle="Cancelled" tabId="2" badgeText="{{cancelledOrderData.length}}" badgeStatus="success">
+        <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
+          <app-ag-grid-base #AgGrid [rowData]="cancelledOrderData" [columnDefs]="orderColumns" [pagination]="true"
+            (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+          </app-ag-grid-base>
+        </div>
+      </nb-tab>
+      <nb-tab tabTitle="Returned" tabId="0" badgeText="new" badgePosition="top right" badgeStatus="success">
         <p>List of <strong>transactions</strong>.</p>
       </nb-tab>
-      <nb-tab tabTitle="Cancelled" badgeText="new" badgePosition="top right" badgeStatus="success">
+      <nb-tab tabTitle="Halt" tabId="0" badgeText="new" badgePosition="top right" badgeStatus="success">
         <p>List of <strong>transactions</strong>.</p>
       </nb-tab>
-      <nb-tab tabTitle="Returned" badgeText="new" badgePosition="top right" badgeStatus="success">
-        <p>List of <strong>transactions</strong>.</p>
-      </nb-tab>
-      <nb-tab tabTitle="Halt" badgeText="new" badgePosition="top right" badgeStatus="success">
-        <p>List of <strong>transactions</strong>.</p>
+      <nb-tab tabTitle="Assigned To picker" tabId="6" badgeText="{{assignedToOutletOrderData.length}}"  badgeStatus="success">
+        <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
+          <app-ag-grid-base #AgGrid [rowData]="assignedToOutletOrderData" [columnDefs]="orderColumns" [pagination]="true"
+            (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+          </app-ag-grid-base>
+        </div>
       </nb-tab>
     </nb-tabset>
 

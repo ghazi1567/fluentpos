@@ -36,6 +36,20 @@ namespace FluentPOS.Modules.Invoicing.Controllers
             return Ok(await Mediator.Send(new GetOrderByIdQuery { Id = id }));
         }
 
+        [HttpGet("GetByOrderNo/{OrderNo}")]
+        [Authorize(Policy = Permissions.Sales.View)]
+        public async Task<IActionResult> GetByOrderNoAsync(string OrderNo)
+        {
+            return Ok(await Mediator.Send(new GetOrderByIdQuery { OrderNo = $"#{OrderNo}" }));
+        }
+
+        [HttpGet("GetOrderForConfirm/{OrderNo}")]
+        [Authorize(Policy = Permissions.Sales.View)]
+        public async Task<IActionResult> GetOrderForConfirmAsync(string OrderNo)
+        {
+            return Ok(await Mediator.Send(new GetOrderForConfirmQuery { OrderNo = $"#{OrderNo}" }));
+        }
+
         [HttpPost]
         [Authorize(Policy = Permissions.Sales.Register)]
         public async Task<IActionResult> RegisterAsync(RegisterSaleCommand command)
@@ -67,6 +81,27 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         [HttpPost("MoveLocation")]
         [Authorize(Policy = Permissions.Sales.Update)]
         public async Task<IActionResult> MoveLocationAsync(MoveLocationCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("ConfirmOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> ConfirmOrderAsync(ConfirmOrderCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("AcceptOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> AcceptOrderAsync(AcceptOrderCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("RejectOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> RejectOrderAsync(RejectOrderCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

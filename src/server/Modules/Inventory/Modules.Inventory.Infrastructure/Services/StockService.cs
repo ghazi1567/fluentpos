@@ -8,11 +8,14 @@
 
 using AutoMapper;
 using FluentPOS.Modules.Inventory.Core.Features.Levels;
+using FluentPOS.Modules.Inventory.Core.Features.Queries;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Inventory;
 using MediatR;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Inventory.Infrastructure.Services
@@ -34,6 +37,49 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
         {
             var command = _mapper.Map<RecordTransactionCommand>(stockTransactionDto);
             return await _mediator.Send(command);
+        }
+
+        public async Task<List<WarehouseStockStatsDto>> GetStockBySKU(List<string> sku)
+        {
+            return await _mediator.Send(new GetStockBySKUs(sku));
+        }
+
+        public async Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty)
+        {
+            List<string> skuList = new List<string>(skuQty.Keys);
+            var warehouseStockStats = await GetStockBySKU(skuList);
+
+            // filter warehouse with required qty
+            warehouseStockStats = GetValidQtyWarehouse(warehouseStockStats, skuQty);
+
+            // TODO: calculate distance based on lat,long
+            var validQtyStockStats = CalculateDistance(warehouseStockStats);
+
+            // final picked warehouse base on near by available stock
+            return FinalWarehousePick(validQtyStockStats, skuQty.Count);
+        }
+
+        public List<WarehouseStockStatsDto> GetValidQtyWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<string, int> skuQty)
+        {
+            List<WarehouseStockStatsDto> filterList = new List<WarehouseStockStatsDto>();
+
+            foreach (var item in skuQty)
+            {
+                filterList.AddRange(warehouseStockStats.Where(x => x.SKU == item.Key && x.quantity >= item.Value).ToList());
+            }
+
+            return filterList;
+        }
+
+        public List<IGrouping<Guid, WarehouseStockStatsDto>> CalculateDistance(List<WarehouseStockStatsDto> warehouseStockStats)
+        {
+            return warehouseStockStats.OrderBy(x => x.Distance).GroupBy(x => x.warehouseId).ToList();
+        }
+
+        public IGrouping<Guid, WarehouseStockStatsDto> FinalWarehousePick(List<IGrouping<Guid, WarehouseStockStatsDto>> ValidQtyStockStats, int skuCount)
+        {
+            var warehouseWithAllProducts = ValidQtyStockStats.Where(x => x.Count() >= skuCount).ToList();
+            return warehouseWithAllProducts.FirstOrDefault();
         }
 
         // public async Task RecordTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType transactionType, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId)

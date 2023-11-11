@@ -83,5 +83,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public Guid? ParentId { get; set; }
 
         public string Code { get; set; }
+
+        public bool Default { get; set; }
+
+        public int Position { get; set; }
     }
 }

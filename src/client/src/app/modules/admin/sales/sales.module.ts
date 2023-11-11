@@ -28,6 +28,9 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { InventoryImportComponent } from './components/inventory-import/inventory-import.component';
 import { InventoryImportListComponent } from './components/inventory-import-list/inventory-import-list.component';
 import { SplitOrderComponent } from './components/order/split-order/split-order.component';
+import { AssignedToOutletComponent } from './components/order/assigned-to-outlet/assigned-to-outlet.component';
+import { PrintOrderInvoiceComponent } from './components/order/print-order-invoice/print-order-invoice.component';
+import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-order.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,10 @@ import { SplitOrderComponent } from './components/order/split-order/split-order.
     WarehouseComponent,
     InventoryImportComponent,
     InventoryImportListComponent,
-    SplitOrderComponent
+    SplitOrderComponent,
+    AssignedToOutletComponent,
+    PrintOrderInvoiceComponent,
+    ConfirmOrderComponent
   ],
   imports: [
     CommonModule,

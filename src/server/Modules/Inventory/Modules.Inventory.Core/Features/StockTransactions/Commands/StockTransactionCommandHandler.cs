@@ -55,6 +55,8 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             {
                 stockRecord = new Stock(request.productId, request.inventoryItemId, request.warehouseId);
                 stockRecord.Rack = request.Rack;
+                stockRecord.SKU = request.SKU;
+                stockRecord.VariantId = request.VariantId;
                 isRecordExist = false;
             }
 

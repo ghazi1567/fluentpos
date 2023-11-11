@@ -10,20 +10,33 @@ import { Sort } from '@angular/material/sort';
 import { TableColumn } from 'src/app/core/shared/components/table/table-column';
 import { SalesService } from '../../services/sales.service';
 import { AgGridBaseComponent } from 'src/app/core/shared/components/ag-grid-base/ag-grid-base.component';
-import { OrderStatusMapping } from 'src/app/core/enums/OrderStatus';
+import { OrderStatus, OrderStatusMapping } from 'src/app/core/enums/OrderStatus';
 import { CustomAction } from 'src/app/core/shared/components/table/custom-action';
 import { Router } from '@angular/router';
 import * as moment from "moment";
+import { Observable, of } from 'rxjs';
+import { RemoteGridApi } from 'src/app/core/shared/components/ag-grid-base/ag-grid.models';
+import { GridApi } from 'ag-grid-community';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss'],
 })
+//RemoteGridApi
 export class OrderComponent implements OnInit {
   // orderColumns: TableColumn[];
   orderParams = new OrderParams();
   searchString: string;
+  orderData: any[] = [];
+  pendingOrderData: any[] = [];
+  cityCorrectionOrderData: any[] = [];
+  approvedOrderData: any[] = [];
+  cancelledOrderData: any[] = [];
+  assignedToOutletOrderData: any[] = [];
+
+
 
   displayedColumns: string[] = ['id', 'referenceNumber', 'timeStamp', 'customerName', 'total', 'isPaid', 'action'];
   dataSource: PaginatedResult<Order>;
@@ -34,47 +47,27 @@ export class OrderComponent implements OnInit {
     public toastr: ToastrService,
     public router: Router
   ) { }
+  getDataError(err: any) {
+    console.log(err)
+  };
+  gridApi: GridApi;
 
   ngOnInit(): void {
-    this.getOrders();
+    // this.getOrders();
     this.initOvertimeColumns();
+    // this.syncOrders();
   }
 
-  getOrders(): void {
+  getOrders(status: number): void {
     this.orderParams.pageNumber = 0;
     this.orderParams.pageSize = 100;
+    this.orderParams.status = status;
 
     this.saleService.getSales(this.orderParams).subscribe((result) => {
       this.dataSource = result;
       this.orderData = result.data;
     });
 
-  }
-
-  pageChanged(event: PaginatedFilter): void {
-    this.orderParams.pageNumber = event.pageNumber;
-    this.orderParams.pageSize = event.pageSize;
-    this.getOrders();
-  }
-
-  sort($event: Sort): void {
-    this.orderParams.orderBy = $event.active + ' ' + $event.direction;
-    console.log(this.orderParams.orderBy);
-    this.getOrders();
-  }
-
-  filter($event: string): void {
-    this.orderParams.searchString = $event.trim().toLocaleLowerCase();
-    this.orderParams.pageNumber = 0;
-    this.orderParams.pageSize = 0;
-    this.getOrders();
-  }
-
-  reload(): void {
-    this.orderParams.searchString = '';
-    this.orderParams.pageNumber = 0;
-    this.orderParams.pageSize = 0;
-    this.getOrders();
   }
 
   openViewOrderDetail(order: Order): void {
@@ -87,15 +80,11 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  openEditPOS(orderId: string) {
-    console.log(orderId);
-  }
-
-
   public OrderStatusMapping = OrderStatusMapping;
-  orderData: any[] = [];
+
   orderColumns: any[];
   private AgGrid: AgGridBaseComponent;
+  remoteGridBinding = this;
   @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
     if (content) {
       // initially setter gets called with undefined
@@ -103,12 +92,13 @@ export class OrderComponent implements OnInit {
     }
   }
   gridReady(event): void {
-    event.api.sizeColumnsToFit();
+    this.gridApi = event.params.api;
+    // event.api.sizeColumnsToFit();
     if (this.AgGrid) {
       // this.AgGrid.gridApi.setDatasource(this.scrollBarDataSource);
     }
     // this.getOvertimeMyQueue();
-    this.getOrders();
+    this.getOrders(null);
   }
   onSaveButtonClick(params) {
     console.log(params);
@@ -139,8 +129,13 @@ export class OrderComponent implements OnInit {
         wrapText: true,
         autoHeight: true,
         valueGetter: params => {
-          return OrderStatusMapping[params.data.status];;
+          return params.data ? OrderStatusMapping[params.data.status] : '';
         }
+      },
+      {
+        headerName: "Warehouse", field: "warehouseName", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
       },
       {
         headerName: "Cust. Name", field: "customerName", sortable: true, isShowable: true,
@@ -148,7 +143,10 @@ export class OrderComponent implements OnInit {
         autoHeight: true,
         valueGetter: 'data.shippingAddress.name'
       },
-      { headerName: "Cust. Phone", field: "phone", sortable: true, isShowable: true, width: 140 },
+      {
+        headerName: "Cust. Phone", field: "phone", sortable: true, isShowable: true, width: 140,
+        valueGetter: 'data.shippingAddress.phone'
+      },
       {
         headerName: "Cust. Email", field: "email", sortable: true, isShowable: true,
         wrapText: true,
@@ -214,18 +212,48 @@ export class OrderComponent implements OnInit {
       {
         headerName: "CancelledAt", field: "cancelledAt", sortable: true, isShowable: true,
         valueFormatter: (params) => {
-          let value = params.value;
-          let date = moment(value, "DD-MM-YYYY hh:mm:ss");
-          if (date.isValid()) {
-            value = date.format("DD-MM-YYYY hh:mm:ss");
+          if (params && params.value) {
+            let value = params.value;
+            let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+            if (date.isValid()) {
+              value = date.format("DD-MM-YYYY hh:mm:ss");
+            }
+            return value;
           }
-          return value;
+          return '';
         }
       },
     ];
   }
+
   syncOrders() {
     this.saleService.syncOrders().subscribe((result) => {
     });
+  }
+
+  getData(params): Observable<{ data; totalCount }> {
+    console.log(params);
+    this.orderParams.pageNumber = params.startRow;
+    this.orderParams.pageSize = params.endRow;
+    return this.saleService.getSales(this.orderParams)
+  }
+
+  tabSelection($event) {
+    console.log($event)
+    if ($event.tabId == "1") {
+      this.pendingOrderData = this.orderData.filter(x => x.status == 1)
+    }
+    else if ($event.tabId == "3") {
+      this.cityCorrectionOrderData = this.orderData.filter(x => x.status == 3)
+    }
+    else if ($event.tabId == "5") {
+      this.approvedOrderData = this.orderData.filter(x => x.status == 5)
+    }
+    else if ($event.tabId == "2") {
+      this.cancelledOrderData = this.orderData.filter(x => x.status == 2)
+    }
+    else if ($event.tabId == "6") {
+      this.assignedToOutletOrderData = this.orderData.filter(x => x.status == 6)
+    }
   }
 }

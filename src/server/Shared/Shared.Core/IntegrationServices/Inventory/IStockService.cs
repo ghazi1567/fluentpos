@@ -11,6 +11,7 @@ using FluentPOS.Shared.DTOs.Inventory;
 using FluentPOS.Shared.DTOs.Sales.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
@@ -23,6 +24,7 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
 
 
         Task<Result<Guid>> RecordTransaction(StockTransactionDto stockTransactionDto);
+        Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty);
 
         /// <summary>
         /// Record Transaction.

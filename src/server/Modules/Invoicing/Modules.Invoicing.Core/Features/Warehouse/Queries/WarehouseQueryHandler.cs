@@ -19,7 +19,9 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
 {
     internal class WarehouseQueryHandler : IRequestHandler<GetWarehouseQuery, Result<List<WarehouseDto>>>,
-        IRequestHandler<GetWarehouseByNamesQuery, Result<List<GetWarehouseResponse>>>
+        IRequestHandler<GetWarehouseByNamesQuery, Result<List<GetWarehouseResponse>>>,
+        IRequestHandler<GetWarehouseByIdsQuery, Result<List<GetWarehouseResponse>>>,
+        IRequestHandler<GetDefaultWarehouseQuery, WarehouseDto>
 
     {
         private readonly ISalesDbContext _context;
@@ -59,6 +61,30 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
             if (request.Names.Count > 0)
             {
                 queryable = queryable.Where(x => request.Names.Contains(x.Name));
+            }
+
+            var warehouses = await queryable.AsNoTracking()
+              .OrderBy(x => x.Name)
+              .Select(expression)
+              .ToListAsync();
+
+            return await Result<List<GetWarehouseResponse>>.SuccessAsync(data: warehouses);
+        }
+
+        public async Task<WarehouseDto> Handle(GetDefaultWarehouseQuery request, CancellationToken cancellationToken)
+        {
+            var warehouses = await _context.Warehouses.AsNoTracking().FirstOrDefaultAsync(x => x.Default == true);
+            return _mapper.Map<Warehouse, WarehouseDto>(warehouses);
+        }
+
+        public async Task<Result<List<GetWarehouseResponse>>> Handle(GetWarehouseByIdsQuery request, CancellationToken cancellationToken)
+        {
+            Expression<Func<Warehouse, GetWarehouseResponse>> expression = e => new GetWarehouseResponse(e.Id, e.ShopifyId, e.Name, e.Active);
+
+            var queryable = _context.Warehouses.AsQueryable();
+            if (request.Ids.Count > 0)
+            {
+                queryable = queryable.Where(x => request.Ids.Contains(x.Id));
             }
 
             var warehouses = await queryable.AsNoTracking()

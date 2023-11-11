@@ -465,10 +465,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                     b.Property<decimal?>("Price")
                         .HasColumnType("decimal(23,2)");
 
-                    b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("ProductId1")
+                    b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("RequiresShipping")
@@ -478,6 +475,9 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ShopifyProductId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("TaxCode")
@@ -500,7 +500,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId1");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductVariant", "Catalog");
                 });
@@ -549,7 +549,9 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("FluentPOS.Modules.Catalog.Core.Entities.Product", null)
                         .WithMany("Variants")
-                        .HasForeignKey("ProductId1");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Catalog.Core.Entities.Brand", b =>

@@ -190,11 +190,17 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<string>("Rack")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long?>("ShopifyId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("VariantId")
+                        .HasColumnType("bigint");
 
                     b.Property<Guid>("WarehouseId")
                         .HasColumnType("uniqueidentifier");

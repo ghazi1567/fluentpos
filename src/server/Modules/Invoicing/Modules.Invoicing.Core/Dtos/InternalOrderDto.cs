@@ -313,5 +313,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public List<InternalFulfillmentOrderDto> FulfillmentOrders { get; set; }
 
+        public string WarehouseName { get; set; }
+
     }
 }

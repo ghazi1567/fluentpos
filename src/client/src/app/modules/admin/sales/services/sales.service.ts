@@ -22,6 +22,7 @@ export class SalesService {
     if (orderParams.pageNumber) params = params.append('pageNumber', orderParams.pageNumber.toString());
     if (orderParams.pageSize) params = params.append('pageSize', orderParams.pageSize.toString());
     if (orderParams.orderBy) params = params.append('orderBy', orderParams.orderBy.toString());
+    if (orderParams.status) params = params.append('status', orderParams.status.toString());
     return this.api.getAlls(params)
       .pipe(map((response: PaginatedResult<Order>) => response));
   }

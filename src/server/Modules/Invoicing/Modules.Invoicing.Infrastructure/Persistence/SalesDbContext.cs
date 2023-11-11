@@ -59,6 +59,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
 
         public DbSet<OrderFulfillment> OrderFulfillment { get; set; }
 
+        public DbSet<OperationCity> OperationCity { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

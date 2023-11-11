@@ -69,6 +69,14 @@ export const MENU_ITEMS: NbMenuItem[] = [
                 title: "Orders",
                 link: "sales/orders"
             },
+            {
+                title: "Assigned To Outlet",
+                link: "sales/assigned-to-outlet"
+            },
+            {
+                title: "Confirm Order",
+                link: "sales/confirm-order"
+            },
         ]
     },
     {

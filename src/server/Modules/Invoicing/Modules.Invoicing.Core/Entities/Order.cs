@@ -9,6 +9,7 @@
 using FluentPOS.Shared.Core.Domain;
 using FluentPOS.Shared.DTOs.People.Customers;
 using FluentPOS.Shared.DTOs.Sales.Enums;
+using Newtonsoft.Json;
 using ShopifySharp;
 using System;
 using System.Collections.Generic;
@@ -343,6 +344,13 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public DateTimeOffset? ApprovedAt { get; set; }
 
         public string ApprovedBy { get; set; }
+
+        public string TrackingNumber { get; set; }
+
+        public string TrackingUrl { get; set; }
+
+        public string TrackingCompany { get; set; }
+
 
         // public string ShippingAddress1 { get; set; }
         // public string ShippingAddress2 { get; set; }

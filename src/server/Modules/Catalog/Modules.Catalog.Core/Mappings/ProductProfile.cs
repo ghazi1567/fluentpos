@@ -36,7 +36,9 @@ namespace FluentPOS.Modules.Catalog.Core.Mappings
 
             CreateMap<ShopifySharp.ProductVariant, ProductVariant>(MemberList.Source)
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
-               .ForMember(dest => dest.Id, opt => opt.Ignore());
+                 .ForMember(dest => dest.ShopifyProductId, opt => opt.MapFrom(src => src.ProductId))
+               .ForMember(dest => dest.Id, opt => opt.Ignore())
+               .ForMember(dest => dest.ProductId, opt => opt.Ignore());
 
             CreateMap<ShopifySharp.ProductImage, ProductImage>(MemberList.Source)
               .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))

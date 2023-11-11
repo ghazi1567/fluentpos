@@ -37,7 +37,8 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         IRequestHandler<GetProductImageQuery, Result<string>>,
         IRequestHandler<SyncProductCommand, Result<string>>,
         IRequestHandler<GetProductImageByIdsQuery, Result<List<GetProductImageByIdResponse>>>,
-        IRequestHandler<GetProductBySKUsQuery, Result<List<GetProductVariantResponse>>>
+        IRequestHandler<GetProductBySKUsQuery, Result<List<GetProductVariantResponse>>>,
+        IRequestHandler<GetProductsByIds, Result<List<GetProductVariantResponse>>>
     {
         private readonly ICatalogDbContext _context;
         private readonly IMapper _mapper;
@@ -165,7 +166,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public async Task<Result<List<GetProductVariantResponse>>> Handle(GetProductBySKUsQuery query, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            Expression<Func<ProductVariant, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, e.ProductId, e.Title, e.SKU, e.InventoryItemId, e.ProductId1);
+            Expression<Func<ProductVariant, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, null, e.Title, e.SKU, e.InventoryItemId, e.ProductId);
 
             var products = await _context.ProductVariant.AsNoTracking()
                 .Where(p => query.SKUs.Contains(p.SKU))
@@ -173,6 +174,42 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
                 .ToListAsync(cancellationToken);
 
             return await Result<List<GetProductVariantResponse>>.SuccessAsync(products);
+        }
+
+#pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
+        public async Task<Result<List<GetProductVariantResponse>>> Handle(GetProductsByInventoryItemIds query, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+            Expression<Func<ProductVariant, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, null, e.Title, e.SKU, e.InventoryItemId, e.ProductId);
+
+            var products = await _context.ProductVariant.AsNoTracking()
+                .Where(p => query.InventoryItemIds.Contains(p.InventoryItemId.Value))
+                .Select(expression)
+                .ToListAsync(cancellationToken);
+
+            return await Result<List<GetProductVariantResponse>>.SuccessAsync(products);
+        }
+
+#pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
+        public async Task<Result<List<GetProductVariantResponse>>> Handle(GetProductsByIds query, CancellationToken cancellationToken)
+#pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
+        {
+            // Expression<Func<Product, GetProductVariantResponse>> expression = e => new GetProductVariantResponse(e.Id, e.ShopifyId, e.Variants, e.Title, e.SKU, e.InventoryItemId, e.ProductId1);
+
+            var products = await _context.Products.AsNoTracking()
+                .Where(p => query.Ids.Contains(p.Id))
+                .Include(x => x.Variants)
+                .ToListAsync(cancellationToken);
+
+            List<GetProductVariantResponse> responses = new List<GetProductVariantResponse>();
+            foreach (var product in products)
+            {
+                foreach (var item in product.Variants)
+                {
+                    responses.Add(new GetProductVariantResponse(item.Id, item.ShopifyId, null, product.Title, item.SKU, item.InventoryItemId, item.ProductId));
+                }
+            }
+            return await Result<List<GetProductVariantResponse>>.SuccessAsync(responses);
         }
     }
 }

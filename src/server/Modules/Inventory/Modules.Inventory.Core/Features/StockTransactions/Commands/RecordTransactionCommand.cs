@@ -20,5 +20,9 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
         public string Rack { get; set; }
 
         public bool IgnoreRackCheck { get; set; }
+
+        public string SKU { get; set; }
+
+        public long? VariantId { get; set; }
     }
 }

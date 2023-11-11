@@ -18,11 +18,26 @@ import { OrderDetailComponent } from './components/order/order-detail/order-deta
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { InventoryImportComponent } from './components/inventory-import/inventory-import.component';
 import { InventoryImportListComponent } from './components/inventory-import-list/inventory-import-list.component';
+import { AssignedToOutletComponent } from './components/order/assigned-to-outlet/assigned-to-outlet.component';
+import { PrintOrderInvoiceComponent } from './components/order/print-order-invoice/print-order-invoice.component';
+import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-order.component';
 
 const routes: Routes = [
   {
     path: 'orders',
     component: OrderComponent
+  },
+  {
+    path: 'assigned-to-outlet',
+    component: AssignedToOutletComponent
+  },
+  {
+    path: 'print-invoice',
+    component: PrintOrderInvoiceComponent
+  },
+  {
+    path: 'confirm-order',
+    component: ConfirmOrderComponent
   },
   {
     path: 'order-detail/:id',

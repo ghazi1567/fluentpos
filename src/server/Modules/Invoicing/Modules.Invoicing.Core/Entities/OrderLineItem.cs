@@ -1,5 +1,6 @@
 ﻿using FluentPOS.Shared.Core.Domain;
 using Newtonsoft.Json;
+using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
@@ -61,5 +62,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public decimal? PreTaxPrice { get; set; }
 
         public long? FulfillmentLineItemId { get; set; }
+
+        public long? ConfirmedQty { get; set; }
+
+        public DateTimeOffset? ConfirmedAt { get; set; }
+
+        public Guid? WarehouseId { get; set; }
     }
 }
