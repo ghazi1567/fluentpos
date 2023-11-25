@@ -39,7 +39,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         {
             return await _context.Orders
                 .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockIn") == false
-                 && x.Status == OrderStatus.Pending && x.OrderType == OrderType.StockIn)
+                 && x.Status == OrderStatus.Pending) // && x.OrderType == OrderType.StockIn)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -47,8 +47,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         public async Task<List<InternalOrder>> GetPendingStockOutAsync(Guid clientId)
         {
             return await _context.Orders
-                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false
-                && x.OrderType == OrderType.StockOut)
+                .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false)
+                //&& x.OrderType == OrderType.StockOut)
                 .AsNoTracking()
                 .ToListAsync();
         }

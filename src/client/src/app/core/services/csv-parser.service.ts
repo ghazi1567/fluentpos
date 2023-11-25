@@ -185,6 +185,8 @@ export class CsvParserService {
                         console.log(XLSX.utils.sheet_to_json(worksheet, { raw: false, dateNF: "yyyy-MM-dd" }));
                         var arraylist = XLSX.utils.sheet_to_json(worksheet, { raw: false, defval: null, dateNF: "yyyy-MM-dd" });
                         var csvRecords = this.renameHeaderKeys(arraylist, config);
+
+                        
                         observer.next(csvRecords);
                         observer.complete();
                     };

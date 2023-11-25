@@ -6,21 +6,21 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using Dapper;
 using FluentPOS.Modules.Invoicing.Core.Abstractions;
 using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Shared.Core.EventLogging;
+using FluentPOS.Shared.Core.Interfaces.Serialization;
 using FluentPOS.Shared.Core.Settings;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using FluentPOS.Shared.Core.Interfaces.Serialization;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft.Data.SqlClient;
 using System.Data;
-using Dapper;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
 {
@@ -57,13 +57,21 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
 
         public DbSet<SyncLog> SyncLogs { get; set; }
 
-        public DbSet<OrderFulfillment> OrderFulfillment { get; set; }
+        public DbSet<IntenalFulfillment> OrderFulfillment { get; set; }
 
         public DbSet<OperationCity> OperationCity { get; set; }
 
+        public DbSet<InternalFulfillmentOrder> FulfillmentOrders { get; set; }
+
+        public DbSet<InternalAddress> Addresses { get; set; }
+
+        public DbSet<LoadSheetMain> LoadSheetMains { get; set; }
+
+        public DbSet<LoadSheetDetail> LoadSheetDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
         }
 

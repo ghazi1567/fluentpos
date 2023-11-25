@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
+using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
+using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Interfaces.Serialization;
 using FluentPOS.Shared.Core.Utilities;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Inventory;
+using FluentPOS.Shared.DTOs.Sales.Orders;
 using FluentPOS.Shared.Infrastructure.Services;
 using Hangfire;
 using MediatR;
@@ -38,9 +41,18 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         private readonly IJsonSerializer _jsonSerializer;
         private readonly IWebhookEventService _webhookEventService;
         private readonly IStockService _stockService;
-
-        public ShopifyOrderSyncJob(IHttpContextAccessor accessor, IMapper mapper, IMediator mediator, IJsonSerializer jsonSerializer,
-            IWebhookEventService webhookEventService, IStoreService storeService, IStockService stockService)
+        private readonly IShopifyOrderFulFillmentService _shopifyOrderFulFillmentService;
+        private readonly IWarehouseService _warehouseService;
+        public ShopifyOrderSyncJob(
+            IHttpContextAccessor accessor,
+            IMapper mapper,
+            IMediator mediator,
+            IJsonSerializer jsonSerializer,
+            IWebhookEventService webhookEventService,
+            IStoreService storeService,
+            IStockService stockService,
+            IShopifyOrderFulFillmentService shopifyOrderFulFillmentService,
+            IWarehouseService warehouseService)
         {
             _accessor = accessor;
             _mapper = mapper;
@@ -61,6 +73,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                 _shopifyUrl = shopifyCreds.Split("|")[0];
                 _accessToken = shopifyCreds.Split("|")[1];
             }
+
+            _shopifyOrderFulFillmentService = shopifyOrderFulFillmentService;
+            _warehouseService = warehouseService;
         }
 
         public async Task<bool> FetchAndSaveShopifyOrders(string shopifyUrl, string accessToken, ListFilter<ShopifySharp.Order> filter = null)
@@ -112,9 +127,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     try
                     {
                         var order = _mapper.Map<RegisterOrderCommand>(shopifyProduct);
+                        var fulfillmentOrders = await _shopifyOrderFulFillmentService.GetFulFillOrderByOrderId(order.ShopifyId.Value);
+                        order.FulfillmentOrders = _mapper.Map<List<InternalFulfillmentOrderDto>>(fulfillmentOrders);
                         order.Status = Shared.DTOs.Sales.Enums.OrderStatus.Pending;
                         var response = await _mediator.Send(order);
-                        // Console.WriteLine(response.Messages);
                     }
                     catch (System.Exception ex)
                     {
@@ -143,6 +159,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                 {
                     var shopifyOrder = JsonConvert.DeserializeObject<ShopifySharp.Order>(order.JsonBody);
                     var command = _mapper.Map<RegisterOrderCommand>(shopifyOrder);
+                    var fulfillmentOrders = await _shopifyOrderFulFillmentService.GetFulFillOrderByOrderId(command.ShopifyId.Value);
+                    command.FulfillmentOrders = _mapper.Map<List<InternalFulfillmentOrderDto>>(fulfillmentOrders);
+
                     var response = await SaveOrder(command);
                     if (response.Succeeded)
                     {
@@ -160,7 +179,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     await _webhookEventService.UpdateStatus(order.Id, "Failed", ex.Message, null);
                 }
             }
-
+            isFoundNewOrder = true;
             if (isFoundNewOrder)
             {
                 ProcessOrder();
@@ -182,44 +201,129 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         public async Task<bool> FetchAndProcessOrders()
         {
             var pendingOrders = await _mediator.Send(new GetOrderForProcessQuery());
-            foreach (var order in pendingOrders)
+            foreach (var fulfillmentOrder in pendingOrders)
             {
                 try
                 {
                     // check city is valid
-                    bool isValidCity = await CheckValidAddressAsync(order.ShippingAddress.City);
+                    bool isValidCity = await CheckValidAddressAsync(fulfillmentOrder.FulfillmentOrderDestination.City);
                     if (!isValidCity)
                     {
-                        bool result = await _mediator.Send(new UpdateOrderStatusCommand(order.Id.Value, Shared.DTOs.Sales.Enums.OrderStatus.CityCorrection));
+                        bool result = await _mediator.Send(new AssignWarehouseToOrderCommand(fulfillmentOrder.InternalOrderId, Shared.DTOs.Sales.Enums.OrderStatus.CityCorrection));
                         continue;
                     }
 
-                    // check inventory and assign warehouse.
-                    var skuQty = order.LineItems.ToDictionary(x => x.SKU, x => x.Quantity.Value);
-                    var warehouse = await _stockService.CheckInventory(skuQty);
-                    if (warehouse != null)
+                    if (fulfillmentOrder.FulfillmentOrderLineItems.Count() > 0)
                     {
-                        bool result = await _mediator.Send(new UpdateOrderStatusCommand(order.Id.Value, warehouse.Key, Shared.DTOs.Sales.Enums.OrderStatus.AssignToOutlet));
-                        await ReserveQtyAsync(warehouse, skuQty);
-                        continue;
-                    }
-                    else
-                    {
-                        var result = await _mediator.Send(new GetDefaultWarehouseQuery());
-                        if (result != null)
-                        {
-                            // default head office warehouse found.
-                            await _mediator.Send(new UpdateOrderStatusCommand(order.Id.Value, result.Id.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice));
-                        }
-                        else
-                        {
-                            // default head office warehouse not found.
-                            await _mediator.Send(new UpdateOrderStatusCommand(order.Id.Value, Guid.Empty, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice));
-                        }
+
+                        await InventoryAndWarehouseAssignmentAsync(fulfillmentOrder);
+
                     }
                 }
                 catch (Exception ex)
                 {
+                }
+            }
+
+            return true;
+        }
+
+        public async Task InventoryAndWarehouseAssignmentAsync(InternalFulfillmentOrderDto fulfillmentOrder)
+        {
+
+            var skipLastWH = new List<Guid>();
+
+            if (fulfillmentOrder.WarehouseId.HasValue)
+            {
+                skipLastWH.Add(fulfillmentOrder.WarehouseId.Value);
+            }
+
+            // check inventory and assign warehouse.
+            // var warehouse = await _stockService.CheckInventory(variantQty, skipLastWH);
+
+            // get stock list of inventory items
+            var inventoryItemIds = fulfillmentOrder.FulfillmentOrderLineItems.Select(x => x.InventoryItemId.Value).ToList();
+            var inventoryItemStockList = await _stockService.GetStockByVariantIds(inventoryItemIds);
+            var warehouseIds = inventoryItemStockList.Select(x => x.warehouseId).ToList();
+            var warehouseLlist = await _warehouseService.GetWarehouse(warehouseIds);
+
+            // skip warehouse list
+            if (warehouseLlist != null && warehouseLlist.Data.Count > 0)
+            {
+                warehouseLlist.Data = warehouseLlist.Data.Where(x => !skipLastWH.Contains(x.Id)).ToList();
+            }
+
+            // calculate distance based on lat, long
+            foreach (var itemStock in inventoryItemStockList)
+            {
+                itemStock.Latitude = fulfillmentOrder.FulfillmentOrderDestination.Latitude;
+                itemStock.Longitude = fulfillmentOrder.FulfillmentOrderDestination.Longitude;
+            }
+
+            inventoryItemStockList = CalculateDistance(warehouseLlist.Data, inventoryItemStockList);
+
+            // filter WH with valid qty
+            var variantQty = fulfillmentOrder.FulfillmentOrderLineItems.ToDictionary(x => x.InventoryItemId.Value, x => x.Quantity.Value);
+            var onlyValidStockList = FilterOnlyValidQtyWarehouse(inventoryItemStockList, variantQty);
+
+            // final picked warehouse base on near by available stock
+            var splitOrderResult = FinalWarehousePick(fulfillmentOrder, fulfillmentOrder.FulfillmentOrderLineItems, inventoryItemStockList);
+            splitOrderResult.WarehouseStocks = inventoryItemStockList;
+            splitOrderResult.InternalOrderId = fulfillmentOrder.InternalOrderId;
+            splitOrderResult.FulfillmentOrderId = fulfillmentOrder.Id;
+
+            await AssignWarehouseAsync(splitOrderResult);
+        }
+
+        public async Task<bool> AssignWarehouseAsync(SplitOrderResult splitOrderResult)
+        {
+            bool result = await _mediator.Send(new SplitAndAssignOrderCommand(splitOrderResult));
+
+            return result;
+        }
+
+        public async Task<bool> AssignWarehouseAsync(Guid internalOrderId, IGrouping<Guid, WarehouseStockStatsDto> warehouse, Guid? fulfillmentOrderId = null)
+        {
+            if (warehouse != null)
+            {
+                bool result = await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, Shared.DTOs.Sales.Enums.OrderStatus.AssignToOutlet, fulfillmentOrderId, warehouse));
+            }
+            else
+            {
+                var result = await _mediator.Send(new GetDefaultWarehouseQuery());
+                if (result != null)
+                {
+                    // default head office warehouse found.
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, result.Id.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                }
+                else
+                {
+                    // default head office warehouse not found.
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, Guid.Empty, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<bool> AssignWarehouseAsync(Guid internalOrderId, Guid? warehouseId, Guid? fulfillmentOrderId = null)
+        {
+            if (warehouseId.HasValue)
+            {
+                bool result = await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, warehouseId.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToOutlet, fulfillmentOrderId));
+            }
+            else
+            {
+                var result = await _mediator.Send(new GetDefaultWarehouseQuery());
+                if (result != null)
+                {
+                    // default head office warehouse found.
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, result.Id.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                }
+                else
+                {
+                    // default head office warehouse not found.
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, Guid.Empty, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
                 }
             }
 
@@ -253,6 +357,245 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             return true;
         }
 
+        public async Task<bool> ReserveQtyAsync(IGrouping<Guid, WarehouseStockStatsDto> warehouse, Dictionary<long, long> skuQty)
+        {
+            foreach (var inventoryItem in warehouse)
+            {
+                var response = await _stockService.RecordTransaction(new StockTransactionDto
+                {
+                    IgnoreRackCheck = true,
+                    inventoryItemId = inventoryItem.inventoryItemId,
+                    productId = inventoryItem.productId,
+                    quantity = skuQty[inventoryItem.inventoryItemId],
+                    Rack = inventoryItem.Rack,
+                    type = Shared.DTOs.Sales.Enums.OrderType.Commited,
+                    warehouseId = inventoryItem.warehouseId,
+                    SKU = inventoryItem.SKU,
+                    VariantId = inventoryItem.VariantId
+                });
+            }
+
+            return true;
+        }
+
+        public List<WarehouseStockStatsDto> CalculateDistance(List<GetWarehouseResponse> warehouses, List<WarehouseStockStatsDto> inventoryItemStockList)
+        {
+            foreach (var item in inventoryItemStockList)
+            {
+                var warehouse = warehouses.FirstOrDefault(x => x.Id == item.warehouseId);
+                if (warehouse != null & item.Latitude.HasValue && item.Longitude.HasValue && warehouse.Latitude.HasValue && warehouse.Longitude.HasValue)
+                {
+                    item.Distance = GetDistance((double)warehouse.Latitude.Value, (double)warehouse.Longitude, (double)item.Latitude, (double)item.Longitude);
+                }
+            }
+
+            return inventoryItemStockList;
+        }
+
+        public decimal GetDistance(double longitude, double latitude, double otherLongitude, double otherLatitude)
+        {
+            double oneDegree = Math.PI / 180.0;
+            double d1 = latitude * oneDegree;
+            double num1 = longitude * oneDegree;
+            double d2 = otherLatitude * oneDegree;
+            double num2 = otherLongitude * oneDegree - num1;
+            double d3 = Math.Pow(Math.Sin((d2 - d1) / 2.0), 2.0) + Math.Cos(d1) * Math.Cos(d2) * Math.Pow(Math.Sin(num2 / 2.0), 2.0);
+
+            var meters = 6376500.0 * (2.0 * Math.Atan2(Math.Sqrt(d3), Math.Sqrt(1.0 - d3)));
+            return (decimal)(meters / 1000);
+        }
+
+        public List<IGrouping<Guid, WarehouseStockStatsDto>> FilterOnlyValidQtyWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<long, long> skuQty)
+        {
+            List<WarehouseStockStatsDto> filterList = new List<WarehouseStockStatsDto>();
+
+            foreach (var item in skuQty)
+            {
+                filterList.AddRange(warehouseStockStats.Where(x => x.inventoryItemId == item.Key && x.quantity >= item.Value).ToList());
+            }
+
+            return filterList.OrderBy(x => x.Distance).GroupBy(x => x.warehouseId).ToList();
+        }
+
+        public IGrouping<Guid, WarehouseStockStatsDto> FinalWarehousePick(List<IGrouping<Guid, WarehouseStockStatsDto>> ValidQtyStockStats, int skuCount)
+        {
+            var warehouseWithAllProducts = ValidQtyStockStats.Where(x => x.Count() >= skuCount).ToList();
+            return warehouseWithAllProducts.FirstOrDefault();
+        }
+
+        public void SplitWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<long, long> skuQty)
+        {
+
+        }
+
+        public SplitOrderResult FinalWarehousePick(InternalFulfillmentOrderDto fulfillmentOrder, IEnumerable<InternalFulfillmentOrderLineItemDto> orderedProducts, List<WarehouseStockStatsDto> warehouses)
+        {
+            List<SplitOrderDetailDto> splitOrders = new List<SplitOrderDetailDto>();
+            SplitOrderResult splitOrderResult = new SplitOrderResult();
+            var productIds = orderedProducts.Select(p => p.InventoryItemId).ToList();
+            var variantQty = orderedProducts.ToDictionary(x => x.InventoryItemId, x => x.Quantity);
+            var lineItemIds = orderedProducts.ToDictionary(x => x.InventoryItemId, x => x.ShopifyId.Value);
+            splitOrderResult.FOShopifyId = fulfillmentOrder.ShopifyId;
+            splitOrderResult.AssignedLocationId = fulfillmentOrder.AssignedLocationId;
+            // filter out warehouse with available qty
+            var warehousesWithAvailability = warehouses
+                .Where(w => w.quantity > 0 && productIds.Contains(w.inventoryItemId))
+                .GroupBy(w => new { w.warehouseId, w.inventoryItemId })
+
+                .Select(g => new SplitOrderDetailDto
+                {
+                    WarehouseId = g.Key.warehouseId,
+                    InventoryItemId = g.Key.inventoryItemId,
+                    AvailableQuantity = g.Sum(w => w.quantity),
+                    CanFulFill = g.Sum(w => w.quantity) >= variantQty[g.Key.inventoryItemId],
+                    Distance = g.First().Distance,
+                    FulfillableQuantity = variantQty[g.Key.inventoryItemId].Value,
+                    RequiredQuantity = variantQty[g.Key.inventoryItemId].Value,
+
+                })
+                .OrderByDescending(w => w.AvailableQuantity)
+                .ToList();
+
+            // group by warehouse with available qty
+            var warehouseFulfillableQty = warehousesWithAvailability
+              .Where(w => w.CanFulFill) // Consider only warehouses that can fulfill
+              .GroupBy(w => w.WarehouseId) // Group by WarehouseId
+              .Select(g => new SplitOrderDetailDto
+              {
+                  WarehouseId = g.Key,
+                  CanFulfillCount = g.Select(w => w.InventoryItemId).Distinct().Count(),
+                  FulfillableIds = g.Select(x => x.InventoryItemId).ToList(),
+                  Distance = g.First().Distance,
+              });
+
+            // check if same store can fullfill all products.
+            var canSingleStoreFulfill = warehouseFulfillableQty
+                .OrderBy(x => x.Distance)
+                .FirstOrDefault(x => x.CanFulfillCount == orderedProducts.Count());
+
+            if (canSingleStoreFulfill != null)
+            {
+                splitOrders = canSingleStoreFulfill.FulfillableIds.Select(fid =>
+                {
+                    var warehouseAvailability = warehousesWithAvailability.FirstOrDefault(x => x.WarehouseId == canSingleStoreFulfill.WarehouseId && x.InventoryItemId == fid);
+                    return new SplitOrderDetailDto
+                    {
+                        InventoryItemId = fid,
+                        WarehouseId = canSingleStoreFulfill.WarehouseId,
+                        AvailableQuantity = warehouseAvailability?.AvailableQuantity ?? 0,
+                        Distance = warehouseAvailability?.Distance ?? 0,
+                        FulfillableQuantity = warehouseAvailability?.FulfillableQuantity ?? 0,
+                        CanFulFill = warehouseAvailability?.CanFulFill ?? false,
+                        CanFulfillCount = warehouseAvailability?.CanFulfillCount ?? 0,
+                        FulfillableIds = warehouseAvailability?.FulfillableIds,
+                        RequiredQuantity = warehouseAvailability?.RequiredQuantity ?? 0
+                    };
+                }).ToList();
+
+                splitOrderResult.IsSingleStore = true;
+                splitOrderResult.SplitCount = 1;
+                splitOrderResult.WarehouseIds = splitOrders.Select(x => x.WarehouseId.Value).Distinct().ToList();
+                splitOrderResult.SplitOrderDetails = splitOrders;
+                return splitOrderResult;
+            }
+
+
+            // if not fulfilled by one store.
+            splitOrderResult.IsSingleStore = false;
+
+            foreach (var store in warehouseFulfillableQty.OrderByDescending(x => x.CanFulfillCount).ThenBy(x => x.Distance))
+            {
+                var remainingIds = store.FulfillableIds.Where(x => !splitOrders.Any(z => z.InventoryItemId == x)).ToList();
+                if (remainingIds.Count > 0)
+                {
+
+                    splitOrders.AddRange(remainingIds.Select(fid =>
+                    {
+                        var warehouseAvailability = warehousesWithAvailability.FirstOrDefault(x => x.WarehouseId == store.WarehouseId && x.InventoryItemId == fid);
+                        return new SplitOrderDetailDto
+                        {
+                            InventoryItemId = fid,
+                            WarehouseId = store.WarehouseId,
+                            AvailableQuantity = warehouseAvailability?.AvailableQuantity ?? 0,
+                            Distance = warehouseAvailability?.Distance ?? 0,
+                            FulfillableQuantity = warehouseAvailability?.FulfillableQuantity ?? 0,
+                            CanFulFill = warehouseAvailability?.CanFulFill ?? false,
+                            CanFulfillCount = warehouseAvailability?.CanFulfillCount ?? 0,
+                            FulfillableIds = warehouseAvailability?.FulfillableIds,
+                            RequiredQuantity = warehouseAvailability?.RequiredQuantity ?? 0,
+                            LineItemId = lineItemIds[fid],
+                        };
+                    }).ToList());
+                }
+            }
+
+            // check if one product can be fulfill by multple stores.
+            var notFullfillableProducts = orderedProducts.Where(x => !splitOrders.Any(z => z.InventoryItemId == x.InventoryItemId)).ToList();
+            var multipleWarehouseFulfillableQty = warehousesWithAvailability
+              .Where(w => notFullfillableProducts.Any(z => z.InventoryItemId == w.InventoryItemId)) // Consider only warehouses that can fulfill
+              .GroupBy(w => w.InventoryItemId) // Group by InventoryItemId
+              .Select(g => new SplitOrderDetailDto
+              {
+                  InventoryItemId = g.Key,
+                  AvailableQuantity = g.Sum(w => w.AvailableQuantity),
+                  CanFulFill = g.Sum(w => w.RequiredQuantity) >= variantQty[g.Key],
+                  Distance = g.First().Distance,
+              });
+
+            if (multipleWarehouseFulfillableQty.Any(x => x.CanFulFill))
+            {
+                var remainQty = notFullfillableProducts.ToDictionary(x => x.InventoryItemId.Value, x => x.Quantity.Value);
+
+                foreach (var store in warehousesWithAvailability.Where(x => multipleWarehouseFulfillableQty.Any(z => z.InventoryItemId == x.InventoryItemId)).OrderByDescending(x => x.Distance))
+                {
+                    long qtyToFullfill = remainQty[store.InventoryItemId];
+                    long canBeFullfilled = Math.Min(qtyToFullfill, store.AvailableQuantity);
+
+
+                    splitOrders.Add(new SplitOrderDetailDto
+                    {
+                        InventoryItemId = store.InventoryItemId,
+                        WarehouseId = store.WarehouseId,
+                        AvailableQuantity = store.AvailableQuantity,
+                        Distance = store.Distance,
+                        FulfillableQuantity = canBeFullfilled,
+                        CanFulFill = true,
+                        CanFulfillCount = 0,
+                        RequiredQuantity = store.RequiredQuantity,
+                        LineItemId = lineItemIds[store.InventoryItemId]
+                    });
+                    remainQty[store.InventoryItemId] = qtyToFullfill - canBeFullfilled;
+                }
+            }
+
+            splitOrderResult.WarehouseIds = splitOrders.Select(x => x.WarehouseId.Value).Distinct().ToList();
+            splitOrderResult.SplitCount = splitOrderResult.WarehouseIds.Distinct().Count();
+
+            // check if any product can not be fulfilled.
+            notFullfillableProducts = orderedProducts.Where(x => !splitOrders.Any(z => z.InventoryItemId == x.InventoryItemId)).ToList();
+            if (notFullfillableProducts.Count > 0)
+            {
+                splitOrderResult.SplitCount++;
+                foreach (var item in notFullfillableProducts)
+                {
+                    splitOrders.Add(new SplitOrderDetailDto
+                    {
+                        InventoryItemId = item.InventoryItemId.Value,
+                        WarehouseId = null,
+                        AvailableQuantity = 0,
+                        Distance = 0,
+                        FulfillableQuantity = 0,
+                        CanFulFill = false,
+                        CanFulfillCount = 0,
+                        RequiredQuantity = item.Quantity.Value,
+                        LineItemId = lineItemIds[item.InventoryItemId.Value]
+                    });
+                }
+            }
+
+            splitOrderResult.SplitOrderDetails = splitOrders;
+            return splitOrderResult;
+        }
         #endregion
     }
 }

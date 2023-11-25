@@ -1,8 +1,11 @@
 ﻿using FluentPOS.Shared.Core.IntegrationServices.Shopify;
+using FluentPOS.Shared.DTOs.Sales.Orders;
+using FluentPOS.Shared.Infrastructure.Services.Shopify;
 using ShopifySharp;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FulfillmentOrder = ShopifySharp.FulfillmentOrder;
 
 namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 {
@@ -25,11 +28,18 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             _fulfillmentOrderService = new FulfillmentOrderService(_shopifyUrl, _accessToken);
         }
 
-        public async Task<List<FulfillmentOrder>> GetFulFillOrder(long orderId)
+        public async Task<List<FulfillmentOrder>> GetFulFillOrderByOrderId(long orderId)
         {
             // Find open fulfillment orders for this order
             var openFulfillmentOrders = await _fulfillmentOrderService.ListAsync(orderId);
-            return openFulfillmentOrders.ToList();
+            return openFulfillmentOrders.Where(x=>x.Status == "open").ToList();
+        }
+
+        public async Task<FulfillmentOrder> GetFulFillOrderById(long fulfillmentId)
+        {
+            // Find open fulfillment orders for this order
+            var openFulfillmentOrders = await _fulfillmentOrderService.GetAsync(fulfillmentId);
+            return openFulfillmentOrders;
         }
 
         public async Task<Fulfillment> CompleteFulFillOrderAsync(long orderId, long? fulFillOrderId, TrackingInfo trackingInfo)
@@ -76,6 +86,21 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             }
 
             return true;
+        }
+
+        public async Task<FulfillmentOrderMove> ChangeLocationAsync(long fulfillmentOrderId, SplitOrderPayloadDto splitOrderPayloadDto)
+        {
+            var shopifyServiceExtended = new ShopifyServiceExtended(_shopifyUrl, _accessToken);
+            var requestResult = await shopifyServiceExtended.MoveAsync(fulfillmentOrderId, splitOrderPayloadDto);
+            return requestResult.Result;
+        }
+
+        public async Task<SplitOrderGraphqlResponse> SplitFulfillment(long fulfillmentOrderId, SplitOrderPayloadDto splitOrderPayloadDto)
+        {
+            var shopifyServiceExtended = new ShopifyServiceExtended(_shopifyUrl, _accessToken);
+            var requestResult = await shopifyServiceExtended.SplitFulfillment(fulfillmentOrderId, splitOrderPayloadDto);
+
+            return requestResult != null && requestResult.fulfillmentOrderSplit.UserErrors.Length == 0 ? requestResult : null;
         }
 
         public async Task PartialFulFillOrder(long orderId, List<long> itemsToFulfill, TrackingInfo trackingInfo)

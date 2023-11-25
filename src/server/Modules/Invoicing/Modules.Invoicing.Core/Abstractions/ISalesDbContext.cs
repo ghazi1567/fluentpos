@@ -28,8 +28,17 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
 
         public DbSet<SyncLog> SyncLogs { get; set; }
 
-        public DbSet<OrderFulfillment> OrderFulfillment { get; set; }
+        public DbSet<IntenalFulfillment> OrderFulfillment { get; set; }
 
         public DbSet<OperationCity> OperationCity { get; set; }
+
+        public DbSet<InternalFulfillmentOrder> FulfillmentOrders { get; set; }
+
+        public DbSet<InternalAddress> Addresses { get; set; }
+
+        public DbSet<LoadSheetMain> LoadSheetMains { get; set; }
+
+        public DbSet<LoadSheetDetail> LoadSheetDetails { get; set; }
+
     }
 }

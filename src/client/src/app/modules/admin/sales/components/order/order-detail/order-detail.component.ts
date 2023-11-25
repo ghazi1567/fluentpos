@@ -10,7 +10,7 @@ import { ProductParams } from "src/app/modules/admin/catalog/models/productParam
 import { ProductService } from "src/app/modules/admin/catalog/services/product.service";
 import { Order } from "../../../models/order";
 import { SalesService } from "../../../services/sales.service";
-import { OrderStatusMapping } from "src/app/core/enums/OrderStatus";
+import { OrderStatus, OrderStatusMapping } from "src/app/core/enums/OrderStatus";
 import { ActivatedRoute } from "@angular/router";
 import { OrdersService } from "../../../services/orders.service";
 import { WarehouseService } from "../../../services/warehouse.service";
@@ -43,9 +43,30 @@ export class OrderDetailComponent implements OnInit {
     }
 
     getOrder() {
-        this.orderService.getById(this.orderId).subscribe((response) => {
+        this.orderService.getFOById(this.orderId).subscribe((response) => {
             this.order = response.data;
         });
+    }
+
+    displayButton(status, button) {
+        switch (button) {
+            case 'approve':
+                return OrderStatus.Pending == status || OrderStatus.PendingApproval == status;
+                break;
+            case 'cancel':
+                return OrderStatus.Shipped != status;
+                break;
+            case 'acceptOrder':
+                return OrderStatus.AssignToOutlet == status;
+                break;
+            case 'confirmOrder':
+                return OrderStatus.Preparing == status;
+                break;
+
+            default:
+                break;
+        }
+        return false;
     }
 
     cancelOrder() {
@@ -136,6 +157,7 @@ export class OrderDetailComponent implements OnInit {
         );
     }
 
+
     splitOrderPopup() {
         const dialogRef = this.dialog.open(SplitOrderComponent, {
             data: this.order
@@ -148,7 +170,7 @@ export class OrderDetailComponent implements OnInit {
     }
 
     getLineItemDetail(item: any, field: string) {
-        var lineItem = this.order.lineItems.find(x => x.variant_id == item.variant_id)
+        var lineItem = this.order.lineItems.find(x => x.variant_id == item.variantId)
         return lineItem[field];
     }
 
@@ -161,5 +183,26 @@ export class OrderDetailComponent implements OnInit {
     getLocationName(locationId) {
         var location = this.warehouseData.find(x => x.shopifyId == locationId)
         return location.name;
+    }
+
+    acceptOrder() {
+        var model = {
+            id: this.order.id,
+            ShopifyId: this.order.ShopifyId,
+            FulfillmentOrderId: this.order.fulFillmentOrderId,
+        };
+        this.orderService.acceptOrder(model).subscribe((res) => {
+            if (res.succeeded) {
+                this.toastr.success(res.messages[0]);
+                this.getOrder();
+            } else {
+
+            }
+        },
+            error => {
+                console.log('oops', error)
+                this.toastr.error(error);
+            }
+        );
     }
 }

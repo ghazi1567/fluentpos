@@ -48,10 +48,12 @@
       <nb-tab tabTitle="Halt" tabId="0" badgeText="new" badgePosition="top right" badgeStatus="success">
         <p>List of <strong>transactions</strong>.</p>
       </nb-tab>
-      <nb-tab tabTitle="Assigned To picker" tabId="6" badgeText="{{assignedToOutletOrderData.length}}"  badgeStatus="success">
+      <nb-tab tabTitle="Assigned To picker" tabId="6" badgeText="{{assignedToOutletOrderData.length}}"
+        badgeStatus="success">
         <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
-          <app-ag-grid-base #AgGrid [rowData]="assignedToOutletOrderData" [columnDefs]="orderColumns" [pagination]="true"
-            (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+          <app-ag-grid-base #AgGrid [rowData]="assignedToOutletOrderData" [columnDefs]="orderColumns"
+            [pagination]="true" (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false"
+            paginationPageSize="100">
           </app-ag-grid-base>
         </div>
       </nb-tab>

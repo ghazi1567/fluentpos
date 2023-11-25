@@ -42,7 +42,7 @@ export class ConfirmOrderComponent implements OnInit {
   }
 
   getOrder(orderNo) {
-    var _orderNo = orderNo.replace(/[^a-zA-Z0-9 ]/g, "");
+    var _orderNo = orderNo.replace(/^#/g, "");
     this.orderService.getOrderForConfirm(_orderNo).subscribe((response) => {
       if (response.succeeded) {
         this.order = response.data;
@@ -105,12 +105,14 @@ export class ConfirmOrderComponent implements OnInit {
     var model = {
       id: this.order.id,
       ShopifyId: this.order.ShopifyId,
-      LineItems: this.confirmedItems
+      LineItems: this.confirmedItems,
+      FulfillmentOrderId: this.order.fulfillmentOrderId
     };
     this.isSppiner = true;
     this.orderService.confirmOrder(model).subscribe((response) => {
       this.isSppiner = false;
       this.stepper.next();
+      window.location.reload();
     });
   }
 }

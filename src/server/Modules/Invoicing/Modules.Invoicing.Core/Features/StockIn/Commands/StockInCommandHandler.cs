@@ -85,10 +85,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             var order = InternalOrder.InitializeOrder(command.TimeStamp);
             string referenceNumber = await _referenceService.TrackAsync(order.GetType().Name);
             order.SetReferenceNumber(referenceNumber);
-            //order.SetPOReferenceNumber(command.ReferenceNumber);
-            //order.IsApproved = false;
-            //order.Status = OrderStatus.PendingApproval;
-            order.OrderType = OrderType.StockIn;
+            // order.SetPOReferenceNumber(command.ReferenceNumber);
+            // order.IsApproved = false;
+            // order.Status = OrderStatus.PendingApproval;
+            // order.OrderType = OrderType.StockIn;
             order.WarehouseId = command.WarehouseId;
             order.SetNote(command.Note);
 
@@ -98,7 +98,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 if (productResponse.Succeeded)
                 {
                     var product = productResponse.Data;
-                    //order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
+                    // order.AddProduct(item.ProductId, product.Name, item.Quantity, product.Price, product.Tax);
                 }
             }
 
@@ -182,7 +182,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 //order.SetPOReferenceNumber(stockIn.POReferenceNo);
                 //order.IsApproved = false;
                 //order.Status = OrderStatus.PendingApproval;
-                order.OrderType = OrderType.StockIn;
+                //order.OrderType = OrderType.StockIn;
                 order.SetNote(request.Note);
                 order.WarehouseId = request.WarehouseId;
 

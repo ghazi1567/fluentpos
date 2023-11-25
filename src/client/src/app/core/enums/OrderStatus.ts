@@ -6,7 +6,7 @@ export enum OrderStatus {
     OnHold = 4,
     Approved = 5,
     AssignToOutlet = 6,
-    RejectedFromOutlet = 7,
+    ReQueueAfterReject = 7,
     AssignToHeadOffice = 8,
     Verifying = 9,
     Preparing = 10,
@@ -30,6 +30,6 @@ export const OrderStatusMapping: Record<OrderStatus, string> = {
     [OrderStatus.Rejected]: "Rejected",
     [OrderStatus.CityCorrection]: "City Correction",
     [OrderStatus.OnHold]: "On Hold",
-    [OrderStatus.RejectedFromOutlet]: "Rejected From Outlet",
+    [OrderStatus.ReQueueAfterReject]: "Requeue",
     [OrderStatus.AssignToHeadOffice]: "Assigned To Head Office"
 };

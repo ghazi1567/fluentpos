@@ -18,6 +18,7 @@ import { Observable, of } from 'rxjs';
 import { RemoteGridApi } from 'src/app/core/shared/components/ag-grid-base/ag-grid.models';
 import { GridApi } from 'ag-grid-community';
 import { map } from 'rxjs/operators';
+import { OrdersService } from '../../services/orders.service';
 
 @Component({
   selector: 'app-order',
@@ -42,6 +43,7 @@ export class OrderComponent implements OnInit {
   dataSource: PaginatedResult<Order>;
 
   constructor(
+    public ordersService: OrdersService,
     public saleService: SalesService,
     public dialog: MatDialog,
     public toastr: ToastrService,
@@ -100,12 +102,10 @@ export class OrderComponent implements OnInit {
     // this.getOvertimeMyQueue();
     this.getOrders(null);
   }
-  onSaveButtonClick(params) {
-    console.log(params);
-    this.router.navigateByUrl(`admin/sales/order-detail/${params.data.id}`)
-  }
+
   actionButtons: CustomAction[] = [
     new CustomAction("View Order", "View", "View", "visibility"),
+    new CustomAction("Requeue Order", "RequeueOrder", "View", "visibility"),
   ];
   initOvertimeColumns(): void {
     this.orderColumns = [
@@ -117,7 +117,7 @@ export class OrderComponent implements OnInit {
         cellRendererParams: {
           buttons: ["View"],
           actionButtons: this.actionButtons,
-          onClick: this.onSaveButtonClick.bind(this)
+          onClick: this.onButtonClick.bind(this)
         },
         width: 60,
         pinned: "left"
@@ -138,10 +138,9 @@ export class OrderComponent implements OnInit {
         autoHeight: true,
       },
       {
-        headerName: "Cust. Name", field: "customerName", sortable: true, isShowable: true,
+        headerName: "First Name", field: "firstName", sortable: true, isShowable: true,
         wrapText: true,
         autoHeight: true,
-        valueGetter: 'data.shippingAddress.name'
       },
       {
         headerName: "Cust. Phone", field: "phone", sortable: true, isShowable: true, width: 140,
@@ -224,6 +223,141 @@ export class OrderComponent implements OnInit {
         }
       },
     ];
+    this.orderColumns = [
+      {
+        headerName: "",
+        cellRenderer: "buttonRenderer",
+        filter: false,
+        sortable: false,
+        cellRendererParams: {
+          buttons: ["View"],
+          actionButtons: this.actionButtons,
+          onClick: this.onButtonClick.bind(this)
+        },
+        width: 60,
+        pinned: "left"
+      },
+      { headerName: "Shopify Id", field: "shopifyId", sortable: true, isShowable: true, width: 140 },
+      { headerName: "Order#", field: "name", sortable: true, isShowable: true, width: 110 },
+      {
+        headerName: "Status", field: "status", sortable: true, isShowable: true, width: 140,
+        wrapText: true,
+        autoHeight: true,
+        valueGetter: params => {
+          return params.data ? OrderStatusMapping[params.data.status] : '';
+        }
+      },
+      {
+        headerName: "Warehouse", field: "warehouseName", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+        width: 140,
+      },
+      {
+        headerName: "First Name", field: "firstName", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+        width: 120,
+      },
+      {
+        headerName: "Last Name", field: "lastName", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+        width: 120,
+      },
+      {
+        headerName: "City", field: "city", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+        width: 100,
+      },
+      {
+        headerName: "Country", field: "country", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+        width: 110,
+      },
+      {
+        headerName: "Phone", field: "phone", sortable: true, isShowable: true, width: 140,
+      },
+      {
+        headerName: "Email", field: "email", sortable: true, isShowable: true,
+        wrapText: true,
+        autoHeight: true,
+      },
+
+      { headerName: "Note", field: "note", sortable: true, isShowable: true, },
+      // { headerName: "Confirmed", field: "confirmed", sortable: true, isShowable: true, },
+      {
+        headerName: "Created At", field: "createdAt", sortable: true, isShowable: true,
+        valueFormatter: (params) => {
+          let value = params.value;
+          let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+          if (date.isValid()) {
+            value = date.format("DD-MM-YYYY hh:mm:ss");
+          }
+          return value;
+        }
+      },
+      // { headerName: "Currency", field: "currency", sortable: true, isShowable: true, },
+      // { headerName: "CustomerLocale", field: "customerLocale", sortable: true, isShowable: true, },
+      // { headerName: "Email", field: "email", sortable: true, isShowable: true, },
+      { headerName: "TrackingCompany", field: "trackingCompany", sortable: true, isShowable: true, },
+      { headerName: "TrackingNumber", field: "trackingNumber", sortable: true, isShowable: true, },
+      { headerName: "TrackingStatus", field: "trackingStatus", sortable: true, isShowable: true, },
+      // { headerName: "Phone", field: "phone", sortable: true, isShowable: true, },
+      // { headerName: "Tags", field: "tags", sortable: true, isShowable: true, },
+      // { headerName: "LocationId", field: "locationId", sortable: true, isShowable: true, },
+      // { headerName: "OrderNumber", field: "orderNumber", sortable: true, isShowable: true, },
+      {
+        headerName: "Payment Method", field: "paymentGatewayNames", sortable: true, isShowable: true,
+      },
+      {
+        headerName: "ProcessedAt", field: "processedAt", sortable: true, isShowable: true,
+        valueFormatter: (params) => {
+          let value = params.value;
+          let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+          if (date.isValid()) {
+            value = date.format("DD-MM-YYYY hh:mm:ss");
+          }
+          return value;
+        }
+      },
+      { headerName: "ProcessingMethod", field: "processingMethod", sortable: true, isShowable: true, },
+      // { headerName: "ShippingAddress", field: "shippingAddress", sortable: true, isShowable: true, },
+      { headerName: "SubtotalPrice", field: "subtotalPrice", sortable: true, isShowable: true, },
+      { headerName: "TaxesIncluded", field: "taxesIncluded", sortable: true, isShowable: true, },
+      { headerName: "TotalDiscounts", field: "totalDiscounts", sortable: true, isShowable: true, },
+      { headerName: "TotalLineItemsPrice", field: "totalLineItemsPrice", sortable: true, isShowable: true, },
+      { headerName: "TotalTipReceived", field: "totalTipReceived", sortable: true, isShowable: true, },
+      { headerName: "TotalPrice", field: "totalPrice", sortable: true, isShowable: true, },
+      { headerName: "TotalTax", field: "totalTax", sortable: true, isShowable: true, },
+      { headerName: "TotalWeight", field: "totalWeight", sortable: true, isShowable: true, },
+      { headerName: "UserId", field: "userId", sortable: true, isShowable: true, },
+      { headerName: "PresentmentCurrency", field: "presentmentCurrency", sortable: true, isShowable: true, },
+      { headerName: "TotalOutstanding", field: "totalOutstanding", sortable: true, isShowable: true, },
+      { headerName: "EstimatedTaxes", field: "estimatedTaxes", sortable: true, isShowable: true, },
+      { headerName: "CurrentSubtotalPrice", field: "currentSubtotalPrice", sortable: true, isShowable: true, },
+      { headerName: "CurrentTotalDiscounts", field: "currentTotalDiscounts", sortable: true, isShowable: true, },
+      { headerName: "CurrentTotalPrice", field: "currentTotalPrice", sortable: true, isShowable: true, },
+      { headerName: "CurrentTotalTax", field: "currentTotalTax", sortable: true, isShowable: true, },
+      { headerName: "TaxExempt", field: "taxExempt", sortable: true, isShowable: true, },
+      { headerName: "CancelReason", field: "cancelReason", sortable: true, isShowable: true, },
+      {
+        headerName: "CancelledAt", field: "cancelledAt", sortable: true, isShowable: true,
+        valueFormatter: (params) => {
+          if (params && params.value) {
+            let value = params.value;
+            let date = moment(value, "DD-MM-YYYY hh:mm:ss");
+            if (date.isValid()) {
+              value = date.format("DD-MM-YYYY hh:mm:ss");
+            }
+            return value;
+          }
+          return '';
+        }
+      },
+    ];
   }
 
   syncOrders() {
@@ -231,12 +365,12 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  getData(params): Observable<{ data; totalCount }> {
-    console.log(params);
-    this.orderParams.pageNumber = params.startRow;
-    this.orderParams.pageSize = params.endRow;
-    return this.saleService.getSales(this.orderParams)
-  }
+  // getData(params): Observable<{ data; totalCount }> {
+  //   console.log(params);
+  //   this.orderParams.pageNumber = params.startRow;
+  //   this.orderParams.pageSize = params.endRow;
+  //   return this.saleService.getSales(this.orderParams)
+  // }
 
   tabSelection($event) {
     console.log($event)
@@ -255,5 +389,30 @@ export class OrderComponent implements OnInit {
     else if ($event.tabId == "6") {
       this.assignedToOutletOrderData = this.orderData.filter(x => x.status == 6)
     }
+  }
+
+  onButtonClick(params) {
+    console.log(params);
+    if (params.button.key == 'View') {
+      this.router.navigateByUrl(`admin/sales/order-detail/${params.data.internalFulFillmentOrderId}`)
+    }
+    if (params.button.key == 'RequeueOrder') {
+      this.requeueOrders(params.data);
+    }
+  }
+  requeueOrders(order) {
+    var model = {
+      id: order.id,
+      ShopifyId: order.shopifyId,
+      FulfillmentOrderId: order.fulFillmentOrderId,
+    };
+    this.ordersService.requeueOrder(model).subscribe((res) => {
+      if (res.succeeded) {
+        this.toastr.success(res.messages[0])
+      }
+      else {
+        this.toastr.error(res.messages[0])
+      }
+    });
   }
 }

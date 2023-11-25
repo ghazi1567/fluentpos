@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentPOS.Modules.Inventory.Core.Abstractions;
+using FluentPOS.Modules.Inventory.Core.Dtos;
 using FluentPOS.Modules.Inventory.Core.Entities;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
@@ -61,14 +62,29 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 
             string status = "Completed";
             string note = string.Empty;
+
+            List<InternalInventoryLevelDto> inventoryLevels = new List<InternalInventoryLevelDto>();
+
             foreach (var item in importFile.ImportRecords)
             {
                 var inventoryItem = inventoryItems.Data.Where(x => x.SKU == item.SKU).FirstOrDefault();
                 var location = locations.Data.Where(x => x.Name.Trim() == item.Warehouse).FirstOrDefault();
+
                 try
                 {
                     if (location != null && inventoryItem != null)
                     {
+                        long? locationId = location.ShopifyId;
+
+                        if (!locationId.HasValue)
+                        {
+                            var parentLocation = locations.Data.FirstOrDefault(x => x.Id == location.ParentId);
+                            if (parentLocation != null)
+                            {
+                                locationId = parentLocation.ShopifyId;
+                            }
+                        }
+
                         var response = await _stockService.RecordTransaction(new Shared.DTOs.Inventory.StockTransactionDto
                         {
                             IgnoreRackCheck = item.IgnoreRackCheck,
@@ -84,6 +100,15 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 
                         if (response.Succeeded)
                         {
+                            inventoryLevels.Add(new InternalInventoryLevelDto
+                            {
+                                InventoryItemId = inventoryItem.InventoryItemId,
+                                LocationId = locationId,
+                                Available = item.Qty,
+                                WarehouseId = location.Id,
+                                ParentId = location.ParentId,
+                            });
+
                             item.Status = "Completed";
                             _context.ImportRecords.Update(item);
                         }
@@ -118,6 +143,23 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             var savedImportFile = _context.ImportFiles.FirstOrDefault(x => x.Id == importFile.Id);
             savedImportFile.Status = status;
             savedImportFile.Note = note;
+
+            var result = inventoryLevels
+            .GroupBy(inv => new { inv.LocationId, inv.InventoryItemId })
+            .Select(group => new InternalInventoryLevel
+            {
+                LocationId = group.Key.LocationId,
+                InventoryItemId = group.Key.InventoryItemId,
+                Available = group.Sum(inv => inv.Available)
+            })
+            .ToList();
+
+            foreach (var inventoryItem in result)
+            {
+                var inventoryLevel = await _shopifyInventoryService.SetLevel(inventoryItem.InventoryItemId, inventoryItem.LocationId, inventoryItem.Available);
+                var internalInventoryLevel = _mapper.Map<InternalInventoryLevel>(inventoryLevel);
+                await _context.InventoryLevels.AddAsync(internalInventoryLevel);
+            }
 
             _context.ImportFiles.Update(savedImportFile);
             await _context.SaveChangesAsync();

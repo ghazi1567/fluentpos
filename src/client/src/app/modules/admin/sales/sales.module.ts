@@ -31,6 +31,8 @@ import { SplitOrderComponent } from './components/order/split-order/split-order.
 import { AssignedToOutletComponent } from './components/order/assigned-to-outlet/assigned-to-outlet.component';
 import { PrintOrderInvoiceComponent } from './components/order/print-order-invoice/print-order-invoice.component';
 import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-order.component';
+import { PreparingComponent } from './components/order/preparing/preparing.component';
+import { GenerateLoadSheetComponent } from './components/order/generate-load-sheet/generate-load-sheet.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-
     SplitOrderComponent,
     AssignedToOutletComponent,
     PrintOrderInvoiceComponent,
-    ConfirmOrderComponent
+    ConfirmOrderComponent,
+    PreparingComponent,
+    GenerateLoadSheetComponent
   ],
   imports: [
     CommonModule,

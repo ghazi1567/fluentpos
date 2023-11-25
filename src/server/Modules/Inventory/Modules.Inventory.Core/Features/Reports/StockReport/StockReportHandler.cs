@@ -38,6 +38,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
 
         public async Task<Result<List<StockDto>>> Handle(StockReportQuery request, CancellationToken cancellationToken)
         {
+           
             var query = _context.Stocks.AsQueryable();
             var product = await _productService.GetProductBySKU(request.SKU);
 

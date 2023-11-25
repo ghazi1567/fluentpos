@@ -1,9 +1,9 @@
-﻿using FluentPOS.Shared.DTOs.Sales.Enums;
+﻿using FluentPOS.Shared.DTOs.Dtos;
 using System;
 
 namespace FluentPOS.Shared.DTOs.Inventory
 {
-    public class WarehouseStockStatsDto
+    public class WarehouseStockStatsDto : BaseEntityDto
     {
         public Guid productId { get; set; }
 
@@ -19,11 +19,11 @@ namespace FluentPOS.Shared.DTOs.Inventory
 
         public long? VariantId { get; set; }
 
-        public int Distance { get; set; }
+        public decimal Distance { get; set; }
 
-        public long? Latitude { get; set; }
+        public decimal? Latitude { get; set; }
 
-        public long? Longitude { get; set; }
+        public decimal? Longitude { get; set; }
 
         public string Name { get; set; }
     }

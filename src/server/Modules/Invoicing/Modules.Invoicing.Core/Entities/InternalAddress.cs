@@ -1,9 +1,13 @@
 ﻿using FluentPOS.Shared.Core.Domain;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
+    [Table("Addresses")]
     public class InternalAddress: BaseEntity
     {
+
         /// <summary>
         /// The mailing address.
         /// </summary>

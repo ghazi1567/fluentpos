@@ -67,7 +67,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             var order = InternalOrder.InitializeOrder(command.TimeStamp);
             string referenceNumber = await _referenceService.TrackAsync(order.GetType().Name);
             order.SetReferenceNumber(referenceNumber);
-            order.OrderType = OrderType.StockOut;
+            //order.OrderType = OrderType.StockOut;
             order.WarehouseId = command.WarehouseId;
             order.SetNote(command.Note); 
             foreach (var item in command.Products)
@@ -149,7 +149,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 var order = InternalOrder.InitializeOrder(request.TimeStamp);
                 order.SetReferenceNumber(stockOut.ReferenceNumber);
                
-                order.OrderType = OrderType.StockOut;
+                //order.OrderType = OrderType.StockOut;
                 order.SetNote(request.Note);
                 order.WarehouseId = request.WarehouseId;
 

@@ -31,10 +31,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
 
             // CreateMap<InternalCustomer, InternalCustomerDto>().ReverseMap();
             CreateMap<InternalAddress, InternalAddressDto>().ReverseMap();
-            CreateMap<OrderFulfillment, OrderFulfillmentDto>().ReverseMap()
+            CreateMap<IntenalFulfillment, OrderFulfillmentDto>().ReverseMap()
                   .ForMember(dest => dest.TrackingNumbers, opt => opt.MapFrom(src => string.Join(", ", src.TrackingNumbers.ToArray())))
                   .ForMember(dest => dest.TrackingUrls, opt => opt.MapFrom(src => string.Join(", ", src.TrackingUrls.ToArray())));
-            CreateMap<OrderLineItem, OrderLineItemDto>().ReverseMap();
+            CreateMap<InternalLineItem, OrderLineItemDto>().ReverseMap();
 
             CreateMap<ShopifySharp.Order, RegisterOrderCommand>(MemberList.Source)
                 .IgnoreAllNonExisting()
@@ -58,7 +58,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
-            CreateMap<ShopifySharp.Fulfillment, OrderFulfillment>(MemberList.Source)
+            CreateMap<ShopifySharp.Fulfillment, IntenalFulfillment>(MemberList.Source)
                .IgnoreAllNonExisting()
                .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                .ForMember(dest => dest.Id, opt => opt.Ignore());
@@ -68,14 +68,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
-            CreateMap<ShopifySharp.LineItem, OrderLineItem>(MemberList.Source)
+            CreateMap<ShopifySharp.LineItem, InternalLineItem>(MemberList.Source)
                 .IgnoreAllNonExisting()
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap(typeof(PaginatedResult<>), typeof(PaginatedResult<>));
 
-            CreateMap<OrderFulfillment, OrderFulfillmentDto>(MemberList.Source)
+            CreateMap<IntenalFulfillment, OrderFulfillmentDto>(MemberList.Source)
                 .ForMember(dest => dest.TrackingNumbers, opt => opt.MapFrom(src => new List<string> { src.TrackingNumbers }))
                 .ForMember(dest => dest.TrackingUrls, opt => opt.MapFrom(src => new List<string> { src.TrackingUrls }));
 
@@ -85,11 +85,29 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
               .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<RegisterLocationCommand, Warehouse>().ReverseMap();
+            CreateMap<InternalFulfillmentOrder, InternalFulfillmentOrderDto>().ReverseMap();
+            CreateMap<InternalFulfillmentOrderLineItem, InternalFulfillmentOrderLineItemDto>().ReverseMap();
 
-            CreateMap<ShopifySharp.FulfillmentOrder, InternalFulfillmentOrderDto>()
+            CreateMap<ShopifySharp.FulfillmentOrderDestination, InternalAddressDto>(MemberList.Source)
                 .IgnoreAllNonExisting()
                 .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+
+            CreateMap<ShopifySharp.FulfillmentOrder, InternalFulfillmentOrderDto>(MemberList.Source)
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+
+            CreateMap<ShopifySharp.FulfillmentOrderLineItem, InternalFulfillmentOrderLineItemDto>(MemberList.Source)
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.ShopifyId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+
+            CreateMap<LoadSheetMain, LoadSheetMainDto>().ReverseMap();
+            CreateMap<LoadSheetDetail, LoadSheetDetailDto>().ReverseMap();
 
         }
     }

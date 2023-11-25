@@ -21,10 +21,15 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
     /// </summary>
     public interface IStockService
     {
-
-
         Task<Result<Guid>> RecordTransaction(StockTransactionDto stockTransactionDto);
+
+        Task<Result<Guid>> RecordTransaction(List<StockTransactionDto> Transactions);
+
         Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty);
+
+        Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<long, long> skuQty, List<Guid> skipWarehouses = null);
+
+        Task<List<WarehouseStockStatsDto>> GetStockByVariantIds(List<long> variantIds);
 
         /// <summary>
         /// Record Transaction.

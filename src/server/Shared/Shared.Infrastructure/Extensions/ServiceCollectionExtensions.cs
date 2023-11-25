@@ -6,18 +6,12 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using FluentPOS.Shared.Core.Domain;
 using FluentPOS.Shared.Core.EventLogging;
 using FluentPOS.Shared.Core.Exceptions;
 using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
+using FluentPOS.Shared.Core.IntegrationServices.Logistics;
 using FluentPOS.Shared.Core.Interfaces;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Settings;
@@ -37,6 +31,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Bootstrapper")]
 
@@ -133,6 +134,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.AddTransient<IEventLogService, EventLogService>();
             services.AddTransient<IEntityReferenceService, EntityReferenceService>();
             services.AddTransient<IWebhookEventService, WebhookEventService>();
+            services.AddTransient<IPostexService, PostexService>();
             return services;
         }
 

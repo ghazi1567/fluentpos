@@ -77,6 +77,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
                 title: "Confirm Order",
                 link: "sales/confirm-order"
             },
+            {
+                title: "Load Sheet",
+                link: "sales/generate-load-sheet"
+            },
         ]
     },
     {

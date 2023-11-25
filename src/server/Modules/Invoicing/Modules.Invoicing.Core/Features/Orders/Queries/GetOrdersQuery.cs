@@ -17,7 +17,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
-    public class GetOrdersQuery : IRequest<PaginatedResult<InternalOrderDto>>
+    public class GetOrdersQuery : IRequest<PaginatedResult<OrderResponseDto>>
     {
         public int PageNumber { get;  set; }
 

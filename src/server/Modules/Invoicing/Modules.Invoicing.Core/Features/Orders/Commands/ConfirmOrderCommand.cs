@@ -21,5 +21,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         public long ShopifyId { get; set; }
 
         public List<OrderLineItemDto> LineItems { get; set; }
+
+        public long? FulfillmentOrderId { get; set; }
     }
 }

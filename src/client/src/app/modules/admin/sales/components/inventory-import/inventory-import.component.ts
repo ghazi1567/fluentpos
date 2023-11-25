@@ -96,7 +96,18 @@ export class InventoryImportComponent implements OnInit {
         }
       );
   }
-
+  removeDuplicates(array, properties) {
+    let seen = {};
+    return array.filter(obj => {
+      let key = properties.map(prop => obj[prop]).join('|');
+      if (seen[key]) {
+        return false;
+      } else {
+        seen[key] = true;
+        return true;
+      }
+    });
+  }
   onSelectFile(event) {
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
@@ -120,7 +131,8 @@ export class InventoryImportComponent implements OnInit {
         .subscribe(
           (result: Array<any>) => {
             console.log("Result", result);
-            this.inventoryData = result;
+            let uniqueArray = this.removeDuplicates(result, ['sku', 'warehouse', 'rack']);
+            this.inventoryData = uniqueArray;
           },
           (error: NgxCSVParserError) => {
             console.log("Error", error);
@@ -143,7 +155,7 @@ export class InventoryImportComponent implements OnInit {
     this.inventoryLevelService.ImportFile(model).subscribe(res => {
       if (res.succeeded) {
         this.toastr.success(res.messages[0])
-        this.router.navigateByUrl('/admin/sales/inventory-import-files'); 
+        this.router.navigateByUrl('/admin/sales/inventory-import-files');
       }
       else {
         this.toastr.error(res.messages[0])

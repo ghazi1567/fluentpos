@@ -22,6 +22,7 @@ import { OrdersService } from '../../../services/orders.service';
 })
 export class AssignedToOutletComponent implements OnInit {
   // orderColumns: TableColumn[];
+  preparingOrderCount: number = 0;
   orderParams = new OrderParams();
   searchString: string;
   orderData: any[] = [];
@@ -106,7 +107,8 @@ export class AssignedToOutletComponent implements OnInit {
           actionButtons: this.actionButtons,
           onClick: this.onButtonClick.bind(this)
         },
-        pinned: "left"
+        pinned: "left", 
+        width: 120
       },
       { headerName: "Shopify Id", field: "shopifyId", sortable: true, isShowable: true, width: 140 },
       { headerName: "Order#", field: "name", sortable: true, isShowable: true, width: 100 },
@@ -227,7 +229,7 @@ export class AssignedToOutletComponent implements OnInit {
   onButtonClick(params) {
     console.log(params);
     if (params.button.key == 'View') {
-      this.router.navigateByUrl(`admin/sales/order-detail/${params.data.id}`)
+      this.router.navigateByUrl(`admin/sales/order-detail/${params.data.internalFulFillmentOrderId}`)
     }
     if (params.button.key == 'Accept') {
       this.acceptOrder(params.data);
@@ -238,6 +240,7 @@ export class AssignedToOutletComponent implements OnInit {
     var model = {
       id: order.id,
       ShopifyId: order.ShopifyId,
+      FulfillmentOrderId: order.fulFillmentOrderId,
     };
     this.orderService.acceptOrder(model).subscribe(res => {
       if (res.succeeded) {

@@ -36,6 +36,13 @@ namespace FluentPOS.Modules.Invoicing.Controllers
             return Ok(await Mediator.Send(new GetOrderByIdQuery { Id = id }));
         }
 
+        [HttpGet("fo/{id}")]
+        [Authorize(Policy = Permissions.Sales.View)]
+        public async Task<IActionResult> GetFulfillmentOrderByIdAsync(Guid id)
+        {
+            return Ok(await Mediator.Send(new GetFOByIdQuery { Id = id }));
+        }
+
         [HttpGet("GetByOrderNo/{OrderNo}")]
         [Authorize(Policy = Permissions.Sales.View)]
         public async Task<IActionResult> GetByOrderNoAsync(string OrderNo)
@@ -104,6 +111,34 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         public async Task<IActionResult> RejectOrderAsync(RejectOrderCommand command)
         {
             return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("ReQueueOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> ReQueueOrderAsync(ReQueueOrderCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("ScanLoadSheetOrder")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> ScanLoadSheetOrderAsync(ScanLoadSheetOrderQuery command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpPost("GenerateLoadSheet")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> GenerateLoadSheetOrderAsync(RegisterloadsheetCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpGet("GetLoadsheetInBy/{id}")]
+        [Authorize(Policy = Permissions.Sales.View)]
+        public async Task<IActionResult> GetLoadsheetInByAsync(Guid id)
+        {
+            return Ok(await Mediator.Send(new GetLoadsheetInByIdQuery { Id = id }));
         }
     }
 }

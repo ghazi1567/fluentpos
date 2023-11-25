@@ -11,6 +11,9 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
              Guid Id,
              long? ShopifyId,
              string Name,
-             bool? Active
+             bool? Active,
+             Guid? ParentId,
+             decimal? Latitude,
+             decimal? Longitude
       );
 }

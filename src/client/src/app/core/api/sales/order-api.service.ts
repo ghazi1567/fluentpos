@@ -19,6 +19,9 @@ export class OrderApiService {
   getById(id: string) {
     return this.http.get(this.baseUrl + id);
   }
+  getFOById(id: string) {
+    return this.http.get(`${this.baseUrl}fo/${id}`);
+  }
 
   syncOrders() {
     return this.http.get(environment.apiUrl + 'invoicing/Sync/SyncOrders');
@@ -54,5 +57,17 @@ export class OrderApiService {
   }
   rejectOrder(model: any) {
     return this.http.post(`${this.baseUrl}RejectOrder`, model);
+  }
+  requeueOrder(model: any) {
+    return this.http.post(`${this.baseUrl}ReQueueOrder`, model);
+  }
+  scanLoadSheetOrder(model: any) {
+    return this.http.post(`${this.baseUrl}ScanLoadSheetOrder`, model);
+  }
+  generateLoadSheet(model: any) {
+    return this.http.post(`${this.baseUrl}GenerateLoadSheet`, model);
+  }
+  getLoadsheetInBy(id: string) {
+    return this.http.get(`${this.baseUrl}GetLoadsheetInBy/${id}`);
   }
 }

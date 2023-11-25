@@ -21,6 +21,7 @@ import { InventoryImportListComponent } from './components/inventory-import-list
 import { AssignedToOutletComponent } from './components/order/assigned-to-outlet/assigned-to-outlet.component';
 import { PrintOrderInvoiceComponent } from './components/order/print-order-invoice/print-order-invoice.component';
 import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-order.component';
+import { GenerateLoadSheetComponent } from './components/order/generate-load-sheet/generate-load-sheet.component';
 
 const routes: Routes = [
   {
@@ -106,6 +107,10 @@ const routes: Routes = [
   {
     path: 'inventory-import-files',
     component: InventoryImportListComponent
+  },
+  {
+    path: 'generate-load-sheet',
+    component: GenerateLoadSheetComponent
   },
 ];
 

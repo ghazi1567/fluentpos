@@ -6,14 +6,19 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using FluentPOS.Shared.DTOs.Inventory;
 using FluentPOS.Shared.DTOs.Sales.Enums;
+using FluentPOS.Shared.DTOs.Sales.Orders;
 using MediatR;
 using System;
+using System.Linq;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
-    public class UpdateOrderStatusCommand : IRequest<bool>
+    public class SplitAndAssignOrderCommand : IRequest<bool>
     {
+        public SplitOrderResult SplitOrderResult { get; set; }
+
         public Guid Id { get; set; }
 
         public long ShopifyId { get; set; }
@@ -22,17 +27,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 
         public Guid WarehouseId { get; set; }
 
-        public UpdateOrderStatusCommand(Guid id, OrderStatus status)
-        {
-            Id = id;
-            Status = status;
-        }
+        public OrderType OrderType { get; set; }
 
-        public UpdateOrderStatusCommand(Guid id, Guid warehouseId, OrderStatus status)
+        public Guid? FulfillmentOrderId { get; set; }
+
+        public IGrouping<Guid, WarehouseStockStatsDto> Warehouse { get; set; }
+
+        public SplitAndAssignOrderCommand(SplitOrderResult splitOrderResult)
         {
-            Id = id;
-            WarehouseId = warehouseId;
-            Status = status;
+            SplitOrderResult = splitOrderResult;
+            Id = splitOrderResult.InternalOrderId.Value;
         }
     }
 }

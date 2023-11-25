@@ -87,5 +87,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public bool Default { get; set; }
 
         public int Position { get; set; }
+
+        public decimal? Latitude { get; set; }
+
+        public decimal? Longitude { get; set; }
     }
 }

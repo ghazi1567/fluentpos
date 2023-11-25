@@ -16,5 +16,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Enums
         FulFill = 6,
         uncommitted = 7,
         StockUpdate = 8,
+        SingleOrder = 9,
+        SplittedOrder = 10,
     }
 }

@@ -23,6 +23,82 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.IntenalFulfillment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("InternalOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("LocationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("NotifyCustomer")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Receipt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Service")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipmentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingCompany")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingNumbers")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingUrls")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("VariantInventoryManagement")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InternalOrderId");
+
+                    b.ToTable("Fulfillments", "Invoicing");
+                });
+
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalAddress", b =>
                 {
                     b.Property<Guid>("Id")
@@ -97,7 +173,311 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InternalAddress", "Invoicing");
+                    b.ToTable("Addresses", "Invoicing");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalFulfillmentOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("AssignedLocationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<decimal?>("CurrentTotalDiscounts")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset?>("FulfillAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("FulfilledBy")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("FulfillmentOrderDestinationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InternalOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<byte>("OrderStatus")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("OrderType")
+                        .HasColumnType("tinyint");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RequestStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("StockId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("SubtotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TotalDiscounts")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TotalLineItemsPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TotalOutstanding")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("TotalQuantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal?>("TotalShippingPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TotalTax")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TrackingCompany")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackingUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FulfillmentOrderDestinationId");
+
+                    b.HasIndex("InternalOrderId");
+
+                    b.ToTable("FulfillmentOrders", "Invoicing");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalFulfillmentOrderLineItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("ConfirmedQty")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("FulfillableQuantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("FulfillmentOrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("InternalFulfillmentOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("InventoryItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("LineItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Rack")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("StockId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("VariantId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InternalFulfillmentOrderId");
+
+                    b.ToTable("FulfillmentLineItems", "Invoicing");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalLineItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ConfirmedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("ConfirmedQty")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("FulfillableQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<long?>("FulfillmentLineItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("FulfillmentService")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FulfillmentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("GiftCard")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("Grams")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("IntenalFulfillmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("InternalOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("PreTaxPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool?>("ProductExists")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("RequiresShipping")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SKU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool?>("Taxable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TipPaymentGateway")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TipPaymentGatewaySpecified")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("TipPaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("TotalDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long?>("VariantId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("VariantInventoryManagement")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VariantTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Vendor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("WarehouseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IntenalFulfillmentId");
+
+                    b.HasIndex("InternalOrderId");
+
+                    b.ToTable("LineItems", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", b =>
@@ -114,9 +494,6 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("ApprovedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("BillingAddressId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
@@ -247,7 +624,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("ReferringSite")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ShippingAddressId")
+                    b.Property<Guid>("ShippingAddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -292,6 +669,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<long?>("TotalQuantity")
+                        .HasColumnType("bigint");
+
                     b.Property<decimal?>("TotalShippingPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -310,6 +690,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("TrackingNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TrackingStatus")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TrackingUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -324,11 +707,93 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BillingAddressId");
-
                     b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Orders", "Invoicing");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.LoadSheetDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<long>("FulfillmentOrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("LoadSheetMainId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OrderNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("TotalQuantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoadSheetMainId");
+
+                    b.ToTable("LoadSheetDetails", "Invoicing");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.LoadSheetMain", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("TotalOrder")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LoadSheetMains", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OperationCity", b =>
@@ -367,199 +832,6 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OperationCity", "Invoicing");
-                });
-
-            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderFulfillment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("InternalOrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long?>("LocationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("NotifyCustomer")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("OrderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Receipt")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Service")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShipmentStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("ShopifyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrackingCompany")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrackingNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrackingNumbers")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrackingUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TrackingUrls")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("VariantInventoryManagement")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InternalOrderId");
-
-                    b.ToTable("OrderFulfillment", "Invoicing");
-                });
-
-            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderLineItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset?>("ConfirmedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<long?>("ConfirmedQty")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTimeOffset?>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int?>("FulfillableQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<long?>("FulfillmentLineItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("FulfillmentService")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FulfillmentStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("GiftCard")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("Grams")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("InternalOrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("OrderFulfillmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("OrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal?>("PreTaxPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool?>("ProductExists")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int?>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("RequiresShipping")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SKU")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("ShopifyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool?>("Taxable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("TipPaymentGateway")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TipPaymentGatewaySpecified")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("TipPaymentMethod")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("TotalDiscount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTimeOffset?>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<long?>("VariantId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("VariantInventoryManagement")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VariantTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Vendor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("WarehouseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InternalOrderId");
-
-                    b.HasIndex("OrderFulfillmentId");
-
-                    b.ToTable("OrderLineItem", "Invoicing");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.POProduct", b =>
@@ -853,6 +1125,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<bool>("Default")
                         .HasColumnType("bit");
 
+                    b.Property<decimal?>("Latitude")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool?>("Legacy")
                         .HasColumnType("bit");
 
@@ -861,6 +1136,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("LocalizedProvinceName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Longitude")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -897,22 +1175,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.ToTable("Warehouses", "Invoicing");
                 });
 
-            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", b =>
-                {
-                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalAddress", "BillingAddress")
-                        .WithMany()
-                        .HasForeignKey("BillingAddressId");
-
-                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalAddress", "ShippingAddress")
-                        .WithMany()
-                        .HasForeignKey("ShippingAddressId");
-
-                    b.Navigation("BillingAddress");
-
-                    b.Navigation("ShippingAddress");
-                });
-
-            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderFulfillment", b =>
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.IntenalFulfillment", b =>
                 {
                     b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", null)
                         .WithMany("Fulfillments")
@@ -921,15 +1184,55 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderLineItem", b =>
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalFulfillmentOrder", b =>
                 {
+                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalAddress", "FulfillmentOrderDestination")
+                        .WithMany()
+                        .HasForeignKey("FulfillmentOrderDestinationId");
+
+                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", null)
+                        .WithMany("FulfillmentOrders")
+                        .HasForeignKey("InternalOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FulfillmentOrderDestination");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalFulfillmentOrderLineItem", b =>
+                {
+                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalFulfillmentOrder", null)
+                        .WithMany("FulfillmentOrderLineItems")
+                        .HasForeignKey("InternalFulfillmentOrderId");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalLineItem", b =>
+                {
+                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.IntenalFulfillment", null)
+                        .WithMany("LineItems")
+                        .HasForeignKey("IntenalFulfillmentId");
+
                     b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", null)
                         .WithMany("LineItems")
                         .HasForeignKey("InternalOrderId");
+                });
 
-                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.OrderFulfillment", null)
-                        .WithMany("LineItems")
-                        .HasForeignKey("OrderFulfillmentId");
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", b =>
+                {
+                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.InternalAddress", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ShippingAddress");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.LoadSheetDetail", b =>
+                {
+                    b.HasOne("FluentPOS.Modules.Invoicing.Core.Entities.LoadSheetMain", null)
+                        .WithMany("Details")
+                        .HasForeignKey("LoadSheetMainId");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.POProduct", b =>
@@ -941,16 +1244,28 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.IntenalFulfillment", b =>
+                {
+                    b.Navigation("LineItems");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalFulfillmentOrder", b =>
+                {
+                    b.Navigation("FulfillmentOrderLineItems");
+                });
+
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.InternalOrder", b =>
                 {
+                    b.Navigation("FulfillmentOrders");
+
                     b.Navigation("Fulfillments");
 
                     b.Navigation("LineItems");
                 });
 
-            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderFulfillment", b =>
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.LoadSheetMain", b =>
                 {
-                    b.Navigation("LineItems");
+                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.PurchaseOrder", b =>

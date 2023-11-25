@@ -1,4 +1,5 @@
 ﻿using FluentPOS.Shared.Core.Wrapper;
+using FluentPOS.Shared.DTOs.Dtos.GeoLocation;
 using FluentPOS.Shared.DTOs.Sales.Orders;
 using GoogleMaps.LocationServices;
 using System;
@@ -13,6 +14,8 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Invoicing
 
         Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<Guid> ids);
 
-        MapPoint GetLatLongFromAdrress(string address);
+        Task<LocationResult> GetLatLongFromAdrressAsync(string address1, string address2, string city, string country);
+
+        Task<GeoLocation> GetLatLongFromAdrressAsync(string address1, string address2, string city, string zipCode, string country);
     }
 }

@@ -75,7 +75,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             //order.SetPOReferenceNumber(command.ReferenceNumber);
             //order.IsApproved = false;
             //order.Status = OrderStatus.PendingApproval;
-            order.OrderType = OrderType.StockIn;
+            //order.OrderType = OrderType.StockIn;
             order.WarehouseId = command.WarehouseId;
             order.SetNote(command.Note);
             foreach (var item in command.Products)
@@ -178,7 +178,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 var order = InternalOrder.InitializeOrder(request.TimeStamp);
                 order.SetReferenceNumber(stockIn.ReferenceNumber);
                 order.Status = OrderStatus.PendingApproval;
-                order.OrderType = OrderType.StockIn;
+                //order.OrderType = OrderType.StockIn;
                 order.SetNote(request.Note);
                 order.WarehouseId = request.WarehouseId;
 

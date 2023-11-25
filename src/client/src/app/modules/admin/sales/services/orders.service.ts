@@ -30,6 +30,10 @@ export class OrdersService {
     return this.api.getById(id)
       .pipe(map((response: Result<Order>) => response));
   }
+  getFOById(id: string): Observable<Result<Order>> {
+    return this.api.getFOById(id)
+      .pipe(map((response: Result<Order>) => response));
+  }
 
   getByOrderNo(id: string): Observable<Result<Order>> {
     return this.api.getByOrderNo(id)
@@ -72,5 +76,21 @@ export class OrdersService {
   rejectOrder(model: any): Observable<Result<string>> {
     return this.api.rejectOrder(model)
       .pipe(map((response: Result<string>) => response));
+  }
+  requeueOrder(model: any): Observable<Result<string>> {
+    return this.api.requeueOrder(model)
+      .pipe(map((response: Result<string>) => response));
+  }
+  scanLoadSheetOrder(model: any): Observable<Result<any>> {
+    return this.api.scanLoadSheetOrder(model)
+      .pipe(map((response: Result<any>) => response));
+  }
+  generateLoadSheet(model: any): Observable<Result<any>> {
+    return this.api.generateLoadSheet(model)
+      .pipe(map((response: Result<any>) => response));
+  }
+  getLoadsheetInBy(id: string): Observable<Result<any>> {
+    return this.api.getLoadsheetInBy(id)
+      .pipe(map((response: Result<any>) => response));
   }
 }

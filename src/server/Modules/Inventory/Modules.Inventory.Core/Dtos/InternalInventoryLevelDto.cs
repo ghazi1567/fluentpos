@@ -1,4 +1,5 @@
 ﻿using FluentPOS.Shared.DTOs.Dtos;
+using System;
 
 namespace FluentPOS.Modules.Inventory.Core.Dtos
 {
@@ -18,5 +19,9 @@ namespace FluentPOS.Modules.Inventory.Core.Dtos
         /// The quantity of inventory items available for sale. Returns null if the inventory item is not tracked.
         /// </summary>
         public long? Available { get; set; }
+
+        public Guid? WarehouseId { get; set; }
+
+        public Guid? ParentId { get; set; }
     }
 }

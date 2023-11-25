@@ -1,21 +1,17 @@
 ﻿using FluentPOS.Shared.Core.Domain;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
-    public class OrderFulfillment: BaseEntity
+    [Table("Fulfillments")]
+    public class IntenalFulfillment : BaseEntity
     {
-        /// <summary>
-        /// The date and time when the fulfillment was created.
-        /// </summary>
-        public DateTimeOffset? CreatedAt { get; set; }
-
         /// <summary>
         /// A historical record of each item in the fulfillment.
         /// </summary>
-        public IEnumerable<OrderLineItem> LineItems { get; set; }
+        public IEnumerable<InternalLineItem> LineItems { get; set; }
 
         /// <summary>
         /// The unique numeric identifier for the order.

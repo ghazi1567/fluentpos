@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             });
         }
 
-        public async Task<InventoryLevel> SetLevel(long? InventoryItemId, long? LocationId, int? Available)
+        public async Task<InventoryLevel> SetLevel(long? InventoryItemId, long? LocationId, long? Available)
         {
             return await _inventoryLevelService.SetAsync(new InventoryLevel
             {

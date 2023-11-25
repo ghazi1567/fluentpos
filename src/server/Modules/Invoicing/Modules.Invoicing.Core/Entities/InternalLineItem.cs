@@ -1,10 +1,12 @@
 ﻿using FluentPOS.Shared.Core.Domain;
 using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
-    public class OrderLineItem : BaseEntity
+    [Table("LineItems")]
+    public class InternalLineItem : BaseEntity
     {
         public int? FulfillableQuantity { get; set; }
 

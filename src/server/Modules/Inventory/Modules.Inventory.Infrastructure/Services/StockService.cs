@@ -39,9 +39,19 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             return await _mediator.Send(command);
         }
 
+        public async Task<Result<Guid>> RecordTransaction(List<StockTransactionDto> Transactions)
+        {
+            return await _mediator.Send(new MultipleRecordTransactionCommand(Transactions));
+        }
+
         public async Task<List<WarehouseStockStatsDto>> GetStockBySKU(List<string> sku)
         {
             return await _mediator.Send(new GetStockBySKUs(sku));
+        }
+
+        public async Task<List<WarehouseStockStatsDto>> GetStockByVariantIds(List<long> variantIds)
+        {
+            return await _mediator.Send(new GetStockByVariantIds(variantIds));
         }
 
         public async Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty)
@@ -57,6 +67,38 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
 
             // final picked warehouse base on near by available stock
             return FinalWarehousePick(validQtyStockStats, skuQty.Count);
+        }
+
+        public async Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<long, long> variantQty, List<Guid> skipWarehouses = null)
+        {
+            List<long> variantIds = new List<long>(variantQty.Keys);
+            var warehouseStockStats = await GetStockByVariantIds(variantIds);
+
+            if (skipWarehouses != null && skipWarehouses.Count > 0)
+            {
+                warehouseStockStats = warehouseStockStats.Where(x => !skipWarehouses.Contains(x.warehouseId)).ToList();
+            }
+
+            // filter warehouse with required qty
+            warehouseStockStats = GetValidQtyWarehouse(warehouseStockStats, variantQty);
+
+            // TODO: calculate distance based on lat,long
+            var validQtyStockStats = CalculateDistance(warehouseStockStats);
+
+            // final picked warehouse base on near by available stock
+            return FinalWarehousePick(validQtyStockStats, variantQty.Count);
+        }
+
+        public List<WarehouseStockStatsDto> GetValidQtyWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<long, long> skuQty)
+        {
+            List<WarehouseStockStatsDto> filterList = new List<WarehouseStockStatsDto>();
+
+            foreach (var item in skuQty)
+            {
+                filterList.AddRange(warehouseStockStats.Where(x => x.inventoryItemId == item.Key && x.quantity >= item.Value).ToList());
+            }
+
+            return filterList;
         }
 
         public List<WarehouseStockStatsDto> GetValidQtyWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<string, int> skuQty)

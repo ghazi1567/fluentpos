@@ -7,7 +7,7 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Shopify
     {
         Task<InventoryLevel> AdjustLevel(long? InventoryItemId, long? LocationId, int? AvailableAdjustment);
 
-        Task<InventoryLevel> SetLevel(long? InventoryItemId, long? LocationId, int? Available);
+        Task<InventoryLevel> SetLevel(long? InventoryItemId, long? LocationId, long? Available);
 
         Task<InventoryLevel> ListAsync(long InventoryItemId, long LocationId);
     }

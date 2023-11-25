@@ -6,23 +6,29 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using FluentPOS.Shared.Core.Domain;
 using FluentPOS.Shared.DTOs.People.Customers;
 using FluentPOS.Shared.DTOs.Sales.Enums;
-using Newtonsoft.Json;
 using ShopifySharp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
-    public class InternalOrder : BaseEntity
+    [Table("Orders")]
+    public class InternalOrder : OrderPricing
     {
         public string ReferenceNumber { get; private set; }
 
         public OrderStatus Status { get; set; }
 
         public OrderType OrderType { get; set; }
+
+        public void SetOrderType()
+        {
+            OrderType = FulfillmentOrders.Count() > 1 ? OrderType.SplittedOrder : OrderType.SingleOrder;
+        }
 
         public DateTime TimeStamp { get; private set; }
 
@@ -70,11 +76,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// Unique identifier of the app who created the order.
         /// </summary>
         public long? AppId { get; set; }
-
-        /// <summary>
-        /// The mailing address associated with the payment method. This address is an optional field that will not be available on orders that do not require one.
-        /// </summary>
-        public InternalAddress BillingAddress { get; set; }
 
         /// <summary>
         /// The IP address of the browser used by the customer when placing the order.
@@ -153,7 +154,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// <summary>
         /// An array of <see cref="Fulfillment"/> objects for this order.
         /// </summary>
-        public IEnumerable<OrderFulfillment> Fulfillments { get; set; }
+        public IEnumerable<IntenalFulfillment> Fulfillments { get; set; }
 
         /// <summary>
         /// The fulfillment status for this order. Known values are 'fulfilled', 'null' and 'partial'.
@@ -178,7 +179,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// <summary>
         /// An array of <see cref="LineItem"/> objects, each one containing information about an item in the order.
         /// </summary>
-        public IEnumerable<OrderLineItem> LineItems { get; set; }
+        public IEnumerable<InternalLineItem> LineItems { get; set; }
 
         /// <summary>
         /// The unique numeric identifier for the physical location at which the order was processed. Only present on orders processed at point of sale.
@@ -227,10 +228,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public string ReferringSite { get; set; }
 
+
+        [ForeignKey("ShippingAddress")]
+        public Guid ShippingAddressId { get; set; }
         /// <summary>
         /// The mailing address to where the order will be shipped. This address is optional and will not be available on orders that do not require one.
         /// </summary>
         public InternalAddress ShippingAddress { get; set; }
+
 
         /// <summary>
         /// Where the order originated. May only be set during creation, and is not writeable thereafter.
@@ -238,11 +243,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// Default is "api".
         /// </summary>
         public string SourceName { get; set; }
-
-        /// <summary>
-        /// Price of the order before shipping and taxes
-        /// </summary>
-        public decimal? SubtotalPrice { get; set; }
 
         /// <summary>
         /// States whether or not taxes are included in the order subtotal.
@@ -260,29 +260,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public string Token { get; set; }
 
         /// <summary>
-        /// The total amount of the discounts applied to the price of the order.
-        /// </summary>
-        public decimal? TotalDiscounts { get; set; }
-
-        /// <summary>
-        /// The sum of all the prices of all the items in the order.
-        /// </summary>
-        public decimal? TotalLineItemsPrice { get; set; }
-
-        /// <summary>
         /// The sum of all the tips in the order.
         /// </summary>
         public decimal? TotalTipReceived { get; set; }
-
-        /// <summary>
-        /// The sum of all the prices of all the items in the order, with taxes and discounts included (must be positive).
-        /// </summary>
-        public decimal? TotalPrice { get; set; }
-
-        /// <summary>
-        /// The sum of all the taxes applied to the order (must be positive).
-        /// </summary>
-        public decimal? TotalTax { get; set; }
 
         /// <summary>
         /// The sum of all the weights of the line items in the order, in grams.
@@ -300,11 +280,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public string PresentmentCurrency { get; set; }
 
         /// <summary>
-        /// The total outstanding amount of the order in the shop currency.
-        /// </summary>
-        public string TotalOutstanding { get; set; }
-
-        /// <summary>
         /// Indicates whether taxes on an order are estimated. Will be set to false when taxes on an order are finalized and aren't subject to any change.
         /// </summary>
         public bool? EstimatedTaxes { get; set; }
@@ -314,10 +289,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public decimal? CurrentSubtotalPrice { get; set; }
 
-        /// <summary>
-        /// The current total discounts on the order in the shop currency. The value of this field reflects order edits, returns, and refunds.
-        /// </summary>
-        public decimal? CurrentTotalDiscounts { get; set; }
+
 
         /// <summary>
         /// The current total price of the order in the shop currency. The value of this field reflects order edits, returns, and refunds.
@@ -339,7 +311,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public bool? TaxExempt { get; set; }
 
-        public decimal? TotalShippingPrice { get; set; }
+
 
         public DateTimeOffset? ApprovedAt { get; set; }
 
@@ -347,27 +319,98 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public string TrackingNumber { get; set; }
 
+        public string TrackingStatus { get; set; }
+
         public string TrackingUrl { get; set; }
 
         public string TrackingCompany { get; set; }
 
 
-        // public string ShippingAddress1 { get; set; }
-        // public string ShippingAddress2 { get; set; }
-        // public string ShippingCity { get; set; }
-        // public string ShippingCompany { get; set; }
-        // public string ShippingCountry { get; set; }
-        // public string ShippingCountryCode { get; set; }
-        // public string ShippingCountryName { get; set; }
-        // public bool? ShippingDefault { get; set; }
-        // public string ShippingFirstName { get; set; }
-        // public string ShippingLastName { get; set; }
-        // public decimal? ShippingLatitude { get; set; }
-        // public decimal? ShippingLongitude { get; set; }
-        // public string ShippingName { get; set; }
-        // public string ShippingPhone { get; set; }
-        // public string ShippingProvince { get; set; }
-        // public string ShippingProvinceCode { get; set; }
-        // public string ShippingZip { get; set; }
+        public List<InternalFulfillmentOrder> FulfillmentOrders { get; set; }
+
+        public long? TotalQuantity { get; set; }
+
+        public void SetTotalQuantity()
+        {
+            TotalQuantity = LineItems.Sum(x => x.Quantity);
+        }
+
+        public void CalculateSubTotal()
+        {
+            int count = 1;
+            foreach (var item in FulfillmentOrders)
+            {
+                string orderName = OrderType == OrderType.SingleOrder ? Name : $"{Name}-S{count++}";
+                item.SetOrderName(orderName);
+                item.SetOrderType(OrderType);
+                item.SetOrderStatus(Status);
+                item.SetTotalQuantity();
+
+                // set line item price
+                var skuQty = LineItems.ToDictionary(x => x.VariantId, x => x.Price);
+                item.SetLineItemPrice(skuQty);
+
+                // set shipping cost.
+                decimal? singleItemShippingCost = null;
+                if (OrderType == OrderType.SplittedOrder && TotalShippingPrice.HasValue && TotalShippingPrice.Value > 0)
+                {
+                    singleItemShippingCost = Math.Round(TotalShippingPrice.Value / TotalQuantity.Value, 2);
+                }
+
+                item.SetShippingPrice(TotalShippingPrice, singleItemShippingCost);
+
+                // set tax amount.
+                decimal? singleItemTaxAmount = null;
+                if (OrderType == OrderType.SplittedOrder && TotalTax.HasValue && TotalTax.Value > 0)
+                {
+                    singleItemTaxAmount = Math.Round(TotalTax.Value / TotalQuantity.Value, 2);
+                }
+
+                item.SetTaxAmount(TotalTax, singleItemTaxAmount);
+
+                // set discount amount.
+                decimal? singleItemDiscountAmount = null;
+                if (OrderType == OrderType.SplittedOrder && TotalDiscounts.HasValue && TotalDiscounts.Value > 0)
+                {
+                    singleItemDiscountAmount = Math.Round(TotalDiscounts.Value / TotalQuantity.Value, 2);
+                }
+
+                item.SetDiscountAmount(TotalDiscounts, singleItemDiscountAmount);
+
+                item.CalculateTotal();
+            }
+        }
+
+        public void UpdateShippingAddress()
+        {
+            foreach (var item in FulfillmentOrders)
+            {
+                if (string.IsNullOrEmpty(item.FulfillmentOrderDestination.Address1))
+                    item.FulfillmentOrderDestination.Address1 = ShippingAddress.Address1;
+                if (string.IsNullOrEmpty(item.FulfillmentOrderDestination.Address2))
+                    item.FulfillmentOrderDestination.Address2 = ShippingAddress.Address2;
+                if (string.IsNullOrEmpty(item.FulfillmentOrderDestination.City))
+                    item.FulfillmentOrderDestination.City = ShippingAddress.City;
+                if (string.IsNullOrEmpty(item.FulfillmentOrderDestination.Country))
+                    item.FulfillmentOrderDestination.Country = ShippingAddress.Country;
+                if (string.IsNullOrEmpty(item.FulfillmentOrderDestination.CountryCode))
+                    item.FulfillmentOrderDestination.CountryCode = ShippingAddress.CountryCode;
+                if (!item.FulfillmentOrderDestination.Latitude.HasValue)
+                    item.FulfillmentOrderDestination.Latitude = ShippingAddress.Latitude;
+                if (!item.FulfillmentOrderDestination.Longitude.HasValue)
+                    item.FulfillmentOrderDestination.Longitude = ShippingAddress.Longitude;
+                if (string.IsNullOrEmpty(item.FulfillmentOrderDestination.Name))
+                    item.FulfillmentOrderDestination.Name = ShippingAddress.Name;
+
+            }
+        }
+
+        public void UpdateFulfillmentorders()
+        {
+            SetOrderType();
+            UpdateShippingAddress();
+            SetTotalQuantity();
+            CalculateSubTotal();
+        }
     }
 }
