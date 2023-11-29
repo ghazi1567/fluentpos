@@ -7,13 +7,14 @@ import { Result } from 'src/app/core/models/wrappers/Result';
 import { Order } from '../models/order';
 import { OrderParams } from '../models/orderParams';
 import { OrderApiService } from 'src/app/core/api/sales/order-api.service';
+import { LookupApiService } from 'src/app/core/api/common/lookup.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrdersService {
 
-  constructor(private api: OrderApiService) {
+  constructor(private api: OrderApiService, private lookupApi: LookupApiService) {
   }
 
   getSales(orderParams: OrderParams): Observable<PaginatedResult<Order>> {
@@ -91,6 +92,20 @@ export class OrdersService {
   }
   getLoadsheetInBy(id: string): Observable<Result<any>> {
     return this.api.getLoadsheetInBy(id)
+      .pipe(map((response: Result<any>) => response));
+  }
+  getLoadsheets(): Observable<Result<any>> {
+    return this.api.getLoadsheets()
+      .pipe(map((response: Result<any>) => response));
+  }
+
+  getWarehouseLookup(): Observable<Result<any>> {
+    return this.lookupApi.getWarehouseLookup()
+      .pipe(map((response: Result<any>) => response));
+  }
+
+  reGenerateLoadSheet(model: any): Observable<Result<any>> {
+    return this.api.reGenerateLoadSheet(model)
       .pipe(map((response: Result<any>) => response));
   }
 }

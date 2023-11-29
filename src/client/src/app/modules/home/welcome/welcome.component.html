@@ -4,7 +4,7 @@
             <div class="c-card background-color-primary" style="color: white">
                 <div>
                     <h1>Hi, {{ fullName }}</h1>
-                    <p style="opacity: 75%">Welcome to E Smart Solution. Choose a Module to continue.</p>
+                    <p style="opacity: 75%">Welcome to E Smart Solution.</p>
                     <button mat-raised-button color="accent" (click)="onClickLogout()">Logout</button>
                 </div>
             </div>
@@ -25,6 +25,7 @@
                 <div>
                     <h1>Dashboard</h1>
                     <p style="opacity: 50%">Management of products, stock and configuration of POS.</p>
+                    <p *ngIf="isNoBranch">No branch assocciated with this user.</p>
 
                     <button *ngIf="isSelectedBranch" mat-raised-button color="primary" routerLink="/admin">Dashboard</button>
                     <br />

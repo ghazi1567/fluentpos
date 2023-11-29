@@ -337,6 +337,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
                 throw new SalesException(_localizer["Order Not Found! Please verify order confirmed or not."], HttpStatusCode.NotFound);
             }
 
+            if (fulfillmentOrder.WarehouseId != request.WarehouseId)
+            {
+                throw new SalesException(_localizer["Order is not assigned to selected outlet."], HttpStatusCode.NotFound);
+            }
+
             var mappedData = _mapper.Map<InternalFulfillmentOrder, InternalFulfillmentOrderDto>(fulfillmentOrder);
 
             return await Result<InternalFulfillmentOrderDto>.SuccessAsync(data: mappedData);

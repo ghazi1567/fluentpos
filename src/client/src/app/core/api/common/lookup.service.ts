@@ -36,4 +36,8 @@ export class LookupApiService {
     getEmployeesLookup() {
         return this.http.get(this.baseUrl + "people/employees/Lookup", { params: this.params }).pipe(map((response: PaginatedResult<any>) => response));
     }
+
+    getWarehouseLookup() {
+        return this.http.get(this.baseUrl + "invoicing/lookup/warehouses", { params: this.params }).pipe(map((response: PaginatedResult<any>) => response));
+    }
 }

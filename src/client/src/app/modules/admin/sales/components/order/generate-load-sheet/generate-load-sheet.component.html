@@ -3,14 +3,28 @@
     <nb-card-body>
         <div class="row">
             <div class="col-md-6">
+
                 <form [formGroup]="firstForm" (ngSubmit)="scanLoadSheetOrder()" class="step-container">
-                    <p class="lorem">
-                        Scan order# or CN#
-                    </p>
-                    <div class="input-group">
-                        <input nbInput type="text" placeholder="Enter order#" class="form-control col-md-6 "
-                            formControlName="searchText"
-                            [ngClass]="{'form-control-danger': firstForm.invalid && (firstForm.dirty || firstForm.touched)}">
+                    <div class="row">
+
+                        <div class="col-xs-2 col-md-5 ">
+                            <nb-form-field>
+                                <nb-icon nbPrefix icon="alert-circle-outline"></nb-icon>
+                                <nb-select placeholder="Outlets" formControlName="warehouseId"
+                                    (selectedChange)="warehouseChange($event)" [disabled]="isWarehouseSelected">
+                                    <nb-option *ngFor="let item of warehouseData"
+                                        [value]="item.id">{{item.name}}</nb-option>
+                                </nb-select>
+                            </nb-form-field>
+                        </div>
+                        <div class="col-md-1 ">
+                            <nb-icon nbPrefix icon="trash-2-outline" (click)="resetWarehouse()"> reset</nb-icon>
+                        </div>
+                        <div class="input-group col-xs-2 col-md-4 ">
+                            <input nbInput type="text" placeholder="Enter order#" class="form-control "
+                                formControlName="searchText"
+                                [ngClass]="{'form-control-danger': firstForm.invalid && (firstForm.dirty || firstForm.touched)}">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -18,7 +32,7 @@
                 <button nbButton status="primary" (click)="generateLoadSheet();">
                     Generate Loadsheet
                 </button>
-                
+
             </div>
         </div>
 

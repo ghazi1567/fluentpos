@@ -1,4 +1,5 @@
 ﻿using FluentPOS.Shared.Core.Domain;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,18 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public long TotalOrder { get; set; }
 
         public decimal TotalAmount { get; set; }
+
+        public string Status { get; set; }
+
+        public string Note { get; set; }
+
+        public string ContactNumber { get; set; }
+
+        public string PickupAddress { get; set; }
+
+        public string CityName { get; set; }
+
+        public Guid WarehouseId { get; set; }
 
         public IEnumerable<LoadSheetDetail> Details { get; set; }
     }

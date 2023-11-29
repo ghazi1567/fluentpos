@@ -18,7 +18,7 @@ namespace FluentPOS.Bootstrapper
     {
         public static void Main(string[] args)
         {
-            var logsPath = Environment.GetEnvironmentVariable("LogsPath");
+            var logsPath = "C:\\";
 
             if (string.IsNullOrEmpty(logsPath))
             {

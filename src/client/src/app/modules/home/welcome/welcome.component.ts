@@ -17,6 +17,7 @@ export class WelcomeComponent implements OnInit {
     selectedBranch: any;
     date: Date = new Date();
     isMultipleBranch: boolean = false;
+    isNoBranch: boolean = false;
     isSelectedBranch: boolean = false;
     showBranch: boolean = false;
     branchId: any;
@@ -35,9 +36,10 @@ export class WelcomeComponent implements OnInit {
         this.email = this.authService.getEmail;
         let getBranchs = this.authService.getBranchs;
         this.isMultipleBranch = getBranchs.length > 1;
+        this.isNoBranch = getBranchs.length == 0;
         this.branchs = JSON.parse(this.localStorage.getItem("branchs"));
 
-        if (!this.isMultipleBranch) {
+        if (!this.isMultipleBranch && !this.isNoBranch) {
            this.updateSelectedBranch(this.branchs[0]);
         } else {
             this.showBranch = true;
@@ -52,10 +54,12 @@ export class WelcomeComponent implements OnInit {
         }
     }
     onClickLogout() {
-        const dialogRef = this.dialog.open(LogoutDialogComponent);
-        dialogRef.afterClosed().subscribe((result) => {
-            if (result) this.authService.logout();
-        });
+        this.authService.logout();
+
+        // const dialogRef = this.dialog.open(LogoutDialogComponent);
+        // dialogRef.afterClosed().subscribe((result) => {
+        //     if (result) this.authService.logout();
+        // });
     }
 
     onSelectBranch() {

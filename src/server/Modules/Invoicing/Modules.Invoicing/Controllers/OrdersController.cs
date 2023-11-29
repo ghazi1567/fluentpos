@@ -134,11 +134,25 @@ namespace FluentPOS.Modules.Invoicing.Controllers
             return Ok(await Mediator.Send(command));
         }
 
-        [HttpGet("GetLoadsheetInBy/{id}")]
+        [HttpPost("ReGenerateLoadSheet")]
+        [Authorize(Policy = Permissions.Sales.Update)]
+        public async Task<IActionResult> ReGenerateLoadSheetAsync(ReGenerateloadsheetCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+
+        [HttpGet("GetLoadsheetById/{id}")]
         [Authorize(Policy = Permissions.Sales.View)]
-        public async Task<IActionResult> GetLoadsheetInByAsync(Guid id)
+        public async Task<IActionResult> GetLoadsheetByIdAsync(Guid id)
         {
             return Ok(await Mediator.Send(new GetLoadsheetInByIdQuery { Id = id }));
+        }
+
+        [HttpGet("GetLoadsheets")]
+        [Authorize(Policy = Permissions.Sales.View)]
+        public async Task<IActionResult> GetLoadsheetsAsync()
+        {
+            return Ok(await Mediator.Send(new GetLoadsheetsQuery()));
         }
     }
 }

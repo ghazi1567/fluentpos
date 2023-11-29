@@ -14,6 +14,9 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
              bool? Active,
              Guid? ParentId,
              decimal? Latitude,
-             decimal? Longitude
+             decimal? Longitude,
+             string Phone,
+             string Address1,
+             string City
       );
 }

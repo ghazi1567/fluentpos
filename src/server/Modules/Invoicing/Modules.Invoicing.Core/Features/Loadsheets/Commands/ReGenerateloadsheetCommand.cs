@@ -6,15 +6,14 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
-    public class RegisterloadsheetCommand : LoadSheetMainDto, IRequest<Result<Guid>>
+    public class ReGenerateloadsheetCommand : IRequest<Result<Guid>>
     {
-        public bool UpdateOrderStatus{ get; set; }
+        public Guid Id { get; set; }
     }
 }

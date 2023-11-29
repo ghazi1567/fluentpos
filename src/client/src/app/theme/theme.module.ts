@@ -24,6 +24,7 @@ import {
     NbTabsetModule,
     NbStepperModule,
     NbSpinnerModule,
+    NbFormFieldModule,
 
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
@@ -60,7 +61,8 @@ const NB_MODULES = [
     NbBadgeModule,
     NbTabsetModule,
     NbStepperModule,
-    NbSpinnerModule
+    NbSpinnerModule,
+    NbFormFieldModule
 ];
 @NgModule({
     declarations: [...COMPONENTS, ...PIPES],

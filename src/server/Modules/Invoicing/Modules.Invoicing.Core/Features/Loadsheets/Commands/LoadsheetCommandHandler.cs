@@ -16,7 +16,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +23,8 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
     internal sealed class LoadsheetCommandHandler :
-        IRequestHandler<RegisterloadsheetCommand, Result<Guid>>
+        IRequestHandler<RegisterloadsheetCommand, Result<Guid>>,
+        IRequestHandler<ReGenerateloadsheetCommand, Result<Guid>>
     {
         private readonly ISalesDbContext _salesContext;
         private readonly IStringLocalizer<WebhookEventCommandHandler> _localizer;
@@ -47,40 +47,81 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
         {
             var loadsheet = _mapper.Map<LoadSheetMain>(request);
 
-            var foIds = request.Details.Select(x => x.FulfillmentOrderId).ToList();
-            var fulfillmentOrders = await _salesContext.FulfillmentOrders.Where(x => foIds.Contains(x.ShopifyId.Value)).ToListAsync();
-
-
-            foreach (var order in fulfillmentOrders)
+            if (request.UpdateOrderStatus)
             {
-                order.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.Shipped;
+                var foIds = request.Details.Select(x => x.FulfillmentOrderId).ToList();
+                var fulfillmentOrders = await _salesContext.FulfillmentOrders.Where(x => foIds.Contains(x.ShopifyId.Value)).ToListAsync();
+                foreach (var order in fulfillmentOrders)
+                {
+                    order.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.Shipped;
+                }
+
+                _salesContext.FulfillmentOrders.UpdateRange(fulfillmentOrders);
             }
 
-            _salesContext.FulfillmentOrders.UpdateRange(fulfillmentOrders);
             await _salesContext.LoadSheetMains.AddAsync(loadsheet);
             await _salesContext.SaveChangesAsync();
 
-            var warehouseIds = fulfillmentOrders.Select(x => x.WarehouseId.Value).ToList();
-            var warehouses = await _salesContext.Warehouses.Where(x => warehouseIds.Contains(x.Id)).ToListAsync();
-
-            List<PostexLoadSheetModel> postexLoadSheetModels = new List<PostexLoadSheetModel>();
-            foreach (var item in warehouses)
+            var postexModel = new PostexLoadSheetModel
             {
-                postexLoadSheetModels.Add(new PostexLoadSheetModel
-                {
-                    CityName = item.City,
-                    ContactNumber = item.City,
-                    PickupAddress = item.Phone,
-                    TrackingNumbers = fulfillmentOrders.Where(x => x.WarehouseId == item.Id).Select(x => x.TrackingNumber).ToList()
-                });
+                CityName = loadsheet.CityName,
+                ContactNumber = loadsheet.ContactNumber,
+                PickupAddress = loadsheet.PickupAddress,
+                TrackingNumbers = loadsheet.Details.Select(x => x.TrackingNumber).ToList()
+            };
+            var response = await _postexService.GenerateLoadsheetAsync(postexModel);
+
+            if (response.StatusCode == "200")
+            {
+                loadsheet.Status = "Generated";
+            }
+            else
+            {
+                loadsheet.Status = "Failed";
+                loadsheet.Note = response.StatusMessage;
             }
 
-            foreach (var model in postexLoadSheetModels)
-            {
-                var response = await _postexService.GenerateLoadsheetAsync(model);
-            }
+            _salesContext.LoadSheetMains.Update(loadsheet);
+            await _salesContext.SaveChangesAsync();
 
             return await Result<Guid>.SuccessAsync(loadsheet.Id, string.Format(_localizer["Loadsheet generated successfully"]));
         }
+
+        public async Task<Result<Guid>> Handle(ReGenerateloadsheetCommand request, CancellationToken cancellationToken)
+        {
+            var loadsheet = await _salesContext.LoadSheetMains.Include(x => x.Details).FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            if (loadsheet == null)
+            {
+                return Result<Guid>.ReturnError(string.Format(_localizer["Loadsheet not found."]));
+            }
+
+            var postexModel = new PostexLoadSheetModel
+            {
+                CityName = loadsheet.CityName,
+                ContactNumber = loadsheet.ContactNumber,
+                PickupAddress = loadsheet.PickupAddress,
+                TrackingNumbers = loadsheet.Details.Select(x => x.TrackingNumber).ToList()
+            };
+            var response = await _postexService.GenerateLoadsheetAsync(postexModel);
+
+            if (response.StatusCode == "200")
+            {
+                loadsheet.Status = "Generated";
+                loadsheet.Note = "";
+            }
+            else
+            {
+                loadsheet.Status = "Failed";
+                loadsheet.Note = response.StatusMessage;
+            }
+
+            _salesContext.LoadSheetMains.Update(loadsheet);
+            await _salesContext.SaveChangesAsync();
+
+            return await Result<Guid>.SuccessAsync(loadsheet.Id, string.Format(_localizer["Loadsheet generated successfully"]));
+        }
+
+
     }
 }

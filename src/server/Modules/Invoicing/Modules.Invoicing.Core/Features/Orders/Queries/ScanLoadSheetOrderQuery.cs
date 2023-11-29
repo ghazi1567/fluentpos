@@ -13,5 +13,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
     {
         public string SearchText { get; set; }
 
+        public Guid WarehouseId { get; set; }
     }
 }

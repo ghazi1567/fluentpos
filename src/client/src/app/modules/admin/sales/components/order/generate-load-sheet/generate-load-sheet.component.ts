@@ -18,15 +18,35 @@ export class GenerateLoadSheetComponent implements OnInit {
   }
   firstForm: FormGroup;
   sr: number = 1
+  selectedItem = '2';
+  warehouseData: any[];
+  isWarehouseSelected = false;
   constructor(private orderService: OrdersService,
     private fb: FormBuilder,
     private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
+    this.getLookup();
+
     this.firstForm = this.fb.group({
       searchText: ['', Validators.required],
+      warehouseId: ['', Validators.required],
     });
+  }
+  getLookup() {
+    this.orderService.getWarehouseLookup().subscribe(res => {
+      this.warehouseData = res.data;
+    })
+  }
+  warehouseChange($event) {
+    console.log($event);
+    this.isWarehouseSelected = true;
+  }
+  resetWarehouse() {
+    this.firstForm.controls['warehouseId'].setValue('');
+    this.isWarehouseSelected = false;
+    this.loadSheetOrder = []
   }
   getNextRank() {
     this.sr++;
@@ -34,6 +54,10 @@ export class GenerateLoadSheetComponent implements OnInit {
   }
   scanLoadSheetOrder() {
     var model = this.firstForm.value;
+    if (!model.warehouseId) {
+      this.toastr.error('Please select outlet.');
+    }
+
     this.orderService.scanLoadSheetOrder(model).subscribe((res) => {
       console.log(res);
       var exist = this.loadSheetOrder.find(x => x.fulfillmentOrderId == res.data.shopifyId)
@@ -51,26 +75,32 @@ export class GenerateLoadSheetComponent implements OnInit {
           trackingNumber: res.data.trackingNumber,
           totalPrice: res.data.totalPrice,
         });
-
-        const sumTotalAmount = this.loadSheetOrder.reduce((accumulator, object) => {
-          return accumulator + object.totalPrice;
-        }, 0);
-        this.loadSheetMain = {
-          TotalOrder: this.loadSheetOrder.length,
-          TotalAmount: sumTotalAmount,
-          Details: this.loadSheetOrder
-        }
-
       }
-
     });
   }
 
   generateLoadSheet() {
-    if (this.loadSheetMain.TotalOrder == 0) {
+    if (this.loadSheetOrder.length == 0) {
       this.toastr.error('Please scan order for loadsheet');
       return;
     }
+    var model = this.firstForm.value;
+    var warehouse = this.warehouseData.find(x => x.id == model.warehouseId);
+
+    const sumTotalAmount = this.loadSheetOrder.reduce((accumulator, object) => {
+      return accumulator + object.totalPrice;
+    }, 0);
+
+    this.loadSheetMain = {
+      TotalOrder: this.loadSheetOrder.length,
+      TotalAmount: sumTotalAmount,
+      Details: this.loadSheetOrder,
+      contactNumber: warehouse.phone,
+      pickupAddress: warehouse.address1,
+      cityName: warehouse.city,
+    }
+
+
     this.orderService.generateLoadSheet(this.loadSheetMain).subscribe(res => {
       if (res.succeeded) {
         this.toastr.success(res.messages[0]);

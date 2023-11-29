@@ -70,4 +70,10 @@ export class OrderApiService {
   getLoadsheetInBy(id: string) {
     return this.http.get(`${this.baseUrl}GetLoadsheetInBy/${id}`);
   }
+  getLoadsheets() {
+    return this.http.get(`${this.baseUrl}GetLoadsheets`);
+  }
+  reGenerateLoadSheet(model: any) {
+    return this.http.post(`${this.baseUrl}ReGenerateLoadSheet`, model);
+  }
 }

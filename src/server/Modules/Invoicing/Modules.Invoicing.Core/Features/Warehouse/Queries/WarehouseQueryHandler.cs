@@ -55,7 +55,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
 
         public async Task<Result<List<GetWarehouseResponse>>> Handle(GetWarehouseByNamesQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Warehouse, GetWarehouseResponse>> expression = e => new GetWarehouseResponse(e.Id, e.ShopifyId, e.Name, e.Active, e.ParentId, e.Latitude, e.Longitude);
+            Expression<Func<Warehouse, GetWarehouseResponse>> expression = e => new GetWarehouseResponse(e.Id, e.ShopifyId, e.Name, e.Active, e.ParentId, e.Latitude, e.Longitude, e.Phone, e.Address1, e.City);
 
             var queryable = _context.Warehouses.AsQueryable();
             if (request.Names.Count > 0)
@@ -79,7 +79,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
 
         public async Task<Result<List<GetWarehouseResponse>>> Handle(GetWarehouseByIdsQuery request, CancellationToken cancellationToken)
         {
-            Expression<Func<Warehouse, GetWarehouseResponse>> expression = e => new GetWarehouseResponse(e.Id, e.ShopifyId, e.Name, e.Active, e.ParentId, e.Latitude, e.Longitude);
+            Expression<Func<Warehouse, GetWarehouseResponse>> expression = e => new GetWarehouseResponse(e.Id, e.ShopifyId, e.Name, e.Active, e.ParentId, e.Latitude, e.Longitude, e.Phone, e.Address1,e.City);
 
             var queryable = _context.Warehouses.AsQueryable();
             if (request.Ids.Count > 0)

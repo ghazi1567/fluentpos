@@ -33,6 +33,7 @@ import { PrintOrderInvoiceComponent } from './components/order/print-order-invoi
 import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-order.component';
 import { PreparingComponent } from './components/order/preparing/preparing.component';
 import { GenerateLoadSheetComponent } from './components/order/generate-load-sheet/generate-load-sheet.component';
+import { LoadSheetsComponent } from './components/order/load-sheets/load-sheets.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { GenerateLoadSheetComponent } from './components/order/generate-load-she
     PrintOrderInvoiceComponent,
     ConfirmOrderComponent,
     PreparingComponent,
-    GenerateLoadSheetComponent
+    GenerateLoadSheetComponent,
+    LoadSheetsComponent
   ],
   imports: [
     CommonModule,

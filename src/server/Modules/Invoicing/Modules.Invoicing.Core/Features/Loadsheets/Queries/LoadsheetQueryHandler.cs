@@ -9,6 +9,7 @@ using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,8 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
 {
 
-    internal class LoadsheetQueryHandler : IRequestHandler<GetLoadsheetInByIdQuery, Result<LoadSheetMainDto>>
+    internal class LoadsheetQueryHandler : IRequestHandler<GetLoadsheetInByIdQuery, Result<LoadSheetMainDto>>,
+        IRequestHandler<GetLoadsheetsQuery, Result<List<LoadSheetMainDto>>>
     {
         private readonly ISalesDbContext _context;
         private readonly IMapper _mapper;
@@ -48,6 +50,19 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
 
             var dto = _mapper.Map<LoadSheetMainDto>(loadSheet);
             return await Result<LoadSheetMainDto>.SuccessAsync(data: dto);
+        }
+
+        public async Task<Result<List<LoadSheetMainDto>>> Handle(GetLoadsheetsQuery request, CancellationToken cancellationToken)
+        {
+            var loadSheet = await _context.LoadSheetMains.AsNoTracking().ToListAsync();
+
+            if (loadSheet == null)
+            {
+                throw new SalesException(_localizer["Loadsheets Not Found!"], HttpStatusCode.NotFound);
+            }
+
+            var dto = _mapper.Map<List<LoadSheetMainDto>>(loadSheet);
+            return await Result<List<LoadSheetMainDto>>.SuccessAsync(data: dto);
         }
     }
 }
