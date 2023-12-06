@@ -78,5 +78,17 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// The localized name of the location's region. Typically a province, state, or prefecture.
         /// </summary>
         public string LocalizedProvinceName { get; set; }
+
+        public string Latitude { get; set; }
+
+        public string Longitude { get; set; }
+
+        public string PickupAddress { get; set; }
+
+        public string PickupAddressCode { get; set; }
+
+        public string PostexToken { get; set; }
+
+        public string PostexUrl { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Shared.Core.EventLogging;
 using FluentPOS.Shared.Core.Interfaces.Serialization;
 using FluentPOS.Shared.Core.Settings;
+using FluentPOS.Shared.Infrastructure.Extensions;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.Data.SqlClient;
@@ -69,10 +70,13 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
 
         public DbSet<LoadSheetDetail> LoadSheetDetails { get; set; }
 
+        public DbSet<OrderLogs> OrderLogs { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyApplicationConfiguration(_persistenceOptions);
         }
 
         public async Task<List<TResponse>> ExecuteProcedureAsync<TResponse>(string query, object parms = null)

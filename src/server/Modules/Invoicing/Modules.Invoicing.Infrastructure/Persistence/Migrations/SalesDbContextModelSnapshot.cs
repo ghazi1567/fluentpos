@@ -142,10 +142,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -192,7 +192,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<decimal?>("CurrentTotalDiscounts")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<DateTimeOffset?>("FulfillAt")
                         .HasColumnType("datetimeoffset");
@@ -237,28 +237,28 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("SubtotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("TotalDiscounts")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("TotalLineItemsPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<string>("TotalOutstanding")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<long?>("TotalQuantity")
                         .HasColumnType("bigint");
 
                     b.Property<decimal?>("TotalShippingPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("TotalTax")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<string>("TrackingCompany")
                         .HasColumnType("nvarchar(max)");
@@ -324,7 +324,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<Guid?>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -412,10 +412,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal?>("PreTaxPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<bool?>("ProductExists")
                         .HasColumnType("bit");
@@ -451,7 +451,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TotalDiscount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -532,16 +532,16 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("CurrentSubtotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("CurrentTotalDiscounts")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("CurrentTotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("CurrentTotalTax")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<string>("CustomerEmail")
                         .HasColumnType("nvarchar(max)");
@@ -637,7 +637,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<decimal?>("SubtotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<string>("Tags")
                         .HasColumnType("nvarchar(max)");
@@ -658,28 +658,28 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TotalDiscounts")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("TotalLineItemsPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<string>("TotalOutstanding")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<long?>("TotalQuantity")
                         .HasColumnType("bigint");
 
                     b.Property<decimal?>("TotalShippingPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("TotalTax")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal?>("TotalTipReceived")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<long?>("TotalWeight")
                         .HasColumnType("bigint");
@@ -746,7 +746,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<long>("TotalQuantity")
                         .HasColumnType("bigint");
@@ -798,7 +798,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<long>("TotalOrder")
                         .HasColumnType("bigint");
@@ -852,6 +852,41 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.ToTable("OperationCity", "Invoicing");
                 });
 
+            modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.OrderLogs", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid?>("FulfillmentOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InternalOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LogDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderLogs", "Invoicing");
+                });
+
             modelBuilder.Entity("FluentPOS.Modules.Invoicing.Core.Entities.POProduct", b =>
                 {
                     b.Property<Guid>("Id")
@@ -871,7 +906,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
@@ -880,7 +915,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -895,10 +930,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Tax")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -929,7 +964,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
@@ -938,7 +973,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -950,10 +985,10 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Tax")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -1003,7 +1038,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
@@ -1064,7 +1099,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<Guid>("BranchId")
                         .HasColumnType("uniqueidentifier");
@@ -1088,7 +1123,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TenderedAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(23,2)");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -1143,8 +1178,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<bool>("Default")
                         .HasColumnType("bit");
 
-                    b.Property<decimal?>("Latitude")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Latitude")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("Legacy")
                         .HasColumnType("bit");
@@ -1155,8 +1190,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("LocalizedProvinceName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("Longitude")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Longitude")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -1170,8 +1205,20 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PickupAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PickupAddressCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Position")
                         .HasColumnType("int");
+
+                    b.Property<string>("PostexToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostexUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Province")
                         .HasColumnType("nvarchar(max)");

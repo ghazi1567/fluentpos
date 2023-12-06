@@ -8,10 +8,11 @@
 
 using AutoMapper;
 using FluentPOS.Modules.Invoicing.Core.Abstractions;
+using FluentPOS.Modules.Invoicing.Core.Constants;
 using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Entities;
+using FluentPOS.Modules.Invoicing.Core.Services;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
-using FluentPOS.Shared.Core.IntegrationServices.Catalog;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
 using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
 using FluentPOS.Shared.Core.IntegrationServices.Logistics;
@@ -34,46 +35,24 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
     internal sealed class SplitOrderCommandHandler :
         IRequestHandler<SplitAndAssignOrderCommand, bool>
     {
-        private readonly IEntityReferenceService _referenceService;
         private readonly IStockService _stockService;
-        private readonly ICartService _cartService;
-        private readonly IProductService _productService;
         private readonly ISalesDbContext _salesContext;
-        private readonly IStringLocalizer<OrderCommandHandler> _localizer;
         private readonly IMapper _mapper;
-        private readonly IShopifyOrderService _shopifyOrderService;
         private readonly IShopifyOrderFulFillmentService _shopifyOrderFulFillmentService;
-        private readonly IWarehouseService _warehouseService;
-        private readonly IShopifyOrderSyncJob _shopifyOrderSyncJob;
-        private readonly IPostexService _postexService;
-
+        private readonly IOrderLogger _orderLogger;
 
         public SplitOrderCommandHandler(
-            IStringLocalizer<OrderCommandHandler> localizer,
             ISalesDbContext salesContext,
-            ICartService cartService,
-            IProductService productService,
             IStockService stockService,
-            IEntityReferenceService referenceService,
             IMapper mapper,
-            IShopifyOrderService shopifyOrderService,
             IShopifyOrderFulFillmentService shopifyOrderFulFillmentService,
-            IWarehouseService warehouseService,
-            IShopifyOrderSyncJob shopifyOrderSyncJob,
-            IPostexService postexService)
+            IOrderLogger orderLogger)
         {
-            _localizer = localizer;
             _salesContext = salesContext;
-            _cartService = cartService;
-            _productService = productService;
             _stockService = stockService;
-            _referenceService = referenceService;
             _mapper = mapper;
-            _shopifyOrderService = shopifyOrderService;
             _shopifyOrderFulFillmentService = shopifyOrderFulFillmentService;
-            _warehouseService = warehouseService;
-            _shopifyOrderSyncJob = shopifyOrderSyncJob;
-            _postexService = postexService;
+            _orderLogger = orderLogger;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -108,6 +87,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
                 List<SplitOrderFOLineItemDto> splittedLineItems = new List<SplitOrderFOLineItemDto>();
                 foreach (var warehouseId in splitOrderDetail.WarehouseIds)
                 {
+                    _orderLogger.LogInfo(splitOrderDetail.InternalOrderId.Value, splitOrderDetail.FulfillmentOrderId.Value, $"{OrderLogsConstant.SplitOrder} {warehouseId}");
                     // prepare split order payload
                     var splitOrderPayloadDto = PrepareSplitOrderPayload(warehouseId, splitOrderDetail.SplitOrderDetails);
                     int remaining = splitOrderDetail.SplitOrderDetails.Count() - splittedLineItems.Count();
@@ -119,6 +99,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
                         {
                             string newFOId = ParseFOId(result.fulfillmentOrderSplit.FulfillmentOrderSplits.FirstOrDefault()?.RemainingFulfillmentOrder?.Id);
                             whFOMapping[newFOId] = warehouseId;
+                        }
+                        else
+                        {
+                            _orderLogger.LogInfo(splitOrderDetail.InternalOrderId.Value, splitOrderDetail.FulfillmentOrderId.Value, $"{OrderLogsConstant.SplitOrderFailed} {warehouseId}");
                         }
                     }
                     else
@@ -191,7 +175,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         {
             fulfillmentOrder.WarehouseId = warehouseId;
             fulfillmentOrder.OrderStatus = OrderStatus.AssignToOutlet;
-
+            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, $"{warehouseId} {OrderLogsConstant.AssignedToOutlet} ");
             foreach (var fulfillmentOrderLineItem in fulfillmentOrder.FulfillmentOrderLineItems)
             {
                 var warehouses = WarehouseStocks.Where(x => x.warehouseId == warehouseId && x.inventoryItemId == fulfillmentOrderLineItem.InventoryItemId.Value).ToList();

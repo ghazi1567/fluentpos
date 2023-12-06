@@ -25,33 +25,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
         link: "/admin/dashboard"
     },
     {
-        title: "People Management",
-        icon: "people-outline",
-        children: [
-            {
-                title: "Employees",
-                link: "people/employees"
-            },
-            {
-                title: "Attendances",
-                link: "people/attendances"
-            },
-            {
-                title: "Attendances Logs",
-                link: "people/attendances-logs"
-            },
-            {
-                title: "Overtimes",
-                link: "people/overtimes"
-            },
-            {
-                title: "My Queue",
-                pathMatch: "prefix",
-                link: "people/my-queue"
-            }
-        ]
-    },
-    {
         title: "Catalog Management",
         icon: "settings-outline",
         children: [
@@ -70,8 +43,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
                 link: "sales/orders"
             },
             {
-                title: "Assigned To Outlet",
-                link: "sales/assigned-to-outlet"
+                title: "City Correction",
+                link: "sales/city-correction"
             },
             {
                 title: "Confirm Order",

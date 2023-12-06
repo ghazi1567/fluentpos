@@ -1,5 +1,7 @@
 ﻿using FluentPOS.Shared.Core.Domain;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
@@ -88,8 +90,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public int Position { get; set; }
 
-        public decimal? Latitude { get; set; }
+        public string Latitude { get; set; }
 
-        public decimal? Longitude { get; set; }
+        public string Longitude { get; set; }
+
+        public string PickupAddress { get; set; }
+
+        public string PickupAddressCode { get; set; }
+
+        public string PostexToken { get; set; }
+
+        public string PostexUrl { get; set; }
     }
 }

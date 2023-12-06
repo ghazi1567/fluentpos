@@ -34,6 +34,10 @@ import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-
 import { PreparingComponent } from './components/order/preparing/preparing.component';
 import { GenerateLoadSheetComponent } from './components/order/generate-load-sheet/generate-load-sheet.component';
 import { LoadSheetsComponent } from './components/order/load-sheets/load-sheets.component';
+import { CityCorrectionComponent } from './components/order/city-correction/city-correction.component';
+import { ReadyToShipComponent } from './components/order/ready-to-ship/ready-to-ship.component';
+import { ShippedComponent } from './components/order/shipped/shipped.component';
+import { AssignedToHeadofficeComponent } from './components/order/assigned-to-headoffice/assigned-to-headoffice.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +70,11 @@ import { LoadSheetsComponent } from './components/order/load-sheets/load-sheets.
     ConfirmOrderComponent,
     PreparingComponent,
     GenerateLoadSheetComponent,
-    LoadSheetsComponent
+    LoadSheetsComponent,
+    CityCorrectionComponent,
+    ReadyToShipComponent,
+    ShippedComponent,
+    AssignedToHeadofficeComponent
   ],
   imports: [
     CommonModule,

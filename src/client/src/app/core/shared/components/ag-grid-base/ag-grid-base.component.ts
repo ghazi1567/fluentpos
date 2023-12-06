@@ -63,6 +63,8 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     public sideBar: SideBarDef | string | string[] | boolean | null = "columns";
     @Input()
     public pivotRowTotals: "after" | "before";
+    @Input()
+    public rowClassRules: "after" | "before";
 
     @Output()
     remoteGridReady: any = new EventEmitter<any>();

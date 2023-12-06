@@ -15,9 +15,15 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         }
 
         [HttpGet("Warehouses")]
-        public async Task<IActionResult> ProcessWebhook()
+        public async Task<IActionResult> Warehouses()
         {
             return Ok(await _lookupService.GetWarehouse(new System.Collections.Generic.List<System.Guid>()));
+        }
+
+        [HttpGet("OperationalCity")]
+        public async Task<IActionResult> GetOperationalCity()
+        {
+            return Ok(await _lookupService.GetOperationalCity());
         }
     }
 }

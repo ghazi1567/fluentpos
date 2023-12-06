@@ -32,11 +32,15 @@ export class OrderComponent implements OnInit {
   searchString: string;
   orderData: any[] = [];
   pendingOrderData: any[] = [];
-  cityCorrectionOrderData: any[] = [];
+
   approvedOrderData: any[] = [];
   cancelledOrderData: any[] = [];
   assignedToOutletOrderData: any[] = [];
-
+  preparingOrderCount: number = 0;
+  rtsOrderCount: number = 0;
+  shippedOrderCount: number = 0;
+  athoOrderCount: number = 0;
+  atolOrderCount: number = 0;
 
 
   displayedColumns: string[] = ['id', 'referenceNumber', 'timeStamp', 'customerName', 'total', 'isPaid', 'action'];
@@ -376,9 +380,6 @@ export class OrderComponent implements OnInit {
     console.log($event)
     if ($event.tabId == "1") {
       this.pendingOrderData = this.orderData.filter(x => x.status == 1)
-    }
-    else if ($event.tabId == "3") {
-      this.cityCorrectionOrderData = this.orderData.filter(x => x.status == 3)
     }
     else if ($event.tabId == "5") {
       this.approvedOrderData = this.orderData.filter(x => x.status == 5)

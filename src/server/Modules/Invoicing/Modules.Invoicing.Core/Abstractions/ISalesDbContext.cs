@@ -40,5 +40,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
 
         public DbSet<LoadSheetDetail> LoadSheetDetails { get; set; }
 
+        public DbSet<OrderLogs> OrderLogs { get; set; }
+
     }
 }

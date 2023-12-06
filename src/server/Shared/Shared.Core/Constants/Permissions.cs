@@ -403,6 +403,7 @@ namespace FluentPOS.Shared.Core.Constants
         {
             public const string Lookup = "Permissions.Common.Lookup";
             public const string DashboardAttendanceStats = "Permissions.Common.DashboardAttendanceStats"; 
+            public const string DashboardStats = "Permissions.Common.DashboardStats"; 
         }
 
         [DisplayName("ShiftPlans")]

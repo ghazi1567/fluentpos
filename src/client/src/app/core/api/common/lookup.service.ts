@@ -40,4 +40,7 @@ export class LookupApiService {
     getWarehouseLookup() {
         return this.http.get(this.baseUrl + "invoicing/lookup/warehouses", { params: this.params }).pipe(map((response: PaginatedResult<any>) => response));
     }
+    getOperationalCityLookup() {
+        return this.http.get(this.baseUrl + "invoicing/lookup/OperationalCity", { params: this.params }).pipe(map((response: PaginatedResult<any>) => response));
+    }
 }

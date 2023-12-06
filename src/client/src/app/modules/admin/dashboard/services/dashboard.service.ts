@@ -9,6 +9,7 @@ import { DepartmentApiService } from "src/app/core/api/org/department-api.servic
 import { PaginatedResult } from "src/app/core/models/wrappers/PaginatedResult";
 import { Department } from "../../org/models/Department";
 import { Dashboard } from "../models/dashboard";
+import { Result } from "src/app/core/models/wrappers/Result";
 
 @Injectable({
     providedIn: "root"
@@ -21,7 +22,13 @@ export class DashboardService extends BaseApiService {
     getAttendanceStats(params: HttpParams): Observable<Dashboard> {
         return this.api.getAttendanceStats(params).pipe(map((response: Dashboard) => response));
     }
+    getDashboardStats(params: HttpParams): Observable<Result<Dashboard>> {
+        return this.api.getDashboardStats(params).pipe(map((response: Result<Dashboard>) => response));
+    }
     getDepartments(): Observable<PaginatedResult<Department>> {
         return this.dptApi.getDepartmentLookup().pipe(map((response: PaginatedResult<Department>) => response));
+    }
+    getWarehouses(): Observable<PaginatedResult<Department>> {
+        return this.dptApi.getWarehouseLookup().pipe(map((response: PaginatedResult<Department>) => response));
     }
 }

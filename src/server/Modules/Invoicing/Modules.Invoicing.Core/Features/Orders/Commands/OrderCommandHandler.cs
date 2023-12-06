@@ -43,7 +43,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         IRequestHandler<ConfirmOrderCommand, Result<string>>,
         IRequestHandler<AcceptOrderCommand, Result<string>>,
         IRequestHandler<RejectOrderCommand, Result<string>>,
-        IRequestHandler<ReQueueOrderCommand, Result<string>>
+        IRequestHandler<ReQueueOrderCommand, Result<string>>,
+        IRequestHandler<CityCorrectionOrderCommand, bool>
     {
         private readonly IEntityReferenceService _referenceService;
         private readonly IStockService _stockService;
@@ -400,18 +401,21 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
                     item.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.ReQueueAfterReject;
                     foreach (var inventoryItem in item.FulfillmentOrderLineItems)
                     {
-                        var response = await _stockService.RecordTransaction(new StockTransactionDto
+                        if (inventoryItem.ProductId.HasValue)
                         {
-                            IgnoreRackCheck = true,
-                            inventoryItemId = inventoryItem.InventoryItemId.Value,
-                            quantity = inventoryItem.Quantity.Value,
-                            type = Shared.DTOs.Sales.Enums.OrderType.uncommitted,
-                            productId = inventoryItem.ProductId.Value,
-                            SKU = inventoryItem.SKU,
-                            Rack = inventoryItem.Rack,
-                            warehouseId = inventoryItem.WarehouseId.Value,
-                            VariantId = inventoryItem.VariantId
-                        });
+                            var response = await _stockService.RecordTransaction(new StockTransactionDto
+                            {
+                                IgnoreRackCheck = true,
+                                inventoryItemId = inventoryItem.InventoryItemId.Value,
+                                quantity = inventoryItem.Quantity.Value,
+                                type = Shared.DTOs.Sales.Enums.OrderType.uncommitted,
+                                productId = inventoryItem.ProductId.Value,
+                                SKU = inventoryItem.SKU,
+                                Rack = inventoryItem.Rack,
+                                warehouseId = inventoryItem.WarehouseId.Value,
+                                VariantId = inventoryItem.VariantId
+                            });
+                        }
                     }
                 }
             }
@@ -422,5 +426,30 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             _shopifyOrderSyncJob.ProcessOrder();
             return await Result<string>.SuccessAsync("Order Approved", string.Format(_localizer["Order {0} Approved"], order.ShopifyId));
         }
+
+        public async Task<bool> Handle(CityCorrectionOrderCommand command, CancellationToken cancellationToken)
+        {
+            var order = await _salesContext.Orders
+                .Include(x => x.FulfillmentOrders)
+                .SingleOrDefaultAsync(x => x.Id == command.Id);
+            if (order == null)
+            {
+                return false;
+            }
+
+            order.Status = OrderStatus.CityCorrection;
+            foreach (var item in order.FulfillmentOrders)
+            {
+                if (item.Id == command.FulfillmentOrderId)
+                {
+                    item.OrderStatus = OrderStatus.CityCorrection;
+                }
+            }
+
+            _salesContext.Orders.Update(order);
+            await _salesContext.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

@@ -104,8 +104,18 @@ export class OrdersService {
       .pipe(map((response: Result<any>) => response));
   }
 
+  getOperationalCityLookup(): Observable<any> {
+    return this.lookupApi.getOperationalCityLookup()
+      .pipe(map((response: any) => response));
+  }
+
   reGenerateLoadSheet(model: any): Observable<Result<any>> {
     return this.api.reGenerateLoadSheet(model)
+      .pipe(map((response: Result<any>) => response));
+  }
+
+  getCityCorrectionOrder(): Observable<Result<any>> {
+    return this.api.getCityCorrectionOrder()
       .pipe(map((response: Result<any>) => response));
   }
 }

@@ -76,4 +76,7 @@ export class OrderApiService {
   reGenerateLoadSheet(model: any) {
     return this.http.post(`${this.baseUrl}ReGenerateLoadSheet`, model);
   }
+  getCityCorrectionOrder() {
+    return this.http.get(`${this.baseUrl}GetCityCorrectionOrder`);
+  }
 }

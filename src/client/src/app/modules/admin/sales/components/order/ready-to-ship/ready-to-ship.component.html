@@ -1,0 +1,5 @@
+<div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
+    <app-ag-grid-base #AgGrid [rowData]="orderData" [columnDefs]="orderColumns" [pagination]="true"
+        (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+    </app-ag-grid-base>
+</div>

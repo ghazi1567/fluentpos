@@ -23,6 +23,7 @@ import { PrintOrderInvoiceComponent } from './components/order/print-order-invoi
 import { ConfirmOrderComponent } from './components/order/confirm-order/confirm-order.component';
 import { GenerateLoadSheetComponent } from './components/order/generate-load-sheet/generate-load-sheet.component';
 import { LoadSheetsComponent } from './components/order/load-sheets/load-sheets.component';
+import { CityCorrectionComponent } from './components/order/city-correction/city-correction.component';
 
 const routes: Routes = [
   {
@@ -116,6 +117,10 @@ const routes: Routes = [
   {
     path: 'load-sheets',
     component: LoadSheetsComponent
+  },
+  {
+    path: 'city-correction',
+    component: CityCorrectionComponent
   },
 ];
 

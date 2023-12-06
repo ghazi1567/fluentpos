@@ -6,9 +6,11 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System.Linq;
 using FluentPOS.Shared.Core.Settings;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace FluentPOS.Shared.Infrastructure.Extensions
 {
@@ -24,7 +26,21 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
                     .SelectMany(t => t.GetProperties())
                     .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
                 {
-                    property.SetColumnType("decimal(23,2)");
+                    bool hasColAttr = Attribute.IsDefined(property.PropertyInfo, typeof(ColumnAttribute));
+                    if (!hasColAttr)
+                    {
+                        property.SetColumnType("decimal(23,2)");
+                    }
+                    else
+                    {
+                        var attr = (ColumnAttribute[])property.PropertyInfo.GetCustomAttributes(typeof(ColumnAttribute), false);
+                        if (attr != null && attr.Length > 0)
+                        {
+                            string type = attr[0].TypeName;
+                            string typeName = string.IsNullOrEmpty(type) ? "decimal(23,2)" : type;
+                            property.SetColumnType(typeName);
+                        }
+                    }
                 }
             }
         }

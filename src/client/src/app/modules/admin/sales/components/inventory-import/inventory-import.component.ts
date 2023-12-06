@@ -6,6 +6,7 @@ import { AgGridBaseComponent } from 'src/app/core/shared/components/ag-grid-base
 import { InventoryLevelService } from '../../services/inventory-level.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-inventory-import',
@@ -43,17 +44,26 @@ export class InventoryImportComponent implements OnInit {
   inventoryColumns: any[] = [];
 
   inventoryData: any[] = [];
+  warehouseData: any[] = [];
+  rowClassRules: any;
   constructor(private csvParser: CsvParserService, private inventoryLevelService: InventoryLevelService,
     private toastr: ToastrService, private router: Router) { }
 
   ngOnInit(): void {
+    this.getLookup();
     this.initInventoryColumns();
   }
 
-  getWarehouse() {
-
+  getLookup() {
+    this.inventoryLevelService.getWarehouseLookup().subscribe(res => {
+      this.warehouseData = res.data;
+    });
   }
-
+  onDownloadSampleFile() {
+    var url = environment.apiFileUrl + '/sample/sample-inventory.xlsx';
+    var win = window.open(url, '_blank');
+  }
+  gridOptions = []
   private AgGrid: AgGridBaseComponent;
   @ViewChild("AgGrid") set content(content: AgGridBaseComponent) {
     if (content) {
@@ -63,15 +73,20 @@ export class InventoryImportComponent implements OnInit {
   }
 
   gridReady(event): void {
-    this.getWarehouse();
   }
 
   initInventoryColumns(): void {
     this.inventoryColumns = [
-      { headerName: "Qty", field: "qty", sortable: true, isShowable: true, width: 256 },
-      { headerName: "SKU", field: "sku", sortable: true, width: 160 },
-      { headerName: "Warehouse", field: "warehouse", sortable: true, width: 160 },
-      { headerName: "Rack", field: "rack", sortable: true, isShowable: true, width: 256 },
+      {
+        headerName: "Warehouse", field: "warehouse", sortable: true, width: 200,
+        cellClassRules: {
+          'valid-row': function (params) { return params.data.isValid == true; },
+          'invalid-row': function (params) { return params.data.isValid == false; },
+        }
+      },
+      { headerName: "SKU", field: "sku", sortable: true, width: 256 },
+      { headerName: "Qty", field: "qty", sortable: true, isShowable: true, width: 160 },
+      { headerName: "Rack", field: "rack", sortable: true, isShowable: true, width: 160 },
       { headerName: "IgnoreRackCheck", field: "ignoreRackCheck", sortable: true, isShowable: true, width: 256 },
 
     ];
@@ -132,7 +147,11 @@ export class InventoryImportComponent implements OnInit {
           (result: Array<any>) => {
             console.log("Result", result);
             let uniqueArray = this.removeDuplicates(result, ['sku', 'warehouse', 'rack']);
+            uniqueArray.forEach(x => {
+              x.isValid = this.warehouseData.find(w => w.code == x.warehouse) != null;
+            });
             this.inventoryData = uniqueArray;
+            console.log(uniqueArray);
           },
           (error: NgxCSVParserError) => {
             console.log("Error", error);
@@ -143,6 +162,15 @@ export class InventoryImportComponent implements OnInit {
 
   saveInventory() {
     console.log(this.inventoryData)
+
+    var isInvalid = this.inventoryData.find(x => x.isValid == false);
+    if (isInvalid) {
+      this.toastr.error('Highlighted warehouse code not found ');
+      this.toastr.error('Please correct warehouse code before saving ');
+      return;
+    }
+
+
     var model = {
       UploadRequest: this.upload,
       ImportFile: {

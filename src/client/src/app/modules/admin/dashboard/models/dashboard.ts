@@ -14,4 +14,27 @@ export interface Dashboard {
     lateComer: number;
     last7DaysLateComer: number;
     last7DaysAbsents: number;
+
+    pending: number;
+
+    reQueued: number;
+
+    assignedToOutlet: number;
+
+    assignedToHeadOffice: number;
+
+    approved: number;
+
+    shipped: number;
+
+    preparing: number;
+
+    readyToShip: number;
+
+    verifying: number;
+
+    cityCorrection: number;
+
+    cancelled: number;
+
 }

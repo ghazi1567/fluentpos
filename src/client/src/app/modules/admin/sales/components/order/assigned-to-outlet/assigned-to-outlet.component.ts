@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { GridApi } from 'ag-grid-community';
@@ -22,6 +22,13 @@ import { OrdersService } from '../../../services/orders.service';
 })
 export class AssignedToOutletComponent implements OnInit {
   // orderColumns: TableColumn[];
+  @Input() count: number;
+  @Output() countChange = new EventEmitter<number>();
+
+  setCount(count): void {
+    this.countChange.emit(count);
+  }
+  
   preparingOrderCount: number = 0;
   orderParams = new OrderParams();
   searchString: string;
@@ -56,6 +63,7 @@ export class AssignedToOutletComponent implements OnInit {
     this.saleService.getSales(this.orderParams).subscribe((result) => {
       this.dataSource = result;
       this.orderData = result.data;
+      this.setCount(result.totalCount);
     });
 
   }

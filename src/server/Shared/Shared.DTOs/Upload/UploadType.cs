@@ -31,6 +31,9 @@ namespace FluentPOS.Shared.DTOs.Upload
         Inventory,
 
         [Description(@"PDF\OrderInvoice\Export")]
-        OrderInvoice
+        OrderInvoice,
+
+        [Description(@"Logs")]
+        Logs
     }
 }

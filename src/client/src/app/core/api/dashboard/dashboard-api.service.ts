@@ -13,4 +13,8 @@ export class DashboardApiService {
     getAttendanceStats(params: HttpParams) {
         return this.http.get(this.baseUrl + "people/Dashboard/AttendanceStats", { params: params });
     }
+    
+    getDashboardStats(params: HttpParams) {
+        return this.http.get(this.baseUrl + "invoicing/Dashboard/DashboardStats", { params: params });
+    }
 }

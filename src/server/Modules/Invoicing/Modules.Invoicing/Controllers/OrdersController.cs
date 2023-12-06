@@ -57,6 +57,13 @@ namespace FluentPOS.Modules.Invoicing.Controllers
             return Ok(await Mediator.Send(new GetOrderForConfirmQuery { OrderNo = $"#{OrderNo}" }));
         }
 
+        [HttpGet("GetCityCorrectionOrder")]
+        [Authorize(Policy = Permissions.Sales.View)]
+        public async Task<IActionResult> GetCityCorrectionOrderAsync()
+        {
+            return Ok(await Mediator.Send(new GetCityCorrectionOrderQuery()));
+        }
+
         [HttpPost]
         [Authorize(Policy = Permissions.Sales.Register)]
         public async Task<IActionResult> RegisterAsync(RegisterSaleCommand command)

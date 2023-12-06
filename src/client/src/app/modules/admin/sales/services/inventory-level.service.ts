@@ -7,13 +7,15 @@ import { IResult } from 'src/app/core/models/wrappers/IResult';
 import { OrderParams } from '../models/orderParams';
 import { PaginatedResult } from 'src/app/core/models/wrappers/PaginatedResult';
 import { SearchParams } from 'src/app/core/models/Filters/SearchParams';
+import { LookupApiService } from 'src/app/core/api/common/lookup.service';
+import { Result } from 'src/app/core/models/wrappers/Result';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryLevelService {
 
-  constructor(private api: InventoryLevelApiService) { }
+  constructor(private api: InventoryLevelApiService, private lookupApi: LookupApiService) { }
 
   ImportFile(model: any): Observable<IResult<any>> {
     return this.api.create(model).pipe(map((response: IResult<any>) => response));
@@ -27,4 +29,10 @@ export class InventoryLevelService {
     if (orderParams.orderBy) params = params.append('orderBy', orderParams.orderBy.toString());
     return this.api.getAlls(params).pipe(map((response: PaginatedResult<any>) => response));
   }
+
+  getWarehouseLookup(): Observable<Result<any>> {
+    return this.lookupApi.getWarehouseLookup()
+      .pipe(map((response: Result<any>) => response));
+  }
+
 }

@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: "https://localhost:44365/api/v1/",
-  jobDashboardUrl: "https://localhost:44365/jobs"
+  jobDashboardUrl: "https://localhost:44365/jobs",
+  apiFileUrl: "https://localhost:44365/Files"
 };
 
 /*

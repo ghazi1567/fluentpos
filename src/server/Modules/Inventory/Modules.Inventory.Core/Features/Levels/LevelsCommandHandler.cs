@@ -68,7 +68,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             foreach (var item in importFile.ImportRecords)
             {
                 var inventoryItem = inventoryItems.Data.Where(x => x.SKU == item.SKU).FirstOrDefault();
-                var location = locations.Data.Where(x => x.Name.Trim() == item.Warehouse).FirstOrDefault();
+                var location = locations.Data.Where(x => x.Code.Trim() == item.Warehouse).FirstOrDefault();
 
                 try
                 {

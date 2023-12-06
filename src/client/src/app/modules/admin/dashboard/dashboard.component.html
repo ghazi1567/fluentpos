@@ -5,7 +5,8 @@
         <div class="col-xs-12 col-md-2 ">
             <mat-form-field appearance="outline">
                 <mat-label>Select Date</mat-label>
-                <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" required (dateChange)="dateChange($event)" />
+                <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" required
+                    (dateChange)="dateChange($event)" />
                 <mat-hint>DD/MM/YYYY</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
@@ -14,13 +15,14 @@
         </div>
         <div class="col-xs-12 col-md-2">
             <mat-form-field appearance="outline">
-                <mat-label>Department</mat-label>
-                <mat-select [(ngModel)]="departmentId" name="departmentId" (selectionChange)="selectionChange($event.value)">
+                <mat-label>Warehouses</mat-label>
+                <mat-select [(ngModel)]="warehouseId" name="warehouseId"
+                    (selectionChange)="selectionChange($event.value)">
                     <mat-option value="">
                         None
                     </mat-option>
-                    <mat-option *ngFor="let org of departments" [value]="org.id">
-                        {{ org.name }}
+                    <mat-option *ngFor="let wh of warehouses" [value]="wh.id">
+                        {{ wh.name }}
                     </mat-option>
                 </mat-select>
                 <mat-error> Please provide a valid Head Of Department </mat-error>
@@ -31,33 +33,38 @@
 <div class="row">
     <!-- <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_blueish'" [icon]="'groups'" [count]="attendanceStats && attendanceStats.totalEmployees" [label]="'Total Employees'"></app-stat>
+            <app-stat [bgClass]="'bg_blueish'" [icon]="'groups'" [count]="dashboardStats && dashboardStats.totalEmployees" [label]="'Total Employees'"></app-stat>
         </div>
     </div> -->
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_greenish'" [icon]="'people_outline'" [count]="attendanceStats && attendanceStats.activeEmployees" [label]="'Active Employees'"></app-stat>
+            <app-stat [bgClass]="'bg_greenish'" [icon]="'people_outline'"
+                [count]="dashboardStats && dashboardStats.pending" [label]="'Pending Orders'"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_pink'" [icon]="'person_add'" [count]="attendanceStats && attendanceStats.presents" [label]="'Today Present '"></app-stat>
+            <app-stat [bgClass]="'bg_pink'" [icon]="'person_add'" [count]="dashboardStats && dashboardStats.assignedToOutlet"
+                [label]="'Assigned To Outlet'"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'bg_yellow'" [icon]="'person_remove'" [count]="attendanceStats && attendanceStats.absents" [label]="'Today Absent '"></app-stat>
+            <app-stat [bgClass]="'bg_yellow'" [icon]="'person_remove'"
+                [count]="dashboardStats && dashboardStats.assignedToHeadOffice" [label]="'Assigned To Headoffice'"></app-stat>
         </div>
     </div>
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'success'" [icon]="'directions_run'" [count]="attendanceStats && attendanceStats.femalePresents" [label]="'Female Present'"></app-stat>
+            <app-stat [bgClass]="'success'" [icon]="'directions_run'"
+                [count]="dashboardStats && dashboardStats.shipped" [label]="'Shipped'"></app-stat>
         </div>
     </div>
 
     <div class="col-md-2">
         <div class="mb10" fxFlex="24" fxFlex.lt-lg="49">
-            <app-stat [bgClass]="'info'" [icon]="'group_off'" [count]="attendanceStats && attendanceStats.malePresents" [label]="'Male Present'"></app-stat>
+            <app-stat [bgClass]="'info'" [icon]="'group_off'" [count]="dashboardStats && dashboardStats.cancelled"
+                [label]="'Cancelled Orders'"></app-stat>
         </div>
     </div>
 </div>

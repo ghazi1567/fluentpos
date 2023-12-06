@@ -10,37 +10,39 @@ import { DashboardService } from "./services/dashboard.service";
     styleUrls: ["./dashboard.component.scss"]
 })
 export class DashboardComponent implements OnInit {
-    attendanceStats: Dashboard;
+    dashboardStats: Dashboard;
     departments: any[];
+    warehouses: any[];
     selectedDate: Date;
-    departmentId: any = "";
+    warehouseId: any = "";
     constructor(private dashboardService: DashboardService, @Inject(LOCALE_ID) public locale: string) {
         console.log(locale);
     }
 
     ngOnInit(): void {
         this.selectedDate = new Date();
-        this.loadAttendanceStats();
+        this.loadDashboardStats();
         this.loadLookup();
     }
 
     loadLookup() {
-        this.dashboardService.getDepartments().subscribe((res) => {
-            this.departments = res.data;
+        this.dashboardService.getWarehouses().subscribe((res) => {
+            this.warehouses = res.data;
         });
     }
-    loadAttendanceStats() {
+ 
+    loadDashboardStats() {
         let params = new HttpParams();
         params = params.append("StartDate", this.dashboardService.getDateStringOnly(this.selectedDate));
-        params = params.append("departmentId", this.departmentId);
-        this.dashboardService.getAttendanceStats(params).subscribe((res) => {
-            this.attendanceStats = res;
+        params = params.append("warehouseId", this.warehouseId);
+        this.dashboardService.getDashboardStats(params).subscribe((res) => {
+            this.dashboardStats = res.data;
         });
     }
     dateChange(event: MatDatepickerInputEvent<Date>) {
-        this.loadAttendanceStats();
+        this.loadDashboardStats();
     }
-    selectionChange($event){
-        this.loadAttendanceStats();
+    selectionChange($event) {
+        this.loadDashboardStats();
     }
 }

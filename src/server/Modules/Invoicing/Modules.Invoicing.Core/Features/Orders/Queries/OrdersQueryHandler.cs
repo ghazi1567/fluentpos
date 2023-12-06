@@ -26,7 +26,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
                 IRequestHandler<GetFOByIdQuery, Result<OrderResponseDto>>,
                 IRequestHandler<GetOrderForProcessQuery, List<InternalFulfillmentOrderDto>>,
                 IRequestHandler<GetOrderForConfirmQuery, Result<InternalOrderDto>>,
-                IRequestHandler<ScanLoadSheetOrderQuery, Result<InternalFulfillmentOrderDto>>
+                IRequestHandler<ScanLoadSheetOrderQuery, Result<InternalFulfillmentOrderDto>>,
+                IRequestHandler<GetCityCorrectionOrderQuery, Result<List<CityCorrectionOrderDto>>>
 
     {
         private readonly ISalesDbContext _context;
@@ -481,5 +482,34 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             return await Result<OrderResponseDto>.SuccessAsync(data: order);
         }
 
+        public async Task<Result<List<CityCorrectionOrderDto>>> Handle(GetCityCorrectionOrderQuery request, CancellationToken cancellationToken)
+        {
+            var orderQueryable = _context.Orders.AsQueryable();
+            var fulfillmentOrderQueryable = _context.FulfillmentOrders.AsQueryable();
+            var addressesQueryable = _context.Addresses.AsQueryable();
+
+            var orders = await (from o in orderQueryable
+                               join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
+                               join a in addressesQueryable on o.ShippingAddressId equals a.Id
+                               where fo.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.CityCorrection
+                               select new CityCorrectionOrderDto
+                               {
+                                   Address = a.Address1,
+                                   City = a.City,
+                                   CorrectCity = string.Empty,
+                                   Country = a.Country,
+                                   FulfillmentOrderId = fo.Id,
+                                   Id = o.Id,
+                                   Name = $"{a.FirstName} {a.LastName}",
+                                   OrderNo = o.Name
+                               }).ToListAsync();
+
+            if (orders == null)
+            {
+                throw new SalesException(_localizer["Order Not Found!"], HttpStatusCode.NotFound);
+            }
+
+            return await Result<List<CityCorrectionOrderDto>>.SuccessAsync(data: orders);
+        }
     }
 }

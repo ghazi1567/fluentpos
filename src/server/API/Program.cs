@@ -6,11 +6,13 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
+using FluentPOS.Shared.DTOs.Upload;
+using FluentPOS.Shared.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Formatting.Compact;
 using System;
+using System.IO;
 
 namespace FluentPOS.Bootstrapper
 {
@@ -18,7 +20,8 @@ namespace FluentPOS.Bootstrapper
     {
         public static void Main(string[] args)
         {
-            var logsPath = "C:\\";
+            string folderName = Path.Combine("Files", UploadType.Logs.ToDescriptionString());
+            string logsPath = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
             if (string.IsNullOrEmpty(logsPath))
             {
@@ -28,8 +31,8 @@ namespace FluentPOS.Bootstrapper
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                  .WriteTo.File(
-       System.IO.Path.Combine(logsPath, "LogFiles", "Information", "diagnostics.txt"),
-       restrictedToMinimumLevel:Serilog.Events.LogEventLevel.Information,
+       System.IO.Path.Combine(logsPath, "Information", "diagnostics.txt"),
+       restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
        rollingInterval: RollingInterval.Day,
        fileSizeLimitBytes: 10 * 1024 * 1024,
        retainedFileCountLimit: 2,
@@ -37,7 +40,7 @@ namespace FluentPOS.Bootstrapper
        shared: true,
        flushToDiskInterval: TimeSpan.FromSeconds(1))
                  .WriteTo.File(
-       System.IO.Path.Combine(logsPath, "LogFiles", "Error", "diagnostics.txt"),
+       System.IO.Path.Combine(logsPath, "Error", "diagnostics.txt"),
        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error,
        rollingInterval: RollingInterval.Day,
        fileSizeLimitBytes: 10 * 1024 * 1024,
@@ -46,7 +49,7 @@ namespace FluentPOS.Bootstrapper
        shared: true,
        flushToDiskInterval: TimeSpan.FromSeconds(1))
                  .WriteTo.File(
-       System.IO.Path.Combine(logsPath, "LogFiles", "Critical", "diagnostics.txt"),
+       System.IO.Path.Combine(logsPath, "Critical", "diagnostics.txt"),
        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Fatal,
        rollingInterval: RollingInterval.Day,
        fileSizeLimitBytes: 10 * 1024 * 1024,

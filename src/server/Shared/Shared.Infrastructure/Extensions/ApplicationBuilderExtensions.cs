@@ -6,15 +6,16 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System.IO;
-using System.Runtime.CompilerServices;
 using FluentPOS.Shared.Core.Interfaces.Services;
+using FluentPOS.Shared.Infrastructure.Filters;
 using FluentPOS.Shared.Infrastructure.Middlewares;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("FluentPOS.Bootstrapper")]
 
@@ -45,7 +46,8 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             app.UseHangfireDashboard("/jobs", new DashboardOptions
             {
                 DashboardTitle = "FluentPOS Jobs",
-                AppPath = "http://localhost:4200/admin/org/jobs"
+                AppPath = "http://localhost:4200/admin/org/jobs",
+                Authorization = new[] { new DashboardNoAuthorizationFilter() }
             });
             app.UseEndpoints(endpoints =>
             {
