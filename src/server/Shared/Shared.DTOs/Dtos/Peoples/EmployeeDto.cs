@@ -65,11 +65,11 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public DateTime? CnicExpireDate { get; set; }
 
-        public Guid DepartmentId { get; set; }
+        public long DepartmentId { get; set; }
 
-        public Guid DesignationId { get; set; }
+        public long DesignationId { get; set; }
 
-        public Guid PolicyId { get; set; }
+        public long PolicyId { get; set; }
 
         public string EmployeeStatus { get; set; }
 
@@ -87,7 +87,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public bool Active { get; set; }
 
-        public Guid? ReportingTo { get; set; }
+        public long? ReportingTo { get; set; }
 
         public decimal BasicSalary { get; set; }
 

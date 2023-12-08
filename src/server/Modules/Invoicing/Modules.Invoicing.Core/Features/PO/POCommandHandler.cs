@@ -28,9 +28,9 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 {
     internal sealed class POCommandHandler :
-        IRequestHandler<RegisterPOCommand, Result<Guid>>,
-         IRequestHandler<RemovePOCommand, Result<Guid>>,
-         IRequestHandler<UpdatePOCommand, Result<Guid>>
+        IRequestHandler<RegisterPOCommand, Result<long>>,
+         IRequestHandler<RemovePOCommand, Result<long>>,
+         IRequestHandler<UpdatePOCommand, Result<long>>
     {
         private readonly IPOService _poService;
 
@@ -40,18 +40,18 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterPOCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterPOCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             return await _poService.Save(command, cancellationToken);
         }
 
-        public async Task<Result<Guid>> Handle(RemovePOCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemovePOCommand request, CancellationToken cancellationToken)
         {
             return await _poService.Delete(request, cancellationToken);
         }
 
-        public async Task<Result<Guid>> Handle(UpdatePOCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdatePOCommand request, CancellationToken cancellationToken)
         {
             return await _poService.Update(request, cancellationToken);
         }

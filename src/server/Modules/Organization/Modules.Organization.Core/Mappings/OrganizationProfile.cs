@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
         {
             CreateMap<RegisterOrganizationCommand, Organisation>().ReverseMap();
             CreateMap<UpdateOrganizationCommand, Organisation>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Organisation>, GetOrganizationByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Organisation>, GetOrganizationByIdQuery>();
             CreateMap<GetOrganizationByIdResponse, Organisation>().ReverseMap();
             CreateMap<GetOrganizationResponse, Organisation>().ReverseMap();
             CreateMap<PaginatedOrganizationFilter, GetOrganizationsQuery>()
@@ -36,7 +36,7 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
 
             CreateMap<RegisterBranchCommand, Store>().ReverseMap();
             CreateMap<UpdateBranchCommand, Store>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Store>, GetBranchByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Store>, GetBranchByIdQuery>();
             CreateMap<GetBranchByIdResponse, Store>().ReverseMap();
             CreateMap<GetBranchResponse, Store>().ReverseMap();
             CreateMap<PaginatedBrachFilter, GetBranchsQuery>()
@@ -45,7 +45,7 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
             CreateMap< Shared.DTOs.Dtos.Organizations.DepartmentDto, Department>().ReverseMap();
             CreateMap<RegisterDepartmentCommand, Department>().ReverseMap();
             CreateMap<UpdateDepartmentCommand, Department>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Department>, GetDepartmentByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Department>, GetDepartmentByIdQuery>();
             CreateMap<GetDepartmentByIdResponse, Department>().ReverseMap();
             CreateMap<GetDepartmentResponse, Department>().ReverseMap();
             CreateMap<GetDepartmentResponse, Dtos.DepartmentDto>().ReverseMap();
@@ -55,7 +55,7 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
 
             CreateMap<RegisterDesignationCommand, Designation>().ReverseMap();
             CreateMap<UpdateDesignationCommand, Designation>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Designation>, GetDesignationByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Designation>, GetDesignationByIdQuery>();
             CreateMap<GetDesignationByIdResponse, Designation>().ReverseMap();
             CreateMap<GetDesignationResponse, Designation>().ReverseMap();
             CreateMap<PaginatedFilter, GetDesignationsQuery>()
@@ -63,7 +63,7 @@ namespace FluentPOS.Modules.Organization.Core.Mappings
 
             CreateMap<RegisterPolicyCommand, Policy>().ReverseMap();
             CreateMap<UpdatePolicyCommand, Policy>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Policy>, GetPolicyByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Policy>, GetPolicyByIdQuery>();
             CreateMap<GetPolicyByIdResponse, Policy>().ReverseMap();
             CreateMap<GetPolicyResponse, Policy>().ReverseMap();
             CreateMap<PaginatedFilter, GetPoliciesQuery>()

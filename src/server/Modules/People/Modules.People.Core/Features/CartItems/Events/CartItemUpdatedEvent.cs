@@ -14,11 +14,11 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Events
 {
     public class CartItemUpdatedEvent : Event
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
-        public Guid CartId { get; }
+        public long CartId { get; }
 
-        public Guid ProductId { get; }
+        public long ProductId { get; }
 
         public int Quantity { get; set; }
 

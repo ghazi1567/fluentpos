@@ -12,8 +12,8 @@ using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
-    public class ReGenerateloadsheetCommand : IRequest<Result<Guid>>
+    public class ReGenerateloadsheetCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
     }
 }

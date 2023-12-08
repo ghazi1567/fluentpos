@@ -78,12 +78,12 @@ namespace FluentPOS.Modules.Organizations.Core.Features
                 throw new OrganizationException(_localizer[$"{nameof(Department)}s Not Found!"], HttpStatusCode.NotFound);
             }
 
-            var parentIds = brandList.Data.Where(x => x.ParentId != Guid.Empty && x.ParentId != null).Select(x => x.ParentId.Value).ToList();
+            var parentIds = brandList.Data.Where(x => x.ParentId.HasValue).Select(x => x.ParentId.Value).ToList();
             var parentDepartment = _context.Departments.Where(x => parentIds.Contains(x.Id)).AsNoTracking().ToList();
             var response = _mapper.Map<PaginatedResult<DepartmentDto>>(brandList);
             foreach (var item in response.Data)
             {
-                if (item.ParentId != Guid.Empty && item.ParentId != null)
+                if (item.ParentId != default(long) && item.ParentId != null)
                 {
                     item.ParentDept = parentDepartment.FirstOrDefault(x => x.Id == item.ParentId)?.Name;
                 }

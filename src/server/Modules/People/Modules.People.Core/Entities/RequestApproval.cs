@@ -10,7 +10,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 {
     public class RequestApproval : BaseEntity
     {
-        public Guid EmployeeRequestId { get; set; }
+        public long EmployeeRequestId { get; set; }
 
         public RequestStatus Status { get; set; }
 
@@ -18,7 +18,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public DateTime StatusUpdateOn { get; set; }
 
-        public Guid ApproverId { get; set; }
+        public long ApproverId { get; set; }
 
         public int ApprovalIndex { get; set; }
 

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.People.Core.Features.ExtendedAttributes.Validators.Customers
 {
-    public class UpdateCustomerExtendedAttributeCommandValidator : UpdateExtendedAttributeCommandValidator<Guid, Customer>
+    public class UpdateCustomerExtendedAttributeCommandValidator : UpdateExtendedAttributeCommandValidator<long, Customer>
     {
         public UpdateCustomerExtendedAttributeCommandValidator(IStringLocalizer<UpdateCustomerExtendedAttributeCommandValidator> localizer, IJsonSerializer jsonSerializer)
             : base(localizer, jsonSerializer)

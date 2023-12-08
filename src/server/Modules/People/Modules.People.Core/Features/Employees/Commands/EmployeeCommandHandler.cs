@@ -27,11 +27,11 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
     internal class EmployeeCommandHandler :
-        IRequestHandler<RegisterEmployeeCommand, Result<Guid>>,
-        IRequestHandler<ImportEmployeeCommand, Result<Guid>>,
-        IRequestHandler<RemoveEmployeeCommand, Result<Guid>>,
-        IRequestHandler<UpdateEmployeeCommand, Result<Guid>>,
-        IRequestHandler<AssignDepartmentCommand, Result<Guid>>
+        IRequestHandler<RegisterEmployeeCommand, Result<long>>,
+        IRequestHandler<ImportEmployeeCommand, Result<long>>,
+        IRequestHandler<RemoveEmployeeCommand, Result<long>>,
+        IRequestHandler<UpdateEmployeeCommand, Result<long>>,
+        IRequestHandler<AssignDepartmentCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IPeopleDbContext _context;
@@ -59,7 +59,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var employee = _mapper.Map<Employee>(command);
@@ -71,9 +71,9 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
             }
 
-            if(employee.PolicyId == default || employee.PolicyId == Guid.Empty)
+            if(employee.PolicyId == default || employee.PolicyId == default(long))
             {
-                employee.PolicyId = Guid.Empty;
+                employee.PolicyId = default(long);
             }
 
             // customer.AddDomainEvent(new EmployeeRegisteredEvent(customer));
@@ -81,11 +81,11 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             await _context.Employees.AddAsync(employee, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
-            return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Employee Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var employee = await _context.Employees.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -99,14 +99,14 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                     uploadRequest.FileName = $"E-{command.FullName}{uploadRequest.Extension}";
                     employee.ImageUrl = await _uploadService.UploadAsync(uploadRequest);
                 }
-                if (employee.PolicyId == default || employee.PolicyId == Guid.Empty)
+                if (employee.PolicyId == default || employee.PolicyId == default(long))
                 {
-                    employee.PolicyId = Guid.Empty;
+                    employee.PolicyId = default(long);
                 }
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
                 await _payrollService.InsertBasicSalary(employee.Id, employee.BasicSalary);
-                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Employee Updated"]);
             }
             else
             {
@@ -115,7 +115,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveEmployeeCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var employee = await _context.Employees.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -124,7 +124,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 employee.Active = false;
                 _context.Employees.Update(employee);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(employee.Id, _localizer["Employee Updated to InActive"]);
+                return await Result<long>.SuccessAsync(employee.Id, _localizer["Employee Updated to InActive"]);
             }
             else
             {
@@ -132,7 +132,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             }
         }
 
-        public async Task<Result<Guid>> Handle(ImportEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(ImportEmployeeCommand command, CancellationToken cancellationToken)
         {
             var employees = _mapper.Map<List<Employee>>(command.Employees);
             int duplicateCount = 0;
@@ -142,9 +142,9 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
                 bool isEists = await _context.Employees.AnyAsync(x => x.EmployeeCode == item.EmployeeCode || x.PunchCode == item.PunchCode);
                 if (!isEists)
                 {
-                    if (item.PolicyId == default || item.PolicyId == Guid.Empty)
+                    if (item.PolicyId == default || item.PolicyId == default(long))
                     {
-                        item.PolicyId = Guid.Empty;
+                        item.PolicyId = default(long);
                     }
 
                     filtered.Add(item);
@@ -167,10 +167,10 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             messages.Add(_localizer[$"{filtered.Count} Employees Imported Successfully."]);
             messages.Add(_localizer[$"{duplicateCount} Duplicate Employees Found."]);
 
-            return await Result<Guid>.SuccessAsync(Guid.Empty, messages);
+            return await Result<long>.SuccessAsync(default(long), messages);
         }
 
-        public async Task<Result<Guid>> Handle(AssignDepartmentCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(AssignDepartmentCommand command, CancellationToken cancellationToken)
         {
             var employees = await _context.Employees.Where(x => command.EmployeeIds.Contains(x.Id)).ToListAsync();
 
@@ -184,7 +184,7 @@ namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
             _context.Employees.UpdateRange(employees);
             _context.SaveChanges();
 
-            return await Result<Guid>.SuccessAsync(Guid.Empty, $"Department Assigned to {command.EmployeeIds.Count} Employees");
+            return await Result<long>.SuccessAsync(default(long), $"Department Assigned to {command.EmployeeIds.Count} Employees");
         }
 
     }

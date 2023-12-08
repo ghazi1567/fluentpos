@@ -14,9 +14,9 @@ using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features
 {
-    public class RunJobCommand : IRequest<Result<Guid>>
+    public class RunJobCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public DateTime date { get; set; }
 

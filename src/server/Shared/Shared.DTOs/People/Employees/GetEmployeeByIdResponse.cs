@@ -3,17 +3,17 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.People.Employees
 {
-    public record GetEmployeeByIdResponse(Guid Id,
+    public record GetEmployeeByIdResponse(long Id,
 
 DateTimeOffset? CreatedAt,
 
 DateTimeOffset? UpdatedAt,
 
-Guid OrganizationId,
+long OrganizationId,
 
-Guid BranchId,
+long BranchId,
 
-Guid UserId,
+long UserId,
 
 string IpAddress,
 string Prefix,
@@ -70,11 +70,11 @@ DateTime? CnicIssueDate,
 
 DateTime? CnicExpireDate,
 
-Guid DepartmentId,
+long DepartmentId,
 
-Guid DesignationId,
+long DesignationId,
 
-Guid PolicyId,
+long PolicyId,
 
 string EmployeeStatus,
 

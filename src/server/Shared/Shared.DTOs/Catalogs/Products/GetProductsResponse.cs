@@ -11,12 +11,12 @@ using System;
 namespace FluentPOS.Shared.DTOs.Catalogs.Products
 {
     public record GetProductsResponse(
-        Guid Id,
+        long Id,
         long? ShopifyId,
         DateTimeOffset? CreatedAt,
         DateTimeOffset? UpdatedAt,
-        Guid OrganizationId,
-        Guid BranchId,
+        long OrganizationId,
+        long BranchId,
         string Title,
         string BodyHtml,
         DateTimeOffset? PublishedAt,

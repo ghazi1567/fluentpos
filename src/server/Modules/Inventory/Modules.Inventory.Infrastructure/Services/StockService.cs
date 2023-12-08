@@ -33,13 +33,13 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
         }
 
         /// <inheritdoc/>
-        public async Task<Result<Guid>> RecordTransaction(StockTransactionDto stockTransactionDto)
+        public async Task<Result<long>> RecordTransaction(StockTransactionDto stockTransactionDto)
         {
             var command = _mapper.Map<RecordTransactionCommand>(stockTransactionDto);
             return await _mediator.Send(command);
         }
 
-        public async Task<Result<Guid>> RecordTransaction(List<StockTransactionDto> Transactions)
+        public async Task<Result<long>> RecordTransaction(List<StockTransactionDto> Transactions)
         {
             return await _mediator.Send(new MultipleRecordTransactionCommand(Transactions));
         }
@@ -54,7 +54,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             return await _mediator.Send(new GetStockByVariantIds(variantIds));
         }
 
-        public async Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty)
+        public async Task<IGrouping<long, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty)
         {
             List<string> skuList = new List<string>(skuQty.Keys);
             var warehouseStockStats = await GetStockBySKU(skuList);
@@ -69,7 +69,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             return FinalWarehousePick(validQtyStockStats, skuQty.Count);
         }
 
-        public async Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<long, long> variantQty, List<Guid> skipWarehouses = null)
+        public async Task<IGrouping<long, WarehouseStockStatsDto>> CheckInventory(Dictionary<long, long> variantQty, List<long> skipWarehouses = null)
         {
             List<long> variantIds = new List<long>(variantQty.Keys);
             var warehouseStockStats = await GetStockByVariantIds(variantIds);
@@ -113,18 +113,18 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
             return filterList;
         }
 
-        public List<IGrouping<Guid, WarehouseStockStatsDto>> CalculateDistance(List<WarehouseStockStatsDto> warehouseStockStats)
+        public List<IGrouping<long, WarehouseStockStatsDto>> CalculateDistance(List<WarehouseStockStatsDto> warehouseStockStats)
         {
             return warehouseStockStats.OrderBy(x => x.Distance).GroupBy(x => x.warehouseId).ToList();
         }
 
-        public IGrouping<Guid, WarehouseStockStatsDto> FinalWarehousePick(List<IGrouping<Guid, WarehouseStockStatsDto>> ValidQtyStockStats, int skuCount)
+        public IGrouping<long, WarehouseStockStatsDto> FinalWarehousePick(List<IGrouping<long, WarehouseStockStatsDto>> ValidQtyStockStats, int skuCount)
         {
             var warehouseWithAllProducts = ValidQtyStockStats.Where(x => x.Count() >= skuCount).ToList();
             return warehouseWithAllProducts.FirstOrDefault();
         }
 
-        // public async Task RecordTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType transactionType, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId)
+        // public async Task RecordTransaction(long productId, decimal quantity, string referenceNumber, OrderType transactionType, decimal discountFactor, decimal purchasePrice, DateTime factorDate, long WarehouseId)
         // {
         //     // TODO - Move this to MediatR, maybe? - Important, DO NOT make an API endpoint for this.
         //     var stockTransaction = new StockTransaction(productId, quantity, transactionType, referenceNumber, discountFactor, purchasePrice, factorDate);
@@ -165,7 +165,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
         //     }
         //     await _context.SaveChangesAsync();
         // }
-        // public async Task ReverseTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType orderType, Guid WarehouseId)
+        // public async Task ReverseTransaction(long productId, decimal quantity, string referenceNumber, OrderType orderType, long WarehouseId)
         // {
         //     // TODO - Move this to MediatR, maybe? - Important, DO NOT make an API endpoint for this.
         //     var stockTransaction = _context.StockTransactions.FirstOrDefault(s => s.ProductId == productId && s.WarehouseId == WarehouseId && s.ReferenceNumber == referenceNumber && s.Type == orderType);
@@ -224,12 +224,12 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
         //     _context.StockTransactions.UpdateRange(stockRecord);
         //     await _context.SaveChangesAsync();
         // }
-        // public async Task RecordOpeningTransaction(Guid productId, decimal quantity, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId)
+        // public async Task RecordOpeningTransaction(long productId, decimal quantity, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, long WarehouseId)
         // {
         //     // TODO - Move this to MediatR, maybe? - Important, DO NOT make an API endpoint for this.
         //     OrderType transactionType = OrderType.OpeningStock;
         //     decimal lastQuantity = 0;
-        //     Guid lastWarehouse = Guid.Empty;
+        //     long lastWarehouse = default(long);
         //     bool isAlreadyExist = false;
         //     bool isWarehouseChanged = false;
         //     var stockTransaction = _context.StockTransactions.FirstOrDefault(s => s.ProductId == productId && s.Type == transactionType);

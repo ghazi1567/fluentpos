@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
         {
             CreateMap<RegisterCustomerCommand, Customer>().ReverseMap();
             CreateMap<UpdateCustomerCommand, Customer>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Customer>, GetCustomerByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Customer>, GetCustomerByIdQuery>();
             CreateMap<GetCustomerByIdResponse, Customer>().ReverseMap();
             CreateMap<GetCustomersResponse, Customer>().ReverseMap();
             CreateMap<PaginatedCustomerFilter, GetCustomersQuery>()

@@ -26,7 +26,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public string Note { get; set; }
 
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
         /// <summary>
         /// The reason why the order was cancelled. If the order was not cancelled, this value is null. Known values are "customer", "fraud", "inventory" and "other".
@@ -192,7 +192,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public long? FulFillmentOrderId { get; set; }
 
-        public Guid? InternalFulFillmentOrderId { get; set; }
+        public long? InternalFulFillmentOrderId { get; set; }
 
         public string FulFillmentOrderStatus { get; set; }
 

@@ -24,12 +24,12 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public string SearchString { get; private set; }
 
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
         public RequestType? RequestType { get; set; }
 
-        public Guid? OrganizationId { get; set; }
+        public long? OrganizationId { get; set; }
 
-        public Guid? BranchId { get; set; }
+        public long? BranchId { get; set; }
     }
 }

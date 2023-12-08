@@ -15,6 +15,6 @@ namespace FluentPOS.Shared.DTOs.People.Carts
     {
         public string SearchString { get; set; }
 
-        public Guid? CustomerId { get; set; }
+        public long? CustomerId { get; set; }
     }
 }

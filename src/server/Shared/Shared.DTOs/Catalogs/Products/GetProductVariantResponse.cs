@@ -11,11 +11,11 @@ using System;
 namespace FluentPOS.Shared.DTOs.Catalogs.Products
 {
     public record GetProductVariantResponse(
-        Guid Id,
+        long Id,
         long? ShopifyId,
         long? ProductId,
         string Title,
         string SKU,
         long? InventoryItemId,
-        Guid ProductId1);
+        long ProductId1);
 }

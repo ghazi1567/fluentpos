@@ -69,7 +69,7 @@ namespace FluentPOS.Modules.Identity.Controllers
 
         [HttpGet("branchs/{id}")]
         [Authorize(Policy = Permissions.Users.View)]
-        public async Task<IActionResult> GetUserBranchsAsync(Guid id)
+        public async Task<IActionResult> GetUserBranchsAsync(long id)
         {
             var userRoles = await _userService.GetUserBranchsAsync(id);
             return Ok(userRoles);

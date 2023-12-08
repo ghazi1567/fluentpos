@@ -11,14 +11,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 {
     public interface IPOService
     {
-        Task<bool> AlreadyExist(Guid id);
+        Task<bool> AlreadyExist(long id);
 
-        Task<Result<Guid>> Save(RegisterPOCommand command, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Result<long>> Save(RegisterPOCommand command, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<bool> SavePurchaseOrder(PurchaseOrder purchaseOrder, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Result<Guid>> Delete(RemovePOCommand request, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Result<long>> Delete(RemovePOCommand request, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Result<Guid>> Update(UpdatePOCommand request, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Result<long>> Update(UpdatePOCommand request, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

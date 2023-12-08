@@ -6,7 +6,7 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
 {
     public class PayrollTransaction : BaseEntity
     {
-        public Guid PayrollId { get; set; }
+        public long PayrollId { get; set; }
 
         public TransactionType TransactionType { get; set; }
 

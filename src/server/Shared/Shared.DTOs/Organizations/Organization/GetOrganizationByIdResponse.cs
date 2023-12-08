@@ -10,7 +10,7 @@ using System;
 
 namespace FluentPOS.Shared.DTOs
 {
-    public record GetOrganizationByIdResponse(Guid Id,
+    public record GetOrganizationByIdResponse(long Id,
 
 DateTimeOffset? CreatedAt,
 

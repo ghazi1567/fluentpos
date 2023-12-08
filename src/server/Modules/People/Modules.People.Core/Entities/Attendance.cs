@@ -6,13 +6,13 @@ namespace FluentPOS.Modules.People.Core.Entities
 {
     public class Attendance : BaseEntity
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
-        public Guid DepartmentId { get; set; }
+        public long DepartmentId { get; set; }
 
-        public Guid PolicyId { get; set; }
+        public long PolicyId { get; set; }
 
-        public Guid DesignationId { get; set; }
+        public long DesignationId { get; set; }
 
         public DateTime AttendanceDate { get; set; }
 
@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.People.Core.Entities
         /// </summary>
         public AttendanceType AttendanceType { get; set; }
 
-        public Guid? RequestId { get; set; }
+        public long? RequestId { get; set; }
 
         public DateTime ActualIn { get; set; }
 
@@ -43,7 +43,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public DateTime StatusUpdateOn { get; set; }
 
-        public Guid ApprovedBy { get; set; }
+        public long ApprovedBy { get; set; }
 
         public string Reason { get; set; }
 
@@ -86,8 +86,8 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public ShiftType ShiftType { get; set; }
 
-        public Guid? ShiftId { get; set; }
+        public long? ShiftId { get; set; }
 
-        public Guid? OvertimeRequestId { get; set; }
+        public long? OvertimeRequestId { get; set; }
     }
 }

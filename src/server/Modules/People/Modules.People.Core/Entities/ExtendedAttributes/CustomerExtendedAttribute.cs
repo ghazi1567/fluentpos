@@ -11,7 +11,7 @@ using FluentPOS.Shared.Core.Domain;
 
 namespace FluentPOS.Modules.People.Core.Entities.ExtendedAttributes
 {
-    public class CustomerExtendedAttribute : ExtendedAttribute<Guid, Customer>
+    public class CustomerExtendedAttribute : ExtendedAttribute<long, Customer>
     {
     }
 }

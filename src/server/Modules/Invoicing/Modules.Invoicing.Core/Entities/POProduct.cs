@@ -9,9 +9,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
     public class POProduct : BaseEntity
     {
-        public Guid OrderId { get; set; }
+        public long OrderId { get; set; }
 
-        public Guid ProductId { get; set; }
+        public long ProductId { get; set; }
 
         public int Quantity { get; set; }
 
@@ -26,6 +26,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public decimal Discount { get; set; }
 
         public decimal Total { get; set; }
-        public Guid PurchaseOrderId { get; set; }
+        public long PurchaseOrderId { get; set; }
     }
 }

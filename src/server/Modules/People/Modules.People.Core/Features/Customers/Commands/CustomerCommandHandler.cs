@@ -28,9 +28,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
 {
     internal class CustomerCommandHandler :
-        IRequestHandler<RegisterCustomerCommand, Result<Guid>>,
-        IRequestHandler<RemoveCustomerCommand, Result<Guid>>,
-        IRequestHandler<UpdateCustomerCommand, Result<Guid>>
+        IRequestHandler<RegisterCustomerCommand, Result<long>>,
+        IRequestHandler<RemoveCustomerCommand, Result<long>>,
+        IRequestHandler<UpdateCustomerCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IPeopleDbContext _context;
@@ -53,7 +53,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterCustomerCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterCustomerCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var customer = _mapper.Map<Customer>(command);
@@ -72,11 +72,11 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
             customer.AddDomainEvent(new CustomerRegisteredEvent(customer));
             await _context.Customers.AddAsync(customer, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Customer Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var customer = await _context.Customers.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -98,8 +98,8 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
                 customer.AddDomainEvent(new CustomerUpdatedEvent(customer));
                 _context.Customers.Update(customer);
                 await _context.SaveChangesAsync(cancellationToken);
-                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Updated"]);
+                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Customer>(command.Id), cancellationToken);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Customer Updated"]);
             }
             else
             {
@@ -108,15 +108,15 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveCustomerCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveCustomerCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var customer = await _context.Customers.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
             customer.AddDomainEvent(new CustomerRemovedEvent(customer.Id));
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync(cancellationToken);
-            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Customer>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(customer.Id, _localizer["Customer Deleted"]);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Customer>(command.Id), cancellationToken);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Customer Deleted"]);
         }
     }
 }

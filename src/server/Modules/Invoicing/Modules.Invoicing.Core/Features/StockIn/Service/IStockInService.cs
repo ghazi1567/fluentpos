@@ -12,16 +12,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 {
     public interface IStockInService
     {
-        Task<bool> AlreadyExist(Guid id);
+        Task<bool> AlreadyExist(long id);
 
-        Task<Result<Guid>> Save(RegisterStockInCommand command, CancellationToken cancellationToken);
+        Task<Result<long>> Save(RegisterStockInCommand command, CancellationToken cancellationToken);
 
         Task<bool> SaveStockIn(InternalOrder order, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Result<Guid>> Approve(ApproveStockInCommand request, CancellationToken cancellationToken);
+        Task<Result<long>> Approve(ApproveStockInCommand request, CancellationToken cancellationToken);
 
-        Task<Result<Guid>> Delete(RemoveStockInCommand request, CancellationToken cancellationToken);
+        Task<Result<long>> Delete(RemoveStockInCommand request, CancellationToken cancellationToken);
 
-        Task<Result<Guid>> Update(UpdateStockInCommand request, CancellationToken cancellationToken);
+        Task<Result<long>> Update(UpdateStockInCommand request, CancellationToken cancellationToken);
     }
 }

@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
     public class AcceptOrderCommand : IRequest<Result<string>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public long ShopifyId { get; set; }
 

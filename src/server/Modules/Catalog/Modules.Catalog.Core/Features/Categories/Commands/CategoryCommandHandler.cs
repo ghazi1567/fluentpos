@@ -27,9 +27,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
 {
     internal class CategoryCommandHandler :
-        IRequestHandler<RegisterCategoryCommand, Result<Guid>>,
-        IRequestHandler<RemoveCategoryCommand, Result<Guid>>,
-        IRequestHandler<UpdateCategoryCommand, Result<Guid>>
+        IRequestHandler<RegisterCategoryCommand, Result<long>>,
+        IRequestHandler<RemoveCategoryCommand, Result<long>>,
+        IRequestHandler<UpdateCategoryCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly ICatalogDbContext _context;
@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterCategoryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (await _context.Categories.AnyAsync(c => c.Name == command.Name, cancellationToken))
@@ -71,11 +71,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
             category.AddDomainEvent(new CategoryRegisteredEvent(category));
             await _context.Categories.AddAsync(category, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(category.Id, _localizer["Category Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Category Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var category = await _context.Categories.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -97,8 +97,8 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
                 category.AddDomainEvent(new CategoryUpdatedEvent(category));
                 _context.Categories.Update(category);
                 await _context.SaveChangesAsync(cancellationToken);
-                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Category>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(category.Id, _localizer["Category Updated"]);
+                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Category>(command.Id), cancellationToken);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Category Updated"]);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveCategoryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             bool isCategoryUsed = await IsCategoryUsedAsync(command.Id);
@@ -118,8 +118,8 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
                 category.AddDomainEvent(new CategoryRemovedEvent(category.Id));
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync(cancellationToken);
-                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Category>(command.Id), cancellationToken);
-                return await Result<Guid>.SuccessAsync(category.Id, _localizer["Category Deleted"]);
+                await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Category>(command.Id), cancellationToken);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Category Deleted"]);
             }
             else
             {
@@ -127,7 +127,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
             }
         }
 
-        public async Task<bool> IsCategoryUsedAsync(Guid categoryId)
+        public async Task<bool> IsCategoryUsedAsync(long categoryId)
         {
             return await _context.Products.AnyAsync(c => c.Id == categoryId);
         }

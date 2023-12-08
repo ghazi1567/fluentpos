@@ -54,7 +54,7 @@ namespace FluentPOS.Shared.Core.Extensions
                 #region GetExtendedAttributeByIdQuery
 
                 var baseExtendedAttributeType = typeof(ExtendedAttribute<,>).MakeGenericType(extendedAttributeTypeGenericArguments.ToArray());
-                sourceType = typeof(GetByIdCacheableFilter<,>).MakeGenericType(typeof(Guid), baseExtendedAttributeType);
+                sourceType = typeof(GetByIdCacheableFilter<,>).MakeGenericType(typeof(long), baseExtendedAttributeType);
                 var destinationType = typeof(GetExtendedAttributeByIdQuery<,>).MakeGenericType(extendedAttributeTypeGenericArguments.ToArray());
                 profile.CreateMap(sourceType, destinationType);
 

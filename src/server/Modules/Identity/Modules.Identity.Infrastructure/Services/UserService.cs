@@ -186,7 +186,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             return await Result<string>.SuccessAsync(userId, string.Format(_localizer["User Branchs Updated Successfully."]));
         }
 
-        public async Task<IResult<UserBranchModel>> GetUserBranchsAsync(Guid userId)
+        public async Task<IResult<UserBranchModel>> GetUserBranchsAsync(long userId)
         {
             var userBranchs = await _context.UserBranchs.Where(x => x.UserId == userId).ToListAsync();
             foreach (var item in userBranchs)

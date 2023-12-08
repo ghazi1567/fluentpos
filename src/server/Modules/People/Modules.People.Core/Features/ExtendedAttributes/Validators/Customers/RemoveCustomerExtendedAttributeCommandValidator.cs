@@ -13,7 +13,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.People.Core.Features.ExtendedAttributes.Validators.Customers
 {
-    public class RemoveCustomerExtendedAttributeCommandValidator : RemoveExtendedAttributeCommandValidator<Guid, Customer>
+    public class RemoveCustomerExtendedAttributeCommandValidator : RemoveExtendedAttributeCommandValidator<long, Customer>
     {
         public RemoveCustomerExtendedAttributeCommandValidator(IStringLocalizer<RemoveCustomerExtendedAttributeCommandValidator> localizer)
             : base(localizer)

@@ -7,9 +7,9 @@ namespace FluentPOS.Modules.Accounting.Core.Dtos
 {
     public class PayrollDto : BaseEntityDto
     {
-        public Guid PayrollRequestId { get; set; }
+        public long PayrollRequestId { get; set; }
 
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
         public DateTime StartDate { get; set; }
 

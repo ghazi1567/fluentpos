@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features
 {
-    public class UpdateJobCommand : JobDto, IRequest<Result<Guid>>
+    public class UpdateJobCommand : JobDto, IRequest<Result<long>>
     {
     }
 }

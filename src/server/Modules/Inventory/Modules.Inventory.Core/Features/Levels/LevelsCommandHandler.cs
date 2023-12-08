@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 {
-    public class LevelsCommandHandler : IRequestHandler<ImportLevelCommand, Result<Guid>>
+    public class LevelsCommandHandler : IRequestHandler<ImportLevelCommand, Result<long>>
     {
         private readonly IStringLocalizer<LevelsCommandHandler> _localizer;
         private readonly IMapper _mapper;
@@ -47,7 +47,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             _stockService = stockService;
         }
 
-        public async Task<Result<Guid>> Handle(ImportLevelCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(ImportLevelCommand request, CancellationToken cancellationToken)
         {
 
             var importFile = _mapper.Map<ImportFile>(request.ImportFile);
@@ -170,7 +170,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
                 returnMessage = note;
             }
 
-            return await Result<Guid>.SuccessAsync(importFile.Id, returnMessage);
+            return await Result<long>.SuccessAsync(default(long), returnMessage);
         }
 
 

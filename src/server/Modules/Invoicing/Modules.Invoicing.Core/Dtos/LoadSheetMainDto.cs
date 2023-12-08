@@ -20,7 +20,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public string CityName { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public IEnumerable<LoadSheetDetailDto> Details { get; set; }
     }

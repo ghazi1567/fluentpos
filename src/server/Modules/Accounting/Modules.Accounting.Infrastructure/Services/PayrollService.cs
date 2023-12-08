@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             return await _context.PayrollRequests.AnyAsync(x => x.Month == dateTime.Date.Month);
         }
 
-        public async Task<bool> IsPayrollGenerated(Guid employeeId, DateTime dateTime)
+        public async Task<bool> IsPayrollGenerated(long employeeId, DateTime dateTime)
         {
             dateTime = dateTime.AddHours(2);
             return await _context.Payrolls.AnyAsync(x => x.EmployeeId == employeeId && x.StartDate.Date.Month == dateTime.Month && x.StartDate.Date <= dateTime.Date && x.EndDate.Date >= dateTime.Date);
@@ -104,15 +104,15 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 var plocies = await _orgService.GetAllPoliciesAsync();
                 var departments = await _orgService.GetAllDepartmentAsync();
 
-                var plociesIds = plocies.Select(x => x.Id.Value).ToList();
+                var plociesIds = plocies.Select(x => x.Id).ToList();
                 var employees = await _employeeService.GetEmployeeListByPayPeriodAsync(payrollRequest.PayPeriod);
-                payrollRequest.EmployeeIds = new List<Guid>();
+                payrollRequest.EmployeeIds = new List<long>();
                 foreach (var item in employees)
                 {
-                    bool result = await IsPayrollGenerated(item.Id.Value, startDate);
+                    bool result = await IsPayrollGenerated(item.Id, startDate);
                     if (!result)
                     {
-                        payrollRequest.EmployeeIds.Add(item.Id.Value);
+                        payrollRequest.EmployeeIds.Add(item.Id);
                     }
                 }
 
@@ -144,8 +144,8 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                                 payrollRequest.LogList.Add($"{payrollRequest.EmployeeInfo.FullName}'s Salary Information Not Found!!");
                             }
 
-                            var policyId = Guid.Empty;
-                            if (payrollRequest.EmployeeInfo.PolicyId != default && payrollRequest.EmployeeInfo.PolicyId != Guid.Empty)
+                            var policyId = default(long);
+                            if (payrollRequest.EmployeeInfo.PolicyId != default && payrollRequest.EmployeeInfo.PolicyId != default(long))
                             {
                                 policyId = payrollRequest.EmployeeInfo.PolicyId;
                             }
@@ -244,7 +244,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
                 EmployeeSalary = payrollRequest.EmployeeSalary.BasicSalary,
                 BranchId = payrollRequest.BranchId,
                 CreatedAt = DateTime.Now,
-                EmployeeId = payrollRequest.EmployeeInfo.Id.Value,
+                EmployeeId = payrollRequest.EmployeeInfo.Id,
                 leaves = 0,
                 NetPay = 0,
                 OrganizationId = payrollRequest.OrganizationId,
@@ -589,7 +589,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             return isWorkingDay;
         }
 
-        public async Task InsertBasicSalary(Guid employeeId, decimal basicSalary)
+        public async Task InsertBasicSalary(long employeeId, decimal basicSalary)
         {
             bool exists = _context.Salaries.AsNoTracking().Any(x => x.EmployeeId == employeeId);
             if (!exists)
@@ -613,7 +613,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             }
         }
 
-        public async Task SalaryIncrement(Guid employeeId, decimal increment)
+        public async Task SalaryIncrement(long employeeId, decimal increment)
         {
             var salary = _context.Salaries.AsNoTracking().FirstOrDefault(x => x.EmployeeId == employeeId);
             if (salary != null)
@@ -628,7 +628,7 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Services
             }
         }
 
-        public async Task SalaryDecrement(Guid employeeId, decimal decrement)
+        public async Task SalaryDecrement(long employeeId, decimal decrement)
         {
             var salary = _context.Salaries.AsNoTracking().FirstOrDefault(x => x.EmployeeId == employeeId);
             if (salary != null)

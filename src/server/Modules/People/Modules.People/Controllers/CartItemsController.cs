@@ -24,7 +24,7 @@ namespace FluentPOS.Modules.People.Controllers
     {
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.CartItems.View)]
-        public async Task<IActionResult> GetCartItemByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, CartItem> filter)
+        public async Task<IActionResult> GetCartItemByIdAsync([FromQuery] GetByIdCacheableFilter<long, CartItem> filter)
         {
             var request = Mapper.Map<GetCartItemByIdQuery>(filter);
             var cartItem = await Mediator.Send(request);
@@ -59,7 +59,7 @@ namespace FluentPOS.Modules.People.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.CartItems.Remove)]
-        public async Task<IActionResult> RemoveCartItemAsync(Guid id)
+        public async Task<IActionResult> RemoveCartItemAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveCartItemCommand(id)));
         }

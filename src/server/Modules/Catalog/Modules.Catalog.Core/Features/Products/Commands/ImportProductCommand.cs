@@ -14,7 +14,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 {
-    public class ImportProductCommand : IRequest<Result<Guid>>
+    public class ImportProductCommand : IRequest<Result<long>>
     {
         public List<RegisterProductCommand> products { get; set; }
     }

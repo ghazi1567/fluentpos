@@ -10,7 +10,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetSaleByIdQuery : IRequest<Result<GetOrderByIdResponse>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
     }
 }

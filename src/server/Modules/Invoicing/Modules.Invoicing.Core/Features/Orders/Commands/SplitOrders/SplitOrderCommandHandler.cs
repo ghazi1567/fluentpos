@@ -58,7 +58,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
         public async Task<bool> Handle(SplitAndAssignOrderCommand command, CancellationToken cancellationToken)
         {
-            Dictionary<string, Guid> whFOMapping = new Dictionary<string, Guid>();
+            Dictionary<string, long> whFOMapping = new Dictionary<string, long>();
             var splitOrderDetail = command.SplitOrderResult;
             var order = await _salesContext.Orders
                .Include(x => x.FulfillmentOrders).ThenInclude(x => x.FulfillmentOrderLineItems)
@@ -155,7 +155,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             return parts.LastOrDefault();
         }
 
-        private SplitOrderPayloadDto PrepareSplitOrderPayload(Guid warehouseId, List<SplitOrderDetailDto> SplitOrderDetails)
+        private SplitOrderPayloadDto PrepareSplitOrderPayload(long warehouseId, List<SplitOrderDetailDto> SplitOrderDetails)
         {
             var lineItems = SplitOrderDetails.Where(x => x.WarehouseId == warehouseId);
             return new SplitOrderPayloadDto
@@ -171,7 +171,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             };
         }
 
-        private async Task UpdateFulfillmentOrderAsync(InternalFulfillmentOrder fulfillmentOrder, Guid warehouseId, List<WarehouseStockStatsDto> WarehouseStocks)
+        private async Task UpdateFulfillmentOrderAsync(InternalFulfillmentOrder fulfillmentOrder, long warehouseId, List<WarehouseStockStatsDto> WarehouseStocks)
         {
             fulfillmentOrder.WarehouseId = warehouseId;
             fulfillmentOrder.OrderStatus = OrderStatus.AssignToOutlet;

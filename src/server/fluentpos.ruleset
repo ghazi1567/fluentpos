@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Fluentpos Rules" Description="These rules represent Fluentpos preferences and enforce consistent code quality guidelines." ToolsVersion="16.0">
-  <Include Path="basicdesignguidelinerules.ruleset" Action="Default" />
+<RuleSet Name="Fluentpos Rules" Description="These rules represent Fluentpos preferences and enforce consistent code quality longelines." ToolsVersion="16.0">
+  <Include Path="basicdesignlongelinerules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1014" Action="None" />
     <Rule Id="CA1020" Action="Warning" />

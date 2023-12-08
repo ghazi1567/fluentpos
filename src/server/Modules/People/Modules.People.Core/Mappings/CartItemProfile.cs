@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
         {
             CreateMap<AddCartItemCommand, CartItem>().ReverseMap();
             CreateMap<UpdateCartItemCommand, CartItem>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, CartItem>, GetCartItemByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, CartItem>, GetCartItemByIdQuery>();
             CreateMap<GetCartItemByIdResponse, CartItem>().ReverseMap();
             CreateMap<PaginatedCartItemFilter, GetCartItemsQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));

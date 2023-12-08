@@ -5,9 +5,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
     public class SyncLog : BaseEntity
     {
-        public Guid RemoteClientId { get;  set; }
+        public long RemoteClientId { get;  set; }
 
-        public Guid EntryId { get;  set; }
+        public long EntryId { get;  set; }
 
         public string EntryType { get;  set; }
 

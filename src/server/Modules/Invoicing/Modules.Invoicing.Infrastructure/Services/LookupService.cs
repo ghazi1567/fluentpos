@@ -13,7 +13,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 {
     public interface ILookupService
     {
-        Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<Guid> ids);
+        Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<long> ids);
 
         Task<List<OperationCityDto>> GetOperationalCity();
     }
@@ -32,7 +32,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             _context = salesDbContext;
         }
 
-        public async Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<Guid> ids)
+        public async Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<long> ids)
         {
             return await _warehouseService.GetWarehouse(ids);
         }

@@ -22,7 +22,7 @@ namespace FluentPOS.Shared.DTOs.Filters
 
         public string OrderBy { get; set; }
 
-        public Guid? EmployeeId { get; set; }
+        public long? EmployeeId { get; set; }
 
         public RequestType? RequestType { get; set; }
 

@@ -17,20 +17,20 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
         {
         }
 
-        public Stock(Guid productId)
+        public Stock(long productId)
         {
             ProductId = productId;
             LastUpdatedOn = DateTime.Now;
         }
 
-        public Stock(Guid productId, Guid warehouseId)
+        public Stock(long productId, long warehouseId)
         {
             ProductId = productId;
             LastUpdatedOn = DateTime.Now;
             WarehouseId = warehouseId;
         }
 
-        public Stock(Guid productId, long inventoryItemId, Guid warehouseId)
+        public Stock(long productId, long inventoryItemId, long warehouseId)
         {
             ProductId = productId;
             InventoryItemId = inventoryItemId;
@@ -38,7 +38,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             WarehouseId = warehouseId;
         }
 
-        public Guid ProductId { get; private set; }
+        public long ProductId { get; private set; }
 
         public long InventoryItemId { get; set; }
 
@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 
         public DateTime LastUpdatedOn { get; private set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public string SKU { get; set; }
 

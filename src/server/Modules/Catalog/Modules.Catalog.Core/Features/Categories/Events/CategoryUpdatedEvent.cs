@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Events
 {
     public class CategoryUpdatedEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
         public string Name { get; }
 

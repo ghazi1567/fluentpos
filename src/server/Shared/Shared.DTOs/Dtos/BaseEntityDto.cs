@@ -8,7 +8,7 @@ namespace FluentPOS.Shared.DTOs.Dtos
 {
     public class BaseEntityDto
     {
-        public Guid? Id { get; set; }
+        public long Id { get; set; }
 
         public long? ShopifyId { get; set; }
 
@@ -16,11 +16,11 @@ namespace FluentPOS.Shared.DTOs.Dtos
 
         public DateTimeOffset? UpdatedAt { get; set; }
 
-        public Guid OrganizationId { get; set; }
+        public long OrganizationId { get; set; }
 
-        public Guid BranchId { get; set; }
+        public long BranchId { get; set; }
 
-        public Guid? UserId { get; set; }
+        public long? UserId { get; set; }
 
         public string IpAddress { get; set; }
     }

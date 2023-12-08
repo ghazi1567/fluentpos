@@ -151,7 +151,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 permissionClaims.AddRange(allPermissionsForThisRoles);
             }
 
-            var userBranchs = await _context.UserBranchs.Where(x => x.UserId == Guid.Parse(user.Id)).ToListAsync();
+            var userBranchs = await _context.UserBranchs.Where(x => x.UserId == long.Parse(user.Id)).ToListAsync();
             foreach (var item in userBranchs)
             {
                 branchClaims.Add(new("branch", JsonConvert.SerializeObject(item)));

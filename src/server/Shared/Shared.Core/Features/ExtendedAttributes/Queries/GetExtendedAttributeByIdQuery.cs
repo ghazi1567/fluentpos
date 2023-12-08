@@ -19,7 +19,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Queries
     public class GetExtendedAttributeByIdQuery<TEntityId, TEntity> : IRequest<Result<GetExtendedAttributeByIdResponse<TEntityId>>>, ICacheable
         where TEntity : class, IEntity<TEntityId>
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

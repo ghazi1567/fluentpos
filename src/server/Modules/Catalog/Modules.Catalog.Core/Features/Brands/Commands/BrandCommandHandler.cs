@@ -27,9 +27,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
 {
     internal class BrandCommandHandler :
-        IRequestHandler<RemoveBrandCommand, Result<Guid>>,
-        IRequestHandler<RegisterBrandCommand, Result<Guid>>,
-        IRequestHandler<UpdateBrandCommand, Result<Guid>>
+        IRequestHandler<RemoveBrandCommand, Result<long>>,
+        IRequestHandler<RegisterBrandCommand, Result<long>>,
+        IRequestHandler<UpdateBrandCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly ICatalogDbContext _context;
@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterBrandCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterBrandCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (await _context.Brands.AnyAsync(c => c.Name == command.Name, cancellationToken))
@@ -71,11 +71,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
             brand.AddDomainEvent(new BrandRegisteredEvent(brand));
             await _context.Brands.AddAsync(brand, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(brand.Id, _localizer["Brand Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Brand Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveBrandCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveBrandCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             bool isBrandUsed = await IsBrandUsedAsync(command.Id);
@@ -93,12 +93,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
             _context.Brands.Remove(brand);
             brand.AddDomainEvent(new BrandRemovedEvent(command.Id));
             await _context.SaveChangesAsync(cancellationToken);
-            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Brand>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(brand.Id, _localizer["Brand Deleted"]);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Brand>(command.Id), cancellationToken);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Brand Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateBrandCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateBrandCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var brand = await _context.Brands.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -123,11 +123,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
             brand.AddDomainEvent(new BrandUpdatedEvent(brand));
             _context.Brands.Update(brand);
             await _context.SaveChangesAsync(cancellationToken);
-            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Brand>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(brand.Id, _localizer["Brand Updated"]);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Brand>(command.Id), cancellationToken);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Brand Updated"]);
         }
 
-        private async Task<bool> IsBrandUsedAsync(Guid brandId)
+        private async Task<bool> IsBrandUsedAsync(long brandId)
         {
             return await _context.Products.AnyAsync(b => b.Id == brandId);
         }

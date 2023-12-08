@@ -111,7 +111,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             return geoLocation;
         }
 
-        public async Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<Guid> ids)
+        public async Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<long> ids)
         {
             return await _mediator.Send(new GetWarehouseByIdsQuery(ids));
         }

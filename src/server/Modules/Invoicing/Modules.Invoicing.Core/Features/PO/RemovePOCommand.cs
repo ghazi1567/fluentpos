@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 {
-    public class RemovePOCommand : IRequest<Result<Guid>>
+    public class RemovePOCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
-        public RemovePOCommand(Guid productId)
+        public RemovePOCommand(long productId)
         {
             Id = productId;
         }

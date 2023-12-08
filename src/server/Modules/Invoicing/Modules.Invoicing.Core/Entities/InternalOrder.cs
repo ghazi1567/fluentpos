@@ -32,7 +32,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public DateTime TimeStamp { get; private set; }
 
-        public Guid CustomerId { get; private set; }
+        public long CustomerId { get; private set; }
 
         public string CustomerName { get; private set; }
 
@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public string Note { get; private set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public static InternalOrder InitializeOrder()
         {
@@ -230,7 +230,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
 
         [ForeignKey("ShippingAddress")]
-        public Guid ShippingAddressId { get; set; }
+        public long ShippingAddressId { get; set; }
         /// <summary>
         /// The mailing address to where the order will be shipped. This address is optional and will not be available on orders that do not require one.
         /// </summary>

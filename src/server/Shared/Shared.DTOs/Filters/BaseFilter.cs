@@ -12,8 +12,8 @@ namespace FluentPOS.Shared.DTOs.Filters
 {
     public class BaseFilter
     {
-        public Guid OrganizationId { get; set; }
+        public long OrganizationId { get; set; }
 
-        public Guid BranchId { get; set; }
+        public long BranchId { get; set; }
     }
 }

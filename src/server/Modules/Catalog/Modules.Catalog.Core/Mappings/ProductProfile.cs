@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.Catalog.Core.Mappings
         {
             CreateMap<RegisterProductCommand, Product>().ReverseMap();
             CreateMap<UpdateProductCommand, Product>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Product>, GetProductByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Product>, GetProductByIdQuery>();
             CreateMap<GetProductByIdResponse, Product>().ReverseMap();
             CreateMap<Product, GetProductsResponse>();
             CreateMap<PaginatedProductFilter, GetProductsQuery>()

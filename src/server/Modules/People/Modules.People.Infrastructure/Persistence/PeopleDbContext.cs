@@ -24,9 +24,9 @@ using Microsoft.Extensions.Options;
 namespace FluentPOS.Modules.People.Infrastructure.Persistence
 {
     public sealed class PeopleDbContext : ModuleDbContext, IPeopleDbContext,
-        IExtendedAttributeDbContext<Guid, Customer, CustomerExtendedAttribute>,
-        IExtendedAttributeDbContext<Guid, Cart, CartExtendedAttribute>,
-        IExtendedAttributeDbContext<Guid, CartItem, CartItemExtendedAttribute>
+        IExtendedAttributeDbContext<long, Customer, CustomerExtendedAttribute>,
+        IExtendedAttributeDbContext<long, Cart, CartExtendedAttribute>,
+        IExtendedAttributeDbContext<long, CartItem, CartItemExtendedAttribute>
     {
         private readonly PersistenceSettings _persistenceOptions;
         private readonly IJsonSerializer _json;
@@ -74,16 +74,16 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence
             modelBuilder.ApplyPeopleConfiguration(_persistenceOptions);
         }
 
-        DbSet<Customer> IExtendedAttributeDbContext<Guid, Customer, CustomerExtendedAttribute>.GetEntities() => Customers;
+        DbSet<Customer> IExtendedAttributeDbContext<long, Customer, CustomerExtendedAttribute>.GetEntities() => Customers;
 
-        DbSet<CustomerExtendedAttribute> IExtendedAttributeDbContext<Guid, Customer, CustomerExtendedAttribute>.ExtendedAttributes { get; set; }
+        DbSet<CustomerExtendedAttribute> IExtendedAttributeDbContext<long, Customer, CustomerExtendedAttribute>.ExtendedAttributes { get; set; }
 
-        DbSet<Cart> IExtendedAttributeDbContext<Guid, Cart, CartExtendedAttribute>.GetEntities() => Carts;
+        DbSet<Cart> IExtendedAttributeDbContext<long, Cart, CartExtendedAttribute>.GetEntities() => Carts;
 
-        DbSet<CartExtendedAttribute> IExtendedAttributeDbContext<Guid, Cart, CartExtendedAttribute>.ExtendedAttributes { get; set; }
+        DbSet<CartExtendedAttribute> IExtendedAttributeDbContext<long, Cart, CartExtendedAttribute>.ExtendedAttributes { get; set; }
 
-        DbSet<CartItem> IExtendedAttributeDbContext<Guid, CartItem, CartItemExtendedAttribute>.GetEntities() => CartItems;
+        DbSet<CartItem> IExtendedAttributeDbContext<long, CartItem, CartItemExtendedAttribute>.GetEntities() => CartItems;
 
-        DbSet<CartItemExtendedAttribute> IExtendedAttributeDbContext<Guid, CartItem, CartItemExtendedAttribute>.ExtendedAttributes { get; set; }
+        DbSet<CartItemExtendedAttribute> IExtendedAttributeDbContext<long, CartItem, CartItemExtendedAttribute>.ExtendedAttributes { get; set; }
     }
 }

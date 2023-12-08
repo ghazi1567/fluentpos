@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Commands
 {
 
-    public class RegisterStockInCommand : IRequest<Result<Guid>>
+    public class RegisterStockInCommand : IRequest<Result<long>>
     {
         public DateTime TimeStamp { get;  set; }
 
@@ -20,6 +20,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Commands
 
         public List<Product> Products { get;  set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
     }
 }

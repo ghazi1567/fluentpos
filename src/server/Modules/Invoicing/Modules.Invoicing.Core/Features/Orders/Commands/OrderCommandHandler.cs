@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
     internal sealed class OrderCommandHandler :
-        IRequestHandler<RegisterOrderCommand, Result<Guid>>,
+        IRequestHandler<RegisterOrderCommand, Result<long>>,
         IRequestHandler<CancelledOrderCommand, Result<string>>,
         IRequestHandler<FulFillOrderCommand, Result<string>>,
         IRequestHandler<ApproveOrderCommand, Result<string>>,
@@ -89,14 +89,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterOrderCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterOrderCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
 
             var isExist = await _salesContext.Orders.FirstOrDefaultAsync(x => x.ShopifyId == command.ShopifyId);
             if (isExist != null)
             {
-                return await Result<Guid>.ReturnErrorAsync(string.Format(_localizer["Duplicate: Order already exists {0}"], command.ShopifyId));
+                return await Result<long>.ReturnErrorAsync(string.Format(_localizer["Duplicate: Order already exists {0}"], command.ShopifyId));
             }
 
             var order = _mapper.Map<InternalOrder>(command);
@@ -121,7 +121,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             await _salesContext.Orders.AddAsync(order, cancellationToken);
             await _salesContext.SaveChangesAsync(cancellationToken);
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
         }
 
         public async Task<Result<string>> Handle(CancelledOrderCommand command, CancellationToken cancellationToken)

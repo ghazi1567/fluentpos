@@ -120,7 +120,7 @@ namespace FluentPOS.Shared.Core.Extensions
                 #region AddExtendedAttributeCommand
 
                 tRequest = typeof(AddExtendedAttributeCommand<,>).MakeGenericType(extendedAttributeTypeGenericArguments.ToArray());
-                tResponse = typeof(Result<>).MakeGenericType(typeof(Guid));
+                tResponse = typeof(Result<>).MakeGenericType(typeof(long));
                 serviceType = typeof(IRequestHandler<,>).MakeGenericType(tRequest, tResponse);
                 services.AddScoped(serviceType, commandsImplementationType);
 
@@ -129,7 +129,7 @@ namespace FluentPOS.Shared.Core.Extensions
                 #region UpdateExtendedAttributeCommand
 
                 tRequest = typeof(UpdateExtendedAttributeCommand<,>).MakeGenericType(extendedAttributeTypeGenericArguments.ToArray());
-                tResponse = typeof(Result<>).MakeGenericType(typeof(Guid));
+                tResponse = typeof(Result<>).MakeGenericType(typeof(long));
                 serviceType = typeof(IRequestHandler<,>).MakeGenericType(tRequest, tResponse);
                 services.AddScoped(serviceType, commandsImplementationType);
 
@@ -138,7 +138,7 @@ namespace FluentPOS.Shared.Core.Extensions
                 #region RemoveExtendedAttributeCommand
 
                 tRequest = typeof(RemoveExtendedAttributeCommand<,>).MakeGenericType(extendedAttributeTypeGenericArguments.ToArray());
-                tResponse = typeof(Result<>).MakeGenericType(typeof(Guid));
+                tResponse = typeof(Result<>).MakeGenericType(typeof(long));
                 serviceType = typeof(IRequestHandler<,>).MakeGenericType(tRequest, tResponse);
                 services.AddScoped(serviceType, commandsImplementationType);
 

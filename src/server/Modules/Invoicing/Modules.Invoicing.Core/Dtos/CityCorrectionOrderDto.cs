@@ -16,8 +16,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public string CorrectCity { get; set; }
 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
-        public Guid FulfillmentOrderId { get; set; }
+        public long FulfillmentOrderId { get; set; }
     }
 }

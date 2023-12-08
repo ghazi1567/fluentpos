@@ -14,7 +14,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 {
-    public class RegisterProductCommand : Product, IRequest<Result<Guid>>
+    public class RegisterProductCommand : Product, IRequest<Result<long>>
     {
     }
 }

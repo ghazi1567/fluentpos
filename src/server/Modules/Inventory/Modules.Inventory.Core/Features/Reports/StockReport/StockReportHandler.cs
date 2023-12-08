@@ -49,13 +49,13 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
 
             if (!string.IsNullOrEmpty(request.ProductId))
             {
-                var productId = Guid.Parse(request.ProductId);
+                var productId = long.Parse(request.ProductId);
                 query = query.Where(x => x.ProductId == productId);
             }
 
             if (!string.IsNullOrEmpty(request.WarehouseId))
             {
-                var warehouseId = Guid.Parse(request.WarehouseId);
+                var warehouseId = long.Parse(request.WarehouseId);
                 query = query.Where(x => x.WarehouseId == warehouseId);
             }
 

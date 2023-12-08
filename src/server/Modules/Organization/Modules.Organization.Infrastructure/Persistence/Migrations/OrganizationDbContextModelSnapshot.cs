@@ -25,11 +25,11 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Department", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -38,7 +38,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("HeadOfDepartment")
+                    b.Property<long?>("HeadOfDepartment")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsGlobalDepartment")
@@ -47,13 +47,13 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ParentId")
+                    b.Property<long?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PolicyId")
+                    b.Property<long>("PolicyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Production")
@@ -72,23 +72,23 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Designation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("DepartmentId")
+                    b.Property<long>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -104,11 +104,11 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Job", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -120,7 +120,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("JobName")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Schedule")
@@ -139,11 +139,11 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.JobHistory", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -155,7 +155,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("Job")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -177,7 +177,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Organisation", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -212,7 +212,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Policy", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -225,7 +225,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("AllowedOffDays")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -240,7 +240,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<int>("DailyWorkingHour")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("DepartmentId")
+                    b.Property<long?>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("EarlyArrivalPolicy")
@@ -285,7 +285,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("PayPeriod")
@@ -328,7 +328,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.Store", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -353,7 +353,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PhoneNo")

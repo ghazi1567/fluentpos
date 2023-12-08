@@ -26,9 +26,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 {
     internal class SalaryPerksCommandHandler :
-        IRequestHandler<RegisterSalaryPerksCommand, Result<Guid>>,
-        IRequestHandler<RemoveSalaryPerksCommand, Result<Guid>>,
-        IRequestHandler<UpdateSalaryPerksCommand, Result<Guid>>
+        IRequestHandler<RegisterSalaryPerksCommand, Result<long>>,
+        IRequestHandler<RemoveSalaryPerksCommand, Result<long>>,
+        IRequestHandler<UpdateSalaryPerksCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IAccountingDbContext _context;
@@ -51,7 +51,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterSalaryPerksCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterSalaryPerksCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
 
@@ -75,7 +75,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
             await _context.SalaryPerks.AddAsync(salaryPerks, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            if (command.EmployeeId != null && command.EmployeeId != Guid.Empty)
+            if (command.EmployeeId != null && command.EmployeeId != default(long))
             {
                 switch (command.Type)
                 {
@@ -90,11 +90,11 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
                 }
             }
 
-            return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Salary Perks Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateSalaryPerksCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateSalaryPerksCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var salaryPerks = await _context.SalaryPerks.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -104,7 +104,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 
                 _context.SalaryPerks.Update(salaryPerks);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Updated"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Salary Perks Updated"]);
             }
             else
             {
@@ -113,7 +113,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveSalaryPerksCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveSalaryPerksCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var salaryPerks = await _context.SalaryPerks.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -121,7 +121,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
             {
                 _context.SalaryPerks.Remove(salaryPerks);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salaryPerks.Id, _localizer["Salary Perks Deleted"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Salary Perks Deleted"]);
             }
             else
             {

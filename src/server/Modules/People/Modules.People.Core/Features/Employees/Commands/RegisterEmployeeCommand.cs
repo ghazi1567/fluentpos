@@ -14,7 +14,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
-    public class RegisterEmployeeCommand : EmployeeDto, IRequest<Result<Guid>>
+    public class RegisterEmployeeCommand : EmployeeDto, IRequest<Result<long>>
     {
         public UploadRequest UploadRequest { get; set; }
 

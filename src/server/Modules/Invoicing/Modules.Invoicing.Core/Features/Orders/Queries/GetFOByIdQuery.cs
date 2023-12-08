@@ -11,7 +11,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetFOByIdQuery : IRequest<Result<OrderResponseDto>>
     {
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         public string OrderNo { get; set; }
 

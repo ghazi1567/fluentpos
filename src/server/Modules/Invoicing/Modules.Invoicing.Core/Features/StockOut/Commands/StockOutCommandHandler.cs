@@ -29,10 +29,10 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 {
     internal sealed class StockOutCommandHandler :
-        IRequestHandler<RegisterStockOutCommand, Result<Guid>>,
-        IRequestHandler<ApproveStockOutCommand, Result<Guid>>,
-        IRequestHandler<RemoveStockOutCommand, Result<Guid>>,
-        IRequestHandler<UpdateStockOutCommand, Result<Guid>>
+        IRequestHandler<RegisterStockOutCommand, Result<long>>,
+        IRequestHandler<ApproveStockOutCommand, Result<long>>,
+        IRequestHandler<RemoveStockOutCommand, Result<long>>,
+        IRequestHandler<UpdateStockOutCommand, Result<long>>
     {
         private readonly IEntityReferenceService _referenceService;
         private readonly IStockService _stockService;
@@ -61,7 +61,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterStockOutCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterStockOutCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var order = InternalOrder.InitializeOrder(command.TimeStamp);
@@ -84,10 +84,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 
            
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock Out {0} Created for approval"], order.ReferenceNumber));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Stock Out {0} Created for approval"], order.ReferenceNumber));
         }
 
-        public async Task<Result<Guid>> Handle(ApproveStockOutCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(ApproveStockOutCommand request, CancellationToken cancellationToken)
         {
             var order = await _salesContext.Orders.AsNoTracking()
                .OrderBy(x => x.TimeStamp)
@@ -119,10 +119,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 //    await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber, false);
                 //}
             }
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
         }
 
-        public async Task<Result<Guid>> Handle(RemoveStockOutCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveStockOutCommand request, CancellationToken cancellationToken)
         {
             var stockOut = await _salesContext.Orders
                 .Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
@@ -132,7 +132,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 await _salesContext.SaveChangesAsync(cancellationToken);
 
 
-                return await Result<Guid>.SuccessAsync(stockOut.Id, _localizer["Stock Out Deleted"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Stock Out Deleted"]);
             }
             else
             {
@@ -140,7 +140,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
             }
         }
 
-        public async Task<Result<Guid>> Handle(UpdateStockOutCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateStockOutCommand request, CancellationToken cancellationToken)
         {
             var stockOut = await _salesContext.Orders
                 .Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
@@ -167,7 +167,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
                 await _salesContext.SaveChangesAsync(cancellationToken);
 
 
-                return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock Out {0} Updated"], order.ReferenceNumber));
+                return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Stock Out {0} Updated"], order.ReferenceNumber));
             }
             else
             {

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Brands
 {
-    public class RemoveBrandExtendedAttributeCommandValidator : RemoveExtendedAttributeCommandValidator<Guid, Brand>
+    public class RemoveBrandExtendedAttributeCommandValidator : RemoveExtendedAttributeCommandValidator<long, Brand>
     {
         public RemoveBrandExtendedAttributeCommandValidator(IStringLocalizer<RemoveBrandExtendedAttributeCommandValidator> localizer)
             : base(localizer)

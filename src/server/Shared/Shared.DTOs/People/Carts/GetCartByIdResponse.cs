@@ -13,7 +13,7 @@ using FluentPOS.Shared.DTOs.People.Customers;
 
 namespace FluentPOS.Shared.DTOs.People.Carts
 {
-    public record GetCartByIdResponse(Guid Id, Guid CustomerId, DateTime Timestamp)
+    public record GetCartByIdResponse(long Id, long CustomerId, DateTime Timestamp)
     {
         public GetCustomerByIdResponse Customer { get; set; }
         public ICollection<GetCartItemByIdResponse> CartItems { get; set; }

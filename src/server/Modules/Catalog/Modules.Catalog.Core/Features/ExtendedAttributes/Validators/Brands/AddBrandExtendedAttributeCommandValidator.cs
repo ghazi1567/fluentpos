@@ -14,7 +14,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Brands
 {
-    public class AddBrandExtendedAttributeCommandValidator : AddExtendedAttributeCommandValidator<Guid, Brand>
+    public class AddBrandExtendedAttributeCommandValidator : AddExtendedAttributeCommandValidator<long, Brand>
     {
         public AddBrandExtendedAttributeCommandValidator(IStringLocalizer<AddBrandExtendedAttributeCommandValidator> localizer, IJsonSerializer jsonSerializer)
             : base(localizer, jsonSerializer)

@@ -14,9 +14,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Queries
 {
     public class GetBrandImageQuery : IRequest<Result<string>>
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public GetBrandImageQuery(Guid brandId)
+        public GetBrandImageQuery(long brandId)
         {
             Id = brandId;
         }

@@ -11,13 +11,13 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
 
         public string Description { get; set; }
 
-        public Guid? HeadOfDepartment { get; set; }
+        public long? HeadOfDepartment { get; set; }
 
         public int Production { get; set; }
 
-        public Guid PolicyId { get; set; }
+        public long PolicyId { get; set; }
 
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         public string ParentDept { get; set; }
     }

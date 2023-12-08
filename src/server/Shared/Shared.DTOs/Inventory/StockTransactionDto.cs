@@ -5,7 +5,7 @@ namespace FluentPOS.Shared.DTOs.Inventory
 {
     public class StockTransactionDto
     {
-        public Guid productId { get; set; }
+        public long productId { get; set; }
 
         public long inventoryItemId { get; set; }
 
@@ -13,7 +13,7 @@ namespace FluentPOS.Shared.DTOs.Inventory
 
         public OrderType type { get; set; }
 
-        public Guid warehouseId { get; set; }
+        public long warehouseId { get; set; }
 
         public string Rack { get; set; }
 

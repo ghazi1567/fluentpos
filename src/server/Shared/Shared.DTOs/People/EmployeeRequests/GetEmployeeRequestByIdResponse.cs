@@ -3,30 +3,30 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.People.EmployeeRequests
 {
-    public record GetEmployeeRequestByIdResponse(Guid Id,
+    public record GetEmployeeRequestByIdResponse(long Id,
 
 DateTimeOffset? CreatedAt,
 
 DateTimeOffset? UpdatedAt,
 
-Guid OrganizationId,
+long OrganizationId,
 
-Guid BranchId,
+long BranchId,
 
-Guid UserId,
-Guid EmployeeId,
+long UserId,
+long EmployeeId,
 
-Guid DepartmentId,
+long DepartmentId,
 
-Guid PolicyId,
+long PolicyId,
 
-Guid DesignationId,
+long DesignationId,
 
 string RequestType,
 
 DateTime RequestedOn,
 
-Guid RequestedBy,
+long RequestedBy,
 
 DateTime AttendanceDate,
 

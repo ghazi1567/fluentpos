@@ -82,7 +82,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public string LocalizedProvinceName { get; set; }
 
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         public string Code { get; set; }
 

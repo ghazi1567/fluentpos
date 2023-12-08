@@ -12,11 +12,11 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
 {
-    public class RemoveCartCommand : IRequest<Result<Guid>>
+    public class RemoveCartCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public RemoveCartCommand(Guid cartId)
+        public RemoveCartCommand(long cartId)
         {
             Id = cartId;
         }

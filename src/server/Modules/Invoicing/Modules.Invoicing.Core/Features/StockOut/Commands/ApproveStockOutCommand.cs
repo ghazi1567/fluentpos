@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Commands
 {
 
-    public class ApproveStockOutCommand : IRequest<Result<Guid>>
+    public class ApproveStockOutCommand : IRequest<Result<long>>
     {
-        public Guid OrderId { get;  set; }
+        public long OrderId { get;  set; }
         public OrderStatus Status { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetLoadsheetInByIdQuery : IRequest<Result<LoadSheetMainDto>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
     }
 }

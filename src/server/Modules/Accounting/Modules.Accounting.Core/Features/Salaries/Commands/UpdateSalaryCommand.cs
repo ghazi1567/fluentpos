@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 {
-    public class UpdateSalaryCommand : SalaryDto, IRequest<Result<Guid>>
+    public class UpdateSalaryCommand : SalaryDto, IRequest<Result<long>>
     {
     }
 }

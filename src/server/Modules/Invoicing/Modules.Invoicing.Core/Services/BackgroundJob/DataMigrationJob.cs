@@ -20,7 +20,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
         {
             _enabled = config.GetValue<bool>("BackgroudJobs:DataMigration:Enabled");
             _url = config.GetValue<string>("BackgroudJobs:DataMigration:BaseUrl");
-            _clientId = config.GetValue<Guid>("BackgroudJobs:DataMigration:ClientId");
+            _clientId = config.GetValue<long>("BackgroudJobs:DataMigration:ClientId");
             var frequency = config.GetValue<int>("BackgroudJobs:DataMigration:Frequency");
 
             if (Frequency == 0)
@@ -41,7 +41,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
         private bool _taskLock = false;
         private string _url = string.Empty;
         private bool _enabled = false;
-        private Guid _clientId = Guid.Empty;
+        private long _clientId = default(long);
         #endregion
 
         #region Private Methods

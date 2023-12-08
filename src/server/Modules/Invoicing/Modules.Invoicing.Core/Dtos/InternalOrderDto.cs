@@ -15,7 +15,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public DateTime TimeStamp { get; set; }
 
-        public Guid CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         public string CustomerName { get; set; }
 
@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public InternalCustomerDto? Customer { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
 
         /// <summary>

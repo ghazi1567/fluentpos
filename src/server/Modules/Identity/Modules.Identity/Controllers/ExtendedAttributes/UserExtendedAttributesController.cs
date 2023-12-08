@@ -31,7 +31,7 @@ namespace FluentPOS.Modules.Identity.Controllers.ExtendedAttributes
         }
 
         [Authorize(Policy = Permissions.UsersExtendedAttributes.View)]
-        public override Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, ExtendedAttribute<string, FluentUser>> filter)
+        public override Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, ExtendedAttribute<string, FluentUser>> filter)
         {
             return base.GetByIdAsync(filter);
         }
@@ -49,7 +49,7 @@ namespace FluentPOS.Modules.Identity.Controllers.ExtendedAttributes
         }
 
         [Authorize(Policy = Permissions.UsersExtendedAttributes.Remove)]
-        public override Task<IActionResult> RemoveAsync(Guid id)
+        public override Task<IActionResult> RemoveAsync(long id)
         {
             return base.RemoveAsync(id);
         }

@@ -26,12 +26,12 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             _mediator = mediator;
         }
 
-        public async Task<Result<GetCartByIdResponse>> GetDetailsAsync(Guid cartId)
+        public async Task<Result<GetCartByIdResponse>> GetDetailsAsync(long cartId)
         {
             return await _mediator.Send(new GetCartByIdQuery(cartId, true));
         }
 
-        public async Task<Result<Guid>> RemoveCartAsync(Guid cartId)
+        public async Task<Result<long>> RemoveCartAsync(long cartId)
         {
             return await _mediator.Send(new RemoveCartCommand(cartId));
         }

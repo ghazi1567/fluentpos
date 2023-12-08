@@ -29,7 +29,7 @@ namespace FluentPOS.Modules.Identity.Core.Entities
 
         public string RefreshToken { get; set; }
 
-        public Guid? EmployeeId { get; set; }
+        public long? EmployeeId { get; set; }
 
         public DateTime RefreshTokenExpiryTime { get; set; }
 

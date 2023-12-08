@@ -24,7 +24,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Sales.View)]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
             return Ok(await Mediator.Send(new GetStockInByIdQuery { Id = id }));
         }
@@ -45,7 +45,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Sales.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveStockInCommand(id)));
         }

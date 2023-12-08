@@ -22,34 +22,34 @@ namespace FluentPOS.Modules.People.Controllers.ExtendedAttributes
 {
     [ApiVersion("1")]
     [Route(BaseController.BasePath + "/" + nameof(Cart) + "/attributes")]
-    internal sealed class CartExtendedAttributesController : ExtendedAttributesController<Guid, Cart>
+    internal sealed class CartExtendedAttributesController : ExtendedAttributesController<long, Cart>
     {
         [Authorize(Policy = Permissions.CartsExtendedAttributes.ViewAll)]
-        public override Task<IActionResult> GetAllAsync(PaginatedExtendedAttributeFilter<Guid, Cart> filter)
+        public override Task<IActionResult> GetAllAsync(PaginatedExtendedAttributeFilter<long, Cart> filter)
         {
             return base.GetAllAsync(filter);
         }
 
         [Authorize(Policy = Permissions.CartsExtendedAttributes.View)]
-        public override Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, ExtendedAttribute<Guid, Cart>> filter)
+        public override Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, ExtendedAttribute<long, Cart>> filter)
         {
             return base.GetByIdAsync(filter);
         }
 
         [Authorize(Policy = Permissions.CartsExtendedAttributes.Add)]
-        public override Task<IActionResult> CreateAsync(AddExtendedAttributeCommand<Guid, Cart> command)
+        public override Task<IActionResult> CreateAsync(AddExtendedAttributeCommand<long, Cart> command)
         {
             return base.CreateAsync(command);
         }
 
         [Authorize(Policy = Permissions.CartsExtendedAttributes.Update)]
-        public override Task<IActionResult> UpdateAsync(UpdateExtendedAttributeCommand<Guid, Cart> command)
+        public override Task<IActionResult> UpdateAsync(UpdateExtendedAttributeCommand<long, Cart> command)
         {
             return base.UpdateAsync(command);
         }
 
         [Authorize(Policy = Permissions.CartsExtendedAttributes.Remove)]
-        public override Task<IActionResult> RemoveAsync(Guid id)
+        public override Task<IActionResult> RemoveAsync(long id)
         {
             return base.RemoveAsync(id);
         }

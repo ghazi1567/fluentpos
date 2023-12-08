@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
 {
-    public class RegisterCustomerCommand : IRequest<Result<Guid>>
+    public class RegisterCustomerCommand : IRequest<Result<long>>
     {
         public string Name { get; set; }
 

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.People.Core.Features.ExtendedAttributes.Validators.Customers
 {
-    public class PaginatedCustomerExtendedAttributeFilterValidator : PaginatedExtendedAttributeFilterValidator<Guid, Customer>
+    public class PaginatedCustomerExtendedAttributeFilterValidator : PaginatedExtendedAttributeFilterValidator<long, Customer>
     {
         public PaginatedCustomerExtendedAttributeFilterValidator(IStringLocalizer<PaginatedCustomerExtendedAttributeFilterValidator> localizer)
             : base(localizer)

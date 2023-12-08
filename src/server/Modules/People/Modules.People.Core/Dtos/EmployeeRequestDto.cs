@@ -7,19 +7,19 @@ namespace FluentPOS.Modules.People.Core.Dtos
 {
     public class EmployeeRequestDto : BaseEntityDto
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
-        public Guid? DepartmentId { get; set; }
+        public long? DepartmentId { get; set; }
 
-        public Guid? PolicyId { get; set; }
+        public long? PolicyId { get; set; }
 
-        public Guid? DesignationId { get; set; }
+        public long? DesignationId { get; set; }
 
         public RequestType RequestType { get; set; }
 
         public DateTime RequestedOn { get; set; } = DateTime.Now;
 
-        public Guid RequestedBy { get; set; }
+        public long RequestedBy { get; set; }
 
         public DateTime AttendanceDate { get; set; }
 
@@ -35,13 +35,13 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public RequestStatus Status { get; set; }
 
-        public Guid? AssignedTo { get; set; }
+        public long? AssignedTo { get; set; }
 
         public DateTime? AssignedOn { get; set; }
 
         public DateTime? StatusUpdateOn { get; set; }
 
-        public Guid? WorkflowId { get; set; }
+        public long? WorkflowId { get; set; }
 
         public List<RequestApprovalDto> Approvals { get; set; }
 
@@ -53,7 +53,7 @@ namespace FluentPOS.Modules.People.Core.Dtos
 
         public float RequiredProduction { get; set; }
 
-        public Guid? ModificationId { get; set; }
+        public long? ModificationId { get; set; }
 
         public AttendanceStatus AttendanceStatus { get; set; }
 

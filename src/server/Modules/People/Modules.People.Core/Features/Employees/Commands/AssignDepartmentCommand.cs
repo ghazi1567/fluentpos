@@ -13,11 +13,11 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
-    public class AssignDepartmentCommand : IRequest<Result<Guid>>
+    public class AssignDepartmentCommand : IRequest<Result<long>>
     {
-        public Guid DepartmentId { get; set; }
+        public long DepartmentId { get; set; }
 
-        public List<Guid> EmployeeIds { get; set; }
+        public List<long> EmployeeIds { get; set; }
 
     }
 }

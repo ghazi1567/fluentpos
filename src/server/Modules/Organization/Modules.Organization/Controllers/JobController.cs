@@ -51,7 +51,7 @@ namespace FluentPOS.Modules.Organization.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Jobs.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveJobCommand(id)));
         }

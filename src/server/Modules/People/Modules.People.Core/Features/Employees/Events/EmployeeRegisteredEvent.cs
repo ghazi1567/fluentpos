@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Events
 {
     public class EmployeeRegisteredEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
         public string Name { get; }
 

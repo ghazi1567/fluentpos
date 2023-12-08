@@ -23,7 +23,7 @@ namespace FluentPOS.Modules.Catalog.Core.Mappings
         {
             CreateMap<RegisterBrandCommand, Brand>().ReverseMap();
             CreateMap<UpdateBrandCommand, Brand>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Brand>, GetBrandByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Brand>, GetBrandByIdQuery>();
             CreateMap<GetBrandByIdResponse, Brand>().ReverseMap();
             CreateMap<GetBrandsResponse, Brand>().ReverseMap();
             CreateMap<PaginatedBrandFilter, GetBrandsQuery>()

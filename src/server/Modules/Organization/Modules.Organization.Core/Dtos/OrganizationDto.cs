@@ -8,7 +8,7 @@ namespace FluentPOS.Modules.Organization.Core.Dtos
 {
     public class OrganizationDto
     {
-        public Guid? Id { get; set; }
+        public long? Id { get; set; }
 
         public DateTimeOffset? CreatedAt { get; set; }
 

@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
     public class GetPayrollRequestByIdQuery : IRequest<Result<PayrollRequestDto>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

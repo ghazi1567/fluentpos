@@ -10,5 +10,5 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Catalogs.Brands
 {
-    public record GetBrandsResponse(Guid Id, string Name, string Detail);
+    public record GetBrandsResponse(long Id, string Name, string Detail);
 }

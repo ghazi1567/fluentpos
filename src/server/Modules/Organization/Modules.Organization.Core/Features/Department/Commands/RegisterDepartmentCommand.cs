@@ -14,7 +14,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features
 {
-    public class RegisterDepartmentCommand : DepartmentDto, IRequest<Result<Guid>>
+    public class RegisterDepartmentCommand : DepartmentDto, IRequest<Result<long>>
     {
     }
 }

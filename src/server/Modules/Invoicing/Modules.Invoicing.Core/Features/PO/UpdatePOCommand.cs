@@ -7,9 +7,9 @@ using MediatR;
 namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 {
 
-    public class UpdatePOCommand : IRequest<Result<Guid>>
+    public class UpdatePOCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string Note { get; set; }
 
@@ -17,6 +17,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 
         public List<Product> Products { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services.Identity
     {
         string Name { get; }
 
-        Guid GetUserId();
+        long GetUserId();
 
         string GetUserEmail();
 

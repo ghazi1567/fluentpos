@@ -16,9 +16,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 {
     public class GetProductsByIds : IRequest<Result<List<GetProductVariantResponse>>>
     {
-        public List<Guid> Ids { get; }
+        public List<long> Ids { get; }
 
-        public GetProductsByIds(List<Guid> ids)
+        public GetProductsByIds(List<long> ids)
         {
             Ids = ids;
         }

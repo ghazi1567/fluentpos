@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Commands
 {
-    public class RemoveStockOutCommand : IRequest<Result<Guid>>
+    public class RemoveStockOutCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
-        public RemoveStockOutCommand(Guid id)
+        public RemoveStockOutCommand(long id)
         {
             Id = id;
         }

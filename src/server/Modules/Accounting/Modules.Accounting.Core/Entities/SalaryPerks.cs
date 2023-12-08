@@ -6,7 +6,7 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
 {
     public class SalaryPerks : BaseEntity
     {
-        public Guid? EmployeeId { get; set; }
+        public long? EmployeeId { get; set; }
 
         public string Name { get; set; }
 

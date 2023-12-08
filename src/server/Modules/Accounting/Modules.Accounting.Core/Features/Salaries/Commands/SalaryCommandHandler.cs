@@ -25,9 +25,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 {
     internal class SalaryCommandHandler :
-        IRequestHandler<RegisterSalaryCommand, Result<Guid>>,
-        IRequestHandler<RemoveSalaryCommand, Result<Guid>>,
-        IRequestHandler<UpdateSalaryCommand, Result<Guid>>
+        IRequestHandler<RegisterSalaryCommand, Result<long>>,
+        IRequestHandler<RemoveSalaryCommand, Result<long>>,
+        IRequestHandler<UpdateSalaryCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IAccountingDbContext _context;
@@ -50,17 +50,17 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterSalaryCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterSalaryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var salary = _mapper.Map<Salary>(command);
             await _context.Salaries.AddAsync(salary, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(salary.Id, _localizer["Salary Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Salary Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateSalaryCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateSalaryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var salary = await _context.Salaries.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -70,7 +70,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 
                 _context.Salaries.Update(salary);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salary.Id, _localizer["Salary Updated"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Salary Updated"]);
             }
             else
             {
@@ -79,7 +79,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveSalaryCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveSalaryCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var salary = await _context.Salaries.Where(c => c.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -87,7 +87,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
             {
                 _context.Salaries.Remove(salary);
                 await _context.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(salary.Id, _localizer["Salary Deleted"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Salary Deleted"]);
             }
             else
             {

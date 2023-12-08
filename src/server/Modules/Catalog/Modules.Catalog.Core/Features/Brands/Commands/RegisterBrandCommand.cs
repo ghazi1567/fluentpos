@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands
 {
-    public class RegisterBrandCommand : IRequest<Result<Guid>>
+    public class RegisterBrandCommand : IRequest<Result<long>>
     {
         public string Name { get; set; }
 

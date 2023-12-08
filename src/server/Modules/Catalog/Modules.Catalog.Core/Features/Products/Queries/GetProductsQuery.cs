@@ -21,9 +21,9 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 
         public string SearchString { get; private set; }
 
-        public Guid[] BrandIds { get; private set; }
+        public long[] BrandIds { get; private set; }
 
-        public Guid[] CategoryIds { get; private set; }
+        public long[] CategoryIds { get; private set; }
 
         public string[] OrderBy { get; private set; }
     }

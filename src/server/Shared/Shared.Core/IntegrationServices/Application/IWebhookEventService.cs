@@ -11,6 +11,6 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Application
 
         Task<List<WebhookEvent>> FetchPendingOrders();
 
-        Task<bool> UpdateStatus(Guid id, string status, string notes, long? ShopifyId);
+        Task<bool> UpdateStatus(long Id, string status, string notes, long? ShopifyId);
     }
 }

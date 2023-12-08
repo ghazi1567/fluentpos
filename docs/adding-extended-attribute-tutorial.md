@@ -10,7 +10,7 @@
 
 |module-name| = `Catalog`
 
-|related-entity-id-type| = `Guid`
+|related-entity-id-type| = `long`
 
 |related-entity-type-name| = `Brand`
 
@@ -23,7 +23,7 @@ using FluentPOS.Shared.Core.Domain;
 
 namespace FluentPOS.Modules.Catalog.Core.Entities
 {
-    public class BrandExtendedAttribute : ExtendedAttribute<Guid, Brand> { }
+    public class BrandExtendedAttribute : ExtendedAttribute<long, Brand> { }
 }
 ```
 
@@ -51,7 +51,7 @@ namespace FluentPOS.Modules.Catalog.Core.Entities
 
 ```csharp
 public class CatalogDbContext : ModuleDbContext, ICatalogDbContext,
-    IExtendedAttributeDbContext<Guid, Brand, BrandExtendedAttribute>
+    IExtendedAttributeDbContext<long, Brand, BrandExtendedAttribute>
 {
     // fields and constructor...
 
@@ -64,8 +64,8 @@ public class CatalogDbContext : ModuleDbContext, ICatalogDbContext,
 	    modelBuilder.ApplyCatalogConfiguration(_persistenceOptions); // see step 4.
     }
 
-    DbSet<Brand> IExtendedAttributeDbContext<Guid, Brand, BrandExtendedAttribute>.GetEntities() => Brands;
-    DbSet<BrandExtendedAttribute> IExtendedAttributeDbContext<Guid, Brand, BrandExtendedAttribute>.ExtendedAttributes { get; set; }
+    DbSet<Brand> IExtendedAttributeDbContext<long, Brand, BrandExtendedAttribute>.GetEntities() => Brands;
+    DbSet<BrandExtendedAttribute> IExtendedAttributeDbContext<long, Brand, BrandExtendedAttribute>.ExtendedAttributes { get; set; }
 }
 ```
 
@@ -140,37 +140,37 @@ namespace FluentPOS.Modules.Catalog.Controllers
 {
     [ApiVersion("1")]
     [Route(BaseController.BasePath + "/" + nameof(Brand) + "/attributes")]
-    public class BrandExtendedAttributesController : ExtendedAttributesController<Guid, Brand>
+    public class BrandExtendedAttributesController : ExtendedAttributesController<long, Brand>
     {
 	    private IMediator _mediatorInstance;
 	    protected override IMediator Mediator => _mediatorInstance ??= HttpContext.RequestServices.GetService<IMediator>();
 
 	    [Authorize(Policy = Permissions.BrandsExtendedAttributes.ViewAll)]
-	    public override Task<IActionResult> GetAll(PaginatedExtendedAttributeFilter<Guid> filter)
+	    public override Task<IActionResult> GetAll(PaginatedExtendedAttributeFilter<long> filter)
 	    {
 		    return base.GetAll(filter);
 	    }
 
 	    [Authorize(Policy = Permissions.BrandsExtendedAttributes.View)]
-	    public override Task<IActionResult> GetById(Guid id, bool bypassCache)
+	    public override Task<IActionResult> GetById(long Id, bool bypassCache)
 	    {
 		    return base.GetById(id, bypassCache);
 	    }
 
 	    [Authorize(Policy = Permissions.BrandsExtendedAttributes.Add)]
-	    public override Task<IActionResult> Create(AddExtendedAttributeCommand<Guid, Brand> command)
+	    public override Task<IActionResult> Create(AddExtendedAttributeCommand<long, Brand> command)
 	    {
 		    return base.Create(command);
 	    }
 
 	    [Authorize(Policy = Permissions.BrandsExtendedAttributes.Update)]
-	    public override Task<IActionResult> Update(UpdateExtendedAttributeCommand<Guid, Brand> command)
+	    public override Task<IActionResult> Update(UpdateExtendedAttributeCommand<long, Brand> command)
 	    {
 		    return base.Update(command);
 	    }
 
 	    [Authorize(Policy = Permissions.BrandsExtendedAttributes.Remove)]
-	    public override Task<IActionResult> Remove(Guid id)
+	    public override Task<IActionResult> Remove(long id)
 	    {
 		    return base.Remove(id);
 	    }
@@ -206,7 +206,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Extensions
 ```csharp
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Brands
 {
-    public class AddBrandExtendedAttributeCommandValidator : AddExtendedAttributeCommandValidator<Guid, Brand>
+    public class AddBrandExtendedAttributeCommandValidator : AddExtendedAttributeCommandValidator<long, Brand>
     {
         public AddBrandExtendedAttributeCommandValidator(IStringLocalizer<AddBrandExtendedAttributeCommandValidator> localizer, IJsonSerializer jsonSerializer) : base(localizer, jsonSerializer)
         {
@@ -219,7 +219,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.
 ```csharp
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Brands
 {
-    public class UpdateBrandExtendedAttributeCommandValidator : UpdateExtendedAttributeCommandValidator<Guid, Brand>
+    public class UpdateBrandExtendedAttributeCommandValidator : UpdateExtendedAttributeCommandValidator<long, Brand>
     {
         public UpdateBrandExtendedAttributeCommandValidator(IStringLocalizer<UpdateBrandExtendedAttributeCommandValidator> localizer, IJsonSerializer jsonSerializer) : base(localizer, jsonSerializer)
         {
@@ -232,7 +232,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.
 ```csharp
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Brands
 {
-    public class RemoveBrandExtendedAttributeCommandValidator : RemoveExtendedAttributeCommandValidator<Guid, Brand>
+    public class RemoveBrandExtendedAttributeCommandValidator : RemoveExtendedAttributeCommandValidator<long, Brand>
     {
         public RemoveBrandExtendedAttributeCommandValidator(IStringLocalizer<RemoveBrandExtendedAttributeCommandValidator> localizer, IJsonSerializer jsonSerializer) : base(localizer, jsonSerializer)
         {
@@ -245,7 +245,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.
 ```csharp
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Brands
 {
-    public class PaginatedBrandExtendedAttributeFilterValidator : PaginatedExtendedAttributeFilterValidator<Guid, Brand>
+    public class PaginatedBrandExtendedAttributeFilterValidator : PaginatedExtendedAttributeFilterValidator<long, Brand>
     {
         public BrandPaginatedExtendedAttributeFilterValidator(IStringLocalizer<BrandPaginatedExtendedAttributeFilterValidator> localizer) : base(localizer)
         {

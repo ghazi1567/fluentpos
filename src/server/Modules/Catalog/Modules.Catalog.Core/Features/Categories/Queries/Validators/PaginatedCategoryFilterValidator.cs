@@ -14,7 +14,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Queries.Validators
 {
-    public class PaginatedCategoryFilterValidator : PaginatedFilterValidator<Guid, Category, PaginatedCategoryFilter>
+    public class PaginatedCategoryFilterValidator : PaginatedFilterValidator<long, Category, PaginatedCategoryFilter>
     {
         public PaginatedCategoryFilterValidator(IStringLocalizer<PaginatedCategoryFilterValidator> localizer)
             : base(localizer)

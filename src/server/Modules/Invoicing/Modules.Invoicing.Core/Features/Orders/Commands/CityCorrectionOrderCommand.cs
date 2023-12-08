@@ -16,15 +16,15 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
     public class CityCorrectionOrderCommand : IRequest<bool>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public long ShopifyId { get; set; }
 
         public OrderStatus Status { get; set; }
 
-        public Guid FulfillmentOrderId { get; set; }
+        public long FulfillmentOrderId { get; set; }
 
-        public CityCorrectionOrderCommand(Guid id,  Guid fulfillmentOrderId)
+        public CityCorrectionOrderCommand(long id, long fulfillmentOrderId)
         {
             Id = id;
             FulfillmentOrderId = fulfillmentOrderId;

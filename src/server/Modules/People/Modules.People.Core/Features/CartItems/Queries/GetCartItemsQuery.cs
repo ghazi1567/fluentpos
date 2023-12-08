@@ -23,8 +23,8 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Queries
 
         public string SearchString { get; private set; }
 
-        public Guid? CartId { get; private set; }
+        public long? CartId { get; private set; }
 
-        public Guid? ProductId { get; private set; }
+        public long? ProductId { get; private set; }
     }
 }

@@ -9,7 +9,7 @@ namespace FluentPOS.Modules.People.Core.Dtos
 {
     public class IndividualAttendanceReportDto
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
         public AttendanceStatus Sunday { get; set; }
 

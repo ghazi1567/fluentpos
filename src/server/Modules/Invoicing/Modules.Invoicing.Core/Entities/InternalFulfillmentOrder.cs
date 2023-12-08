@@ -19,7 +19,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public long? OrderId { get; set; }
 
-        public Guid InternalOrderId { get; set; }
+        public long InternalOrderId { get; set; }
 
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public DateTimeOffset? FulfilledBy { get; set; }
 
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
         public long? TotalQuantity { get; set; }
 
@@ -69,7 +69,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         /// </summary>
         public string Name { get; set; }
 
-        public Guid? StockId { get; set; }
+        public long? StockId { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
 

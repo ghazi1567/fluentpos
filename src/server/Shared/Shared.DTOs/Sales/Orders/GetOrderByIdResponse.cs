@@ -7,10 +7,10 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 {
        public record GetOrderByIdResponse
        (
-              Guid Id,
+              long Id,
               string ReferenceNumber,
               DateTime TimeStamp,
-              Guid CustomerId,
+              long CustomerId,
               string CustomerName,
               string CustomerPhone,
               string CustomerEmail,
@@ -21,15 +21,15 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
               bool IsPaid,
               string Note,
               ICollection<ProductResponse> Products,
-              Guid WarehouseId
+              long WarehouseId
        );
 
     public record GetStockInByIdResponse
       (
-             Guid Id,
+             long Id,
              string ReferenceNumber,
              DateTime TimeStamp,
-             Guid CustomerId,
+             long CustomerId,
              string CustomerName,
              string CustomerPhone,
              string CustomerEmail,
@@ -41,7 +41,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
              string Note,
              string POReferenceNo,
              ICollection<StockInProductResponse> Products,
-             Guid WarehouseId
+             long WarehouseId
       );
 
 }

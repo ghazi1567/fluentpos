@@ -11,13 +11,13 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Organizations.Policies
 {
-    public record GetPolicyByIdResponse(Guid Id,
+    public record GetPolicyByIdResponse(long Id,
 DateTimeOffset? CreatedAt,
 DateTimeOffset? UpdatedAt,
-Guid OrganizationId,
-Guid BranchId,
+long OrganizationId,
+long BranchId,
 string Name,
-Guid? DepartmentId,
+long? DepartmentId,
 PayslipType PayslipType,
 PayPeriod PayPeriod,
 int AllowedOffDays,

@@ -14,9 +14,9 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Events
 {
     public class CartCreatedEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public Guid CustomerId { get; }
+        public long CustomerId { get; }
 
         public new DateTime Timestamp { get; }
 

@@ -7,9 +7,9 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 
     public class SplitOrderResult
     {
-        public Guid? InternalOrderId { get; set; }
+        public long? InternalOrderId { get; set; }
 
-        public Guid? FulfillmentOrderId { get; set; }
+        public long? FulfillmentOrderId { get; set; }
 
         public long? FOShopifyId { get; set; }
         public long? AssignedLocationId { get; set; }
@@ -27,7 +27,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
         /// <summary>
         /// Ids of warehouse that will fulfill orders.
         /// </summary>
-        public List<Guid> WarehouseIds { get; set; }
+        public List<long> WarehouseIds { get; set; }
 
         public List<SplitOrderDetailDto> SplitOrderDetails { get; set; }
 
@@ -38,7 +38,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 
     public class SplitOrderDetailDto
     {
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
         public long InventoryItemId { get; set; }
 

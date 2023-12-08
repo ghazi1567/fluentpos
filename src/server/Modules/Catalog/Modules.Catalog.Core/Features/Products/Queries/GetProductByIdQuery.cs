@@ -18,7 +18,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 {
     public class GetProductByIdQuery : IRequest<Result<GetProductByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 
@@ -30,11 +30,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         {
         }
 
-        public GetProductByIdQuery(Guid productId, bool bypassCache = false, TimeSpan? slidingExpiration = null)
+        public GetProductByIdQuery(long productId, bool bypassCache = false, TimeSpan? slidingExpiration = null)
         {
             Id = productId;
             BypassCache = bypassCache;
-            CacheKey = CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(productId);
+            CacheKey = CacheKeys.Common.GetEntityByIdCacheKey<long, Product>(productId);
             SlidingExpiration = slidingExpiration;
         }
     }

@@ -19,9 +19,9 @@ namespace FluentPOS.Modules.Identity.Core.Features.Users.Events
         public UserDeletedEvent(string id)
         {
             Id = id;
-            AggregateId = Guid.TryParse(id, out var aggregateId)
-                ? aggregateId
-                : Guid.NewGuid();
+            //AggregateId = long.TryParse(id, out var aggregateId)
+            //    ? aggregateId
+            //    : default(long); TODO
             RelatedEntities = new[] { typeof(FluentUser) };
         }
     }

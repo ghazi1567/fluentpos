@@ -25,9 +25,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 
         public string SearchString { get; private set; }
 
-        public Guid? OrganizationId { get; set; }
+        public long? OrganizationId { get; set; }
 
-        public Guid? BranchId { get; set; }
+        public long? BranchId { get; set; }
 
         public string AdvancedSearchType { get; set; }
 

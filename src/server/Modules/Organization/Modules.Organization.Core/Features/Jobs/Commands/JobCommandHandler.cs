@@ -25,10 +25,10 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Organization.Core.Features
 {
     internal class JobCommandHandler :
-        IRequestHandler<RemoveJobCommand, Result<Guid>>,
-        IRequestHandler<RegisterJobCommand, Result<Guid>>,
-        IRequestHandler<UpdateJobCommand, Result<Guid>>,
-        IRequestHandler<RunJobCommand, Result<Guid>>
+        IRequestHandler<RemoveJobCommand, Result<long>>,
+        IRequestHandler<RegisterJobCommand, Result<long>>,
+        IRequestHandler<UpdateJobCommand, Result<long>>,
+        IRequestHandler<RunJobCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IOrganizationDbContext _context;
@@ -54,7 +54,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterJobCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (await _context.Jobs.AnyAsync(c => c.JobName == command.JobName, cancellationToken))
@@ -68,11 +68,11 @@ namespace FluentPOS.Modules.Organization.Core.Features
             await _context.SaveChangesAsync(cancellationToken);
 
             //_jobService.ConfigureJob(mappedEntity.JobName, mappedEntity.Schedule);
-            return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Designation)} Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Designation)} Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveJobCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             // TODO : check Designation already in use
@@ -85,11 +85,11 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             _context.Jobs.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Designation)} Deleted"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Designation)} Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateJobCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var entity = await _context.Jobs.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -110,10 +110,10 @@ namespace FluentPOS.Modules.Organization.Core.Features
             _context.Jobs.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
             //_jobService.ConfigureJob(updatedEntity.JobName, updatedEntity.Schedule);
-            return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Designation)} Updated"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Designation)} Updated"]);
         }
 
-        public async Task<Result<Guid>> Handle(RunJobCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RunJobCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var entity = await _context.Jobs.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -122,10 +122,10 @@ namespace FluentPOS.Modules.Organization.Core.Features
             {
                 //_jobService.RunJob(entity.JobName, command.date);
 
-                return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Job)} run successfuly"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Job)} run successfuly"]);
             }
 
-            return await Result<Guid>.FailAsync(_localizer[$"{nameof(Job)} not found."]);
+            return await Result<long>.FailAsync(_localizer[$"{nameof(Job)} not found."]);
         }
     }
 }

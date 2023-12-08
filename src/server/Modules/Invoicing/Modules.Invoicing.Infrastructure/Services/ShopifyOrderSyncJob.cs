@@ -195,7 +195,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             }
         }
 
-        public async Task<Result<Guid>> SaveOrder(RegisterOrderCommand registerOrderCommand)
+        public async Task<Result<long>> SaveOrder(RegisterOrderCommand registerOrderCommand)
         {
             return await _mediator.Send(registerOrderCommand);
         }
@@ -214,19 +214,19 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             {
                 try
                 {
-                    _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.ProcessOrderStart);
+                    _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.ProcessOrderStart);
                     // check city is valid
                     bool isValidCity = await CheckValidAddressAsync(fulfillmentOrder.FulfillmentOrderDestination.City);
                     if (!isValidCity)
                     {
-                        bool result = await _mediator.Send(new CityCorrectionOrderCommand(fulfillmentOrder.InternalOrderId, fulfillmentOrder.Id.Value));
+                        bool result = await _mediator.Send(new CityCorrectionOrderCommand(fulfillmentOrder.InternalOrderId, fulfillmentOrder.Id));
                         if (result)
                         {
-                            _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CityCorrection);
+                            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CityCorrection);
                         }
                         else
                         {
-                            _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CityCorrectionFailed);
+                            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CityCorrectionFailed);
                         }
 
                         continue;
@@ -239,7 +239,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                 }
                 catch (Exception ex)
                 {
-                    _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, ex.Message);
+                    _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, ex.Message);
                 }
             }
 
@@ -248,8 +248,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 
         public async Task InventoryAndWarehouseAssignmentAsync(InternalFulfillmentOrderDto fulfillmentOrder)
         {
-            _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.SearchingForAvailableQty);
-            var skipLastWH = new List<Guid>();
+            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.SearchingForAvailableQty);
+            var skipLastWH = new List<long>();
 
             if (fulfillmentOrder.WarehouseId.HasValue)
             {
@@ -269,7 +269,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             if (warehouseLlist != null && warehouseLlist.Data.Count > 0)
             {
                 warehouseLlist.Data = warehouseLlist.Data.Where(x => !skipLastWH.Contains(x.Id)).ToList();
-                _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.LastWHSkiiped);
+                _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.LastWHSkiiped);
             }
 
             // calculate distance based on lat, long
@@ -280,7 +280,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             }
 
             inventoryItemStockList = CalculateDistance(warehouseLlist.Data, inventoryItemStockList);
-            _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.DistanceCalculated);
+            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.DistanceCalculated);
 
             // filter WH with valid qty
             var variantQty = fulfillmentOrder.FulfillmentOrderLineItems.ToDictionary(x => x.InventoryItemId.Value, x => x.Quantity.Value);
@@ -298,7 +298,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             }
             else
             {
-                await AssignWarehouseAsync(fulfillmentOrder.InternalOrderId, Guid.Empty, fulfillmentOrder.Id);
+                await AssignWarehouseAsync(fulfillmentOrder.InternalOrderId, default(long), fulfillmentOrder.Id);
             }
         }
 
@@ -309,7 +309,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             return result;
         }
 
-        public async Task<bool> AssignWarehouseAsync(Guid internalOrderId, IGrouping<Guid, WarehouseStockStatsDto> warehouse, Guid? fulfillmentOrderId = null)
+        public async Task<bool> AssignWarehouseAsync(long internalOrderId, IGrouping<long, WarehouseStockStatsDto> warehouse, long? fulfillmentOrderId = null)
         {
             if (warehouse != null)
             {
@@ -321,21 +321,21 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                 if (result != null)
                 {
                     // default head office warehouse found.
-                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, result.Id.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, result.Id, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
                 }
                 else
                 {
                     // default head office warehouse not found.
-                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, Guid.Empty, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, default(long), Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
                 }
             }
 
             return true;
         }
 
-        public async Task<bool> AssignWarehouseAsync(Guid internalOrderId, Guid? warehouseId, Guid? fulfillmentOrderId = null)
+        public async Task<bool> AssignWarehouseAsync(long internalOrderId, long? warehouseId, long? fulfillmentOrderId = null)
         {
-            if (warehouseId.HasValue && warehouseId != Guid.Empty)
+            if (warehouseId.HasValue && warehouseId != default(long))
             {
                 bool result = await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, warehouseId.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToOutlet, fulfillmentOrderId));
             }
@@ -345,12 +345,12 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                 if (result != null)
                 {
                     // default head office warehouse found.
-                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, result.Id.Value, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, result.Id, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
                 }
                 else
                 {
                     // default head office warehouse not found.
-                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, Guid.Empty, Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
+                    await _mediator.Send(new AssignWarehouseToOrderCommand(internalOrderId, default(long), Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice, fulfillmentOrderId));
                 }
             }
 
@@ -363,7 +363,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         }
 
 
-        public async Task<bool> ReserveQtyAsync(IGrouping<Guid, WarehouseStockStatsDto> warehouse, Dictionary<string, int> skuQty)
+        public async Task<bool> ReserveQtyAsync(IGrouping<long, WarehouseStockStatsDto> warehouse, Dictionary<string, int> skuQty)
         {
             foreach (var inventoryItem in warehouse)
             {
@@ -384,7 +384,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             return true;
         }
 
-        public async Task<bool> ReserveQtyAsync(IGrouping<Guid, WarehouseStockStatsDto> warehouse, Dictionary<long, long> skuQty)
+        public async Task<bool> ReserveQtyAsync(IGrouping<long, WarehouseStockStatsDto> warehouse, Dictionary<long, long> skuQty)
         {
             foreach (var inventoryItem in warehouse)
             {
@@ -432,7 +432,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             return (decimal)(meters / 1000);
         }
 
-        public List<IGrouping<Guid, WarehouseStockStatsDto>> FilterOnlyValidQtyWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<long, long> skuQty)
+        public List<IGrouping<long, WarehouseStockStatsDto>> FilterOnlyValidQtyWarehouse(List<WarehouseStockStatsDto> warehouseStockStats, Dictionary<long, long> skuQty)
         {
             List<WarehouseStockStatsDto> filterList = new List<WarehouseStockStatsDto>();
 
@@ -444,7 +444,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             return filterList.OrderBy(x => x.Distance).GroupBy(x => x.warehouseId).ToList();
         }
 
-        public IGrouping<Guid, WarehouseStockStatsDto> FinalWarehousePick(List<IGrouping<Guid, WarehouseStockStatsDto>> ValidQtyStockStats, int skuCount)
+        public IGrouping<long, WarehouseStockStatsDto> FinalWarehousePick(List<IGrouping<long, WarehouseStockStatsDto>> ValidQtyStockStats, int skuCount)
         {
             var warehouseWithAllProducts = ValidQtyStockStats.Where(x => x.Count() >= skuCount).ToList();
             return warehouseWithAllProducts.FirstOrDefault();
@@ -503,7 +503,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 
             if (canSingleStoreFulfill != null)
             {
-                _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, $"{OrderLogsConstant.SignleStoreFound} {canSingleStoreFulfill.WarehouseId}");
+                _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, $"{OrderLogsConstant.SignleStoreFound} {canSingleStoreFulfill.WarehouseId}");
 
                 splitOrders = canSingleStoreFulfill.FulfillableIds.Select(fid =>
                 {
@@ -532,7 +532,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 
             // if not fulfilled by one store.
             splitOrderResult.IsSingleStore = false;
-            _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CheckingForMultipleStore);
+            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CheckingForMultipleStore);
             foreach (var store in warehouseFulfillableQty.OrderByDescending(x => x.CanFulfillCount).ThenBy(x => x.Distance))
             {
                 var remainingIds = store.FulfillableIds.Where(x => !splitOrders.Any(z => z.InventoryItemId == x)).ToList();
@@ -558,7 +558,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                 }
             }
 
-            _orderLogger.LogInfo(fulfillmentOrder.Id.Value, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CheckingForSingleProductMultipleStore);
+            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.CheckingForSingleProductMultipleStore);
 
             // check if one product can be fulfill by multple stores.
             var notFullfillableProducts = orderedProducts.Where(x => !splitOrders.Any(z => z.InventoryItemId == x.InventoryItemId)).ToList();

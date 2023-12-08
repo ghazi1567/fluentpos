@@ -4,8 +4,8 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 {
     public record ProductResponse
     (
-        Guid OrderId,
-        Guid ProductId,
+        long OrderId,
+        long ProductId,
         int Quantity,
         string Category,
         string Brand,
@@ -19,8 +19,8 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 
     public record StockInProductResponse
     {
-        public Guid OrderId { get; set; }
-        public Guid ProductId { get; set; }
+        public long OrderId { get; set; }
+        public long ProductId { get; set; }
         public int Quantity { get; set; }
         public string Category { get; set; }
         public string Brand { get; set; }

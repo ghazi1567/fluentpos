@@ -10,13 +10,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
     {
         void LogInfo(long shopifyId, string detail);
 
-        void LogInfo(Guid orderId, string detail);
 
-        void LogInfo(Guid orderId, Guid foId, string detail);
+        void LogInfo(long orderId, long foId, string detail);
 
-        void LogInfo(long shopifyId, Guid? orderId, string detail);
+        void LogInfo(long shopifyId, long? orderId, string detail);
 
-        void LogInfo(long shopifyId, Guid orderId, Guid foId, string detail);
+        void LogInfo(long shopifyId, long orderId, long foId, string detail);
     }
 
     public class OrderLogger : IOrderLogger
@@ -40,28 +39,19 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
             SaveLog(log);
         }
 
-        public void LogInfo(long shopifyId, Guid? orderId, string detail)
+        public void LogInfo(long shopifyId, long? orderId, string detail)
         {
             var log = new OrderLogs
             {
                 ShopifyId = shopifyId,
-                InternalOrderId = orderId.HasValue ? orderId.Value : Guid.Empty,
+                InternalOrderId = orderId.HasValue ? orderId.Value : 0,
                 LogDescription = string.Format(detail, DateTime.Now, shopifyId)
             };
             SaveLog(log);
         }
 
-        public void LogInfo(Guid orderId, string detail)
-        {
-            var log = new OrderLogs
-            {
-                InternalOrderId = orderId,
-                LogDescription = string.Format(detail, DateTime.Now, orderId)
-            };
-            SaveLog(log);
-        }
 
-        public void LogInfo(Guid orderId, Guid foId, string detail)
+        public void LogInfo(long orderId, long foId, string detail)
         {
             var log = new OrderLogs
             {
@@ -72,7 +62,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
             SaveLog(log);
         }
 
-        public void LogInfo(long shopifyId, Guid orderId, Guid foId, string detail)
+        public void LogInfo(long shopifyId, long orderId, long foId, string detail)
         {
             var log = new OrderLogs
             {

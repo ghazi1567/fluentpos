@@ -13,17 +13,17 @@ using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 {
-    public class UpdateProductCommand : IRequest<Result<Guid>>
+    public class UpdateProductCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 
         public string LocaleName { get; set; }
 
-        public Guid BrandId { get; set; }
+        public long BrandId { get; set; }
 
-        public Guid CategoryId { get; set; }
+        public long CategoryId { get; set; }
 
         public decimal Price { get; set; }
 
@@ -57,6 +57,6 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 
         public int OpeningStock { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
     }
 }

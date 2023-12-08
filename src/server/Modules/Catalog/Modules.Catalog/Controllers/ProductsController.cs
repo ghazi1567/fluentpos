@@ -33,7 +33,7 @@ namespace FluentPOS.Modules.Catalog.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Products.View)]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Product> filter)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, Product> filter)
         {
             var request = Mapper.Map<GetProductByIdQuery>(filter);
             var product = await Mediator.Send(request);
@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.Catalog.Controllers
 
         [HttpGet("image/{id}")]
         [Authorize(Policy = Permissions.Products.View)]
-        public async Task<IActionResult> GetImageByIdAsync(Guid id)
+        public async Task<IActionResult> GetImageByIdAsync(long id)
         {
             return Ok(await Mediator.Send(new GetProductImageQuery(id)));
         }
@@ -63,7 +63,7 @@ namespace FluentPOS.Modules.Catalog.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Products.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveProductCommand(id)));
         }

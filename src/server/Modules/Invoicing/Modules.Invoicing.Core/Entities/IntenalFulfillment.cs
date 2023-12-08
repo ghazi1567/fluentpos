@@ -93,6 +93,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public string Name { get; set; }
 
-        public Guid InternalOrderId { get; set; }
+        public long InternalOrderId { get; set; }
     }
 }

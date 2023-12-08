@@ -14,11 +14,11 @@ namespace FluentPOS.Modules.Identity.Core.Events
 {
     public class UserLoggedInEvent : Event
     {
-        public Guid UserId { get; }
+        public long UserId { get; }
 
         public new DateTime Timestamp { get; }
 
-        public UserLoggedInEvent(Guid userId)
+        public UserLoggedInEvent(long userId)
         {
             UserId = userId;
             Timestamp = DateTime.Now;

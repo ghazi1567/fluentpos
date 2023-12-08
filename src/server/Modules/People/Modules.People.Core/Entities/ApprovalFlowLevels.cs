@@ -5,9 +5,9 @@ namespace FluentPOS.Modules.People.Core.Entities
 {
     public class ApprovalFlowLevels : BaseEntity
     {
-        public Guid ApprovalFlowId { get; set; }
+        public long ApprovalFlowId { get; set; }
 
-        public Guid? ApprovalId { get; set; }
+        public long? ApprovalId { get; set; }
 
         public int ApprovalIndex { get; set; }
 

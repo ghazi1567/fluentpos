@@ -8,14 +8,14 @@ namespace FluentPOS.Shared.Core.Interfaces.Services.Accounting
     {
         Task GeneratePayroll(PayrollRequestDto payrollRequest);
 
-        Task InsertBasicSalary(Guid employeeId, decimal BasicSalary);
+        Task InsertBasicSalary(long employeeId, decimal BasicSalary);
 
-        Task SalaryIncrement(Guid employeeId, decimal decrement);
+        Task SalaryIncrement(long employeeId, decimal decrement);
 
-        Task SalaryDecrement(Guid employeeId, decimal decrement);
+        Task SalaryDecrement(long employeeId, decimal decrement);
 
         Task<bool> IsPayrollGenerated(DateTime dateTime);
-        Task<bool> IsPayrollGenerated(Guid employeeId, DateTime dateTime);
+        Task<bool> IsPayrollGenerated(long employeeId, DateTime dateTime);
 
     }
 }

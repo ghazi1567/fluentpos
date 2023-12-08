@@ -18,7 +18,7 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Queries
 {
     public class GetCartByIdQuery : IRequest<Result<GetCartByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 
@@ -26,11 +26,11 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Queries
 
         public TimeSpan? SlidingExpiration { get; protected set; }
 
-        public GetCartByIdQuery(Guid cartId, bool bypassCache = false, TimeSpan? slidingExpiration = null)
+        public GetCartByIdQuery(long cartId, bool bypassCache = false, TimeSpan? slidingExpiration = null)
         {
             Id = cartId;
             BypassCache = bypassCache;
-            CacheKey = CacheKeys.Common.GetEntityByIdCacheKey<Guid, Cart>(cartId);
+            CacheKey = CacheKeys.Common.GetEntityByIdCacheKey<long, Cart>(cartId);
             SlidingExpiration = slidingExpiration;
         }
 

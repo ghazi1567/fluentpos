@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Events
 {
     public class BrandRegisteredEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
         public string Name { get; }
 

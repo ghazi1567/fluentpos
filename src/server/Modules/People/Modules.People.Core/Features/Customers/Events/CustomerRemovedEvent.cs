@@ -14,9 +14,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Events
 {
     public class CustomerRemovedEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public CustomerRemovedEvent(Guid id)
+        public CustomerRemovedEvent(long id)
         {
             Id = id;
             AggregateId = id;

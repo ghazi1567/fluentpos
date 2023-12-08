@@ -13,7 +13,7 @@ using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
-    public class RegisterWebhookEventCommand : WebhookEventDto, IRequest<Result<Guid>>
+    public class RegisterWebhookEventCommand : WebhookEventDto, IRequest<Result<long>>
     {
 
     }

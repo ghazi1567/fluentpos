@@ -7,16 +7,16 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 {
     public record GetPurchaseOrderByIdResponse
     (
-     Guid Id,
+     long Id,
      string ReferenceNumber,
      DateTime TimeStamp,
      decimal Total,
      bool IsApproved,
      DateTime? ApproveDate,
-     Guid ApproveBy,
+     long ApproveBy,
      string Note,
      ICollection<POProductResponse> Products,
-     Guid WarehouseId
+     long WarehouseId
     );
 
 }

@@ -25,9 +25,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Organization.Core.Features
 {
     internal class DepartmentCommandHandler :
-        IRequestHandler<RemoveDepartmentCommand, Result<Guid>>,
-        IRequestHandler<RegisterDepartmentCommand, Result<Guid>>,
-        IRequestHandler<UpdateDepartmentCommand, Result<Guid>>
+        IRequestHandler<RemoveDepartmentCommand, Result<long>>,
+        IRequestHandler<RegisterDepartmentCommand, Result<long>>,
+        IRequestHandler<UpdateDepartmentCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IOrganizationDbContext _context;
@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterDepartmentCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterDepartmentCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (await _context.Departments.AnyAsync(c => c.Name == command.Name, cancellationToken))
@@ -62,11 +62,11 @@ namespace FluentPOS.Modules.Organization.Core.Features
             mappedEntity.CreatedAt = DateTime.Now;
             await _context.Departments.AddAsync(mappedEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Department)} Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Department)} Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveDepartmentCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveDepartmentCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             // TODO : check Department already in use
@@ -79,11 +79,11 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             _context.Departments.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Department)} Deleted"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Department)} Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateDepartmentCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateDepartmentCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var entity = await _context.Departments.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -103,7 +103,7 @@ namespace FluentPOS.Modules.Organization.Core.Features
 
             _context.Departments.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Department)} Updated"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Department)} Updated"]);
         }
     }
 }

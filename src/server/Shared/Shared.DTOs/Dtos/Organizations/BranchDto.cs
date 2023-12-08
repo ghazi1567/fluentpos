@@ -8,10 +8,10 @@ namespace FluentPOS.Shared.DTOs.Dtos.Organizations
 {
     public class BranchDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 
-        public Guid OrganizationId { get; set; }
+        public long OrganizationId { get; set; }
     }
 }

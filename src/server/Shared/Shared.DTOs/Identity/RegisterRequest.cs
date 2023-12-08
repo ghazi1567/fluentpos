@@ -41,7 +41,7 @@ namespace FluentPOS.Shared.DTOs.Identity
 
         public bool PhoneNumberConfirmed { get; set; }
 
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
     }
 }

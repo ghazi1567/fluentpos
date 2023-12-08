@@ -10,13 +10,13 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
     {
         Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListAsync();
 
-        Task<BaseEmployeeDto> GetEmployeeDetailsAsync(Guid Id);
+        Task<BaseEmployeeDto> GetEmployeeDetailsAsync(long Id);
 
-        Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeDetailsAsync(List<Guid> Ids);
+        Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeDetailsAsync(List<long> Ids);
 
-        Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids);
+        Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListByPolicyAsync(List<long> Ids);
 
-        Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetMyReporterEmployeeListAsync(Guid id, bool includeMe = false);
+        Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetMyReporterEmployeeListAsync(long id, bool includeMe = false);
 
         Task<int> GetEmployeeCountAsync(bool isActiveOnly);
 

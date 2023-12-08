@@ -22,7 +22,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public string CityName { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public IEnumerable<LoadSheetDetail> Details { get; set; }
     }

@@ -13,7 +13,7 @@ using System;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
-    public class RegisterloadsheetCommand : LoadSheetMainDto, IRequest<Result<Guid>>
+    public class RegisterloadsheetCommand : LoadSheetMainDto, IRequest<Result<long>>
     {
         public bool UpdateOrderStatus{ get; set; }
     }

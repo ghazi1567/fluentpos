@@ -48,7 +48,7 @@ namespace FluentPOS.Shared.Infrastructure.Services
         {
             var queryable = _dbContext.EventLogs.AsNoTracking().AsQueryable();
 
-            if (request.UserId != Guid.Empty)
+            if (request.UserId != default(long))
             {
                 queryable = queryable.Where(x => x.UserId.Equals(request.UserId));
             }

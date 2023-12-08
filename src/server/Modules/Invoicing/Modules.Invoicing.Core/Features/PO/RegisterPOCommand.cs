@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 {
 
-    public class RegisterPOCommand : IRequest<Result<Guid>>
+    public class RegisterPOCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; } = Guid.Empty;
+        public long Id { get; set; } 
 
         public string Note { get;  set; }
 
@@ -21,7 +21,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO
 
         public List<Product> Products { get;  set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public DateTime? TimeStamp { get; set; }
 

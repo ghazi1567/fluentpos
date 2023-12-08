@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands
 {
-    public class RegisterLocationCommand : WarehouseDto, IRequest<Result<Guid>>
+    public class RegisterLocationCommand : WarehouseDto, IRequest<Result<long>>
     {
     }
 }

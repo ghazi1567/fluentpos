@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 {
-    public class MultipleRecordTransactionCommand : IRequest<Result<Guid>>
+    public class MultipleRecordTransactionCommand : IRequest<Result<long>>
     {
         public List<StockTransactionDto> Transactions { get; set; }
 

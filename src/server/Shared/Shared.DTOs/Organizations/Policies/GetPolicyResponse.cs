@@ -3,13 +3,13 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Organizations.Policies
 {
-    public record GetPolicyResponse(Guid Id,
+    public record GetPolicyResponse(long Id,
 DateTimeOffset? CreatedAt,
 DateTimeOffset? UpdatedAt,
-Guid OrganizationId,
-Guid BranchId,
+long OrganizationId,
+long BranchId,
 string Name,
-Guid? DepartmentId,
+long? DepartmentId,
 PayslipType PayslipType,
 PayPeriod PayPeriod,
 int AllowedOffDays,

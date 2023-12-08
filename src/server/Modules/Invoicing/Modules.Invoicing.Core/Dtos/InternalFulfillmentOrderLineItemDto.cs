@@ -23,6 +23,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public DateTimeOffset? ConfirmedAt { get; set; }
 
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
     }
 }

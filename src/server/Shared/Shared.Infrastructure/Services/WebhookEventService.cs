@@ -30,7 +30,7 @@ namespace FluentPOS.Shared.Infrastructure.Services
             return true;
         }
 
-        public async Task<bool> UpdateStatus(Guid id, string status, string notes, long? ShopifyId)
+        public async Task<bool> UpdateStatus(long id, string status, string notes, long? ShopifyId)
         {
             var webHookEvent = await _context.WebhookEvents.SingleOrDefaultAsync(x => x.Id == id);
             if (webHookEvent != null)

@@ -25,11 +25,11 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.ImportFile", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -44,7 +44,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -66,11 +66,11 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.ImportRecord", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -79,7 +79,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IgnoreRackCheck")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("ImportFileId")
+                    b.Property<long?>("ImportFileId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Location")
@@ -88,7 +88,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Qty")
@@ -121,14 +121,14 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.InternalInventoryLevel", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("Available")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -140,7 +140,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<long?>("LocationId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -156,14 +156,14 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.Stock", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("AvailableQuantity")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long>("Committed")
@@ -181,10 +181,10 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<long>("OnHand")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Rack")
@@ -202,7 +202,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<long?>("VariantId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("WarehouseId")
+                    b.Property<long>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -212,11 +212,11 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Inventory.Core.Entities.StockTransaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -231,10 +231,10 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<long>("InventoryItemId")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<long>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("PurchasePrice")
@@ -258,7 +258,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("WarehouseId")
+                    b.Property<long>("WarehouseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");

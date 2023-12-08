@@ -13,7 +13,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.People.Core.Features.ExtendedAttributes.Validators.Carts
 {
-    public class PaginatedCartExtendedAttributeFilterValidator : PaginatedExtendedAttributeFilterValidator<Guid, Cart>
+    public class PaginatedCartExtendedAttributeFilterValidator : PaginatedExtendedAttributeFilterValidator<long, Cart>
     {
         public PaginatedCartExtendedAttributeFilterValidator(IStringLocalizer<PaginatedCartExtendedAttributeFilterValidator> localizer)
             : base(localizer)

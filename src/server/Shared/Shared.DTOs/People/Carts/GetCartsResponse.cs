@@ -10,5 +10,5 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.People.Carts
 {
-    public record GetCartsResponse(Guid Id, Guid CustomerId, DateTime Timestamp);
+    public record GetCartsResponse(long Id, long CustomerId, DateTime Timestamp);
 }

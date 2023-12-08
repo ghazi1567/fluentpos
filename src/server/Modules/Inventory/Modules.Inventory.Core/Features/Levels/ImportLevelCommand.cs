@@ -6,7 +6,7 @@ using System;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 {
-    public class ImportLevelCommand : IRequest<Result<Guid>>
+    public class ImportLevelCommand : IRequest<Result<long>>
     {
         public UploadRequest UploadRequest { get; set; }
 

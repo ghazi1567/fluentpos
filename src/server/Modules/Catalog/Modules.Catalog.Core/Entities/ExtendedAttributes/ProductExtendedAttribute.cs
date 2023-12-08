@@ -11,7 +11,7 @@ using FluentPOS.Shared.Core.Domain;
 
 namespace FluentPOS.Modules.Catalog.Core.Entities.ExtendedAttributes
 {
-    public class ProductExtendedAttribute : ExtendedAttribute<Guid, Product>
+    public class ProductExtendedAttribute : ExtendedAttribute<long, Product>
     {
     }
 }

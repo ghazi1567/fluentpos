@@ -34,9 +34,9 @@ namespace FluentPOS.Modules.Identity.Core.Features.Users.Events
             UserName = user.UserName;
             PhoneNumber = user.PhoneNumber;
             Id = user.Id;
-            AggregateId = Guid.TryParse(user.Id, out var aggregateId)
-                ? aggregateId
-                : Guid.NewGuid();
+            //AggregateId = long.TryParse(user.Id, out var aggregateId)
+            //    ? aggregateId
+            //    : default(long); TODO
             RelatedEntities = new[] { typeof(FluentUser) };
         }
     }

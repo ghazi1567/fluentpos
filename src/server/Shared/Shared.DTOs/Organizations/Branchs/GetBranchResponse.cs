@@ -10,13 +10,13 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Organizations.Branchs
 {
-    public record GetBranchResponse(Guid Id,
+    public record GetBranchResponse(long Id,
 
 DateTimeOffset? CreatedAt,
 
 DateTimeOffset? UpdatedAt,
 
-Guid OrganizationId,
+long OrganizationId,
 
 string Name,
 

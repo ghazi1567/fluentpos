@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Commands.Validators
         public UpdateBrandCommandValidator(IStringLocalizer<UpdateBrandCommandValidator> localizer)
         {
             RuleFor(c => c.Id)
-                .NotEqual(Guid.Empty).WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
+                .NotEmpty().WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
             RuleFor(c => c.Name)
                 .NotEmpty().WithMessage(localizer["The {PropertyName} property cannot be empty."])
                 .Length(2, 150).WithMessage(localizer["The {PropertyName} property must have between 2 and 150 characters."]);

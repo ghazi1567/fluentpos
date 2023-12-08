@@ -29,8 +29,8 @@ namespace FluentPOS.Shared.Infrastructure.Controllers
             return Ok(extendedAttributes);
         }
 
-        [HttpGet("{id:guid}")]
-        public virtual async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, ExtendedAttribute<TEntityId, TEntity>> filter)
+        [HttpGet("{id:long}")]
+        public virtual async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, ExtendedAttribute<TEntityId, TEntity>> filter)
         {
             var request = Mapper.Map<GetExtendedAttributeByIdQuery<TEntityId, TEntity>>(filter);
             var extendedAttribute = await Mediator.Send(request);
@@ -50,7 +50,7 @@ namespace FluentPOS.Shared.Infrastructure.Controllers
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> RemoveAsync(Guid id)
+        public virtual async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveExtendedAttributeCommand<TEntityId, TEntity>(id)));
         }

@@ -8,11 +8,11 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 {
       public record GetWarehouseResponse
       (
-             Guid Id,
+             long Id,
              long? ShopifyId,
              string Name,
              bool? Active,
-             Guid? ParentId,
+             long? ParentId,
              string Latitude,
              string Longitude,
              string Phone,

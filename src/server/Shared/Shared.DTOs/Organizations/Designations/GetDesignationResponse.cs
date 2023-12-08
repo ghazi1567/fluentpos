@@ -2,11 +2,11 @@
 
 namespace FluentPOS.Shared.DTOs.Organizations.Designations
 {
-    public record GetDesignationResponse(Guid Id,
+    public record GetDesignationResponse(long Id,
 DateTimeOffset? CreatedAt,
 DateTimeOffset? UpdatedAt,
-Guid OrganizationId,
-Guid BranchId,
+long OrganizationId,
+long BranchId,
 string Name,
-Guid DepartmentId);
+long DepartmentId);
 }

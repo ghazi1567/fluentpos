@@ -14,9 +14,9 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Events
 {
     public class CartItemRemovedEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public CartItemRemovedEvent(Guid id)
+        public CartItemRemovedEvent(long id)
         {
             Id = id;
             AggregateId = id;

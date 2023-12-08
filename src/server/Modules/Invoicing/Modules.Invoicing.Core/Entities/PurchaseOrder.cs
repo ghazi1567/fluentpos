@@ -20,11 +20,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public DateTime? ApproveDate { get; set; }
 
-        public Guid ApproveBy { get; set; }
+        public long ApproveBy { get; set; }
 
         public string Note { get; private set; }
 
-        public Guid WarehouseId { get; private set; }
+        public long WarehouseId { get; private set; }
 
         public virtual ICollection<POProduct> Products { get; private set; } = new List<POProduct>();
 
@@ -33,7 +33,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
             return new PurchaseOrder { TimeStamp = DateTime.Now, CreatedAt = DateTime.Now };
         }
 
-        public static PurchaseOrder InitializeOrder(Guid _id)
+        public static PurchaseOrder InitializeOrder(long _id)
         {
             return new PurchaseOrder { Id = _id, TimeStamp = DateTime.Now, CreatedAt = DateTime.Now };
         }
@@ -48,7 +48,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
             ReferenceNumber = referenceNumber;
         }
 
-        public void SetWarehouseId(Guid warehouseId)
+        public void SetWarehouseId(long warehouseId)
         {
             WarehouseId = warehouseId;
         }
@@ -63,7 +63,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
             Products.Add(product);
         }
 
-        internal void AddProduct(Guid productId, string name, int quantity, decimal rate, decimal tax)
+        internal void AddProduct(long productId, string name, int quantity, decimal rate, decimal tax)
         {
             Products.Add(new POProduct
             {

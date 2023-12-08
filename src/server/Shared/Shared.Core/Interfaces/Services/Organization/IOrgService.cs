@@ -8,17 +8,17 @@ namespace FluentPOS.Shared.Core.Interfaces.Services.Organization
 {
     public interface IOrgService
     {
-        OrgDetailsDto GetOrgDetails(Guid Id);
+        OrgDetailsDto GetOrgDetails(long Id);
 
-        Task<OrgDetailsDto> GetPolicyDetailsAsync(Guid Id, bool IncludeAllDetails = false);
+        Task<OrgDetailsDto> GetPolicyDetailsAsync(long Id, bool IncludeAllDetails = false);
 
         Task<List<PolicyDto>> GetPolicyDetailsAsync(PayPeriod payPeriod);
 
         Task<List<PolicyDto>> GetAllPoliciesAsync();
 
-        Task<List<DepartmentDto>> GetDepartmentListAsync(List<Guid> Ids);
+        Task<List<DepartmentDto>> GetDepartmentListAsync(List<long> Ids);
 
-        Task<DepartmentDto> GetDepartmentByIdAsync(Guid id);
+        Task<DepartmentDto> GetDepartmentByIdAsync(long id);
 
         Task<List<DepartmentDto>> GetAllDepartmentAsync();
     }

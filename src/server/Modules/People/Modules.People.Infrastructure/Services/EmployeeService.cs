@@ -40,7 +40,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return await queryable.CountAsync();
         }
 
-        public async Task<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto> GetEmployeeDetailsAsync(Guid Id)
+        public async Task<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto> GetEmployeeDetailsAsync(long Id)
         {
             var employee = await _context.Employees.Where(c => c.Id == Id).FirstOrDefaultAsync(default(CancellationToken));
             if (employee == null)
@@ -51,7 +51,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return _mapper.Map<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeDetailsAsync(List<Guid> Ids)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeDetailsAsync(List<long> Ids)
         {
             var employee = await _context.Employees.Where(c => Ids.Contains(c.Id)).ToListAsync(default(CancellationToken));
             if (employee == null)
@@ -62,7 +62,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListByPolicyAsync(List<Guid> Ids)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetEmployeeListByPolicyAsync(List<long> Ids)
         {
             var employee = await _context.Employees.Where(c => c.Active == true && Ids.Contains(c.PolicyId)).ToListAsync(default(CancellationToken));
             if (employee == null)
@@ -84,7 +84,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return _mapper.Map<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>>(employee);
         }
 
-        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetMyReporterEmployeeListAsync(Guid id, bool includeMe = false)
+        public async Task<List<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto>> GetMyReporterEmployeeListAsync(long id, bool includeMe = false)
         {
             var employee = await _context.Employees.Where(x => x.ReportingTo == id).ToListAsync();
             if (includeMe)

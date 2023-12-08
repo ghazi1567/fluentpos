@@ -48,7 +48,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             _user = user;
         }
 
-        public async Task<Result<Guid>> Save(RegisterStockInCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Save(RegisterStockInCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
 
@@ -97,7 +97,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 await _salesContext.SaveChangesAsync(cancellationToken);
             }
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock In {0} Created for approval"], order.ReferenceNumber));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Stock In {0} Created for approval"], order.ReferenceNumber));
         }
 
         public async Task<bool> SaveStockIn(InternalOrder order, CancellationToken cancellationToken = default(CancellationToken))
@@ -107,7 +107,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             return true;
         }
 
-        public async Task<Result<Guid>> Approve(ApproveStockInCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Approve(ApproveStockInCommand request, CancellationToken cancellationToken)
         {
             var order = await _salesContext.Orders.AsNoTracking()
                .OrderBy(x => x.TimeStamp)
@@ -147,10 +147,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 //}
             }
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Order {0} {1}"], order.ReferenceNumber, Enum.GetName(typeof(OrderStatus), request.Status)));
         }
 
-        public async Task<Result<Guid>> Delete(RemoveStockInCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Delete(RemoveStockInCommand request, CancellationToken cancellationToken)
         {
             var stockIn = await _salesContext.Orders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockIn != null)
@@ -162,7 +162,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 
                 _salesContext.Orders.Remove(stockIn);
                 await _salesContext.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(stockIn.Id, _localizer["Stock In Deleted"]);
+                return await Result<long>.SuccessAsync(default(long), _localizer["Stock In Deleted"]);
             }
             else
             {
@@ -170,7 +170,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             }
         }
 
-        public async Task<Result<Guid>> Update(UpdateStockInCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Update(UpdateStockInCommand request, CancellationToken cancellationToken)
         {
             var stockIn = await _salesContext.Orders.Where(p => p.Id == request.Id).FirstOrDefaultAsync(cancellationToken);
             if (stockIn != null)
@@ -195,7 +195,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
                 _salesContext.Orders.Remove(stockIn);
                 await _salesContext.Orders.AddAsync(order, cancellationToken);
                 await _salesContext.SaveChangesAsync(cancellationToken);
-                return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Stock In {0} Updated"], order.ReferenceNumber));
+                return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Stock In {0} Updated"], order.ReferenceNumber));
             }
             else
             {
@@ -203,7 +203,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             }
         }
 
-        public async Task<bool> AlreadyExist(Guid id)
+        public async Task<bool> AlreadyExist(long id)
         {
             return await _salesContext.Orders.AnyAsync(x => x.Id == id);
         }

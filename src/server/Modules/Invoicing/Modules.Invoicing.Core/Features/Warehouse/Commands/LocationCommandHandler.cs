@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands
 {
     internal sealed class LocationCommandHandler :
-        IRequestHandler<RegisterLocationCommand, Result<Guid>>
+        IRequestHandler<RegisterLocationCommand, Result<long>>
     {
         private readonly ISalesDbContext _salesContext;
         private readonly IStringLocalizer<LocationCommandHandler> _localizer;
@@ -47,14 +47,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterLocationCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterLocationCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
 
             var isExist = await _salesContext.Warehouses.SingleOrDefaultAsync(x => x.ShopifyId == command.ShopifyId);
             if (isExist != null)
             {
-                return await Result<Guid>.ReturnErrorAsync(string.Format(_localizer["Duplicate: Warehouse already exists {0}"], command.ShopifyId));
+                return await Result<long>.ReturnErrorAsync(string.Format(_localizer["Duplicate: Warehouse already exists {0}"], command.ShopifyId));
             }
 
             var warehouse = _mapper.Map<Warehouse>(command);
@@ -62,7 +62,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands
             await _salesContext.Warehouses.AddAsync(warehouse, cancellationToken);
             await _salesContext.SaveChangesAsync(cancellationToken);
 
-            return await Result<Guid>.SuccessAsync(warehouse.Id, string.Format(_localizer["Warehouse {0} Created"], warehouse.ShopifyId));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Warehouse {0} Created"], warehouse.ShopifyId));
         }
     }
 }

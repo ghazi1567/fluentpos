@@ -27,7 +27,7 @@ namespace FluentPOS.Modules.Organization.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Branchs.View)]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Store> filter)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, Store> filter)
         {
             var request = Mapper.Map<GetBranchByIdQuery>(filter);
             var brand = await Mediator.Send(request);
@@ -59,7 +59,7 @@ namespace FluentPOS.Modules.Organization.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Branchs.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveBranchCommand(id)));
         }

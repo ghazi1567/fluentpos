@@ -11,7 +11,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetWarehouseQuery : IRequest<Result<List<WarehouseDto>>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
     }
 }

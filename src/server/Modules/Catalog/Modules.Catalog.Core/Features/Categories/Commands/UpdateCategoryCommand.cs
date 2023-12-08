@@ -13,9 +13,9 @@ using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
 {
-    public class UpdateCategoryCommand : IRequest<Result<Guid>>
+    public class UpdateCategoryCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 

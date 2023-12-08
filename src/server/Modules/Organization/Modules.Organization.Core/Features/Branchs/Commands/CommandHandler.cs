@@ -25,9 +25,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
 {
     internal class CommandHandler :
-        IRequestHandler<RemoveBranchCommand, Result<Guid>>,
-        IRequestHandler<RegisterBranchCommand, Result<Guid>>,
-        IRequestHandler<UpdateBranchCommand, Result<Guid>>
+        IRequestHandler<RemoveBranchCommand, Result<long>>,
+        IRequestHandler<RegisterBranchCommand, Result<long>>,
+        IRequestHandler<UpdateBranchCommand, Result<long>>
     {
         private readonly IDistributedCache _cache;
         private readonly IOrganizationDbContext _context;
@@ -50,7 +50,7 @@ namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterBranchCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterBranchCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (await _context.Stores.AnyAsync(c => c.Name == command.Name, cancellationToken))
@@ -62,11 +62,11 @@ namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
             mappedEntity.CreatedAt = DateTime.Now;
             await _context.Stores.AddAsync(mappedEntity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(mappedEntity.Id, _localizer[$"{nameof(Store)} Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Store)} Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveBranchCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveBranchCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             // TODO : check branch already in use
@@ -79,11 +79,11 @@ namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
 
             _context.Stores.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(entity.Id, _localizer[$"{nameof(Store)} Deleted"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Store)} Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateBranchCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateBranchCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var entity = await _context.Stores.Where(b => b.Id == command.Id).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
@@ -103,7 +103,7 @@ namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
 
             _context.Stores.Update(updatedEntity);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(updatedEntity.Id, _localizer[$"{nameof(Store)} Updated"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer[$"{nameof(Store)} Updated"]);
         }
     }
 }

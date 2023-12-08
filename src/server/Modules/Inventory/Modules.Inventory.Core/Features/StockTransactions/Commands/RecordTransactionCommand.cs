@@ -6,7 +6,7 @@ using System;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 {
-    public class RecordTransactionCommand : StockTransactionDto, IRequest<Result<Guid>>
+    public class RecordTransactionCommand : StockTransactionDto, IRequest<Result<long>>
     {
         
     }

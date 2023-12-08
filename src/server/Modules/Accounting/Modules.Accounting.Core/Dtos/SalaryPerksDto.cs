@@ -6,7 +6,7 @@ namespace FluentPOS.Modules.Accounting.Core.Dtos
 {
     public class SalaryPerksDto : BaseEntityDto
     {
-        public Guid? EmployeeId { get; set; }
+        public long? EmployeeId { get; set; }
 
         public string Name { get; set; }
 

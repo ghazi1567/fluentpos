@@ -5,9 +5,9 @@ namespace FluentPOS.Modules.People.Core.Dtos
 {
     public class ShiftPlannerDto : BaseEntityDto
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
-        public Guid PolicyId { get; set; }
+        public long PolicyId { get; set; }
 
         public DateTime ShiftDate { get; set; }
 

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FluentPOS.Modules.Organization.Core.Entities
 {
-    public class Organisation : IEntity<Guid>
+    public class Organisation : IEntity<long>
     {
         [Key]
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public DateTimeOffset? CreatedAt { get; set; }
 
@@ -27,7 +27,7 @@ namespace FluentPOS.Modules.Organization.Core.Entities
 
         protected Organisation()
         {
-            Id = Guid.NewGuid();
+            //Id = default(long);
         }
     }
 }

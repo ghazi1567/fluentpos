@@ -18,7 +18,7 @@ using MediatR;
 namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
 {
     // ReSharper disable once UnusedTypeParameter
-    public class AddExtendedAttributeCommand<TEntityId, TEntity> : IRequest<Result<Guid>>
+    public class AddExtendedAttributeCommand<TEntityId, TEntity> : IRequest<Result<long>>
         where TEntity : class, IEntity<TEntityId>
     {
         public TEntityId EntityId { get; set; }

@@ -27,7 +27,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Services
             _mediator = mediator;
         }
 
-        public async Task<Result<GetProductByIdResponse>> GetDetailsAsync(Guid productId)
+        public async Task<Result<GetProductByIdResponse>> GetDetailsAsync(long productId)
         {
             return await _mediator.Send(new GetProductByIdQuery(productId, false));
         }
@@ -54,7 +54,7 @@ namespace FluentPOS.Modules.Catalog.Infrastructure.Services
             return result.Data;
         }
 
-        public async Task<List<GetProductVariantResponse>> GetProductByIds(List<Guid> inventoryItemIds)
+        public async Task<List<GetProductVariantResponse>> GetProductByIds(List<long> inventoryItemIds)
         {
             var result = await _mediator.Send(new GetProductsByIds(inventoryItemIds));
             return result.Data;

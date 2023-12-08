@@ -10,5 +10,5 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Catalogs.Categories
 {
-    public record GetCategoryByIdResponse(Guid Id, string Name, string Detail);
+    public record GetCategoryByIdResponse(long Id, string Name, string Detail);
 }

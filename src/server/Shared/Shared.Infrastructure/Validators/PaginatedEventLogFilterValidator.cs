@@ -14,7 +14,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Shared.Infrastructure.Validators
 {
-    public class PaginatedEventLogFilterValidator : PaginatedFilterValidator<Guid, EventLog, PaginatedEventLogsFilter>
+    public class PaginatedEventLogFilterValidator : PaginatedFilterValidator<long, EventLog, PaginatedEventLogsFilter>
     {
         public PaginatedEventLogFilterValidator(IStringLocalizer<PaginatedEventLogFilterValidator> localizer)
             : base(localizer)

@@ -7,9 +7,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
     [Table("OrderLogs")]
     public class OrderLogs : BaseEntity
     {
-        public Guid InternalOrderId { get; set; }
+        public long InternalOrderId { get; set; }
 
-        public Guid? FulfillmentOrderId { get; set; }
+        public long? FulfillmentOrderId { get; set; }
 
         public string LogDescription { get; set; }
     }

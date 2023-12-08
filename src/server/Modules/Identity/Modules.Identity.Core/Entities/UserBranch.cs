@@ -6,7 +6,7 @@ namespace FluentPOS.Modules.Identity.Core.Entities
 {
     public class UserBranch : BaseEntity
     {
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         public bool Active { get; set; }
 

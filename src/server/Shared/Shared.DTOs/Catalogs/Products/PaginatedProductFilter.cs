@@ -15,8 +15,8 @@ namespace FluentPOS.Shared.DTOs.Catalogs.Products
     {
         public string SearchString { get; set; }
 
-        public Guid[] BrandIds { get; set; }
+        public long[] BrandIds { get; set; }
 
-        public Guid[] CategoryIds { get; set; }
+        public long[] CategoryIds { get; set; }
     }
 }

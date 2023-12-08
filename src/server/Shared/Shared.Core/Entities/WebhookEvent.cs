@@ -11,11 +11,10 @@ namespace FluentPOS.Shared.Core.Entities
     {
         public WebhookEvent()
         {
-            Id = Guid.NewGuid();
         }
 
         [Key]
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string WebhookId { get; set; }
 

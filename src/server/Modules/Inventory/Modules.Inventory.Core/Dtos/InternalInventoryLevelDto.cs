@@ -20,8 +20,8 @@ namespace FluentPOS.Modules.Inventory.Core.Dtos
         /// </summary>
         public long? Available { get; set; }
 
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
-        public Guid? ParentId { get; set; }
+        public long? ParentId { get; set; }
     }
 }

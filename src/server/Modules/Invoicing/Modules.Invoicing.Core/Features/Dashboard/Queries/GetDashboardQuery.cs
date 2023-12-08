@@ -7,7 +7,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetDashboardQuery : IRequest<Result<DashboardDto>>
     {
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
         public DateTime StartDate { get; set; }
 

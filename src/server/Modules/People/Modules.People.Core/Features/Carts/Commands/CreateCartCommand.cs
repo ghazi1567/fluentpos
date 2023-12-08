@@ -12,8 +12,8 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
 {
-    public class CreateCartCommand : IRequest<Result<Guid>>
+    public class CreateCartCommand : IRequest<Result<long>>
     {
-        public Guid CustomerId { get; set; }
+        public long CustomerId { get; set; }
     }
 }

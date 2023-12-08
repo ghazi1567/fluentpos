@@ -31,7 +31,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             _localizer = localizer;
         }
 
-        public List<NextApproverDto> GetNextAssignee(Guid requestId, RequestType requestType, Guid employeeId)
+        public List<NextApproverDto> GetNextAssignee(long requestId, RequestType requestType, long employeeId)
         {
             List<NextApproverDto> nextApproverResponse = new List<NextApproverDto>();
             var workFlow = _context.ApprovalFlows.Where(x => x.FlowType == requestType).Include(i => i.Levels).FirstOrDefault();
@@ -66,7 +66,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return nextApproverResponse.OrderBy(x => x.ApprovalIndex).ToList();
         }
 
-        public async Task<bool> AssignAprroversAsync(Guid requestId)
+        public async Task<bool> AssignAprroversAsync(long requestId)
         {
             var request = _context.EmployeeRequests.Where(x => x.Id == requestId).FirstOrDefault();
             if (request == null)
@@ -75,7 +75,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             }
 
             List<RequestApproval> requestApprovals = new List<RequestApproval>();
-            Guid? workflowId = null;
+            long? workflowId = null;
             var approvers = GetNextAssignee(request.Id, request.RequestType, request.EmployeeId);
             if (approvers.Count > 0)
             {
@@ -103,7 +103,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                         EmployeeRequestId = requestId,
                         BranchId = request.BranchId,
                         OrganizationId = request.OrganizationId,
-                        Id = Guid.NewGuid()
+                        Id = default(long)
                     });
                 }
                 if (workflowId != null)
@@ -118,7 +118,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return true;
         }
 
-        public async Task<bool> ApproveRequestAsync(Guid requestId, Guid approverId, string comments)
+        public async Task<bool> ApproveRequestAsync(long requestId, long approverId, string comments)
         {
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
             if (request == null)
@@ -164,7 +164,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     EmployeeRequestId = requestId,
                     BranchId = request.BranchId,
                     OrganizationId = request.OrganizationId,
-                    Id = Guid.NewGuid()
+                    Id = default(long)
                 });
                 _context.RequestApprovals.AddRange(approvals);
 
@@ -200,7 +200,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return true;
         }
 
-        public async Task<bool> RejectRequestAsync(Guid requestId, Guid approverId, string comments)
+        public async Task<bool> RejectRequestAsync(long requestId, long approverId, string comments)
         {
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
             if (request == null)
@@ -237,7 +237,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     EmployeeRequestId = requestId,
                     BranchId = request.BranchId,
                     OrganizationId = request.OrganizationId,
-                    Id = Guid.NewGuid()
+                    Id = default(long)
                 });
                 _context.RequestApprovals.AddRange(approvals);
 

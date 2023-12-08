@@ -25,14 +25,14 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.RoleExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -69,7 +69,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -93,14 +93,14 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.ExtendedAttributes.UserExtendedAttribute", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("Boolean")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
@@ -137,7 +137,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -242,7 +242,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("EmployeeId")
+                    b.Property<long?>("EmployeeId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
@@ -311,20 +311,20 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Modules.Identity.Core.Entities.UserBranch", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("BranchId")
+                    b.Property<long>("BranchId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset?>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("OrganizationId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<long?>("ShopifyId")
@@ -333,7 +333,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");

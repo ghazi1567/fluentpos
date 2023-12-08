@@ -26,9 +26,9 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
 {
     internal class CartCommandHandler :
-        IRequestHandler<CreateCartCommand, Result<Guid>>,
-        IRequestHandler<RemoveCartCommand, Result<Guid>>,
-        IRequestHandler<ClearCartCommand, Result<Guid>>
+        IRequestHandler<CreateCartCommand, Result<long>>,
+        IRequestHandler<RemoveCartCommand, Result<long>>,
+        IRequestHandler<ClearCartCommand, Result<long>>
     {
         private readonly IPeopleDbContext _context;
         private readonly IMapper _mapper;
@@ -48,7 +48,7 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(CreateCartCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(CreateCartCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (!await _context.Customers.AnyAsync(p => p.Id == command.CustomerId, cancellationToken))
@@ -60,11 +60,11 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
             cart.AddDomainEvent(new CartCreatedEvent(cart));
             await _context.Carts.AddAsync(cart, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return await Result<Guid>.SuccessAsync(cart.Id, _localizer["Cart Created"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Cart Created"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveCartCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveCartCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var cart = await _context.Carts.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
@@ -76,12 +76,12 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
             cart.AddDomainEvent(new CartRemovedEvent(cart.Id));
             _context.Carts.Remove(cart);
             await _context.SaveChangesAsync(cancellationToken);
-            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Cart>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(cart.Id, _localizer["Cart Deleted"]);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Cart>(command.Id), cancellationToken);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Cart Deleted"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(ClearCartCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(ClearCartCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var cart = await _context.Carts.FirstOrDefaultAsync(b => b.Id == command.Id, cancellationToken);
@@ -97,8 +97,8 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Commands
                 await _context.SaveChangesAsync(cancellationToken);
             }
 
-            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Cart>(command.Id), cancellationToken);
-            return await Result<Guid>.SuccessAsync(cart.Id, _localizer["Cart Cleared"]);
+            await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Cart>(command.Id), cancellationToken);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Cart Cleared"]);
         }
     }
 }

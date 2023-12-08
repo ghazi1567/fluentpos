@@ -22,34 +22,34 @@ namespace FluentPOS.Modules.Catalog.Controllers.ExtendedAttributes
 {
     [ApiVersion("1")]
     [Route(BaseController.BasePath + "/" + nameof(Product) + "/attributes")]
-    internal sealed class ProductExtendedAttributesController : ExtendedAttributesController<Guid, Product>
+    internal sealed class ProductExtendedAttributesController : ExtendedAttributesController<long, Product>
     {
         [Authorize(Policy = Permissions.ProductsExtendedAttributes.ViewAll)]
-        public override Task<IActionResult> GetAllAsync(PaginatedExtendedAttributeFilter<Guid, Product> filter)
+        public override Task<IActionResult> GetAllAsync(PaginatedExtendedAttributeFilter<long, Product> filter)
         {
             return base.GetAllAsync(filter);
         }
 
         [Authorize(Policy = Permissions.ProductsExtendedAttributes.View)]
-        public override Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, ExtendedAttribute<Guid, Product>> filter)
+        public override Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, ExtendedAttribute<long, Product>> filter)
         {
             return base.GetByIdAsync(filter);
         }
 
         [Authorize(Policy = Permissions.ProductsExtendedAttributes.Add)]
-        public override Task<IActionResult> CreateAsync(AddExtendedAttributeCommand<Guid, Product> command)
+        public override Task<IActionResult> CreateAsync(AddExtendedAttributeCommand<long, Product> command)
         {
             return base.CreateAsync(command);
         }
 
         [Authorize(Policy = Permissions.ProductsExtendedAttributes.Update)]
-        public override Task<IActionResult> UpdateAsync(UpdateExtendedAttributeCommand<Guid, Product> command)
+        public override Task<IActionResult> UpdateAsync(UpdateExtendedAttributeCommand<long, Product> command)
         {
             return base.UpdateAsync(command);
         }
 
         [Authorize(Policy = Permissions.ProductsExtendedAttributes.Remove)]
-        public override Task<IActionResult> RemoveAsync(Guid id)
+        public override Task<IActionResult> RemoveAsync(long id)
         {
             return base.RemoveAsync(id);
         }

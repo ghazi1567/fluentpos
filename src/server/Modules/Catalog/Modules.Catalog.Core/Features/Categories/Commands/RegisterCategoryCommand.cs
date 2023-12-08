@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Categories.Commands
 {
-    public class RegisterCategoryCommand : IRequest<Result<Guid>>
+    public class RegisterCategoryCommand : IRequest<Result<long>>
     {
         public string Name { get; set; }
 

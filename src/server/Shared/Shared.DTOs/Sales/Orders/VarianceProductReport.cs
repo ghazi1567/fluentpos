@@ -8,7 +8,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 {
     public record VarianceProductReport
     (
-        Guid ProductId,
+        long ProductId,
         decimal AvailableQuantity,
         DateTime LastUpdatedOn,
         string Name,

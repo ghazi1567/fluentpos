@@ -33,7 +33,7 @@ namespace FluentPOS.Modules.Catalog.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Categories.View)]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Category> filter)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, Category> filter)
         {
             var request = Mapper.Map<GetCategoryByIdQuery>(filter);
             var category = await Mediator.Send(request);
@@ -56,7 +56,7 @@ namespace FluentPOS.Modules.Catalog.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Categories.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveCategoryCommand(id)));
         }

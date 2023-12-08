@@ -15,7 +15,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Employees.Commands
 {
-    public class ImportEmployeeCommand : IRequest<Result<Guid>>
+    public class ImportEmployeeCommand : IRequest<Result<long>>
     {
         public List<EmployeeDto> Employees { get; set; }
     }

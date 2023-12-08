@@ -5,7 +5,7 @@ namespace FluentPOS.Modules.Accounting.Core.Entities
 {
     public class Salary : BaseEntity
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
         public decimal BasicSalary { get; set; }
 

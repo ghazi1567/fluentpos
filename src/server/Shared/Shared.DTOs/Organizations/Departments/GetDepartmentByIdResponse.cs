@@ -10,14 +10,14 @@ using System;
 
 namespace FluentPOS.Shared.DTOs.Organizations.Departments
 {
-    public record GetDepartmentByIdResponse(Guid Id,
+    public record GetDepartmentByIdResponse(long Id,
 DateTimeOffset? CreatedAt,
 DateTimeOffset? UpdatedAt,
-Guid OrganizationId,
-Guid BranchId,
+long OrganizationId,
+long BranchId,
 string Name,
 bool IsGlobalDepartment,
 string Description,
-Guid? HeadOfDepartment,
+long? HeadOfDepartment,
 int Production);
 }

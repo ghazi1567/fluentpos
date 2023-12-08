@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.People.Core.Features.Salaries.Queries
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.EffecitveFrom);
             queryable = queryable.Where(x => x.IsGlobal == request.IsGlobal);
-            if (request.EmployeeId != null && request.EmployeeId != System.Guid.Empty)
+            if (request.EmployeeId != null && request.EmployeeId !=0)
             {
                 queryable = queryable.Where(x => x.EmployeeId != null && x.EmployeeId.Value == request.EmployeeId);
             }

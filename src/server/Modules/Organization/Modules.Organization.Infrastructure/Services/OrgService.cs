@@ -29,12 +29,12 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             _localizer = localizer;
         }
 
-        public OrgDetailsDto GetOrgDetails(Guid Id)
+        public OrgDetailsDto GetOrgDetails(long Id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<OrgDetailsDto> GetPolicyDetailsAsync(Guid Id, bool IncludeAllDetails=false)
+        public async Task<OrgDetailsDto> GetPolicyDetailsAsync(long Id, bool IncludeAllDetails=false)
         {
             OrgDetailsDto orgDetailsDto = new OrgDetailsDto();
 
@@ -73,7 +73,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             return _mapper.Map<List<PolicyDto>>(policy);
         }
 
-        private async Task<OrganizationDto> GetOrgnizationDetailsAsync(Guid Id)
+        private async Task<OrganizationDto> GetOrgnizationDetailsAsync(long Id)
         {
             var organisation = await _context.Organisations.AsNoTracking()
                .Where(b => b.Id == Id)
@@ -91,7 +91,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             };
         }
 
-        private async Task<BranchDto> GetBranchDetailsAsync(Guid Id)
+        private async Task<BranchDto> GetBranchDetailsAsync(long Id)
         {
             var branch = await _context.Stores.AsNoTracking()
                .Where(b => b.Id == Id)
@@ -110,7 +110,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             };
         }
 
-        public async Task<List<DepartmentDto>> GetDepartmentListAsync(List<Guid> Ids)
+        public async Task<List<DepartmentDto>> GetDepartmentListAsync(List<long> Ids)
         {
             var departments = await _context.Departments.AsNoTracking()
                .Where(b => Ids.Contains(b.Id))
@@ -119,7 +119,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             return _mapper.Map<List<DepartmentDto>>(departments);
         }
 
-        public async Task<DepartmentDto> GetDepartmentByIdAsync(Guid id)
+        public async Task<DepartmentDto> GetDepartmentByIdAsync(long id)
         {
             var departments = await _context.Departments.AsNoTracking()
                .Where(b => b.Id == id)

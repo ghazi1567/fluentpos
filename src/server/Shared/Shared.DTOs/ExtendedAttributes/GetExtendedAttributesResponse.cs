@@ -13,7 +13,7 @@ using System;
 namespace FluentPOS.Shared.DTOs.ExtendedAttributes
 {
     public record GetExtendedAttributesResponse<TEntityId>(
-        Guid Id,
+        long Id,
         TEntityId EntityId,
         ExtendedAttributeType Type,
         string Key,

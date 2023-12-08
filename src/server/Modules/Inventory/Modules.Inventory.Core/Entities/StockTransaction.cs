@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 {
     public class StockTransaction : BaseEntity
     {
-        public StockTransaction(Guid productId, long inventoryItemId, long quantity, OrderType type, Guid warehouseId)
+        public StockTransaction(long productId, long inventoryItemId, long quantity, OrderType type, long warehouseId)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -24,7 +24,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             WarehouseId = warehouseId;
         }
 
-        public StockTransaction(Guid productId, long quantity, OrderType type, string referenceNumber)
+        public StockTransaction(long productId, long quantity, OrderType type, string referenceNumber)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -33,7 +33,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             Timestamp = DateTime.Now;
         }
 
-        public StockTransaction(Guid productId, long quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate)
+        public StockTransaction(long productId, long quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -45,7 +45,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             FactorDate = factorDate;
         }
 
-        public StockTransaction(Guid productId, long quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, DateTime timestamp)
+        public StockTransaction(long productId, long quantity, OrderType type, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, DateTime timestamp)
         {
             ProductId = productId;
             Quantity = quantity;
@@ -57,7 +57,7 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
             FactorDate = factorDate;
         }
 
-        public Guid ProductId { get; private set; }
+        public long ProductId { get; private set; }
 
         public long InventoryItemId { get; set; }
 
@@ -75,6 +75,6 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 
         public DateTime FactorDate { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
     }
 }

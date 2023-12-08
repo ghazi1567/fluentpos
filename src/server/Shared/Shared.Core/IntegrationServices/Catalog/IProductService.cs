@@ -16,7 +16,7 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Catalog
 {
     public interface IProductService
     {
-        Task<Result<GetProductByIdResponse>> GetDetailsAsync(Guid productId);
+        Task<Result<GetProductByIdResponse>> GetDetailsAsync(long productId);
 
         Task<Result<List<GetProductImageByIdResponse>>> GetProductImages(List<long?> productId);
 
@@ -26,6 +26,6 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Catalog
 
         Task<List<GetProductVariantResponse>> GetProductByInventoryItemIds(List<long> inventoryItemIds);
 
-        Task<List<GetProductVariantResponse>> GetProductByIds(List<Guid> inventoryItemIds);
+        Task<List<GetProductVariantResponse>> GetProductByIds(List<long> inventoryItemIds);
     }
 }

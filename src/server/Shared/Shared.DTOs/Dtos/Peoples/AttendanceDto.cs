@@ -5,13 +5,13 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 {
     public class AttendanceDto : BaseEntityDto
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
-        public Guid DepartmentId { get; set; }
+        public long DepartmentId { get; set; }
 
-        public Guid PolicyId { get; set; }
+        public long PolicyId { get; set; }
 
-        public Guid DesignationId { get; set; }
+        public long DesignationId { get; set; }
 
         public DateTime AttendanceDate { get; set; }
 
@@ -24,7 +24,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public AttendanceStatus AttendanceStatus { get; set; }
 
-        public Guid? RequestId { get; set; }
+        public long? RequestId { get; set; }
 
         public DateTime ActualIn { get; set; }
 
@@ -42,7 +42,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Peoples
 
         public DateTime StatusUpdateOn { get; set; }
 
-        public Guid ApprovedBy { get; set; }
+        public long ApprovedBy { get; set; }
 
         public string Reason { get; set; }
 

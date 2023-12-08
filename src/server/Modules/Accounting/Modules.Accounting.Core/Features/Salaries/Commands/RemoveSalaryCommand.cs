@@ -12,11 +12,11 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 {
-    public class RemoveSalaryCommand : IRequest<Result<Guid>>
+    public class RemoveSalaryCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public RemoveSalaryCommand(Guid customerId)
+        public RemoveSalaryCommand(long customerId)
         {
             Id = customerId;
         }

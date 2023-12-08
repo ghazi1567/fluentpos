@@ -13,7 +13,7 @@ namespace FluentPOS.Shared.DTOs.Inventory
     public class ProductFactorDto
     {
 
-        public Guid ProductId { get; set; }
+        public long ProductId { get; set; }
 
         public string Barcode { get; set; }
 

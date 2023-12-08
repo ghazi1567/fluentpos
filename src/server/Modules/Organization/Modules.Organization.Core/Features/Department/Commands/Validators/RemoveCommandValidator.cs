@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands.Validator
         public RemoveDepartmentCommandValidator(IStringLocalizer<RemoveCommandValidator> localizer)
         {
             RuleFor(c => c.Id)
-                .NotEqual(Guid.Empty).WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
+                .NotEmpty().WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
         }
     }
 }

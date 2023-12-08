@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.Accounting.Core.Mappings
             CreateMap<SalaryDto, Salary>().ReverseMap();
             CreateMap<RegisterSalaryCommand, Salary>().ReverseMap();
             CreateMap<UpdateSalaryCommand, Salary>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Salary>, GetSalaryByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Salary>, GetSalaryByIdQuery>();
             CreateMap<GetProductByIdResponse, Salary>().ReverseMap();
             CreateMap<PaginatedFilter, GetSalaryQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
@@ -39,7 +39,7 @@ namespace FluentPOS.Modules.Accounting.Core.Mappings
             CreateMap<SalaryPerksDto, SalaryPerks>().ReverseMap();
             CreateMap<RegisterSalaryPerksCommand, SalaryPerks>().ReverseMap();
             CreateMap<UpdateSalaryPerksCommand, SalaryPerks>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, SalaryPerks>, GetSalaryByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, SalaryPerks>, GetSalaryByIdQuery>();
             CreateMap<GetProductByIdResponse, SalaryPerks>().ReverseMap();
             CreateMap<PaginatedFilter, GetSalaryQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
@@ -49,7 +49,7 @@ namespace FluentPOS.Modules.Accounting.Core.Mappings
             CreateMap<PayrollRequestDto, PayrollRequest>().ReverseMap();
             CreateMap<RegisterSalaryPerksCommand, PayrollRequest>().ReverseMap();
             CreateMap<UpdateSalaryPerksCommand, PayrollRequest>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, PayrollRequest>, GetPayrollRequestByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, PayrollRequest>, GetPayrollRequestByIdQuery>();
             CreateMap<GetPayrollRequestByIdQuery, PayrollRequest>().ReverseMap();
             CreateMap<PaginatedFilter, GetPayrollRequestQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
@@ -58,7 +58,7 @@ namespace FluentPOS.Modules.Accounting.Core.Mappings
             CreateMap<PaginatedResult<Payroll>, PaginatedResult<PayrollDto>>().ReverseMap();
             CreateMap<PayrollDto, Payroll>().ReverseMap();
             CreateMap<PayrollTransactionDto, PayrollTransaction>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Payroll>, GetPayslipRequestByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Payroll>, GetPayslipRequestByIdQuery>();
             CreateMap<GetPayslipRequestByIdQuery, Payroll>().ReverseMap();
             CreateMap<PaginatedFilter, GetPayslipRequestQuery>()
                 .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));

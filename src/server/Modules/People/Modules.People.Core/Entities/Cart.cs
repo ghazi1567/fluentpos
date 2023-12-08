@@ -15,7 +15,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 {
     public class Cart : BaseEntity
     {
-        public Guid CustomerId { get; set; }
+        public long CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }
 

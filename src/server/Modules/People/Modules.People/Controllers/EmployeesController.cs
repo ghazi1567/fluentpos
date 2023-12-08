@@ -51,14 +51,6 @@ namespace FluentPOS.Modules.People.Controllers
             return Ok(customers);
         }
 
-        [HttpGet("{id}")]
-        [Authorize(Policy = Permissions.Employees.View)]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Customer> filter)
-        {
-            var request = Mapper.Map<GetEmployeeByIdQuery>(filter);
-            var customer = await Mediator.Send(request);
-            return Ok(customer);
-        }
 
         [HttpPost]
         [Authorize(Policy = Permissions.Employees.Register)]
@@ -76,7 +68,7 @@ namespace FluentPOS.Modules.People.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Employees.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveEmployeeCommand(id)));
         }

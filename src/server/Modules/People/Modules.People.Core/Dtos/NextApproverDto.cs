@@ -15,9 +15,9 @@ namespace FluentPOS.Modules.People.Core.Dtos
             IsWorkFlowFound = true;
         }
 
-        public Guid? ApprovalFlowId { get; set; }
+        public long? ApprovalFlowId { get; set; }
 
-        public Guid ApprovalId { get; set; }
+        public long ApprovalId { get; set; }
 
         public int ApprovalIndex { get; set; }
     }

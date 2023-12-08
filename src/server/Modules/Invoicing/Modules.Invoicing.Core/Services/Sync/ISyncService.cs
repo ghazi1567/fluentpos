@@ -9,12 +9,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
 {
     public interface ISyncService
     {
-        Task<List<PurchaseOrder>> GetPendingPurchaseOrdersAsync(Guid clientId);
+        Task<List<PurchaseOrder>> GetPendingPurchaseOrdersAsync(long clientId);
 
         Task<bool> UpdateLogs(SyncLog syncLog);
 
-        Task<List<InternalOrder>> GetPendingStockInAsync(Guid clientId);
+        Task<List<InternalOrder>> GetPendingStockInAsync(long clientId);
 
-        Task<List<InternalOrder>> GetPendingStockOutAsync(Guid clientId);
+        Task<List<InternalOrder>> GetPendingStockOutAsync(long clientId);
     }
 }

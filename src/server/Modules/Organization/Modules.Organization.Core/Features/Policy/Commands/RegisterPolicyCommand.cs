@@ -14,7 +14,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features
 {
-    public class RegisterPolicyCommand : PolicyDto, IRequest<Result<Guid>>
+    public class RegisterPolicyCommand : PolicyDto, IRequest<Result<long>>
     {
     }
 }

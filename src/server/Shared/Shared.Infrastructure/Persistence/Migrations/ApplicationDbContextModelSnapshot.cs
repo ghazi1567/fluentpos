@@ -50,7 +50,7 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Shared.Core.Entities.RemoteClient", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -73,7 +73,7 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Shared.Core.Entities.WebhookEvent", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -120,11 +120,11 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FluentPOS.Shared.Core.EventLogging.EventLog", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AggregateId")
+                    b.Property<long>("AggregateId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Data")
@@ -148,7 +148,7 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");

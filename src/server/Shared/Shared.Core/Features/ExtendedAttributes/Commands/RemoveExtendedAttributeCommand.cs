@@ -14,12 +14,12 @@ using MediatR;
 namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands
 {
     // ReSharper disable once UnusedTypeParameter
-    public class RemoveExtendedAttributeCommand<TEntityId, TEntity> : IRequest<Result<Guid>>
+    public class RemoveExtendedAttributeCommand<TEntityId, TEntity> : IRequest<Result<long>>
         where TEntity : class, IEntity<TEntityId>
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public RemoveExtendedAttributeCommand(Guid entityExtendedAttributeId)
+        public RemoveExtendedAttributeCommand(long entityExtendedAttributeId)
         {
             Id = entityExtendedAttributeId;
         }

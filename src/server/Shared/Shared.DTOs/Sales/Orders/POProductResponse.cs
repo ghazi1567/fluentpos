@@ -7,8 +7,8 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 {
     public record POProductResponse
     (
-        Guid OrderId,
-        Guid ProductId,
+        long OrderId,
+        long ProductId,
         int Quantity,
         string Category,
         string Brand,
@@ -16,6 +16,6 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
         decimal Tax,
         decimal Discount,
         decimal Total,
-        Guid PurchaseOrderId
+        long PurchaseOrderId
 );
 }

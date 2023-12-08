@@ -25,11 +25,11 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 {
     internal class ProductCommandHandler :
-        IRequestHandler<RegisterProductCommand, Result<Guid>>,
-        IRequestHandler<RemoveProductCommand, Result<Guid>>,
-        IRequestHandler<UpdateProductCommand, Result<Guid>>,
-        IRequestHandler<ImportProductCommand, Result<Guid>>,
-        IRequestHandler<UpdateFactorCommand, Result<Guid>>
+        IRequestHandler<RegisterProductCommand, Result<long>>,
+        IRequestHandler<RemoveProductCommand, Result<long>>,
+        IRequestHandler<UpdateProductCommand, Result<long>>,
+        IRequestHandler<ImportProductCommand, Result<long>>,
+        IRequestHandler<UpdateFactorCommand, Result<long>>
 
     {
         private readonly IDistributedCache _cache;
@@ -59,12 +59,12 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterProductCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             if (command.ShopifyId != null && await _context.Products.AnyAsync(p => p.ShopifyId == command.ShopifyId, cancellationToken))
             {
-                return Result<Guid>.ReturnError(_localizer[$"Shopify Product with id: {command.ShopifyId} already exists."]);
+                return Result<long>.ReturnError(_localizer[$"Shopify Product with id: {command.ShopifyId} already exists."]);
             }
 
             var product = _mapper.Map<Product>(command);
@@ -81,16 +81,16 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             await _context.Products.AddAsync(product, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            // if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            // if (product.OpeningStock > 0 && product.WarehouseId != default(long))
             // {
             //     await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
             // }
 
-            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Product Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             //if (await _context.Products.Where(p => p.Id != command.Id).AnyAsync(p => p.BarcodeSymbology == command.BarcodeSymbology, cancellationToken))
@@ -114,24 +114,24 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             //    _context.Products.Update(product);
             //    await _context.SaveChangesAsync(cancellationToken);
 
-            //    if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //    if (product.OpeningStock > 0 && product.WarehouseId != default(long))
             //    {
             //        await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
             //    }
 
-            //    await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
-            //    return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Updated"]);
+            //    await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Product>(command.Id), cancellationToken);
+            //    return await Result<long>.SuccessAsync(product.Id, _localizer["Product Updated"]);
             //}
             //else
             //{
             //    throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
             //}
-            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Updated"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Product Updated"]);
 
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RemoveProductCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RemoveProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             //var product = await _context.Products.Where(p => p.Id == command.Id).FirstOrDefaultAsync(cancellationToken);
@@ -140,28 +140,28 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             //    product.AddDomainEvent(new ProductRemovedEvent(product.Id));
             //    _context.Products.Remove(product);
             //    await _context.SaveChangesAsync(cancellationToken);
-            //    await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<Guid, Product>(command.Id), cancellationToken);
+            //    await _cache.RemoveAsync(CacheKeys.Common.GetEntityByIdCacheKey<long, Product>(command.Id), cancellationToken);
 
-            //    if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //    if (product.OpeningStock > 0 && product.WarehouseId != default(long))
             //    {
             //        await _stockService.RecordOpeningTransaction(product.Id, 0, product.ReferenceNumber, product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
             //    }
 
-            //    return await Result<Guid>.SuccessAsync(product.Id, _localizer["Product Deleted"]);
+            //    return await Result<long>.SuccessAsync(product.Id, _localizer["Product Deleted"]);
             //}
             //else
             //{
             //    throw new CatalogException(_localizer["Product Not Found!"], HttpStatusCode.NotFound);
             //}
-            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Deleted"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Product Deleted"]);
 
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(ImportProductCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(ImportProductCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            //Guid productId = Guid.Empty;
+            //long productId = default(long);
             //if (command.products.Count > 0)
             //{
             //    var barcodes = command.products.Select(x => x.BarcodeSymbology).Distinct();
@@ -177,7 +177,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
 
             //        foreach (var product in differenceQuery)
             //        {
-            //            if (product.OpeningStock > 0 && product.WarehouseId != Guid.Empty)
+            //            if (product.OpeningStock > 0 && product.WarehouseId != default(long))
             //            {
             //                await _stockService.RecordOpeningTransaction(product.Id, product.OpeningStock, product.Id.ToString(), product.discountFactor, product.Cost, DateTime.Now, product.WarehouseId);
             //            }
@@ -185,14 +185,14 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             //    }
             //}
 
-            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Product Saved"]);
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(UpdateFactorCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(UpdateFactorCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
-            //Guid productId = Guid.Empty;
+            //long productId = default(long);
 
             //foreach (var item in command.Products)
             //{
@@ -207,7 +207,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Commands
             //await _context.SaveChangesAsync(cancellationToken);
 
             //await _stockService.UpdateFactor(command.Products, command.updateFrom);
-            return await Result<Guid>.SuccessAsync(Guid.Empty, _localizer["Product Saved"]);
+            return await Result<long>.SuccessAsync(default(long), _localizer["Product Saved"]);
         }
 
 

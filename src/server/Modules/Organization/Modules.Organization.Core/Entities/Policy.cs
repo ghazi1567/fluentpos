@@ -8,7 +8,7 @@ namespace FluentPOS.Modules.Organization.Core.Entities
     {
         public string Name { get; set; }
 
-        public Guid? DepartmentId { get; set; }
+        public long? DepartmentId { get; set; }
 
         public PayslipType PayslipType { get; set; }
 

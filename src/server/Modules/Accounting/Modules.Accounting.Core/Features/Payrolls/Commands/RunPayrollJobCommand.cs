@@ -13,8 +13,8 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Salaries.Commands
 {
-    public class RunPayrollJobCommand : IRequest<Result<Guid>>
+    public class RunPayrollJobCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
     }
 }

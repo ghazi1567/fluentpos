@@ -25,7 +25,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
         }
 
 
-        public async Task<List<PurchaseOrder>> GetPendingPurchaseOrdersAsync(Guid clientId)
+        public async Task<List<PurchaseOrder>> GetPendingPurchaseOrdersAsync(long clientId)
         {
             return await _context.PurchaseOrders
                 .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "PurchaseOrder") == false)
@@ -35,7 +35,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<List<InternalOrder>> GetPendingStockInAsync(Guid clientId)
+        public async Task<List<InternalOrder>> GetPendingStockInAsync(long clientId)
         {
             return await _context.Orders
                 .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockIn") == false
@@ -44,7 +44,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<List<InternalOrder>> GetPendingStockOutAsync(Guid clientId)
+        public async Task<List<InternalOrder>> GetPendingStockOutAsync(long clientId)
         {
             return await _context.Orders
                 .Where(x => _context.SyncLogs.Any(s => s.EntryId == x.Id && s.RemoteClientId == clientId && s.EntryType == "StockOut") == false)
@@ -72,7 +72,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Services
             return true;
         }
 
-        public async Task<bool> UpdateLogStatus(Guid entryId, string entryType, string status)
+        public async Task<bool> UpdateLogStatus(long entryId, string entryType, string status)
         {
 
             var log = _context.SyncLogs.SingleOrDefault(x => x.EntryId == entryId && x.EntryType == entryType);

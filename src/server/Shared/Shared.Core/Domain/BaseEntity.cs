@@ -13,10 +13,10 @@ using FluentPOS.Shared.Core.Contracts;
 
 namespace FluentPOS.Shared.Core.Domain
 {
-    public abstract class BaseEntity : IEntity<Guid>, IBaseEntity
+    public abstract class BaseEntity : IEntity<long>, IBaseEntity
     {
         [Key]
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public long? ShopifyId { get; set; }
 
@@ -24,13 +24,13 @@ namespace FluentPOS.Shared.Core.Domain
 
         public DateTimeOffset? UpdatedAt { get; set; }
 
-        public Guid OrganizationId { get; set; }
+        public long OrganizationId { get; set; }
 
-        public Guid BranchId { get; set; }
+        public long BranchId { get; set; }
 
         protected BaseEntity()
         {
-            Id = Guid.NewGuid();
+           // Id = default(long);
         }
 
         private List<Event> _domainEvents;

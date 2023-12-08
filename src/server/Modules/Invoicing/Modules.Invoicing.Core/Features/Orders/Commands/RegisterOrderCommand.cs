@@ -13,7 +13,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
-    public class RegisterOrderCommand : InternalOrderDto, IRequest<Result<Guid>>
+    public class RegisterOrderCommand : InternalOrderDto, IRequest<Result<long>>
     {
 
     }

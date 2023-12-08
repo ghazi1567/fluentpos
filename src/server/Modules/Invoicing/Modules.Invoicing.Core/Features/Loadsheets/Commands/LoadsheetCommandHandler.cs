@@ -23,8 +23,8 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
     internal sealed class LoadsheetCommandHandler :
-        IRequestHandler<RegisterloadsheetCommand, Result<Guid>>,
-        IRequestHandler<ReGenerateloadsheetCommand, Result<Guid>>
+        IRequestHandler<RegisterloadsheetCommand, Result<long>>,
+        IRequestHandler<ReGenerateloadsheetCommand, Result<long>>
     {
         private readonly ISalesDbContext _salesContext;
         private readonly IStringLocalizer<WebhookEventCommandHandler> _localizer;
@@ -43,7 +43,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
             _postexService = postexService;
         }
 
-        public async Task<Result<Guid>> Handle(RegisterloadsheetCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterloadsheetCommand request, CancellationToken cancellationToken)
         {
             var loadsheet = _mapper.Map<LoadSheetMain>(request);
 
@@ -84,16 +84,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
             _salesContext.LoadSheetMains.Update(loadsheet);
             await _salesContext.SaveChangesAsync();
 
-            return await Result<Guid>.SuccessAsync(loadsheet.Id, string.Format(_localizer["Loadsheet generated successfully"]));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Loadsheet generated successfully"]));
         }
 
-        public async Task<Result<Guid>> Handle(ReGenerateloadsheetCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(ReGenerateloadsheetCommand request, CancellationToken cancellationToken)
         {
             var loadsheet = await _salesContext.LoadSheetMains.Include(x => x.Details).FirstOrDefaultAsync(x => x.Id == request.Id);
 
             if (loadsheet == null)
             {
-                return Result<Guid>.ReturnError(string.Format(_localizer["Loadsheet not found."]));
+                return Result<long>.ReturnError(string.Format(_localizer["Loadsheet not found."]));
             }
 
             var postexModel = new PostexLoadSheetModel
@@ -119,7 +119,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
             _salesContext.LoadSheetMains.Update(loadsheet);
             await _salesContext.SaveChangesAsync();
 
-            return await Result<Guid>.SuccessAsync(loadsheet.Id, string.Format(_localizer["Loadsheet generated successfully"]));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Loadsheet generated successfully"]));
         }
 
 

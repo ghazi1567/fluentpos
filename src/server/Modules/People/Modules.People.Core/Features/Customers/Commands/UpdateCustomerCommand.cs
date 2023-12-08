@@ -13,9 +13,9 @@ using MediatR;
 
 namespace FluentPOS.Modules.People.Core.Features.Customers.Commands
 {
-    public class UpdateCustomerCommand : IRequest<Result<Guid>>
+    public class UpdateCustomerCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string Name { get; set; }
 

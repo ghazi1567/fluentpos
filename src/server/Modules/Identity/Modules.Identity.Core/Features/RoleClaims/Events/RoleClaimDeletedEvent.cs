@@ -19,7 +19,7 @@ namespace FluentPOS.Modules.Identity.Core.Features.RoleClaims.Events
         public RoleClaimDeletedEvent(int id)
         {
             Id = id;
-            AggregateId = Guid.NewGuid();
+            //AggregateId = default(long); TODO
             RelatedEntities = new[] { typeof(FluentRoleClaim) };
         }
     }

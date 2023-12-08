@@ -31,7 +31,7 @@ namespace FluentPOS.Modules.Inventory.Controllers
 
         // [HttpGet("{id}")]
         // [Authorize(Policy = Permissions.Products.View)]
-        // public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Product> filter)
+        // public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, Product> filter)
         // {
         //     var request = Mapper.Map<GetProductByIdQuery>(filter);
         //     var product = await Mediator.Send(request);

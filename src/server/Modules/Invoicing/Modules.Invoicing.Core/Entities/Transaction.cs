@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 {
     public class Transaction : BaseEntity
     {
-        public Guid OrderId { get; set; }
+        public long OrderId { get; set; }
 
         public PaymentType PaymentType { get; set; }
 
@@ -26,6 +26,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public string Note { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
     }
 }

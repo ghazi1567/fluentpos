@@ -14,7 +14,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features.Stores.Commands
 {
-    public class RegisterBranchCommand : BranchDto, IRequest<Result<Guid>>
+    public class RegisterBranchCommand : BranchDto, IRequest<Result<long>>
     {
     }
 }

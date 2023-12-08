@@ -10,7 +10,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
     public class GetStockOutByIdQuery : IRequest<Result<GetStockInByIdResponse>>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
     }
 }

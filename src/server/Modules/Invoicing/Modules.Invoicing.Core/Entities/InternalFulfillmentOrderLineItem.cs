@@ -26,16 +26,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public DateTimeOffset? ConfirmedAt { get; set; }
 
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
         public decimal? Price { get; set; }
 
-        public Guid? StockId { get; set; }
+        public long? StockId { get; set; }
 
         public string SKU { get; set; }
 
         public string Rack { get; set; }
 
-        public Guid? ProductId { get; set; }
+        public long? ProductId { get; set; }
     }
 }

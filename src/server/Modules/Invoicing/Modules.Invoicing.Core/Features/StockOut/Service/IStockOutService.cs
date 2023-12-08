@@ -12,14 +12,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
 {
     public interface IStockOutService
     {
-        Task<bool> AlreadyExist(Guid id);
+        Task<bool> AlreadyExist(long id);
 
         Task<bool> Save(InternalOrder order, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Result<Guid>> Update(UpdateStockOutCommand request, CancellationToken cancellationToken);
+        Task<Result<long>> Update(UpdateStockOutCommand request, CancellationToken cancellationToken);
 
-        Task<Result<Guid>> Delete(RemoveStockOutCommand request, CancellationToken cancellationToken);
+        Task<Result<long>> Delete(RemoveStockOutCommand request, CancellationToken cancellationToken);
 
-        Task<Result<Guid>> Save(RegisterStockOutCommand command, CancellationToken cancellationToken);
+        Task<Result<long>> Save(RegisterStockOutCommand command, CancellationToken cancellationToken);
     }
 }

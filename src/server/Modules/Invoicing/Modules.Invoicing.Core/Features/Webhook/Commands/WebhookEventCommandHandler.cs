@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
     internal sealed class WebhookEventCommandHandler :
-        IRequestHandler<RegisterWebhookEventCommand, Result<Guid>>
+        IRequestHandler<RegisterWebhookEventCommand, Result<long>>
     {
         private readonly IEntityReferenceService _referenceService;
         private readonly IStockService _stockService;
@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
             _mapper = mapper;
         }
 
-        public Task<Result<Guid>> Handle(RegisterWebhookEventCommand request, CancellationToken cancellationToken)
+        public Task<Result<long>> Handle(RegisterWebhookEventCommand request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

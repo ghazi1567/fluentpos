@@ -14,7 +14,7 @@ using Microsoft.Extensions.Localization;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.ExtendedAttributes.Validators.Categories
 {
-    public class AddCategoryExtendedAttributeCommandValidator : AddExtendedAttributeCommandValidator<Guid, Category>
+    public class AddCategoryExtendedAttributeCommandValidator : AddExtendedAttributeCommandValidator<long, Category>
     {
         public AddCategoryExtendedAttributeCommandValidator(IStringLocalizer<AddCategoryExtendedAttributeCommandValidator> localizer, IJsonSerializer jsonSerializer)
             : base(localizer, jsonSerializer)

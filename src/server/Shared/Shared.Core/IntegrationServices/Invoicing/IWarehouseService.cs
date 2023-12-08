@@ -12,7 +12,7 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Invoicing
     {
         Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<string> names);
 
-        Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<Guid> ids);
+        Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<long> ids);
 
         Task<LocationResult> GetLatLongFromAdrressAsync(string address1, string address2, string city, string country);
 

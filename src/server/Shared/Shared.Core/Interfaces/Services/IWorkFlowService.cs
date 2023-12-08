@@ -8,11 +8,11 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
 {
     public interface IWorkFlowService
     {
-        Task<bool> AssignAprroversAsync(Guid requestId);
+        Task<bool> AssignAprroversAsync(long requestId);
 
-        Task<bool> ApproveRequestAsync(Guid requestId, Guid approverId, string comments);
+        Task<bool> ApproveRequestAsync(long requestId, long approverId, string comments);
 
-        Task<bool> RejectRequestAsync(Guid requestId, Guid approverId, string comments);
+        Task<bool> RejectRequestAsync(long requestId, long approverId, string comments);
 
     }
 }

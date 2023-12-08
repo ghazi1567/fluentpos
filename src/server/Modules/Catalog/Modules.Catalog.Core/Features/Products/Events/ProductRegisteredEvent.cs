@@ -14,15 +14,15 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Events
 {
     public class ProductRegisteredEvent : Event
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
         public string Name { get; }
 
         public string LocaleName { get; }
 
-        public Guid BrandId { get; }
+        public long BrandId { get; }
 
-        public Guid CategoryId { get; }
+        public long CategoryId { get; }
 
         public decimal Price { get; }
 

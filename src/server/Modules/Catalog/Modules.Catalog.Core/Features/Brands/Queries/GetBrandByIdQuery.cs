@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Brands.Queries
 {
     public class GetBrandByIdQuery : IRequest<Result<GetBrandByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

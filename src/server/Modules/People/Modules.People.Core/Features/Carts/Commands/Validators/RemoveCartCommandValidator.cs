@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Commands.Validators
         public RemoveCartCommandValidator(IStringLocalizer<RemoveCartCommandValidator> localizer)
         {
             RuleFor(c => c.Id)
-                .NotEqual(Guid.Empty).WithMessage(x => localizer["The {PropertyName} property cannot be empty."]);
+                .NotEmpty().WithMessage(x => localizer["The {PropertyName} property cannot be empty."]);
         }
     }
 }

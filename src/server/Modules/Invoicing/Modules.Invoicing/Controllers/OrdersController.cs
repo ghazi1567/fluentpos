@@ -31,14 +31,14 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Sales.View)]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
             return Ok(await Mediator.Send(new GetOrderByIdQuery { Id = id }));
         }
 
         [HttpGet("fo/{id}")]
         [Authorize(Policy = Permissions.Sales.View)]
-        public async Task<IActionResult> GetFulfillmentOrderByIdAsync(Guid id)
+        public async Task<IActionResult> GetFulfillmentOrderByIdAsync(long id)
         {
             return Ok(await Mediator.Send(new GetFOByIdQuery { Id = id }));
         }
@@ -150,7 +150,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
         [HttpGet("GetLoadsheetById/{id}")]
         [Authorize(Policy = Permissions.Sales.View)]
-        public async Task<IActionResult> GetLoadsheetByIdAsync(Guid id)
+        public async Task<IActionResult> GetLoadsheetByIdAsync(long id)
         {
             return Ok(await Mediator.Send(new GetLoadsheetInByIdQuery { Id = id }));
         }

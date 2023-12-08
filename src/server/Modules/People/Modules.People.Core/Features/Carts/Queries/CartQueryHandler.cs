@@ -55,7 +55,7 @@ namespace FluentPOS.Modules.People.Core.Features.Carts.Queries
             string ordering = new OrderByConverter().Convert(request.OrderBy);
             queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
 
-            if (request.CustomerId != null && !request.CustomerId.Equals(Guid.Empty))
+            if (request.CustomerId != null && !request.CustomerId.Equals(default(long)))
             {
                 queryable = queryable.Where(x => x.CustomerId.Equals(request.CustomerId));
             }

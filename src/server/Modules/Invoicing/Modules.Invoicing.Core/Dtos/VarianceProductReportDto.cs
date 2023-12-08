@@ -4,7 +4,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 {
     public class VarianceProductReportDto
     {
-        public Guid ProductId { get; set; }
+        public long ProductId { get; set; }
 
         public decimal AvailableQuantity { get; set; }
 

@@ -22,7 +22,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
         public CartProfile()
         {
             CreateMap<CreateCartCommand, Cart>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Cart>, GetCartByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Cart>, GetCartByIdQuery>();
             CreateMap<GetCartByIdResponse, Cart>().ReverseMap();
             CreateMap<GetCartsResponse, Cart>().ReverseMap();
             CreateMap<PaginatedCartFilter, GetCartsQuery>()

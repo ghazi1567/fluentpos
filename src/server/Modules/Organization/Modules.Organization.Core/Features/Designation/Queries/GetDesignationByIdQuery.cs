@@ -18,7 +18,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features
 {
     public class GetDesignationByIdQuery : IRequest<Result<GetDesignationByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

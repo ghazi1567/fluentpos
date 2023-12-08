@@ -27,9 +27,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
         public string Name => _accessor.HttpContext?.User.Identity?.Name;
 
-        public Guid GetUserId()
+        public long GetUserId()
         {
-            return IsAuthenticated() ? Guid.Parse(_accessor.HttpContext?.User.GetUserId() ?? Guid.Empty.ToString()) : Guid.Empty;
+            return IsAuthenticated() ? long.Parse(_accessor.HttpContext?.User.GetUserId() ?? default(long).ToString()) : default(long);
         }
 
         public string GetUserEmail()

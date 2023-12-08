@@ -19,7 +19,7 @@ namespace FluentPOS.Shared.Core.Features.ExtendedAttributes.Commands.Validators
         protected RemoveExtendedAttributeCommandValidator(IStringLocalizer localizer)
         {
             RuleFor(request => request.Id)
-                .NotEqual(Guid.Empty).WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
+                .NotEmpty().WithMessage(_ => localizer["The {PropertyName} property cannot be empty."]);
         }
     }
 }

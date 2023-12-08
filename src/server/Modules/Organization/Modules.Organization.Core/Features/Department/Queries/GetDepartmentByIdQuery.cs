@@ -18,7 +18,7 @@ namespace FluentPOS.Modules.Organizations.Core.Features
 {
     public class GetDepartmentByIdQuery : IRequest<Result<GetDepartmentByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

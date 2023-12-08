@@ -14,9 +14,9 @@ namespace FluentPOS.Modules.People.Core.Features.Customers.Queries
 {
     public class GetEmployeeImageQuery : IRequest<Result<string>>
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public GetEmployeeImageQuery(Guid customerId)
+        public GetEmployeeImageQuery(long customerId)
         {
             Id = customerId;
         }

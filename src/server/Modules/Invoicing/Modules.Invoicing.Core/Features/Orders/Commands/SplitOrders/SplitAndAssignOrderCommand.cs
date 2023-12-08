@@ -19,19 +19,19 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
     {
         public SplitOrderResult SplitOrderResult { get; set; }
 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public long ShopifyId { get; set; }
 
         public OrderStatus Status { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public OrderType OrderType { get; set; }
 
-        public Guid? FulfillmentOrderId { get; set; }
+        public long? FulfillmentOrderId { get; set; }
 
-        public IGrouping<Guid, WarehouseStockStatsDto> Warehouse { get; set; }
+        public IGrouping<long, WarehouseStockStatsDto> Warehouse { get; set; }
 
         public SplitAndAssignOrderCommand(SplitOrderResult splitOrderResult)
         {

@@ -23,19 +23,19 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         }
 
         [HttpGet("NewPurchaseOrder/{clientId}")]
-        public async Task<IActionResult> GetPendingPurchaseOrdersAsync(Guid clientId)
+        public async Task<IActionResult> GetPendingPurchaseOrdersAsync(long clientId)
         {
             return Ok(await _syncService.GetPendingPurchaseOrdersAsync(clientId));
         }
 
         [HttpGet("NewStockIn/{clientId}")]
-        public async Task<IActionResult> GetStockInAsync(Guid clientId)
+        public async Task<IActionResult> GetStockInAsync(long clientId)
         {
             return Ok(await _syncService.GetPendingStockInAsync(clientId));
         }
 
         [HttpGet("NewStockOut/{clientId}")]
-        public async Task<IActionResult> GetStockOutAsync(Guid clientId)
+        public async Task<IActionResult> GetStockOutAsync(long clientId)
         {
             return Ok(await _syncService.GetPendingStockOutAsync(clientId));
         }

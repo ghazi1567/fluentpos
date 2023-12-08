@@ -16,35 +16,35 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 {
     public class AssignWarehouseToOrderCommand : IRequest<bool>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public long ShopifyId { get; set; }
 
         public OrderStatus Status { get; set; }
 
-        public Guid WarehouseId { get; set; }
+        public long WarehouseId { get; set; }
 
         public OrderType OrderType { get; set; }
 
-        public Guid? FulfillmentOrderId { get; set; }
+        public long? FulfillmentOrderId { get; set; }
 
-        public IGrouping<Guid, WarehouseStockStatsDto> Warehouse { get; set; }
+        public IGrouping<long, WarehouseStockStatsDto> Warehouse { get; set; }
 
 
-        public AssignWarehouseToOrderCommand(Guid id, OrderStatus status)
+        public AssignWarehouseToOrderCommand(long id, OrderStatus status)
         {
             Id = id;
             Status = status;
         }
 
-        public AssignWarehouseToOrderCommand(Guid id, Guid warehouseId, OrderStatus status)
+        public AssignWarehouseToOrderCommand(long id, long warehouseId, OrderStatus status)
         {
             Id = id;
             WarehouseId = warehouseId;
             Status = status;
         }
 
-        public AssignWarehouseToOrderCommand(Guid id, Guid warehouseId, OrderStatus status, Guid? fulfillmentOrderId)
+        public AssignWarehouseToOrderCommand(long id, long warehouseId, OrderStatus status, long? fulfillmentOrderId)
         {
             Id = id;
             WarehouseId = warehouseId;
@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             FulfillmentOrderId = fulfillmentOrderId;
         }
 
-        public AssignWarehouseToOrderCommand(Guid id, OrderStatus status, Guid? fulfillmentOrderId, IGrouping<Guid, WarehouseStockStatsDto> warehouse)
+        public AssignWarehouseToOrderCommand(long id, OrderStatus status, long? fulfillmentOrderId, IGrouping<long, WarehouseStockStatsDto> warehouse)
         {
             Id = id;
             WarehouseId = warehouse.Key;

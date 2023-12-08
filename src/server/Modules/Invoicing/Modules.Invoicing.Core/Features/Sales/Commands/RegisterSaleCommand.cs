@@ -12,8 +12,8 @@ using MediatR;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
-    public class RegisterSaleCommand : IRequest<Result<Guid>>
+    public class RegisterSaleCommand : IRequest<Result<long>>
     {
-        public Guid CartId { get; set; }
+        public long CartId { get; set; }
     }
 }

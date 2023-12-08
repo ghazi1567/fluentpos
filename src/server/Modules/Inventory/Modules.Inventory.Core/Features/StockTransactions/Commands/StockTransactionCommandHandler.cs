@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 {
-    public class StockTransactionCommandHandler : IRequestHandler<RecordTransactionCommand, Result<Guid>>,
-        IRequestHandler<MultipleRecordTransactionCommand, Result<Guid>>
+    public class StockTransactionCommandHandler : IRequestHandler<RecordTransactionCommand, Result<long>>,
+        IRequestHandler<MultipleRecordTransactionCommand, Result<long>>
     {
         private readonly IStringLocalizer<StockTransactionCommandHandler> _localizer;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             _context = context;
         }
 
-        public async Task<Result<Guid>> Handle(RecordTransactionCommand request, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RecordTransactionCommand request, CancellationToken cancellationToken)
         {
             if (!request.IgnoreRackCheck)
             {
@@ -42,7 +42,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
                     // current rack not exist but other does
                     if (currentRackExists == false)
                     {
-                        return await Result<Guid>.FailAsync(string.Format(_localizer["Exists in other rack."]));
+                        return await Result<long>.FailAsync(string.Format(_localizer["Exists in other rack."]));
                     }
                 }
             }
@@ -95,10 +95,10 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 
             await _context.SaveChangesAsync();
 
-            return await Result<Guid>.SuccessAsync(stockRecord.Id, string.Format(_localizer["{0} Inventory Stock Transaction Updated."], request.inventoryItemId));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["{0} Inventory Stock Transaction Updated."], request.inventoryItemId));
         }
 
-        public async Task<Result<Guid>> Handle(MultipleRecordTransactionCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(MultipleRecordTransactionCommand command, CancellationToken cancellationToken)
         {
             foreach (var request in command.Transactions)
             {
@@ -150,7 +150,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
             }
 
             await _context.SaveChangesAsync();
-            return await Result<Guid>.SuccessAsync(Guid.Empty, string.Format(_localizer["{0} Inventory Stock Transaction Updated."], command.Transactions.Count));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["{0} Inventory Stock Transaction Updated."], command.Transactions.Count));
         }
     }
 }

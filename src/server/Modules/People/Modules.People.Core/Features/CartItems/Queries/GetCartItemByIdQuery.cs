@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.People.Core.Features.CartItems.Queries
 {
     public class GetCartItemByIdQuery : IRequest<Result<GetCartItemByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

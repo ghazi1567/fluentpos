@@ -16,7 +16,7 @@ namespace FluentPOS.Shared.DTOs.Identity.EventLogs
     {
         public string? SearchString { get; set; }
 
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
 
         public string? Email { get; set; }
 

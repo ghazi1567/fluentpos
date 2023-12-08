@@ -13,11 +13,11 @@ using FluentPOS.Shared.Core.Domain;
 
 namespace FluentPOS.Shared.Core.EventLogging
 {
-    public class EventLog : Event, IEntity<Guid>
+    public class EventLog : Event, IEntity<long>
     {
-        public EventLog(Event theEvent, string data, (string oldValues, string newValues) changes, string email, Guid userId)
+        public EventLog(Event theEvent, string data, (string oldValues, string newValues) changes, string email, long userId)
         {
-            Id = Guid.NewGuid();
+            //Id = default(long); TODO
             AggregateId = theEvent.AggregateId;
             MessageType = theEvent.MessageType;
             Data = data;
@@ -33,7 +33,7 @@ namespace FluentPOS.Shared.Core.EventLogging
         }
 
         [Key]
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string Data { get; private set; }
 
@@ -43,6 +43,6 @@ namespace FluentPOS.Shared.Core.EventLogging
 
         public string Email { get; private set; }
 
-        public Guid UserId { get; private set; }
+        public long UserId { get; private set; }
     }
 }

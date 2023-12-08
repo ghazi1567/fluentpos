@@ -8,7 +8,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Accounting
 {
     public class SalaryDto : BaseEntityDto
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
         public double BasicSalary { get; set; }
 

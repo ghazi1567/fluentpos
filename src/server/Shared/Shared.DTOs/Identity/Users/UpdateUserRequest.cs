@@ -41,6 +41,6 @@ namespace FluentPOS.Shared.DTOs.Identity.Users
 
         public string PhoneNumber { get; set; }
 
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
     }
 }

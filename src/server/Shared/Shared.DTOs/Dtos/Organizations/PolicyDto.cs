@@ -9,7 +9,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Organizations
         public string Name { get; set; }
 
 
-        public Guid? DepartmentId { get; set; }
+        public long? DepartmentId { get; set; }
 
         public PayslipType PayslipType { get; set; }
 

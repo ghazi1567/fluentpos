@@ -22,7 +22,7 @@ using Microsoft.Extensions.Localization;
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 {
     internal sealed class SaleCommandHandler :
-        IRequestHandler<RegisterSaleCommand, Result<Guid>>
+        IRequestHandler<RegisterSaleCommand, Result<long>>
     {
         private readonly IEntityReferenceService _referenceService;
         private readonly IStockService _stockService;
@@ -48,7 +48,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
-        public async Task<Result<Guid>> Handle(RegisterSaleCommand command, CancellationToken cancellationToken)
+        public async Task<Result<long>> Handle(RegisterSaleCommand command, CancellationToken cancellationToken)
 #pragma warning restore RCS1046 // Asynchronous method name should end with 'Async'.
         {
             var order = InternalOrder.InitializeOrder();
@@ -81,7 +81,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
             //    await _stockService.RecordTransaction(product.ProductId, product.Quantity, order.ReferenceNumber);
             //}
 
-            return await Result<Guid>.SuccessAsync(order.Id, string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
+            return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Order {0} Created"], order.ReferenceNumber));
         }
     }
 }

@@ -21,13 +21,13 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
     /// </summary>
     public interface IStockService
     {
-        Task<Result<Guid>> RecordTransaction(StockTransactionDto stockTransactionDto);
+        Task<Result<long>> RecordTransaction(StockTransactionDto stockTransactionDto);
 
-        Task<Result<Guid>> RecordTransaction(List<StockTransactionDto> Transactions);
+        Task<Result<long>> RecordTransaction(List<StockTransactionDto> Transactions);
 
-        Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty);
+        Task<IGrouping<long, WarehouseStockStatsDto>> CheckInventory(Dictionary<string, int> skuQty);
 
-        Task<IGrouping<Guid, WarehouseStockStatsDto>> CheckInventory(Dictionary<long, long> skuQty, List<Guid> skipWarehouses = null);
+        Task<IGrouping<long, WarehouseStockStatsDto>> CheckInventory(Dictionary<long, long> skuQty, List<long> skipWarehouses = null);
 
         Task<List<WarehouseStockStatsDto>> GetStockByVariantIds(List<long> variantIds);
 
@@ -39,12 +39,12 @@ namespace FluentPOS.Shared.Core.IntegrationServices.Inventory
         /// <param name="referenceNumber">Reference Number.</param>
         /// <param name="isSale">Is Sale.</param>
         /// <returns>Task Completed.</returns>
-        // public Task RecordTransaction(Guid productId, decimal quantity, string referenceNumber, bool isSale = true);
+        // public Task RecordTransaction(long productId, decimal quantity, string referenceNumber, bool isSale = true);
 
-        // public Task RecordTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType transactionType, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId);
+        // public Task RecordTransaction(long productId, decimal quantity, string referenceNumber, OrderType transactionType, decimal discountFactor, decimal purchasePrice, DateTime factorDate, long WarehouseId);
 
-        // public Task ReverseTransaction(Guid productId, decimal quantity, string referenceNumber, OrderType orderType, Guid WarehouseId);
+        // public Task ReverseTransaction(long productId, decimal quantity, string referenceNumber, OrderType orderType, long WarehouseId);
         // public Task UpdateFactor(List<ProductFactorDto> productFactorDtos, DateTime updateFrom);
-        // Task RecordOpeningTransaction(Guid productId, decimal quantity, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, Guid WarehouseId);
+        // Task RecordOpeningTransaction(long productId, decimal quantity, string referenceNumber, decimal discountFactor, decimal purchasePrice, DateTime factorDate, long WarehouseId);
     }
 }

@@ -15,8 +15,8 @@ namespace FluentPOS.Shared.Core.IntegrationServices.People
 {
     public interface ICartService
     {
-        Task<Result<GetCartByIdResponse>> GetDetailsAsync(Guid cartId);
+        Task<Result<GetCartByIdResponse>> GetDetailsAsync(long cartId);
 
-        Task<Result<Guid>> RemoveCartAsync(Guid cartId);
+        Task<Result<long>> RemoveCartAsync(long cartId);
     }
 }

@@ -8,28 +8,28 @@ namespace FluentPOS.Shared.Core.Interfaces.Services
 {
     public interface IAttendanceService
     {
-        Task<bool> MarkManualAttendance(Guid requestId);
+        Task<bool> MarkManualAttendance(long requestId);
 
-        Task<bool> MarkOverTime(Guid requestId);
+        Task<bool> MarkOverTime(long requestId);
 
-        Task<List<AttendanceDto>> GetEmployeeAttendance(List<Guid> employeeIds, DateTime startDate, DateTime endDate);
+        Task<List<AttendanceDto>> GetEmployeeAttendance(List<long> employeeIds, DateTime startDate, DateTime endDate);
 
         bool TiggerAutoAbsentJob(DateTime? datetime);
 
         Task<bool> UpdateAttendance(AttendanceDto attendance);
 
-        Task<bool> MarkNewAttendance(Guid employeeId, DateTime attendanceDate, AttendanceStatus attendanceStatus);
+        Task<bool> MarkNewAttendance(long employeeId, DateTime attendanceDate, AttendanceStatus attendanceStatus);
 
-        Task<bool> IsAttendanceExist(Guid employeeId, DateTime attendanceDate);
+        Task<bool> IsAttendanceExist(long employeeId, DateTime attendanceDate);
 
-        Task<bool> IsOverTimeExist(Guid employeeId, DateTime attendanceDate);
+        Task<bool> IsOverTimeExist(long employeeId, DateTime attendanceDate);
 
         Task<bool> MarkBioAttendance(int punchCode, DateTime attendanceDate);
 
-        Task<bool> UpdateModification(Guid requestId);
+        Task<bool> UpdateModification(long requestId);
 
         bool TiggerAutoPresentJob(DateTime? datetime, bool isCheckIn = true);
 
-        Task<bool> DeleteAttendanceOrOvertime(Guid requestId);
+        Task<bool> DeleteAttendanceOrOvertime(long requestId);
     }
 }

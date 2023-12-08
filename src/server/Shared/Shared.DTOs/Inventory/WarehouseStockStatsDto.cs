@@ -5,13 +5,13 @@ namespace FluentPOS.Shared.DTOs.Inventory
 {
     public class WarehouseStockStatsDto : BaseEntityDto
     {
-        public Guid productId { get; set; }
+        public long productId { get; set; }
 
         public long inventoryItemId { get; set; }
 
         public long quantity { get; set; }
 
-        public Guid warehouseId { get; set; }
+        public long warehouseId { get; set; }
 
         public string Rack { get; set; }
 

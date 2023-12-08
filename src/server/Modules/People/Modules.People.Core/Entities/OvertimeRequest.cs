@@ -5,7 +5,7 @@ namespace FluentPOS.Modules.People.Core.Entities
 {
     public class OvertimeRequest : BaseEntity
     {
-        public Guid EmployeeId { get; set; }
+        public long EmployeeId { get; set; }
 
         public DateTime OvertimeDate { get; set; }
 
@@ -19,6 +19,6 @@ namespace FluentPOS.Modules.People.Core.Entities
 
         public string Status { get; set; }
 
-        public Guid RequestedBy { get; set; }
+        public long RequestedBy { get; set; }
     }
 }

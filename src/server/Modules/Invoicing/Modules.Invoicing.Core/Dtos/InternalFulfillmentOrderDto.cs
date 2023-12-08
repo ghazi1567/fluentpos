@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// </summary>
         public long? OrderId { get; set; }
 
-        public Guid InternalOrderId { get; set; }
+        public long InternalOrderId { get; set; }
 
         /// <summary>
         /// The ID of the location that has been assigned to do the work.
@@ -55,7 +55,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// </summary>
         public DateTimeOffset? FulfilledBy { get; set; }
 
-        public Guid? WarehouseId { get; set; }
+        public long? WarehouseId { get; set; }
 
         public long? TotalQuantity { get; set; }
 
@@ -66,7 +66,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// </summary>
         public string Name { get; set; }
 
-        public Guid? StockId { get; set; }
+        public long? StockId { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
 

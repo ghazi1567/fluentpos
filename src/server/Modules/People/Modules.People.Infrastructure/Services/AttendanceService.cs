@@ -60,12 +60,12 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             _peopleDbContext = peopleDbContext;
         }
 
-        public async Task<bool> IsAttendanceExist(Guid employeeId, DateTime attendanceDate)
+        public async Task<bool> IsAttendanceExist(long employeeId, DateTime attendanceDate)
         {
             return await _context.Attendances.AnyAsync(x => x.EmployeeId == employeeId && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType != AttendanceType.OverTime);
         }
 
-        public async Task<bool> IsOverTimeExist(Guid employeeId, DateTime attendanceDate)
+        public async Task<bool> IsOverTimeExist(long employeeId, DateTime attendanceDate)
         {
             return await _context.Attendances.AnyAsync(x => x.EmployeeId == employeeId && x.AttendanceDate.Date == attendanceDate.Date && x.AttendanceType == AttendanceType.OverTime);
         }
@@ -147,13 +147,13 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return false;
         }
 
-        private async Task<Guid> GetEmployeePolicyId(Guid employeeId)
+        private async Task<long> GetEmployeePolicyId(long employeeId)
         {
-            var policyId = Guid.Empty;
+            var policyId = default(long);
             var employeeInfo = _context.Employees.AsNoTracking().FirstOrDefault(x => x.Id == employeeId);
             if (employeeInfo != null)
             {
-                if (employeeInfo.PolicyId != default && employeeInfo.PolicyId != Guid.Empty)
+                if (employeeInfo.PolicyId != default && employeeInfo.PolicyId != default(long))
                 {
                     policyId = employeeInfo.PolicyId;
                 }
@@ -170,12 +170,12 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return policyId;
         }
 
-        private async Task<Guid> GetEmployeePolicyId(Employee employeeInfo)
+        private async Task<long> GetEmployeePolicyId(Employee employeeInfo)
         {
-            var policyId = Guid.Empty;
+            var policyId = default(long);
             if (employeeInfo != null)
             {
-                if (employeeInfo.PolicyId != default && employeeInfo.PolicyId != Guid.Empty)
+                if (employeeInfo.PolicyId != default && employeeInfo.PolicyId != default(long))
                 {
                     policyId = employeeInfo.PolicyId;
                 }
@@ -192,7 +192,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return policyId;
         }
 
-        private async Task<bool> MarkBioAttendance(BioAttendanceLog bioAttendanceLog, bool isCheckIn, Guid? attendanceId = null)
+        private async Task<bool> MarkBioAttendance(BioAttendanceLog bioAttendanceLog, bool isCheckIn, long? attendanceId = null)
         {
             int punchCode = int.Parse(bioAttendanceLog.PunchCode);
             DateTime attendanceDate = bioAttendanceLog.AttendanceDateTime;
@@ -304,7 +304,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         }
 
         // Using for manual attendance approval
-        public async Task<bool> MarkManualAttendance(Guid requestId)
+        public async Task<bool> MarkManualAttendance(long requestId)
         {
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
             if (request != null)
@@ -360,7 +360,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         }
 
         // Not in use now
-        public async Task<bool> MarkNewAttendance(Guid employeeId, DateTime attendanceDate, AttendanceStatus attendanceStatus)
+        public async Task<bool> MarkNewAttendance(long employeeId, DateTime attendanceDate, AttendanceStatus attendanceStatus)
         {
             var attendance = new Attendance();
             var employeeInfo = await _employeeService.GetEmployeeDetailsAsync(employeeId);
@@ -420,7 +420,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
         }
 
         // Using for manual overtime approval
-        public async Task<bool> MarkOverTime(Guid requestId)
+        public async Task<bool> MarkOverTime(long requestId)
         {
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
             if (request != null)
@@ -608,7 +608,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return attendance;
         }
 
-        public async Task<List<AttendanceDto>> GetEmployeeAttendance(List<Guid> employeeIds, DateTime startDate, DateTime endDate)
+        public async Task<List<AttendanceDto>> GetEmployeeAttendance(List<long> employeeIds, DateTime startDate, DateTime endDate)
         {
             var entity = await _context.Attendances.AsNoTracking().Where(x => employeeIds.Contains(x.EmployeeId) && x.AttendanceDate.Date >= startDate.Date && x.AttendanceDate.Date <= endDate.Date).ToListAsync();
             return _mapper.Map<List<AttendanceDto>>(entity);
@@ -676,7 +676,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
                     continue;
                 }
 
-                var policyId = await GetEmployeePolicyId(item.Id.Value);
+                var policyId = await GetEmployeePolicyId(item.Id);
                 if (!policyList.Any(x => x.Id == policyId))
                 {
                     var policyDetail = await _orgService.GetPolicyDetailsAsync(policyId);
@@ -692,7 +692,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
                 if (IsOffDay(dateTime, policy))
                 {
-                    if (IsSandwich(dateTime, policy, item.Id.Value))
+                    if (IsSandwich(dateTime, policy, item.Id))
                     {
                         status = AttendanceStatus.Absent;
                     }
@@ -708,7 +708,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
 
                 var attendance = new Attendance
                 {
-                    EmployeeId = item.Id.Value,
+                    EmployeeId = item.Id,
                     DepartmentId = item.DepartmentId,
                     DesignationId = item.DesignationId,
                     AttendanceDate = dateTime,
@@ -883,7 +883,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return !isWorkingDay;
         }
 
-        private bool IsSandwich(DateTime dateTime, Shared.DTOs.Dtos.Organizations.PolicyDto policy, Guid employeeId)
+        private bool IsSandwich(DateTime dateTime, Shared.DTOs.Dtos.Organizations.PolicyDto policy, long employeeId)
         {
             if (policy.SandwichLeaveCount == 0)
             {
@@ -894,7 +894,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return absentCount == policy.SandwichLeaveCount;
         }
 
-        private int getSandwichCount(DateTime dateTime, Shared.DTOs.Dtos.Organizations.PolicyDto policy, Guid employeeId, int dayCount)
+        private int getSandwichCount(DateTime dateTime, Shared.DTOs.Dtos.Organizations.PolicyDto policy, long employeeId, int dayCount)
         {
             int absentCount = 0;
             var lastDate = dateTime;
@@ -918,7 +918,7 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return absentCount;
         }
 
-        public async Task<bool> UpdateModification(Guid requestId)
+        public async Task<bool> UpdateModification(long requestId)
         {
             bool result = false;
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();
@@ -1088,17 +1088,17 @@ namespace FluentPOS.Modules.People.Infrastructure.Services
             return true;
         }
 
-        private ShiftPlanner GetExtraShiftPlan(Guid employeeId, DateTime dateTime)
+        private ShiftPlanner GetExtraShiftPlan(long employeeId, DateTime dateTime)
         {
             return _context.ShiftPlanners.Where(x => x.EmployeeId == employeeId && x.ShiftDate == dateTime.Date).FirstOrDefault();
         }
 
-        private OvertimeRequest GetOvertimePlan(Guid employeeId, DateTime dateTime)
+        private OvertimeRequest GetOvertimePlan(long employeeId, DateTime dateTime)
         {
             return _context.OvertimeRequests.Where(x => x.EmployeeId == employeeId && x.OvertimeDate == dateTime.Date).FirstOrDefault();
         }
 
-        public async Task<bool> DeleteAttendanceOrOvertime(Guid requestId)
+        public async Task<bool> DeleteAttendanceOrOvertime(long requestId)
         {
             bool result = false;
             var request = _context.EmployeeRequests.AsNoTracking().Where(x => x.Id == requestId).FirstOrDefault();

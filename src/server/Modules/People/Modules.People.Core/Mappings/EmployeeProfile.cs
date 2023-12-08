@@ -28,7 +28,7 @@ namespace FluentPOS.Modules.People.Core.Mappings
             CreateMap<Shared.DTOs.Dtos.Peoples.BaseEmployeeDto, Employee>().ReverseMap();
             CreateMap<RegisterEmployeeCommand, Employee>().ReverseMap();
             CreateMap<UpdateEmployeeCommand, Employee>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, Employee>, GetEmployeeByIdQuery>();
+            CreateMap<GetByIdCacheableFilter<long, Employee>, GetEmployeeByIdQuery>();
             CreateMap<GetEmployeeByIdResponse, Employee>().ReverseMap();
             CreateMap<GetEmployeesResponse, Employee>().ReverseMap();
             CreateMap<PaginatedFilter, GetEmployeesQuery>()
@@ -37,40 +37,22 @@ namespace FluentPOS.Modules.People.Core.Mappings
 
             CreateMap<PaginatedResult<EmployeeRequestDto>, PaginatedResult<EmployeeRequest>>().ReverseMap();
             CreateMap<EmployeeRequestDto, EmployeeRequest>().ReverseMap();
-            CreateMap<RegisterEmployeeRequestCommand, EmployeeRequest>().ReverseMap();
-            CreateMap<UpdateEmployeeRequestCommand, EmployeeRequest>().ReverseMap();
-            CreateMap<GetByIdCacheableFilter<Guid, EmployeeRequest>, GetEmployeeRequestByIdQuery>();
             CreateMap<GetEmployeeRequestByIdResponse, EmployeeRequest>().ReverseMap();
             CreateMap<GetEmployeeRequestsResponse, EmployeeRequest>().ReverseMap();
-            CreateMap<PaginatedFilter, GetEmployeeRequestsQuery>()
-                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
-            CreateMap<PaginatedFilter, GetMyQueueQuery>()
-               .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
-            CreateMap<PaginatedFilter, GetRequestApproverListQuery>()
-              .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
 
             CreateMap<PaginatedResult<AttendanceDto>, PaginatedResult<Attendance>>().ReverseMap();
             CreateMap<PaginatedResult<Shared.DTOs.Dtos.Peoples.AttendanceDto>, PaginatedResult<Attendance>>().ReverseMap();
             CreateMap<AttendanceDto, Attendance>().ReverseMap();
             CreateMap<Shared.DTOs.Dtos.Peoples.AttendanceDto, Attendance>().ReverseMap();
-            CreateMap<PaginatedFilter, GetAttendanceQuery>();
-            CreateMap<PaginatedFilter, GetIndividualReportQuery>();
+          
             CreateMap<BioAttendanceLogDto, BioAttendanceLog>().ReverseMap();
             CreateMap<PaginatedResult<BioAttendanceLogDto>, PaginatedResult<BioAttendanceLog>>().ReverseMap();
-            CreateMap<PaginatedFilter, GetBioAttendanceQuery>()
-                .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
+           
 
-
-            CreateMap<PaginatedFilter, GetDashboardQuery>()
-               .ForMember(dest => dest.OrderBy, opt => opt.ConvertUsing<string>(new OrderByConverter()));
-
-            CreateMap<PaginatedFilter, GetAttendanceReportQuery>();
             CreateMap<PaginatedResult<ShiftPlannerDto>, PaginatedResult<ShiftPlanner>>().ReverseMap();
-            CreateMap<PaginatedFilter, GetShiftPlanningQuery>();
             CreateMap<ShiftPlannerDto, ShiftPlanner>().ReverseMap();
 
             CreateMap<PaginatedResult<OvertimeRequestDto>, PaginatedResult<OvertimeRequest>>().ReverseMap();
-            CreateMap<PaginatedFilter, GetOvertimePlanningQuery>();
             CreateMap<OvertimeRequestDto, OvertimeRequest>().ReverseMap();
         }
     }

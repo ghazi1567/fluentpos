@@ -2,16 +2,16 @@
 
 namespace FluentPOS.Shared.DTOs.Organizations.Departments
 {
-    public record GetDepartmentResponse(Guid Id,
+    public record GetDepartmentResponse(long Id,
 DateTimeOffset? CreatedAt,
 DateTimeOffset? UpdatedAt,
-Guid OrganizationId,
-Guid BranchId,
+long OrganizationId,
+long BranchId,
 string Name,
 bool IsGlobalDepartment,
 string Description,
-Guid? HeadOfDepartment,
+long? HeadOfDepartment,
 int Production,
-Guid PolicyId,
-Guid? ParentId);
+long PolicyId,
+long? ParentId);
 }

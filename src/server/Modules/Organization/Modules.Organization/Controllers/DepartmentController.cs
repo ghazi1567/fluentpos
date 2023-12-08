@@ -16,7 +16,7 @@ namespace FluentPOS.Modules.Organization.Controllers
     {
         [HttpGet("{id}")]
         [Authorize(Policy = Permissions.Departments.View)]
-        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<Guid, Department> filter)
+        public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, Department> filter)
         {
             var request = Mapper.Map<GetDepartmentByIdQuery>(filter);
             var brand = await Mediator.Send(request);
@@ -59,7 +59,7 @@ namespace FluentPOS.Modules.Organization.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = Permissions.Departments.Remove)]
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveDepartmentCommand(id)));
         }

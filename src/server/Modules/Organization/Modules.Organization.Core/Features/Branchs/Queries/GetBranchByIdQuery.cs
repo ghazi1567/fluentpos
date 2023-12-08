@@ -17,7 +17,7 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
 {
     public class GetBranchByIdQuery : IRequest<Result<GetBranchByIdResponse>>, ICacheable
     {
-        public Guid Id { get; protected set; }
+        public long Id { get; protected set; }
 
         public bool BypassCache { get; protected set; }
 

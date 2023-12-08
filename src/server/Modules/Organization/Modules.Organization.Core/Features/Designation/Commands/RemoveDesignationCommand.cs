@@ -12,11 +12,11 @@ using MediatR;
 
 namespace FluentPOS.Modules.Organization.Core.Features
 {
-    public class RemoveDesignationCommand : IRequest<Result<Guid>>
+    public class RemoveDesignationCommand : IRequest<Result<long>>
     {
-        public Guid Id { get; }
+        public long Id { get; }
 
-        public RemoveDesignationCommand(Guid brandId)
+        public RemoveDesignationCommand(long brandId)
         {
             Id = brandId;
         }

@@ -29,7 +29,7 @@ namespace FluentPOS.Shared.DTOs.Dtos.Accounting
 
         public bool IgnoreOvertime { get; set; }
 
-        public List<Guid>? EmployeeIds { get; set; }
+        public List<long>? EmployeeIds { get; set; }
 
         public PolicyDto? Policy { get; set; }
 

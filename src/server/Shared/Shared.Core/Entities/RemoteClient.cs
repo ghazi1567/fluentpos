@@ -6,11 +6,10 @@ namespace FluentPOS.Shared.Core.Entities
     {
         protected RemoteClient()
         {
-            Id = Guid.NewGuid();
             LastUpdateOn = DateTime.Now;
         }
 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public string ClientName { get; private set; }
 
