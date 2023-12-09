@@ -88,6 +88,7 @@ export class InventoryImportComponent implements OnInit {
       { headerName: "Qty", field: "qty", sortable: true, isShowable: true, width: 160 },
       { headerName: "Rack", field: "rack", sortable: true, isShowable: true, width: 160 },
       { headerName: "IgnoreRackCheck", field: "ignoreRackCheck", sortable: true, isShowable: true, width: 256 },
+      { headerName: "Is Valid", field: "isValid", sortable: true, isShowable: true, width: 256 },
 
     ];
   }

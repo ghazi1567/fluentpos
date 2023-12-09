@@ -166,7 +166,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 // Check if Role Exists
                 if (branch.Selected)
                 {
-                    if (_context.UserBranchs.Any(x => x.OrganizationId == branch.OrganizationId && x.BranchId == branch.BranchId && x.UserId == branch.UserId) == false)
+                    if (_context.UserBranchs.Any(x => x.OrganizationId == branch.OrganizationId && x.BranchId == branch.BranchId && x.IdentityUserId == branch.IdentityUserId) == false)
                     {
                         _context.UserBranchs.Add(branch);
                         _context.SaveChanges();
@@ -174,7 +174,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                 }
                 else
                 {
-                    var userBranch = _context.UserBranchs.FirstOrDefault(x => x.OrganizationId == branch.OrganizationId && x.BranchId == branch.BranchId && x.UserId == branch.UserId);
+                    var userBranch = _context.UserBranchs.FirstOrDefault(x => x.OrganizationId == branch.OrganizationId && x.BranchId == branch.BranchId && x.IdentityUserId == branch.IdentityUserId);
                     if (userBranch != null)
                     {
                         _context.UserBranchs.Remove(userBranch);
@@ -186,9 +186,9 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             return await Result<string>.SuccessAsync(userId, string.Format(_localizer["User Branchs Updated Successfully."]));
         }
 
-        public async Task<IResult<UserBranchModel>> GetUserBranchsAsync(long userId)
+        public async Task<IResult<UserBranchModel>> GetUserBranchsAsync(Guid userId)
         {
-            var userBranchs = await _context.UserBranchs.Where(x => x.UserId == userId).ToListAsync();
+            var userBranchs = await _context.UserBranchs.Where(x => x.IdentityUserId == userId).ToListAsync();
             foreach (var item in userBranchs)
             {
                 item.Selected = true;

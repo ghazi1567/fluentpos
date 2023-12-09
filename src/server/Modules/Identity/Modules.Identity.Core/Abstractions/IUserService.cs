@@ -29,6 +29,6 @@ namespace FluentPOS.Modules.Identity.Core.Abstractions
 
         Task<IResult<string>> UpdateUserBranchsAsync(string userId, UserBranchModel request);
 
-        Task<IResult<UserBranchModel>> GetUserBranchsAsync(long userId);
+        Task<IResult<UserBranchModel>> GetUserBranchsAsync(Guid userId);
     }
 }

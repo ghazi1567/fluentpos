@@ -35,11 +35,13 @@ export class WarehouseComponent implements OnInit {
   }
   initWarehouseColumns(): void {
     this.warehouseColumns = [
+      { headerName: "Id", field: "id", sortable: true, isShowable: true, width: 100 },
+      { headerName: "Code", field: "code", sortable: true, isShowable: true, width: 100 },
       { headerName: "Name", field: "name", sortable: true, isShowable: true, width: 256 },
-      { headerName: "Address", field: "address1", sortable: true, width: 160 },
       { headerName: "City", field: "city", sortable: true, width: 160 },
-      { headerName: "Country", field: "countryName", sortable: true, width: 330 },
-      { headerName: "Pickup Address", field: "pickupAddress", sortable: true, width: 330 },
+      { headerName: "Country", field: "countryName", sortable: true, width: 160 },
+      { headerName: "Address", field: "address1", sortable: true, width: 400 },
+      { headerName: "Pickup Address", field: "pickupAddress", sortable: true, width:400 },
     ];
   }
 

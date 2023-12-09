@@ -20,6 +20,11 @@ namespace FluentPOS.Shared.Core.Constants
             {
                 return $"GetEntity-{typeof(TEntity).GetGenericTypeName()}-{id}";
             }
+
+            public static string GetEntityByIdCacheKey<T>()
+            {
+                return $"GetEntity-{typeof(T).GetGenericTypeName()}";
+            }
         }
     }
 }

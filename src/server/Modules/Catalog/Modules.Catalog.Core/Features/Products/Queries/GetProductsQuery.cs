@@ -7,13 +7,14 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Catalogs.Products;
 using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
 {
-    public class GetProductsQuery : IRequest<PaginatedResult<GetProductsResponse>>
+    public class GetProductsQuery : CacheableFilter<GetProductsResponse>, IRequest<PaginatedResult<GetProductsResponse>>
     {
         public int PageNumber { get; private set; }
 

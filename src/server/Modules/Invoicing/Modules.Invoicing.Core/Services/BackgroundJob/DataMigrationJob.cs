@@ -19,13 +19,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob
             IConfiguration config)
         {
             _enabled = config.GetValue<bool>("BackgroudJobs:DataMigration:Enabled");
-            _url = config.GetValue<string>("BackgroudJobs:DataMigration:BaseUrl");
-            _clientId = config.GetValue<long>("BackgroudJobs:DataMigration:ClientId");
-            var frequency = config.GetValue<int>("BackgroudJobs:DataMigration:Frequency");
+            if (_enabled)
+            {
+                _url = config.GetValue<string>("BackgroudJobs:DataMigration:BaseUrl");
+                _clientId = config.GetValue<long>("BackgroudJobs:DataMigration:ClientId");
+                Frequency = config.GetValue<int>("BackgroudJobs:DataMigration:Frequency");
+            }
 
             if (Frequency == 0)
             {
-                Frequency = 150000; //15 min
+                Frequency = 150000; // 15 min
             }
 
             Frequency = Frequency;

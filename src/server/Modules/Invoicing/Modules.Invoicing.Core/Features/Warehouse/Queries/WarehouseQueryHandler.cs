@@ -47,7 +47,6 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
                 .OrderBy(x => x.Name)
                 .ToListAsync();
 
-
             var mappedData = _mapper.Map<List<Warehouse>, List<WarehouseDto>>(warehouses);
 
             return await Result<List<WarehouseDto>>.SuccessAsync(data: mappedData);

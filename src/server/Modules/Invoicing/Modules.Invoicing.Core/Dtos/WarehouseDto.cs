@@ -79,6 +79,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
         /// </summary>
         public string LocalizedProvinceName { get; set; }
 
+        public long? ParentId { get; set; }
+
+        public string Code { get; set; }
+
+        public bool Default { get; set; }
+
+        public int Position { get; set; }
+
         public string Latitude { get; set; }
 
         public string Longitude { get; set; }
