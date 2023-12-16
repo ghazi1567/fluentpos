@@ -112,4 +112,7 @@ export class StockReportComponent implements OnInit {
             (document.getElementById('filter-text-box') as HTMLInputElement).value
         );
     }
+    onRefresh() {
+        this.getStockReport();
+    }
 }

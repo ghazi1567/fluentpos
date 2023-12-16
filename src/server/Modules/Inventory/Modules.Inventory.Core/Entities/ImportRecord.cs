@@ -4,11 +4,15 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
 {
     public class ImportRecord : BaseEntity
     {
-        public string Location { get; set; }
+        public long LocationId { get; set; }
 
         public string SKU { get; set; }
 
+        public long VariantId { get; set; }
+
         public int Qty { get; set; }
+
+        public long WarehouseId { get; set; }
 
         public string Warehouse { get; set; }
 
@@ -19,5 +23,11 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
         public string Rack { get; set; } = "Open";
 
         public bool IgnoreRackCheck { get; set; }
+
+        public bool IsUpdatedOnShopify { get; set; }
+
+        public long InventoryItemId { get; set; }
+
+        public long ProductId { get; set; }
     }
 }

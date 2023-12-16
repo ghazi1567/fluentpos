@@ -19,6 +19,8 @@ namespace FluentPOS.Shared.Core.Wrapper
 
         public List<string> Messages { get; set; } = new();
 
+        public string Message { get; set; } 
+
         public bool Succeeded { get; set; }
 
         public static IResult Fail()

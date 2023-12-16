@@ -33,6 +33,7 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Extensions
                  .AddScoped<IInventoryDbContext>(provider => provider.GetService<InventoryDbContext>());
             services.AddTransient<IStockService, StockService>();
             services.AddTransient<IShopifyInventoryService, ShopifyInventoryService>();
+            services.AddTransient<IShopifyInventoryJob, ShopifyInventoryJob>();
             return services;
         }
     }

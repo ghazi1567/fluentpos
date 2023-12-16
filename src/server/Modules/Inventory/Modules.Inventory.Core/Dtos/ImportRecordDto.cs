@@ -4,11 +4,13 @@ namespace FluentPOS.Modules.Inventory.Core.Dtos
 {
     public class ImportRecordDto : BaseEntityDto
     {
-        public string Location { get; set; }
+        public long LocationId { get; set; }
 
         public string SKU { get; set; }
 
         public int Qty { get; set; }
+
+        public long WarehouseId { get; set; }
 
         public string Warehouse { get; set; }
 

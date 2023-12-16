@@ -18,5 +18,9 @@ namespace FluentPOS.Modules.Inventory.Core.Entities
         /// The quantity of inventory items available for sale. Returns null if the inventory item is not tracked.
         /// </summary>
         public long? Available { get; set; }
+
+        public long ImportFileId { get; set; }
+
+        public string Status { get; set; }
     }
 }

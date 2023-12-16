@@ -19,13 +19,19 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Services
         public readonly string _accessToken;
         public readonly InventoryLevelService _inventoryLevelService;
 
-        public ShopifyInventoryService(IHttpContextAccessor accessor)
+        public ShopifyInventoryService(IHttpContextAccessor accessor,IStoreService storeService)
         {
             _accessor = accessor;
             StoreId = _accessor.HttpContext?.Request?.Headers["store-id"];
             if (!string.IsNullOrEmpty(StoreId))
             {
                 string shopifyCreds = EncryptionUtilities.DecryptString(StoreId);
+                _shopifyUrl = shopifyCreds.Split("|")[0];
+                _accessToken = shopifyCreds.Split("|")[1];
+            }
+            else
+            {
+                string shopifyCreds = storeService.StoreId();
                 _shopifyUrl = shopifyCreds.Split("|")[0];
                 _accessToken = shopifyCreds.Split("|")[1];
             }

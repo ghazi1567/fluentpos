@@ -10,13 +10,15 @@ using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 {
-    public class LevelsQueryHandler : IRequestHandler<GetImportFilesQuery, PaginatedResult<ImportFileDto>>
+    public class LevelsQueryHandler : IRequestHandler<GetImportFilesQuery, PaginatedResult<ImportFileDto>>,
+        IRequestHandler<GetInventoryForProcessQuery, List<ImportRecordDto>>
     {
         private readonly IStringLocalizer<LevelsQueryHandler> _localizer;
         private readonly IMapper _mapper;
@@ -43,16 +45,19 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
 
         public async Task<PaginatedResult<ImportFileDto>> Handle(GetImportFilesQuery request, CancellationToken cancellationToken)
         {
-            var queryable = _context.ImportFiles.AsNoTracking()
-                .Include(x => x.ImportRecords)
-                .OrderByDescending(x => x.CreatedAt)
-                .AsQueryable();
+            var queryable = _context.ImportFiles.AsNoTracking().OrderByDescending(x => x.CreatedAt).AsQueryable();
 
             var importFiles = await queryable
-            .AsNoTracking()
             .ToPaginatedListAsync(request.PageNumber, request.PageSize);
 
             return _mapper.Map<PaginatedResult<ImportFileDto>>(importFiles);
+        }
+
+        public async Task<List<ImportRecordDto>> Handle(GetInventoryForProcessQuery request, CancellationToken cancellationToken)
+        {
+            var importRecords = await _context.ImportRecords.AsNoTracking().Where(x => x.Status == "Pending" || x.Status == "Failed").ToListAsync();
+
+            return _mapper.Map<List<ImportRecordDto>>(importRecords);
         }
     }
 }

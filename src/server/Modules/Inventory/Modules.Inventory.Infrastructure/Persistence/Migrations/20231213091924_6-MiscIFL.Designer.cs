@@ -4,6 +4,7 @@ using FluentPOS.Modules.Inventory.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(InventoryDbContext))]
-    partial class InventoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231213091924_6-MiscIFL")]
+    partial class _6MiscIFL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,22 +95,16 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<long?>("ImportFileId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("InventoryItemId")
-                        .HasColumnType("bigint");
-
                     b.Property<bool>("IsUpdatedOnShopify")
                         .HasColumnType("bit");
 
-                    b.Property<long>("LocationId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("OrganizationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Qty")
@@ -128,14 +125,8 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("VariantId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Warehouse")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("WarehouseId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

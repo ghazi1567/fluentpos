@@ -50,9 +50,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     @Input()
     suppressRowClickSelection: boolean = false;
     @Input()
-    enableServerSideFilter: boolean = false;
+    enableServerSideFilter: boolean = true;
     @Input()
-    enableServerSideSorting: boolean = false;
+    enableServerSideSorting: boolean = true;
     @Input()
     pinnedBottomRowData: any;
     @Input()
@@ -80,11 +80,15 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     @Input()
     rowModelType: string = ""; // normal|infinite
     @Input()
-    paginationPageSize: number = 5;
-    cacheOverflowSize: number;
-    cacheBlockSize: number;
-    maxConcurrentDatasourceRequests: number;
-    infiniteInitialRowCount: number;
+    paginationPageSize: number = 10;
+    @Input()
+    cacheOverflowSize: number = 2;
+    @Input()
+    cacheBlockSize: number = 10;
+    @Input()
+    maxConcurrentDatasourceRequests: number = 2;
+    @Input()
+    infiniteInitialRowCount: number = 2;
     maxBlocksInCache: number;
 
     @Input()
@@ -118,6 +122,9 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
     @Input()
     remoteGridBinding: RemoteGridApi;
 
+    @Input()
+    enableAdvancedFilter: boolean = true;
+
     constructor() {
         this.overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while your data is loading...</span>';
     }
@@ -127,11 +134,11 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
             this.rowBuffer = 0;
             // this.paginationPageSize = this.paginationPageSize;
             this.cacheOverflowSize = 2;
-            this.maxConcurrentDatasourceRequests = 1;
-            this.infiniteInitialRowCount = 1;
+            // this.maxConcurrentDatasourceRequests = 1;
+            // this.infiniteInitialRowCount = 1;
             this.rowData = undefined;
-            this.cacheBlockSize = 17;
-            this.paginationPageSize = 17;
+            // this.cacheBlockSize = 17;
+            // this.paginationPageSize = 17;
         }
     }
 
@@ -143,13 +150,17 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
         };
         this.gridOverlayComponentParams = { loadingMessage: "One moment please..." };
         this.gridOptions = <GridOptions>{
+            enableServerSideSorting: this.enableServerSideSorting,
+            enableServerSideFilter: this.enableServerSideFilter,
+            suppressServerSideInfiniteScroll: true,
+            serverSideSortOnServer: true,
+            serverSideFilterOnServer: true,
             context: {
                 agGridBaseClass: this,
                 gridParent: this.gridParent
             },
-            // enableFilter: true,
             defaultColDef: {
-                floatingFilter: true,
+                floatingFilter: true
                 // wrapText: true,     // <-- HERE
                 // autoHeight: true,   // <-- & HERE    
 
@@ -159,11 +170,12 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
             onRowEditingStopped: this.onRowUpdateComplete,
             onCellMouseOver: this.onCellMouseOver,
             paginationPageSize: this.paginationPageSize,
-            cacheBlockSize: this.cacheBlockSize
+            cacheBlockSize: this.cacheBlockSize,
+
         };
-        this.gridOptions.defaultColDef.sortable = true;
-        this.gridOptions.defaultColDef.filter = true;
-        this.gridOptions.defaultColDef.resizable = true;
+        this.gridOptions.defaultColDef.sortable = false;
+        this.gridOptions.defaultColDef.filter = false;
+        this.gridOptions.defaultColDef.resizable = false;
         if (this.secondaryGridOptionsParam) {
             // assign gridOptions to sycn column definitions with another grid
             this.gridOptions = Object.assign(this.secondaryGridOptionsParam, this.gridOptions);
@@ -207,7 +219,7 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
         }
     }
     onRemoteGridReady(params: any) {
-
+        console.log(params);
     }
     onGridReady(params: any) {
         this.gridApi = params.api;

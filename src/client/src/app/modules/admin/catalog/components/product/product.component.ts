@@ -14,6 +14,11 @@ import { ReportService } from "../../../sales/services/report.service";
 import { WarehouseService } from "../../../sales/services/warehouse.service";
 import { CsvParserService } from "src/app/core/services/csv-parser.service";
 import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
+import { RemoteGridApi } from "src/app/core/shared/components/ag-grid-base/ag-grid.models";
+import { EMPTY, Observable } from "rxjs";
+import { ColDef, GridApi, GridOptions, IGetRowsParams, IServerSideDatasource, IServerSideGetRowsParams } from "ag-grid-community";
+import { tap, catchError } from "rxjs/operators";
+import { AgGridAngular } from "ag-grid-angular";
 
 @Component({
     selector: "app-product",
@@ -29,6 +34,20 @@ export class ProductComponent implements OnInit {
     productData: Product[];
     availableStock: any[];
     stockReport: Map<any, any>;
+    pageSize = 10;
+    enableServerSideFilter: boolean = true;
+    enableServerSideSorting: boolean = true;
+    public paginationPageSize = 20;
+    public cacheBlockSize = 10;
+
+    @ViewChild('myGrid') myGrid: AgGridAngular;
+
+    gridOptions: Partial<GridOptions>;
+    gridColumnApi;
+    columnDefs;
+    cacheOverflowSize;
+    maxConcurrentDatasourceRequests;
+    infiniteInitialRowCount;
 
     constructor(
         public productService: ProductService,
@@ -40,6 +59,18 @@ export class ProductComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.cacheOverflowSize = 2;
+        this.maxConcurrentDatasourceRequests = 2;
+        this.infiniteInitialRowCount = 2;
+
+        this.gridOptions = {
+            headerHeight: 45,
+            rowHeight: 30,
+            cacheBlockSize: 10,
+            paginationPageSize: 10,
+            rowModelType: 'infinite',
+        }
+
         // this.loadLookups();
 
         // this.initColumns();
@@ -50,6 +81,7 @@ export class ProductComponent implements OnInit {
             this.warehouseLookups = res.data;
         });
     }
+
     getProducts(): void {
         this.productParams.pageNumber = 0;
         this.productParams.pageSize = 1000000;
@@ -64,11 +96,6 @@ export class ProductComponent implements OnInit {
         });
     }
 
-    pageChanged(event: PaginatedFilter): void {
-        this.productParams.pageNumber = event.pageNumber;
-        this.productParams.pageSize = event.pageSize;
-        this.getProducts();
-    }
 
     openForm(product?: Product): void {
         const dialogRef = this.dialog.open(ProductFormComponent, {
@@ -81,32 +108,6 @@ export class ProductComponent implements OnInit {
         });
     }
 
-    remove($event: string): void {
-        this.productService.deleteProduct($event).subscribe(() => {
-            this.getProducts();
-            this.toastr.info("Product Removed");
-        });
-    }
-
-    sort($event: Sort): void {
-        this.productParams.orderBy = $event.active + " " + $event.direction;
-        console.log(this.productParams.orderBy);
-        this.getProducts();
-    }
-
-    filter($event: string): void {
-        this.productParams.searchString = $event.trim().toLocaleLowerCase();
-        this.productParams.pageNumber = 0;
-        this.productParams.pageSize = 0;
-        this.getProducts();
-    }
-
-    reload(): void {
-        this.productParams.searchString = "";
-        this.productParams.pageNumber = 0;
-        this.productParams.pageSize = 0;
-        this.getProducts();
-    }
 
     view(product?: any): void {
         const dialogRef = this.dialog.open(ProductViewComponent, {
@@ -125,22 +126,72 @@ export class ProductComponent implements OnInit {
             this.AgGrid = content;
         }
     }
-    gridReady(event): void {
-        if (this.AgGrid) {
-            // this.AgGrid.gridApi.setDatasource(this.scrollBarDataSource);
+    gridApi: GridApi;
+    rowModelType = "infinite";
+    remoteGridBinding = this;
+    onGridReady(event): void {
+        var params = event.params;
+        var baseGrid = event.baseGrid;
+
+        // this.gridApi = event.params.api;
+        // this.getProducts();
+        this.gridApi = params.api;
+        this.gridColumnApi = params.columnApi;
+
+        var datasource = {
+            getRows: (params: IGetRowsParams) => {
+                console.log(baseGrid.setFilterSortModel(params))
+                //  TODO: Call a service that fetches list of users
+                console.log("Fetching startRow " + params.startRow + " of " + params.endRow);
+                var pageNumber = (params.startRow / this.pageSize) + 1;
+                this.productParams.pageNumber = pageNumber;
+                this.productParams.pageSize = this.pageSize;
+                this.productParams.bypassCache = true;
+                console.log(params);
+                this.productService
+                    .getProducts(this.productParams)
+                    .subscribe(res => {
+                        params.successCallback(res.data, res.totalCount)
+                    });
+            }
         }
-        // this.getOvertimeMyQueue();
-        this.getProducts();
+        this.gridApi.setDatasource(datasource);
     }
     initOvertimeColumns(): void {
         this.productColumns = [
             { headerName: "Shopify Id", field: "shopifyId", sortable: true, isShowable: true, width: 256 },
-            { headerName: "Title", field: "title", sortable: true, isShowable: true, width: 256 },
-            { headerName: "Vendor", field: "vendor", sortable: true, width: 160 },
+            { headerName: "Title", field: "title", sortable: true, isShowable: true, width: 256, suppressMenu: true },
+            { headerName: "Vendor", field: "vendor", sortable: true, width: 160,  suppressMenu: true },
             { headerName: "Product Type", field: "productType", sortable: true, width: 160 },
             { headerName: "PublishedScope", field: "publishedScope", sortable: true, width: 330 },
             { headerName: "Status", field: "status", sortable: true, width: 330 },
             { headerName: "Tags", field: "tags", sortable: true, width: 330 },
         ];
     }
+
+    onPaginationChanged($event) {
+        console.log($event)
+    }
+    getData(params): Observable<{ data; totalCount }> {
+        console.log(params);
+        this.productParams.pageNumber = params.request.startRow;
+        this.productParams.pageSize = this.pageSize;
+        this.productParams.bypassCache = true;
+        return this.productService.getProducts(this.productParams)
+    }
+
+    serverSideDatasource = () => {
+        getRows: (params: IServerSideGetRowsParams) => {
+            console.log(params)
+            this.productParams.pageNumber = params.request.startRow;
+            this.productParams.pageSize = this.paginationPageSize;
+            this.productParams.bypassCache = true;
+
+            this.productService
+                .getProducts(this.productParams)
+                .subscribe(res => {
+                    params.successCallback(res.data, res.totalCount)
+                });
+        }
+    };
 }

@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------
-// <copyright file="PaginatedProductFilter.cs" company="FluentPOS">
+// <copyright file="BaseFilter.cs" company="FluentPOS">
 // Copyright (c) FluentPOS. All rights reserved.
 // The core team: Mukesh Murugan (iammukeshm), Chhin Sras (chhinsras), Nikolay Chebotov (unchase).
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
@@ -7,18 +7,13 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
-using FluentPOS.Shared.DTOs.Filters;
 
-namespace FluentPOS.Shared.DTOs.Catalogs.Products
+namespace FluentPOS.Shared.DTOs.Filters
 {
-    public class PaginatedProductFilter : PaginatedFilter
+    public class BaseCacheFilter
     {
-        public bool BypassCache { get; set; }
+        public long OrganizationId { get; set; }
 
-        public string SearchString { get; set; }
-
-        public long[] BrandIds { get; set; }
-
-        public long[] CategoryIds { get; set; }
+        public long BranchId { get; set; }
     }
 }

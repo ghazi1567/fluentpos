@@ -1,4 +1,4 @@
-import { IGetRowsParams, GridApi } from "ag-grid-community";
+import { IGetRowsParams, GridApi, IServerSideGetRowsParams } from "ag-grid-community";
 import { Observable } from "rxjs";
 
 export class FilterModel {
@@ -32,7 +32,7 @@ export class FilterModelOptions {
 }
 
 export interface RemoteGridApi {
-    getData: (params: IGetRowsParams) => Observable<{ data; totalCount }>;
+    getData: (params: IServerSideGetRowsParams) => Observable<{ data; totalCount }>;
     getDataError?: (err) => void;
     gridApi: GridApi;
 }

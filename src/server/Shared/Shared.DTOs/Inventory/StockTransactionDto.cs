@@ -22,5 +22,7 @@ namespace FluentPOS.Shared.DTOs.Inventory
         public string SKU { get; set; }
 
         public long? VariantId { get; set; }
+
+        public long? ImportRecordId { get; set; }
     }
 }

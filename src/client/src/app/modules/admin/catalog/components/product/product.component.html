@@ -15,8 +15,17 @@
   <nb-card-body>
     <div style="height: calc(100vh - 217px)" class="ag-theme-alpine">
       <app-ag-grid-base #AgGrid [rowData]="productsData" [columnDefs]="productColumns" [pagination]="true"
-        (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
+        (gridReadyComplete)="onGridReady($event)" headerHeight="50" sideBar="false" [paginationPageSize]="pageSize"
+        [remoteGridBinding]="remoteGridBinding" [rowModelType]="rowModelType"
+        [enableServerSideFilter]="enableServerSideFilter" [enableServerSideSorting]="enableServerSideSorting">
       </app-ag-grid-base>
+      <!-- <ag-grid-angular #myGrid style="height: 500px;" class="ag-theme-balham" [rowData]="productsData"
+        [columnDefs]="productColumns" [cacheOverflowSize]="cacheOverflowSize"
+        [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+        [infiniteInitialRowCount]="infiniteInitialRowCount" [pagination]=true (gridReady)="onGridReady($event)"
+        (paginationChanged)="onPaginationChanged($event)">
+      </ag-grid-angular> -->
+
     </div>
   </nb-card-body>
 </nb-card>

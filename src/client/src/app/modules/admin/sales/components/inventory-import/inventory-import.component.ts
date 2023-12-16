@@ -149,7 +149,19 @@ export class InventoryImportComponent implements OnInit {
             console.log("Result", result);
             let uniqueArray = this.removeDuplicates(result, ['sku', 'warehouse', 'rack']);
             uniqueArray.forEach(x => {
-              x.isValid = this.warehouseData.find(w => w.code == x.warehouse) != null;
+              x.isValid = false;
+              var warehouse = this.warehouseData.find(w => w.code == x.warehouse);
+              if (warehouse != null) {
+                x.isValid = true
+                x.WarehouseId = warehouse.id;
+                x.LocationId = warehouse.shopifyId;
+                if (!x.LocationId) {
+                  var parent = this.warehouseData.find(x => x.id == warehouse.parentId);
+                  if (parent) {
+                    x.LocationId = parent.shopifyId;
+                  }
+                }
+              }
             });
             this.inventoryData = uniqueArray;
             console.log(uniqueArray);

@@ -28,6 +28,9 @@ export class ProductService {
         if (productParams.orderBy) {
             params = params.append("orderBy", productParams.orderBy.toString());
         }
+        if (productParams.bypassCache) {
+            params = params.append("bypassCache", productParams.bypassCache);
+        }
         return this.api.getAlls(params).pipe(map((response: PaginatedResult<Product>) => response));
     }
 

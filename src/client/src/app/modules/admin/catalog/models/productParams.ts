@@ -7,4 +7,5 @@ export class ProductParams implements PaginatedFilter {
   pageNumber: number;
   pageSize: number;
   orderBy: string;
+  bypassCache: boolean;
 }

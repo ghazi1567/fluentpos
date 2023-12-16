@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { GridApi, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { GridApi, IDatasource, IGetRowsParams, IServerSideDatasource, IServerSideGetRowsParams, IServerSideGetRowsRequest } from 'ag-grid-community';
 import { EMPTY, Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { RemoteGridApi } from './ag-grid.models';
@@ -22,7 +22,7 @@ export class RemoteGridBindingDirective {
   }
 
   updateGridApi(gridApi) {
-    gridApi.api.setDatasource(this.dataSource);
+    gridApi.api.setServerSideDatasource(this.dataSource);
     this.remoteGridReady.emit(gridApi);
   }
 
@@ -31,14 +31,34 @@ export class RemoteGridBindingDirective {
     return EMPTY;
   }
 
-  dataSource: IDatasource = {
-    getRows: (params: IGetRowsParams) => {
+  // dataSource1: IDatasource = {
+  //   getRows: (params: IGetRowsParams) => {
+
+  //     this.appRemoteGridBinding
+  //       .getData(params)
+  //       .pipe(
+  //         tap(({ data, totalCount }) => {
+  //           params.successCallback(data, totalCount)
+  //         }
+  //         ),
+  //         catchError(err => this.handleError(err))
+  //       )
+  //       .subscribe();
+  //   }
+  // };
+
+  dataSource: IServerSideDatasource = {
+    getRows: (params: IServerSideGetRowsParams) => {
 
       this.appRemoteGridBinding
         .getData(params)
         .pipe(
           tap(({ data, totalCount }) => {
-            params.successCallback(data, totalCount)
+            var lastRow = this.getLastRowIndex(params.request, data);
+            params.success({
+              rowData: data,
+              rowCount: 6,
+            })
           }
           ),
           catchError(err => this.handleError(err))
@@ -46,4 +66,10 @@ export class RemoteGridBindingDirective {
         .subscribe();
     }
   };
+  getLastRowIndex(request: IServerSideGetRowsRequest, results: any[]) {
+    if (!results) return undefined;
+    var currentLastRow = (request.startRow || 0) + results.length;
+    // if on or after the last block, work out the last row, otherwise return 'undefined'
+    return currentLastRow < (request.endRow || 0) ? currentLastRow : undefined;
+  }
 }

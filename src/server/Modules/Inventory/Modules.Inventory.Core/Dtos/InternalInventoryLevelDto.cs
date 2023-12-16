@@ -23,5 +23,9 @@ namespace FluentPOS.Modules.Inventory.Core.Dtos
         public long? WarehouseId { get; set; }
 
         public long? ParentId { get; set; }
+
+        public long ImportFileId { get; set; }
+
+        public string Status { get; set; }
     }
 }
