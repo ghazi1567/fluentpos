@@ -71,25 +71,13 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
                 .OrderBy(x => x.Id)
                 .AsQueryable();
 
-            // if (request.BrandIds.Any())
-            // {
-            //     queryable = queryable.Where(x => request.BrandIds.Contains(x.BrandId));
-            // }
-            // if (request.CategoryIds.Any())
-            // {
-            //     queryable = queryable.Where(x => request.CategoryIds.Contains(x.CategoryId));
-            // }
-
-            string ordering = new OrderByConverter().Convert(request.OrderBy);
-            queryable = !string.IsNullOrWhiteSpace(ordering) ? queryable.OrderBy(ordering) : queryable.OrderBy(a => a.Id);
-
-            if (!string.IsNullOrEmpty(request.SearchString))
+            if (request.AdvanceFilters != null && request.AdvanceFilters.Count > 0)
             {
-                queryable = queryable.Where(x => EF.Functions.Like(x.Title.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Vendor.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.ProductType.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Tags.ToLower(), $"%{request.SearchString.ToLower()}%")
-                || EF.Functions.Like(x.Id.ToString().ToLower(), $"%{request.SearchString.ToLower()}%"));
+                queryable = queryable.AdvanceSearch(request.AdvanceFilters, request.AdvancedSearchType);
+            }
+            if (request.SortModel != null && request.SortModel.Count > 0)
+            {
+                queryable = queryable.AdvanceSort(request.SortModel);
             }
 
             var productList = await queryable

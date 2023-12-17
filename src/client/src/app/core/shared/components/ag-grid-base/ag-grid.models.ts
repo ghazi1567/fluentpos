@@ -1,6 +1,18 @@
 import { IGetRowsParams, GridApi, IServerSideGetRowsParams } from "ag-grid-community";
 import { Observable } from "rxjs";
 
+
+export const FilterTypes = {
+    'equals': '=',
+    'notEqual': '!=',
+    'lessThan': '<',
+    'lessThanOrEqual': '<=',
+    'greaterThan': '>',
+    'greaterThanOrEqual': '>=',
+    'contains': 'like',
+    'notContains': 'notlike'
+};
+
 export class FilterModel {
     key: string;
     value: string;
@@ -9,7 +21,7 @@ export class FilterModel {
     constructor(key: string, value: string, type: string) {
         this.key = key;
         this.value = value;
-        this.type = type;
+        this.type = FilterTypes[type];
     }
 }
 

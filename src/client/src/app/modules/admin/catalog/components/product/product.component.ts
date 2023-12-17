@@ -16,10 +16,15 @@ import { CsvParserService } from "src/app/core/services/csv-parser.service";
 import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
 import { RemoteGridApi } from "src/app/core/shared/components/ag-grid-base/ag-grid.models";
 import { EMPTY, Observable } from "rxjs";
-import { ColDef, GridApi, GridOptions, IGetRowsParams, IServerSideDatasource, IServerSideGetRowsParams } from "ag-grid-community";
+import { GridApi, GridOptions, IGetRowsParams, IServerSideDatasource, IServerSideGetRowsParams } from "ag-grid-community";
 import { tap, catchError } from "rxjs/operators";
 import { AgGridAngular } from "ag-grid-angular";
-
+import {
+    ColDef,
+    IDateFilterParams,
+    INumberFilterParams,
+    ITextFilterParams,
+} from '@ag-grid-community/core';
 @Component({
     selector: "app-product",
     templateUrl: "./product.component.html",
@@ -27,7 +32,7 @@ import { AgGridAngular } from "ag-grid-angular";
 })
 export class ProductComponent implements OnInit {
     products: PaginatedResult<Product>;
-    productColumns: any[];
+    productColumns: ColDef[];
     productParams = new ProductParams();
     searchString: string;
     warehouseLookups: any[];
@@ -140,13 +145,16 @@ export class ProductComponent implements OnInit {
 
         var datasource = {
             getRows: (params: IGetRowsParams) => {
-                console.log(baseGrid.setFilterSortModel(params))
+                var filterSortModel = baseGrid.setFilterSortModel(params);
+                console.log(filterSortModel);
                 //  TODO: Call a service that fetches list of users
                 console.log("Fetching startRow " + params.startRow + " of " + params.endRow);
                 var pageNumber = (params.startRow / this.pageSize) + 1;
                 this.productParams.pageNumber = pageNumber;
                 this.productParams.pageSize = this.pageSize;
                 this.productParams.bypassCache = true;
+                this.productParams.advanceFilters = filterSortModel.listOfFilters;
+                this.productParams.sortModel = filterSortModel.listOfSort;
                 console.log(params);
                 this.productService
                     .getProducts(this.productParams)
@@ -159,9 +167,27 @@ export class ProductComponent implements OnInit {
     }
     initOvertimeColumns(): void {
         this.productColumns = [
-            { headerName: "Shopify Id", field: "shopifyId", sortable: true, isShowable: true, width: 256 },
-            { headerName: "Title", field: "title", sortable: true, isShowable: true, width: 256, suppressMenu: true },
-            { headerName: "Vendor", field: "vendor", sortable: true, width: 160,  suppressMenu: true },
+            {
+                headerName: "Shopify Id", field: "shopifyId", sortable: true, width: 256,
+                filter: 'agNumberColumnFilter',
+                filterParams: {
+                    maxNumConditions: 1,
+                    numAlwaysVisibleConditions: 1,
+                    defaultJoinOperator: 'OR',
+                } as INumberFilterParams,
+            },
+            {
+                headerName: "Title", field: "title", sortable: true, width: 256, suppressMenu: true,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    filterOptions: ['contains'],
+                    defaultOption: 'contains',
+                    maxNumConditions: 1,
+                    numAlwaysVisibleConditions: 1,
+                    defaultJoinOperator: 'OR',
+                } as ITextFilterParams,
+            },
+            { headerName: "Vendor", field: "vendor", sortable: true, width: 160, suppressMenu: true, floatingFilter: false },
             { headerName: "Product Type", field: "productType", sortable: true, width: 160 },
             { headerName: "PublishedScope", field: "publishedScope", sortable: true, width: 330 },
             { headerName: "Status", field: "status", sortable: true, width: 330 },

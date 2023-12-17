@@ -11,11 +11,11 @@ namespace FluentPOS.Shared.DTOs.Filters
         private const string DefaultOpr = "=";
         private string _action = DefaultOpr;
 
-        public string FieldName { get; set; }
+        public string Key { get; set; }
 
-        public string SearchTerm { get; set; }
+        public string Value { get; set; }
 
-        public string Action
+        public string Type
         {
             get => _action;
             set => _action = string.IsNullOrEmpty(value) ? DefaultOpr : value;

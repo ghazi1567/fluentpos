@@ -31,7 +31,8 @@ export class ProductService {
         if (productParams.bypassCache) {
             params = params.append("bypassCache", productParams.bypassCache);
         }
-        return this.api.getAlls(params).pipe(map((response: PaginatedResult<Product>) => response));
+        
+        return this.api.getAlls(productParams).pipe(map((response: PaginatedResult<Product>) => response));
     }
 
     getProductById(id: string): Observable<Result<Product>> {

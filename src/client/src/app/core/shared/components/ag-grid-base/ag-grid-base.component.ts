@@ -160,7 +160,7 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
                 gridParent: this.gridParent
             },
             defaultColDef: {
-                floatingFilter: true
+                floatingFilter: true,
                 // wrapText: true,     // <-- HERE
                 // autoHeight: true,   // <-- & HERE    
 
@@ -174,7 +174,7 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
 
         };
         this.gridOptions.defaultColDef.sortable = false;
-        this.gridOptions.defaultColDef.filter = false;
+        this.gridOptions.defaultColDef.filter = true;
         this.gridOptions.defaultColDef.resizable = false;
         if (this.secondaryGridOptionsParam) {
             // assign gridOptions to sycn column definitions with another grid

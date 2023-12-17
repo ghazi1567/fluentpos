@@ -7,9 +7,11 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using FluentPOS.Shared.Core.Features.Common.Filters;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Catalogs.Products;
+using FluentPOS.Shared.DTOs.Filters;
 using MediatR;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
@@ -27,5 +29,11 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public long[] CategoryIds { get; private set; }
 
         public string[] OrderBy { get; private set; }
+
+        public string AdvancedSearchType { get; set; } = "And";
+
+        public List<FilterModel> AdvanceFilters { get; set; }
+
+        public List<SortModel> SortModel { get; set; }
     }
 }

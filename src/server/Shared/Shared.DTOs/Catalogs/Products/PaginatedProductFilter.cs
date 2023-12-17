@@ -7,6 +7,7 @@
 // --------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using FluentPOS.Shared.DTOs.Filters;
 
 namespace FluentPOS.Shared.DTOs.Catalogs.Products
@@ -20,5 +21,6 @@ namespace FluentPOS.Shared.DTOs.Catalogs.Products
         public long[] BrandIds { get; set; }
 
         public long[] CategoryIds { get; set; }
+
     }
 }

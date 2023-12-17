@@ -22,9 +22,9 @@ namespace FluentPOS.Modules.Catalog.Controllers
     [ApiVersion("1")]
     internal sealed class ProductsController : BaseController
     {
-        [HttpGet]
+        [HttpPost("GetAll")]
         [Authorize(Policy = Permissions.Products.ViewAll)]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedProductFilter filter)
+        public async Task<IActionResult> GetAllAsync(PaginatedProductFilter filter)
         {
             var request = Mapper.Map<GetProductsQuery>(filter);
             var products = await Mediator.Send(request);

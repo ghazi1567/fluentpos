@@ -34,6 +34,8 @@ namespace FluentPOS.Shared.DTOs.Filters
 
         public List<FilterModel> AdvanceFilters { get; set; }
 
+        public List<SortModel> SortModel { get; set; }
+
         public PaginatedFilter()
         {
             PageNumber = 1;

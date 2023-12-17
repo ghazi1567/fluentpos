@@ -8,10 +8,10 @@ import { Result } from "../../models/wrappers/Result";
 export class ProductApiService {
     baseUrl = environment.apiUrl + "catalog/products/";
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
-    getAlls(params: HttpParams) {
-        return this.http.get(this.baseUrl, { params: params });
+    getAlls(params: any) {
+        return this.http.post(this.baseUrl + 'GetAll', params);
     }
 
     getById(id: string) {
@@ -37,7 +37,7 @@ export class ProductApiService {
         return this.http.post(this.baseUrl + `import`, model);
     }
     updatePromotion(model: any) {
-      return this.http.post(this.baseUrl+ `updatePromotion`, model);
+        return this.http.post(this.baseUrl + `updatePromotion`, model);
     }
     syncProducts() {
         return this.http.get(this.baseUrl + `sync`);

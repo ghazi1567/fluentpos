@@ -17,6 +17,7 @@ using FluentPOS.Shared.Core.Exceptions;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Filters;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace FluentPOS.Shared.Core.Extensions
 {
@@ -38,6 +39,15 @@ namespace FluentPOS.Shared.Core.Extensions
             return PaginatedResult<T>.Success(items, count, pageNumber, pageSize);
         }
 
+        public static IQueryable<TEntity> AdvanceSort<TEntity>(this IQueryable<TEntity> queryable, List<SortModel> sortModel)
+        {
+            foreach (var item in sortModel)
+            {
+                queryable = queryable.OrderBy($"{item.Key} {item.Sort}");
+            }
+
+            return queryable;
+        }
 
         public static IQueryable<TEntity> AdvanceSearch<TEntity>(this IQueryable<TEntity> queryable, List<FilterModel> filterList, string advancedSearchType, bool disableTracking = true)
            where TEntity : class
@@ -100,29 +110,29 @@ namespace FluentPOS.Shared.Core.Extensions
         {
             var type = typeof(TEntity);
             Expression exp = default(Expression);
-            PropertyInfo propertyInfo = type.GetProperty(item.FieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            if (propertyInfo is null) throw new ArgumentNullException($"Unble to find a field : '{item.FieldName}' from model {type.FullName} ");
+            PropertyInfo propertyInfo = type.GetProperty(item.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (propertyInfo is null) throw new ArgumentNullException($"Unble to find a field : '{item.Key}' from model {type.FullName} ");
 
 
-            switch (item.Action)
+            switch (item.Type)
             {
                 case "=":
-                    exp = Expression.Equal(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.Equal(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
                 case "!=":
-                    exp = Expression.NotEqual(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.NotEqual(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
                 case ">":
-                    exp = Expression.GreaterThan(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.GreaterThan(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
                 case ">=":
-                    exp = Expression.GreaterThanOrEqual(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.GreaterThanOrEqual(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
                 case "<":
-                    exp = Expression.LessThan(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.LessThan(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
                 case "<=":
-                    exp = Expression.LessThanOrEqual(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.LessThanOrEqual(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
                 case "like":
 
@@ -131,7 +141,7 @@ namespace FluentPOS.Shared.Core.Extensions
                             typeof(DbFunctionsExtensions).GetMethod(nameof(DbFunctionsExtensions.Like), new[] { typeof(DbFunctions), typeof(string), typeof(string) }),
                             Expression.Constant(EF.Functions),
                             Expression.Property(parameter, propertyInfo.Name),
-                            propertyInfo.GetValueExpression(item.SearchTerm, "like")), Expression.Constant(true));
+                            propertyInfo.GetValueExpression(item.Value, "like")), Expression.Constant(true));
                     break;
 
                 // case "IN":
@@ -145,7 +155,7 @@ namespace FluentPOS.Shared.Core.Extensions
                 //    break;
 
                 default:
-                    exp = Expression.Equal(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.SearchTerm));
+                    exp = Expression.Equal(Expression.PropertyOrField(parameter, propertyInfo.Name), propertyInfo.GetValueExpression(item.Value));
                     break;
             }
 
