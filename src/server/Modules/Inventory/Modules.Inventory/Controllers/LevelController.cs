@@ -14,7 +14,7 @@ namespace FluentPOS.Modules.Inventory.Controllers
     {
 
         [HttpPost]
-        [Authorize(Policy = Permissions.Sales.Register)]
+        [Authorize(Policy = Permissions.Orders.Register)]
         public async Task<IActionResult> RegisterAsync(ImportLevelCommand command)
         {
             return Ok(await Mediator.Send(command));

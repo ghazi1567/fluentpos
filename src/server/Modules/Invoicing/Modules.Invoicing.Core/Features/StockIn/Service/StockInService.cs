@@ -177,7 +177,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.PO.Service
             {
                 var order = InternalOrder.InitializeOrder(request.TimeStamp);
                 order.SetReferenceNumber(stockIn.ReferenceNumber);
-                order.Status = OrderStatus.PendingApproval;
+                //order.Status = OrderStatus.PendingApproval;
                 //order.OrderType = OrderType.StockIn;
                 order.SetNote(request.Note);
                 order.WarehouseId = request.WarehouseId;

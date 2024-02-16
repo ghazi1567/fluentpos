@@ -26,7 +26,7 @@ namespace FluentPOS.Modules.Organization.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = Permissions.Branchs.View)]
+        [Authorize(Policy = Permissions.Common.View)]
         public async Task<IActionResult> GetByIdAsync([FromQuery] GetByIdCacheableFilter<long, Store> filter)
         {
             var request = Mapper.Map<GetBranchByIdQuery>(filter);
@@ -35,7 +35,7 @@ namespace FluentPOS.Modules.Organization.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = Permissions.Branchs.ViewAll)]
+        [Authorize(Policy = Permissions.Common.ViewAll)]
         public async Task<IActionResult> GetAllAsync([FromQuery] PaginatedBrachFilter filter)
         {
             var request = Mapper.Map<GetBranchsQuery>(filter);
@@ -62,6 +62,14 @@ namespace FluentPOS.Modules.Organization.Controllers
         public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveBranchCommand(id)));
+        }
+
+        [HttpGet("Warehouses/{id}")]
+        [Authorize(Policy = Permissions.Branchs.View)]
+        public async Task<IActionResult> GetWarehouseByIdAsync(Guid id)
+        {
+            var brand = await Mediator.Send(new GetWarehouseByIdQuery(id));
+            return Ok(brand);
         }
     }
 }

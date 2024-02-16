@@ -28,6 +28,8 @@ namespace FluentPOS.Shared.Core.Domain
 
         public long BranchId { get; set; }
 
+        public string UserEmail { get; set; }
+
         protected BaseEntity()
         {
            // Id = default(long);

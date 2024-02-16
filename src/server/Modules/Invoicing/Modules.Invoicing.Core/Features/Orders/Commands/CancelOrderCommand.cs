@@ -19,5 +19,14 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         public long ShopifyId { get; set; }
 
         public string Reason { get; set; }
+
+        public long FulfillmentOrderId { get; set; }
+
+        public CancelledOrderCommand(long id, long fulfillmentOrderId, string reason)
+        {
+            Id = id;
+            FulfillmentOrderId = fulfillmentOrderId;
+            Reason = reason;
+        }
     }
 }

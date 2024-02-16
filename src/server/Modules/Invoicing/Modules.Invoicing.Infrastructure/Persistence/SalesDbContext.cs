@@ -72,9 +72,16 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Persistence
 
         public DbSet<OrderLogs> OrderLogs { get; set; }
 
+        public DbSet<InternalLineItem> LineItems { get; set; }
+
+        public DbSet<Invoice> Invoices { get; set; }
+
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+
+        public DbSet<InternalFulfillmentOrderLineItem> FulfillmentOrderLineItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyApplicationConfiguration(_persistenceOptions);
         }

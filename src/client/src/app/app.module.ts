@@ -48,6 +48,7 @@ import {
   NbCardModule,
   NbCheckboxModule
 } from '@nebular/theme';
+import { PrintLayoutComponent } from './layouts/print-layout/print-layout.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +58,7 @@ import {
     HomeLayoutComponent,
     AdminLayoutComponent,
     NgxAdminLayoutComponent,
+    PrintLayoutComponent,
   ],
   imports: [
     BrowserModule,

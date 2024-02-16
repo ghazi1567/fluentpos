@@ -67,6 +67,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<int>("UploadType")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("ImportFiles", "Inventory");
@@ -128,6 +131,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("VariantId")
                         .HasColumnType("bigint");
 
@@ -182,6 +188,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("InventoryLevels", "Inventory");
@@ -233,6 +242,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("VariantId")
                         .HasColumnType("bigint");
@@ -294,6 +306,9 @@ namespace FluentPOS.Modules.Inventory.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("WarehouseId")
                         .HasColumnType("bigint");

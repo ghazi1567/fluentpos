@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using FluentPOS.Modules.Inventory.Core.Abstractions;
 using FluentPOS.Modules.Inventory.Core.Dtos;
+using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
 using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
 using FluentPOS.Shared.Core.Wrapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Inventory.Core.Features.Reports
 {
-    internal class StockReportHandler : IRequestHandler<StockReportQuery, Result<List<StockDto>>>
+    internal class StockReportHandler : IRequestHandler<StockReportQuery, PaginatedResult<StockDto>>
     {
         private readonly IInventoryDbContext _context;
         private readonly IMapper _mapper;
@@ -36,36 +37,35 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
             _warehouseService = warehouseService;
         }
 
-        public async Task<Result<List<StockDto>>> Handle(StockReportQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedResult<StockDto>> Handle(StockReportQuery request, CancellationToken cancellationToken)
         {
-           
-            var query = _context.Stocks.AsQueryable();
-            var product = await _productService.GetProductBySKU(request.SKU);
 
-            if (product != null)
+            var queryable = _context.Stocks.AsQueryable();
+
+            if (request.WarehouseIds != null && request.WarehouseIds.Length > 0)
             {
-                query = query.Where(x => x.InventoryItemId == product.InventoryItemId);
+                queryable = queryable.Where(x => request.WarehouseIds.Contains(x.WarehouseId));
             }
 
-            if (!string.IsNullOrEmpty(request.ProductId))
+            if (request.AdvanceFilters != null && request.AdvanceFilters.Count > 0)
             {
-                var productId = long.Parse(request.ProductId);
-                query = query.Where(x => x.ProductId == productId);
+                queryable = queryable.AdvanceSearch(request.AdvanceFilters, request.AdvancedSearchType);
             }
 
-            if (!string.IsNullOrEmpty(request.WarehouseId))
+            if (request.SortModel != null && request.SortModel.Count > 0)
             {
-                var warehouseId = long.Parse(request.WarehouseId);
-                query = query.Where(x => x.WarehouseId == warehouseId);
+                queryable = queryable.AdvanceSort(request.SortModel);
             }
 
-            var result = query.ToList();
-            var stockListDto = _mapper.Map<List<StockDto>>(result);
-            var productIds = stockListDto.Select(x => x.ProductId).Distinct().ToList();
+            var result = await queryable.AsNoTracking()
+                .ToPaginatedListAsync(request.PageNumber, request.PageSize);
+
+            var stockListDto = _mapper.Map<PaginatedResult<StockDto>>(result);
+            var productIds = stockListDto.Data.Select(x => x.ProductId).Distinct().ToList();
 
             var paroducts = await _productService.GetProductByIds(productIds);
             var warehouses = await _warehouseService.GetWarehouse(new List<string>());
-            foreach (var item in stockListDto)
+            foreach (var item in stockListDto.Data)
             {
                 var productVariant = paroducts.FirstOrDefault(x => x.InventoryItemId == item.InventoryItemId);
                 if (productVariant != null)
@@ -81,7 +81,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Reports
                 }
             }
 
-            return await Result<List<StockDto>>.SuccessAsync(data: stockListDto);
+            return stockListDto;
         }
     }
 }

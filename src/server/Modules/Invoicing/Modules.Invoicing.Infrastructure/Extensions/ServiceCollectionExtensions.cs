@@ -10,6 +10,7 @@ using FluentPOS.Modules.Invoicing.Core.Abstractions;
 using FluentPOS.Modules.Invoicing.Core.Features.PO.Service;
 using FluentPOS.Modules.Invoicing.Core.Services;
 using FluentPOS.Modules.Invoicing.Core.Services.BackgroundJob;
+using FluentPOS.Modules.Invoicing.Core.Services.Confirmation;
 using FluentPOS.Modules.Invoicing.Infrastructure.Persistence;
 using FluentPOS.Modules.Invoicing.Infrastructure.Services;
 using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
@@ -42,6 +43,9 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Extensions
             services.AddTransient<IStoreService, StoreService>();
             services.AddTransient<ILookupService, LookupService>();
             services.AddTransient<IOrderLogger, OrderLogger>();
+            services.AddTransient<IConfirmationService, ConfirmationService>();
+            services.AddTransient<IShareConfirmationService, ShareConfirmationService>();
+
             return services;
         }
 

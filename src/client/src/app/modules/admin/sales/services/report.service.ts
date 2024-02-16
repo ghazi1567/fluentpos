@@ -15,9 +15,9 @@ import { OrderParams } from "../models/orderParams";
     providedIn: "root"
 })
 export class ReportService {
-    constructor(private api: ReportServiceApi, 
+    constructor(private api: ReportServiceApi,
         private productApiService: ProductApiService,
-        private reportsApiService:ReportsApiService) {}
+        private reportsApiService: ReportsApiService) { }
 
     getVarianceReport(model: any): Observable<Result<VaraintReport[]>> {
         return this.api.getVarianceReport(model).pipe(map((response: any) => response));
@@ -25,11 +25,11 @@ export class ReportService {
     updatePromotion(model: any): Observable<Result<any>> {
         return this.productApiService.updatePromotion(model).pipe(map((response: any) => response));
     }
-    getStockReport(model: any) : Observable<Result<StockReport[]>> {
+    getStockReport(model: any): Observable<PaginatedResult<StockReport[]>> {
         return this.reportsApiService.getStockReport(model).pipe(map((response: any) => response));
     }
-    getStockOutReport(model: any) : Observable<Result<StockReport[]>> {
+    getStockOutReport(model: any): Observable<Result<StockReport[]>> {
         return this.reportsApiService.getStockOutReport(model).pipe(map((response: any) => response));
     }
-    
+
 }

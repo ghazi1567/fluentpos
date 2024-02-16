@@ -67,6 +67,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Departments", "Org");
@@ -100,6 +103,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -137,6 +143,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -177,6 +186,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -327,6 +339,9 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("lateComersPenalty")
                         .HasColumnType("int");
 
@@ -388,6 +403,43 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stores", "Org");
+                });
+
+            modelBuilder.Entity("FluentPOS.Modules.Organization.Core.Entities.StoreWarehouse", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("BranchId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("IdentityUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("OrganizationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ShopifyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("WarehouseId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StoreWarehouses", "Org");
                 });
 #pragma warning restore 612, 618
         }

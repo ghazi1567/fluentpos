@@ -1,6 +1,7 @@
 ﻿using FluentPOS.Modules.Invoicing.Core.Abstractions;
 using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
+using FluentPOS.Shared.Core.Interfaces.Services.Organization;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Sales.Orders;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 {
     public interface ILookupService
     {
-        Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<long> ids);
+        Task<Result<List<GetWarehouseResponse>>> GetWarehouse(Guid userId);
 
         Task<List<OperationCityDto>> GetOperationalCity();
     }
@@ -21,19 +22,22 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
     public class LookupService : ILookupService
     {
         private readonly IWarehouseService _warehouseService;
-
+        private readonly IOrgService _orgService;
         private readonly ISalesDbContext _context;
 
         public LookupService(
             IWarehouseService warehouseService,
-            ISalesDbContext salesDbContext)
+            ISalesDbContext salesDbContext,
+            IOrgService orgService)
         {
             _warehouseService = warehouseService;
             _context = salesDbContext;
+            _orgService = orgService;
         }
 
-        public async Task<Result<List<GetWarehouseResponse>>> GetWarehouse(List<long> ids)
+        public async Task<Result<List<GetWarehouseResponse>>> GetWarehouse(Guid userId)
         {
+            var ids = await _orgService.GetUserWarehouse(userId);
             return await _warehouseService.GetWarehouse(ids);
         }
 

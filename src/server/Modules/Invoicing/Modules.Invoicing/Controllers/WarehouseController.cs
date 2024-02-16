@@ -16,9 +16,9 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByIdAsync()
+        public async Task<IActionResult> GetByIdAsync([FromQuery] long[] WarehouseIds)
         {
-            return Ok(await Mediator.Send(new GetWarehouseQuery()));
+            return Ok(await Mediator.Send(new GetWarehouseQuery() { WarehouseIds = WarehouseIds }));
         }
 
         [HttpGet("Sync")]

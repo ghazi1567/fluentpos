@@ -33,7 +33,7 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
 
         public List<WarehouseStockStatsDto> WarehouseStocks { get; set; }
 
-
+        public bool NoStoreCanFulFill { get; set; }
     }
 
     public class SplitOrderDetailDto
@@ -51,6 +51,8 @@ namespace FluentPOS.Shared.DTOs.Sales.Orders
         public long FulfillableQuantity { get; set; }
 
         public bool CanFulFill { get; set; }
+
+        public bool NoStoreCanFulFill { get; set; }
 
         public int CanFulfillCount { get; set; }
 

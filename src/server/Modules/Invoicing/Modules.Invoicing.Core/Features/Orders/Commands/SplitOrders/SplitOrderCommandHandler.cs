@@ -12,19 +12,13 @@ using FluentPOS.Modules.Invoicing.Core.Constants;
 using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Modules.Invoicing.Core.Services;
-using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
-using FluentPOS.Shared.Core.IntegrationServices.Invoicing;
-using FluentPOS.Shared.Core.IntegrationServices.Logistics;
-using FluentPOS.Shared.Core.IntegrationServices.People;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.DTOs.Inventory;
 using FluentPOS.Shared.DTOs.Sales.Enums;
 using FluentPOS.Shared.DTOs.Sales.Orders;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -111,6 +105,12 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
                     }
                 }
 
+                if (splitOrderDetail.NoStoreCanFulFill == true && !whFOMapping.ContainsKey($"{splitOrderDetail.FOShopifyId.Value}"))
+                {
+                    var warehouseId = splitOrderDetail.SplitOrderDetails.FirstOrDefault(x => x.NoStoreCanFulFill == true).WarehouseId;
+                    whFOMapping[$"{splitOrderDetail.FOShopifyId.Value}"] = warehouseId.Value;
+                }
+
                 var fulfillmentOrders = await _shopifyOrderFulFillmentService.GetFulFillOrderByOrderId(order.ShopifyId.Value);
                 var fulfillmentOrdersDto = _mapper.Map<List<InternalFulfillmentOrderDto>>(fulfillmentOrders);
                 var newFulfillmentOrders = _mapper.Map<List<InternalFulfillmentOrder>>(fulfillmentOrdersDto);
@@ -136,10 +136,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
                 foreach (var fulfillmentOrder in order.FulfillmentOrders)
                 {
                     var warehouseId = whFOMapping[$"{fulfillmentOrder.ShopifyId.Value}"];
-                    if (warehouseId != default)
-                    {
-                        await UpdateFulfillmentOrderAsync(fulfillmentOrder, warehouseId, splitOrderDetail.WarehouseStocks);
-                    }
+                    await UpdateFulfillmentOrderAsync(fulfillmentOrder, warehouseId, splitOrderDetail.WarehouseStocks);
                 }
                 _salesContext.Orders.Update(updatedOrder);
                 await _salesContext.SaveChangesAsync();
@@ -173,39 +170,47 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 
         private async Task UpdateFulfillmentOrderAsync(InternalFulfillmentOrder fulfillmentOrder, long warehouseId, List<WarehouseStockStatsDto> WarehouseStocks)
         {
-            fulfillmentOrder.WarehouseId = warehouseId;
-            fulfillmentOrder.OrderStatus = OrderStatus.AssignToOutlet;
-            _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, $"{warehouseId} {OrderLogsConstant.AssignedToOutlet} ");
-            foreach (var fulfillmentOrderLineItem in fulfillmentOrder.FulfillmentOrderLineItems)
+            if (warehouseId > 0)
             {
-                var warehouses = WarehouseStocks.Where(x => x.warehouseId == warehouseId && x.inventoryItemId == fulfillmentOrderLineItem.InventoryItemId.Value).ToList();
-                WarehouseStockStatsDto stock = null;
-
-                // check if item is available in multiple rack in same warehouse.
-                string racks = GetRacksForLineItem(warehouses, fulfillmentOrderLineItem.Quantity.Value);
-
-                stock = warehouses.FirstOrDefault();
-                if (stock != null)
+                fulfillmentOrder.WarehouseId = warehouseId;
+                fulfillmentOrder.OrderStatus = OrderStatus.AssignToOutlet;
+                _orderLogger.AssignedToWarehouse(fulfillmentOrder.InternalOrderId, fulfillmentOrder.Id, warehouseId);
+                foreach (var fulfillmentOrderLineItem in fulfillmentOrder.FulfillmentOrderLineItems)
                 {
-                    fulfillmentOrderLineItem.StockId = string.IsNullOrEmpty(racks) ? stock.Id : null;
-                    fulfillmentOrderLineItem.WarehouseId = stock.warehouseId;
-                    fulfillmentOrderLineItem.SKU = stock.SKU;
-                    fulfillmentOrderLineItem.Rack = string.IsNullOrEmpty(racks) ? stock.Rack : racks;
-                    fulfillmentOrderLineItem.ProductId = stock.productId;
+                    var warehouses = WarehouseStocks.Where(x => x.warehouseId == warehouseId && x.inventoryItemId == fulfillmentOrderLineItem.InventoryItemId.Value).ToList();
+                    WarehouseStockStatsDto stock = null;
 
-                    var response = await _stockService.RecordTransaction(new StockTransactionDto
+                    // check if item is available in multiple rack in same warehouse.
+                    string racks = GetRacksForLineItem(warehouses, fulfillmentOrderLineItem.Quantity.Value);
+
+                    stock = warehouses.FirstOrDefault();
+                    if (stock != null)
                     {
-                        IgnoreRackCheck = true,
-                        inventoryItemId = stock.inventoryItemId,
-                        productId = stock.productId,
-                        quantity = fulfillmentOrderLineItem.Quantity.Value,
-                        Rack = stock.Rack,
-                        type = Shared.DTOs.Sales.Enums.OrderType.Commited,
-                        warehouseId = stock.warehouseId,
-                        SKU = stock.SKU,
-                        VariantId = stock.VariantId
-                    });
+                        fulfillmentOrderLineItem.StockId = string.IsNullOrEmpty(racks) ? stock.Id : null;
+                        fulfillmentOrderLineItem.WarehouseId = stock.warehouseId;
+                        fulfillmentOrderLineItem.SKU = stock.SKU;
+                        fulfillmentOrderLineItem.Rack = string.IsNullOrEmpty(racks) ? stock.Rack : racks;
+                        fulfillmentOrderLineItem.ProductId = stock.productId;
+
+                        var response = await _stockService.RecordTransaction(new StockTransactionDto
+                        {
+                            IgnoreRackCheck = true,
+                            inventoryItemId = stock.inventoryItemId,
+                            productId = stock.productId,
+                            quantity = fulfillmentOrderLineItem.Quantity.Value,
+                            Rack = stock.Rack,
+                            type = Shared.DTOs.Sales.Enums.OrderType.Commited,
+                            warehouseId = stock.warehouseId,
+                            SKU = stock.SKU,
+                            VariantId = stock.VariantId
+                        });
+                    }
                 }
+            }
+            else
+            {
+                fulfillmentOrder.WarehouseId = warehouseId;
+                fulfillmentOrder.OrderStatus = OrderStatus.AssignToHeadOffice;
             }
         }
 

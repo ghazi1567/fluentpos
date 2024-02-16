@@ -35,5 +35,6 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Products.Queries
         public List<FilterModel> AdvanceFilters { get; set; }
 
         public List<SortModel> SortModel { get; set; }
+
     }
 }

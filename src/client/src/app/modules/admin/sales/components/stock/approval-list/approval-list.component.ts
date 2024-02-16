@@ -113,7 +113,7 @@ export class ApprovalListComponent implements OnInit {
             if (result) {
                 let model = {
                     orderId: id,
-                    status: OrderStatus.Rejected
+                    status: OrderStatus.PendingApproval
                 };
                 this.stockInService.approve(model).subscribe((res) => {
                     if (res.succeeded) {

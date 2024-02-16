@@ -257,7 +257,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
                         await _context.SaveChangesAsync();
                         Task.Delay(800).Wait(); // Wait with blocking
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         inventoryItem.Status = "Failed";
                         _context.InventoryLevels.Update(inventoryItem);

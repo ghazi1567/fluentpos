@@ -15,5 +15,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 
         public string OrderNo { get; set; }
 
+        public long[] WarehouseIds { get; set; }
+
     }
 }

@@ -43,9 +43,16 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.StockIn.Queries
 
         public async Task<Result<List<WarehouseDto>>> Handle(GetWarehouseQuery request, CancellationToken cancellationToken)
         {
-            var warehouses = await _context.Warehouses.AsNoTracking()
-                .OrderBy(x => x.Name)
-                .ToListAsync();
+            var warehousesQueryable = _context.Warehouses.AsQueryable();
+
+            if (request.WarehouseIds.Length > 0)
+            {
+                warehousesQueryable = warehousesQueryable.Where(x => request.WarehouseIds.Contains(x.Id));
+            }
+
+            var warehouses = await warehousesQueryable
+               .OrderBy(x => x.Name)
+               .ToListAsync();
 
             var mappedData = _mapper.Map<List<Warehouse>, List<WarehouseDto>>(warehouses);
 

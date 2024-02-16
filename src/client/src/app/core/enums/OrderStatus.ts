@@ -13,7 +13,14 @@ export enum OrderStatus {
     ReadyToShip = 11,
     Shipped = 12,
     InProgress = 13,
-    Rejected = 14
+    AssignedToCSR = 14,
+    IVRConfirmation = 15,
+    IVRFailed = 16,
+    WAConfirmation = 17,
+    WAFailed = 18,
+    Confirmed = 19,
+    Returned = 20,
+    Delivered = 21
 }
 
 export const OrderStatusMapping: Record<OrderStatus, string> = {
@@ -27,9 +34,16 @@ export const OrderStatusMapping: Record<OrderStatus, string> = {
     [OrderStatus.Cancelled]: "Cancelled",
     [OrderStatus.Approved]: "Approved",
     [OrderStatus.InProgress]: "In Progress",
-    [OrderStatus.Rejected]: "Rejected",
     [OrderStatus.CityCorrection]: "City Correction",
     [OrderStatus.OnHold]: "On Hold",
     [OrderStatus.ReQueueAfterReject]: "Requeue",
-    [OrderStatus.AssignToHeadOffice]: "Assigned To Head Office"
+    [OrderStatus.AssignToHeadOffice]: "Assigned To Head Office",
+    [OrderStatus.AssignedToCSR]: "Assigned To CSR",
+    [OrderStatus.IVRConfirmation]: "IVR Pending",
+    [OrderStatus.IVRFailed]: "IVR Failed",
+    [OrderStatus.WAConfirmation]: "WA Pending",
+    [OrderStatus.WAFailed]: "WA Failed",
+    [OrderStatus.Confirmed]: "Confirmed",
+    [OrderStatus.Returned]: "Returned",
+    [OrderStatus.Delivered]: "Delivered",
 };

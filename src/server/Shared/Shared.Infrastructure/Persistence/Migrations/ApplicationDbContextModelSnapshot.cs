@@ -122,6 +122,52 @@ namespace FluentPOS.Shared.Infrastructure.Persistence.Migrations
                     b.ToTable("WebhookEvents", "Application");
                 });
 
+            modelBuilder.Entity("FluentPOS.Shared.Core.Entities.WhatsappEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("EntryId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JsonBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MessageId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumberId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RefMessageId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("RequestFor")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WhatsappEvents", "Application");
+                });
+
             modelBuilder.Entity("FluentPOS.Shared.Core.EventLogging.EventLog", b =>
                 {
                     b.Property<long>("Id")

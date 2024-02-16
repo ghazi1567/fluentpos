@@ -149,7 +149,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         #region Order webhook job
         public string RunOrderWebhook()
         {
-            SyncShopifyOrders();
+            // SyncShopifyOrders();
             RemoveIfExists(WebhookOrderJobId);
             ScheduleRecurring(methodCall: () => FetchWebhookEvents(), recurringJobId: WebhookOrderJobId, cronExpression: Cron.MinuteInterval(5));
             return WebhookOrderJobId;
@@ -159,6 +159,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         {
             var pendingOrders = await _webhookEventService.FetchPendingOrders();
             var isFoundNewOrder = false;
+
             foreach (var order in pendingOrders)
             {
                 try
@@ -168,6 +169,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     var fulfillmentOrders = await _shopifyOrderFulFillmentService.GetFulFillOrderByOrderId(command.ShopifyId.Value);
                     command.FulfillmentOrders = _mapper.Map<List<InternalFulfillmentOrderDto>>(fulfillmentOrders);
                     _orderLogger.LogInfo(command.ShopifyId.Value, command.Id, OrderLogsConstant.WebhookStarted);
+
                     var response = await SaveOrder(command);
                     if (response.Succeeded)
                     {
@@ -188,6 +190,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
                     _orderLogger.LogInfo(order.Id, ex.Message);
                 }
             }
+
             isFoundNewOrder = true;
             if (isFoundNewOrder)
             {
@@ -204,7 +207,60 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
         #region Order process job
         public string ProcessOrder()
         {
-            return Enqueue(() => FetchAndProcessOrders());
+            return Enqueue(() => ConfirmAndProcessOrder());
+        }
+
+        public void ConfirmAndProcessOrder()
+        {
+            FetchAndConfirmOrders().Wait();
+            FetchAndProcessOrders().Wait();
+        }
+
+        public async Task<bool> FetchAndConfirmOrders()
+        {
+            var pendingOrders = await _mediator.Send(new GetOrderForConfirmationQuery());
+            foreach (var fulfillmentOrder in pendingOrders)
+            {
+                try
+                {
+                    // check confirmation
+                    switch (fulfillmentOrder.OrderStatus)
+                    {
+                        case Shared.DTOs.Sales.Enums.OrderStatus.Pending:
+                            fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.WAConfirmation; // TODO : move to IVR when integrated.
+                            break;
+                        case Shared.DTOs.Sales.Enums.OrderStatus.IVRFailed:
+                            fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.WAConfirmation;
+                            break;
+                        case Shared.DTOs.Sales.Enums.OrderStatus.WAFailed:
+                            fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.AssignedToCSR;
+                            break;
+                        default:
+                            fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.AssignedToCSR;
+                            break;
+                    }
+
+                    bool isTrustedCustomer = false; // TODO : activate when customer integrated.
+                    if (isTrustedCustomer)
+                    {
+                        fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.Confirmed;
+                    }
+
+                    // Order Amount
+                    // TODO: move this to changeable config table.
+                    if (fulfillmentOrder.TotalPrice >= 20000)
+                    {
+                        fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.AssignedToCSR;
+                    }
+
+                    var result = await _mediator.Send(new UpdateOrderStatusCommand(fulfillmentOrder.InternalOrderId, fulfillmentOrder.Id, fulfillmentOrder.OrderStatus));
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            return true;
         }
 
         public async Task<bool> FetchAndProcessOrders()
@@ -251,10 +307,14 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.SearchingForAvailableQty);
             var skipLastWH = new List<long>();
 
-            if (fulfillmentOrder.WarehouseId.HasValue)
-            {
-                skipLastWH.Add(fulfillmentOrder.WarehouseId.Value);
-            }
+
+
+            skipLastWH = await _orderLogger.GetLastAssignedWarehouse(fulfillmentOrder.Id);
+
+            // if (fulfillmentOrder.WarehouseId.HasValue)
+            // {
+            //     skipLastWH.Add(fulfillmentOrder.WarehouseId.Value);
+            // }
 
             // check inventory and assign warehouse.
             // var warehouse = await _stockService.CheckInventory(variantQty, skipLastWH);
@@ -269,6 +329,8 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             if (warehouseLlist != null && warehouseLlist.Data.Count > 0)
             {
                 warehouseLlist.Data = warehouseLlist.Data.Where(x => !skipLastWH.Contains(x.Id)).ToList();
+                inventoryItemStockList = inventoryItemStockList.Where(x => !skipLastWH.Contains(x.warehouseId)).ToList();
+
                 _orderLogger.LogInfo(fulfillmentOrder.Id, fulfillmentOrder.InternalOrderId, OrderLogsConstant.LastWHSkiiped);
             }
 
@@ -289,7 +351,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             if (inventoryItemStockList.Count > 0)
             {
                 // final picked warehouse base on near by available stock
-                var splitOrderResult = FinalWarehousePick(fulfillmentOrder, fulfillmentOrder.FulfillmentOrderLineItems, inventoryItemStockList);
+                var splitOrderResult = await FinalWarehousePickAsync(fulfillmentOrder, fulfillmentOrder.FulfillmentOrderLineItems, inventoryItemStockList);
                 splitOrderResult.WarehouseStocks = inventoryItemStockList;
                 splitOrderResult.InternalOrderId = fulfillmentOrder.InternalOrderId;
                 splitOrderResult.FulfillmentOrderId = fulfillmentOrder.Id;
@@ -455,7 +517,7 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
 
         }
 
-        public SplitOrderResult FinalWarehousePick(InternalFulfillmentOrderDto fulfillmentOrder, IEnumerable<InternalFulfillmentOrderLineItemDto> orderedProducts, List<WarehouseStockStatsDto> warehouses)
+        public async Task<SplitOrderResult> FinalWarehousePickAsync(InternalFulfillmentOrderDto fulfillmentOrder, IEnumerable<InternalFulfillmentOrderLineItemDto> orderedProducts, List<WarehouseStockStatsDto> warehouses)
         {
             List<SplitOrderDetailDto> splitOrders = new List<SplitOrderDetailDto>();
             SplitOrderResult splitOrderResult = new SplitOrderResult();
@@ -607,16 +669,19 @@ namespace FluentPOS.Modules.Invoicing.Infrastructure.Services
             if (notFullfillableProducts.Count > 0)
             {
                 splitOrderResult.SplitCount++;
+                splitOrderResult.NoStoreCanFulFill = true;
+                var result = await _mediator.Send(new GetDefaultWarehouseQuery());
                 foreach (var item in notFullfillableProducts)
                 {
                     splitOrders.Add(new SplitOrderDetailDto
                     {
                         InventoryItemId = item.InventoryItemId.Value,
-                        WarehouseId = null,
+                        WarehouseId = result.Id,
                         AvailableQuantity = 0,
                         Distance = 0,
                         FulfillableQuantity = 0,
                         CanFulFill = false,
+                        NoStoreCanFulFill = true,
                         CanFulfillCount = 0,
                         RequiredQuantity = item.Quantity.Value,
                         LineItemId = lineItemIds[item.InventoryItemId.Value]

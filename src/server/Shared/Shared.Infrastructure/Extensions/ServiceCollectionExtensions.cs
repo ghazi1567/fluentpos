@@ -12,6 +12,7 @@ using FluentPOS.Shared.Core.Exceptions;
 using FluentPOS.Shared.Core.Extensions;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Logistics;
+using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Interfaces;
 using FluentPOS.Shared.Core.Interfaces.Services;
 using FluentPOS.Shared.Core.Settings;
@@ -21,6 +22,7 @@ using FluentPOS.Shared.Infrastructure.Interceptors;
 using FluentPOS.Shared.Infrastructure.Middlewares;
 using FluentPOS.Shared.Infrastructure.Persistence;
 using FluentPOS.Shared.Infrastructure.Services;
+using FluentPOS.Shared.Infrastructure.Services.Whatsapp;
 using FluentPOS.Shared.Infrastructure.Swagger.Filters;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -118,6 +120,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.AddCorsPolicy();
             services.AddApplicationSettings(config);
             services.AddHttpContextAccessor();
+            services.AddHttpClient();
             return services;
         }
 
@@ -135,6 +138,7 @@ namespace FluentPOS.Shared.Infrastructure.Extensions
             services.AddTransient<IEntityReferenceService, EntityReferenceService>();
             services.AddTransient<IWebhookEventService, WebhookEventService>();
             services.AddTransient<IPostexService, PostexService>();
+            services.AddTransient<IWhatsappService, WhatsappService>();
             return services;
         }
 

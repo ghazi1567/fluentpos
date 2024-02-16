@@ -126,7 +126,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
         {
             foreach (var request in command.Transactions)
             {
-                var stockRecord = _context.Stocks.FirstOrDefault(s => s.ProductId == request.productId && s.InventoryItemId == request.inventoryItemId && s.WarehouseId == request.warehouseId && s.Rack == request.Rack);
+                var stockRecord = _context.Stocks.FirstOrDefault(s => s.ProductId == request.productId && s.InventoryItemId == request.inventoryItemId && s.WarehouseId == request.warehouseId);
                 var stockTransaction = new StockTransaction(request.productId, request.inventoryItemId, request.quantity, request.type, request.warehouseId);
                 await _context.StockTransactions.AddAsync(stockTransaction);
 
@@ -173,7 +173,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
                 }
             }
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
             return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["{0} Inventory Stock Transaction Updated."], command.Transactions.Count));
         }
     }

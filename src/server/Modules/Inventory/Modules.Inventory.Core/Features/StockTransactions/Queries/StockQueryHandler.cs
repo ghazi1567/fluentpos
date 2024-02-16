@@ -55,7 +55,7 @@ namespace FluentPOS.Modules.Inventory.Core.Features.Levels
         public async Task<List<WarehouseStockStatsDto>> Handle(GetStockByVariantIds request, CancellationToken cancellationToken)
         {
             var result = await _context.Stocks.AsNoTracking()
-                .Where(x => request.VariantIds.Contains(x.InventoryItemId))
+                .Where(x => request.VariantIds.Contains(x.InventoryItemId) && x.WarehouseId > 0)
                 .ToListAsync();
 
             return result.Select(x => new WarehouseStockStatsDto

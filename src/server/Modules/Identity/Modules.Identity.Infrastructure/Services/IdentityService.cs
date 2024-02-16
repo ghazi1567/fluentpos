@@ -94,7 +94,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
             if (userWithSameEmail == null)
             {
-                user.AddDomainEvent(new UserRegisteredEvent(user));
+                //user.AddDomainEvent(new UserRegisteredEvent(user));
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (result.Succeeded)
                 {

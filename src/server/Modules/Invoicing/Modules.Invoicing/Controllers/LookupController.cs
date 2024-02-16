@@ -1,5 +1,6 @@
 ﻿using FluentPOS.Modules.Invoicing.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Invoicing.Controllers
@@ -15,9 +16,9 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         }
 
         [HttpGet("Warehouses")]
-        public async Task<IActionResult> Warehouses()
+        public async Task<IActionResult> Warehouses([FromQuery]Guid userId)
         {
-            return Ok(await _lookupService.GetWarehouse(new System.Collections.Generic.List<long>()));
+            return Ok(await _lookupService.GetWarehouse(userId));
         }
 
         [HttpGet("OperationalCity")]

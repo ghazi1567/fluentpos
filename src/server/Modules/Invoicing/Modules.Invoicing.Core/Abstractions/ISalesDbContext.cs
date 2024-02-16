@@ -16,6 +16,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
     {
         public DbSet<InternalOrder> Orders { get; set; }
 
+        public DbSet<InternalLineItem> LineItems { get; set; }
+
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
         public DbSet<Product> Products { get; set; }
@@ -34,6 +36,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
 
         public DbSet<InternalFulfillmentOrder> FulfillmentOrders { get; set; }
 
+        public DbSet<InternalFulfillmentOrderLineItem> FulfillmentOrderLineItems { get; set; }
+
         public DbSet<InternalAddress> Addresses { get; set; }
 
         public DbSet<LoadSheetMain> LoadSheetMains { get; set; }
@@ -42,5 +46,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Abstractions
 
         public DbSet<OrderLogs> OrderLogs { get; set; }
 
+        public DbSet<Invoice> Invoices { get; set; }
+
+        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
     }
 }

@@ -101,7 +101,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
 
                 var roleClaim = _mapper.Map<FluentRoleClaim>(request);
                 await _db.RoleClaims.AddAsync(roleClaim);
-                roleClaim.AddDomainEvent(new RoleClaimAddedEvent(roleClaim));
+                //roleClaim.AddDomainEvent(new RoleClaimAddedEvent(roleClaim));
                 await _db.SaveChangesAsync();
                 return await Result<string>.SuccessAsync(string.Format(_localizer["Role Claim {0} created."], request.Value));
             }
@@ -123,7 +123,7 @@ namespace FluentPOS.Modules.Identity.Infrastructure.Services
                     existingRoleClaim.Description = request.Description;
                     existingRoleClaim.RoleId = request.RoleId;
                     _db.RoleClaims.Update(existingRoleClaim);
-                    existingRoleClaim.AddDomainEvent(new RoleClaimUpdatedEvent(existingRoleClaim));
+                    //existingRoleClaim.AddDomainEvent(new RoleClaimUpdatedEvent(existingRoleClaim));
                     await _db.SaveChangesAsync();
                     return await Result<string>.SuccessAsync(string.Format(_localizer["Role Claim {0} for Role {1} updated."], request.Value, existingRoleClaim.Role.Name));
                 }

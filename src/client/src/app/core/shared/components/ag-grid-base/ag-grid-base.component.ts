@@ -175,7 +175,7 @@ export class AgGridBaseComponent implements OnInit, OnChanges {
         };
         this.gridOptions.defaultColDef.sortable = false;
         this.gridOptions.defaultColDef.filter = true;
-        this.gridOptions.defaultColDef.resizable = false;
+        this.gridOptions.defaultColDef.resizable = true;
         if (this.secondaryGridOptionsParam) {
             // assign gridOptions to sycn column definitions with another grid
             this.gridOptions = Object.assign(this.secondaryGridOptionsParam, this.gridOptions);

@@ -27,5 +27,7 @@ namespace FluentPOS.Modules.Organization.Core.Abstractions
         public DbSet<Job> Jobs { get; set; }
 
         public DbSet<JobHistory> JobHistory { get; set; }
+
+        public DbSet<StoreWarehouse> StoreWarehouses { get; set; }
     }
 }

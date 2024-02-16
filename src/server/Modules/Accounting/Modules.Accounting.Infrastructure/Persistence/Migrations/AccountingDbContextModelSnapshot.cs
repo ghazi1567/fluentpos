@@ -124,6 +124,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("leaves")
                         .HasColumnType("int");
 
@@ -197,6 +200,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("PayrollRequests", "Accounting");
@@ -248,6 +254,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -308,6 +317,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -375,6 +387,9 @@ namespace FluentPOS.Modules.Accounting.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

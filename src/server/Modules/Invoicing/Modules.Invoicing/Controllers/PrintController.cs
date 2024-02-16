@@ -1,7 +1,10 @@
-﻿using FluentPOS.Modules.Invoicing.Core.Services;
+﻿using FluentPOS.Modules.Invoicing.Core.Dtos.Prints;
+using FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries;
+using FluentPOS.Modules.Invoicing.Core.Services;
 using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using QuestPDF;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -21,6 +24,30 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         {
             _syncService = syncService;
             _shopifyOrderSyncJob = shopifyOrderSyncJob;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("OrderPrint/{id}")]
+        public async Task<IActionResult> OrderPrint(long id)
+        {
+            var orderDetail = await Mediator.Send(new GetFOByIdQuery { Id = id, WarehouseIds = new long[0] });
+            Settings.License = LicenseType.Community;
+            var document = new OrderInvoiceDocument(orderDetail.Data);
+            byte[] pdfBytes = document.GeneratePdf();
+            MemoryStream ms = new MemoryStream(pdfBytes);
+            return new FileStreamResult(ms, "application/pdf");
+        }
+
+        [AllowAnonymous]
+        [HttpGet("Loadsheet/{id}")]
+        public async Task<IActionResult> Loadsheet(long id)
+        {
+            var orderDetail = await Mediator.Send(new GetLoadsheetInByIdQuery { Id = id });
+            Settings.License = LicenseType.Community;
+            var document = new LoadSheetDocument(orderDetail.Data);
+            byte[] pdfBytes = document.GeneratePdf();
+            MemoryStream ms = new MemoryStream(pdfBytes);
+            return new FileStreamResult(ms, "application/pdf");
         }
 
         [AllowAnonymous]
@@ -106,7 +133,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("Loadsheet")]
+        [HttpGet("LoadsheetTest")]
         public async Task<IActionResult> GetLoadSheet()
         {
             QuestPDF.Settings.License = LicenseType.Community;
@@ -167,7 +194,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
         columns.RelativeColumn();
         columns.RelativeColumn();
     });
-    
+
 
     table.Header(header =>
     {

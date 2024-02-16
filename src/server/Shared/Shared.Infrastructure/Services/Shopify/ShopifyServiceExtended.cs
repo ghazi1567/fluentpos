@@ -1,6 +1,5 @@
 ﻿using FluentPOS.Shared.DTOs.Sales.Orders;
 using GraphQL;
-using GraphQL.Client.Abstractions;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using ShopifySharp;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Twilio.Rest.Trunking.V1;
 
 namespace FluentPOS.Shared.Infrastructure.Services.Shopify
 {
@@ -87,6 +85,44 @@ namespace FluentPOS.Shared.Infrastructure.Services.Shopify
             };
 
             var graphQLResponse = await graphQLClient.SendQueryAsync<SplitOrderGraphqlResponse>(movieRequest);
+            return graphQLResponse.Data;
+        }
+
+        public async Task<OrderMarkAsPaidGraphqlResponse> MarkOrderAsPaid(long orderId)
+        {
+            var graphQLHttpClientOptions = new GraphQLHttpClientOptions
+            {
+                EndPoint = new Uri($"{_myShopifyUrl}/admin/api/2023-10/graphql.json")
+            };
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("X-Shopify-Access-Token", _shopAccessToken);
+            var graphQLClient = new GraphQLHttpClient(graphQLHttpClientOptions, new NewtonsoftJsonSerializer(), httpClient);
+
+            var movieRequest = new GraphQLRequest
+            {
+                Query = @"
+                    mutation orderMarkAsPaid($input: OrderMarkAsPaidInput!) {
+                      orderMarkAsPaid(input: $input) {
+                        order {
+                          id
+                        }
+                        userErrors {
+                          field
+                          message
+                        }
+                      }
+                    }
+                ",
+                Variables = new
+                {
+                    input = new
+                    {
+                        id = $"gid://shopify/Order/{orderId}"
+                    }
+                }
+            };
+
+            var graphQLResponse = await graphQLClient.SendQueryAsync<OrderMarkAsPaidGraphqlResponse>(movieRequest);
             return graphQLResponse.Data;
         }
     }

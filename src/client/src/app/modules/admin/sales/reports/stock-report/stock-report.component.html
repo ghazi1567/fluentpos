@@ -7,8 +7,7 @@
                     (input)="onFilterTextBoxChanged()" />
             </nb-action>
             <nb-action>
-                <nb-icon class="action-icon" status="success" (click)="onRefresh()"
-                    icon="refresh-outline"></nb-icon>
+                <nb-icon class="action-icon" status="success" (click)="onRefresh()" icon="refresh-outline"></nb-icon>
                 Refresh
             </nb-action>
         </nb-actions>
@@ -17,9 +16,9 @@
     <nb-card-body>
         <div style="height: calc(100vh - 217px)" class="ag-theme-alpine">
             <app-ag-grid-base #AgGrid [rowData]="stockReportData" [columnDefs]="stockReportColumns" [pagination]="true"
-                (gridReadyComplete)="gridReady($event)" headerHeight="50" paginationPageSize="100"
-                [enablePivotMode]="enablePivotMode" pivotRowTotals="after" sideBar="false"
-                [autoGroupColumnDef]="autoGroupColumnDef">
+                (gridReadyComplete)="gridReady($event)" headerHeight="50" [paginationPageSize]="pageSize"
+                sideBar="false" [rowModelType]="rowModelType" [enableServerSideFilter]="enableServerSideFilter"
+                [enableServerSideSorting]="enableServerSideSorting">
             </app-ag-grid-base>
         </div>
     </nb-card-body>

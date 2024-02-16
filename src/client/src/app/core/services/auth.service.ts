@@ -47,6 +47,14 @@ export class AuthService {
     public get getOrganizationId(): string {
         return this.localStorage.getItem("organizationId");
     }
+    public get getWarehouseIds(): number[] {
+        var roles = this.getRoles;
+        if (typeof roles === "string" && (roles == "SuperAdmin" || roles == "")) {
+            return [];
+        }
+
+        return JSON.parse(this.localStorage.getItem("warehouseIds"));
+    }
 
     public get getBranchs(): any {
         const decodedToken = this.getDecodedToken();
@@ -111,6 +119,15 @@ export class AuthService {
             if (permissions === undefined || permissions.length === 0) return false;
             return allowedData.some((a) => permissions.includes(a));
         }
+    }
+
+    public get getRoles(): any {
+        const decodeToken = this.getDecodedToken();
+        if (!decodeToken) return "";
+
+        const roles = decodeToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+        if (roles === undefined || roles.length === 0) return "";
+        return roles;
     }
 
     private get getStorageRefreshToken(): string {
@@ -185,6 +202,10 @@ export class AuthService {
         } else {
             this.localStorage.removeItem("token");
             this.localStorage.removeItem("refreshToken");
+            this.localStorage.removeItem("selectedBranch");
+            this.localStorage.removeItem("branchId");
+            this.localStorage.removeItem("userWarehouse");
+            this.localStorage.removeItem("warehouseIds");
             this.setToken(null);
         }
     }

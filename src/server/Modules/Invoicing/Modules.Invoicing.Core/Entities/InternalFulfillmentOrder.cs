@@ -81,6 +81,17 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public string TrackingCompany { get; set; }
 
+        public DateTimeOffset? CancelledAt { get; set; }
+
+        public string CancelReason { get; set; }
+
+        public long? OrderShopifyId { get; set; }
+
+        public void SetOrderShopifyId(long? shopifyId)
+        {
+            OrderShopifyId = shopifyId;
+        }
+
         public void SetOrderStatus(OrderStatus orderStatus)
         {
             OrderStatus = orderStatus;

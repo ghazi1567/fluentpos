@@ -6,13 +6,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using FluentPOS.Modules.Organization.Core.Abstractions;
 using FluentPOS.Modules.Organization.Core.Entities;
@@ -25,12 +18,21 @@ using FluentPOS.Shared.DTOs.Organizations.Branchs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
 {
     internal class BrandQueryHandler :
         IRequestHandler<GetBranchsQuery, PaginatedResult<GetBranchResponse>>,
-        IRequestHandler<GetBranchByIdQuery, Result<GetBranchByIdResponse>>
+        IRequestHandler<GetBranchByIdQuery, Result<GetBranchByIdResponse>>,
+        IRequestHandler<GetWarehouseByIdQuery, Result<List<GetWarehouseByIdResponse>>>
     {
         private readonly IOrganizationDbContext _context;
         private readonly IMapper _mapper;
@@ -88,6 +90,17 @@ namespace FluentPOS.Modules.Catalog.Core.Features.Stores.Queries
             return await Result<GetBranchByIdResponse>.SuccessAsync(brand);
         }
 
+        public async Task<Result<List<GetWarehouseByIdResponse>>> Handle(GetWarehouseByIdQuery request, CancellationToken cancellationToken)
+        {
+            Expression<Func<StoreWarehouse, GetWarehouseByIdResponse>> expression = e => new GetWarehouseByIdResponse(e.Id, e.OrganizationId, e.BranchId, e.WarehouseId, e.IdentityUserId);
 
+            var brand = await _context.StoreWarehouses.AsNoTracking()
+               .Where(b => b.IdentityUserId == request.Id)
+               .Select(expression)
+               .ToListAsync(cancellationToken);
+
+            return await Result<List<GetWarehouseByIdResponse>>.SuccessAsync(brand);
+
+        }
     }
 }

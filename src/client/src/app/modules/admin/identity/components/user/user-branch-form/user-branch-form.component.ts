@@ -40,7 +40,7 @@ export class UserBranchFormComponent implements OnInit {
                 var ub: UserBranchModel = {
                     branchId: b.id,
                     organizationId: b.organizationId,
-                    userId: this.data.id,
+                    identityUserId: this.data.id,
                     branchName: b.name
                 } as UserBranchModel;
                 if (branch) {

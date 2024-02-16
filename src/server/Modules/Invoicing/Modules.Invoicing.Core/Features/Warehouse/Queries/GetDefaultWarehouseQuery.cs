@@ -14,5 +14,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
     public class GetWarehouseQuery : CacheableFilter<WarehouseDto>, IRequest<Result<List<WarehouseDto>>>
     {
         public long Id { get; set; }
+
+        public long[] WarehouseIds { get; set; }
+
     }
 }

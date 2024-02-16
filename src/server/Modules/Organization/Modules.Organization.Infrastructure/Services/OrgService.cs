@@ -34,7 +34,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<OrgDetailsDto> GetPolicyDetailsAsync(long Id, bool IncludeAllDetails=false)
+        public async Task<OrgDetailsDto> GetPolicyDetailsAsync(long Id, bool IncludeAllDetails = false)
         {
             OrgDetailsDto orgDetailsDto = new OrgDetailsDto();
 
@@ -106,7 +106,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
             {
                 Id = Id,
                 Name = branch.Name,
-                OrganizationId  = branch.OrganizationId
+                OrganizationId = branch.OrganizationId
             };
         }
 
@@ -134,6 +134,15 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Services
                .ToListAsync(default(CancellationToken));
 
             return _mapper.Map<List<DepartmentDto>>(departments);
+        }
+
+        public async Task<List<long>> GetUserWarehouse(Guid id)
+        {
+            var departments = await _context.StoreWarehouses.AsNoTracking()
+                .Where(x => x.IdentityUserId == id)
+               .ToListAsync(default(CancellationToken));
+
+            return departments.Select(x => x.WarehouseId).ToList();
         }
     }
 }

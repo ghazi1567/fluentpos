@@ -19,5 +19,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         public long ShopifyId { get; set; }
 
         public string Reason { get; set; }
+
+        public long FulFillOrderId { get; set; }
+
     }
 }

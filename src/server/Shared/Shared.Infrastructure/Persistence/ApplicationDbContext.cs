@@ -40,6 +40,9 @@ namespace FluentPOS.Shared.Infrastructure.Persistence
 
         public DbSet<WebhookEvent> WebhookEvents { get; set; }
 
+        public DbSet<WhatsappEvent> WhatsappEvents { get; set; }
+
+
         public string OperationName { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

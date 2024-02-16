@@ -8,8 +8,9 @@
 
 using AutoMapper;
 using FluentPOS.Modules.Invoicing.Core.Abstractions;
-using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Entities;
+using FluentPOS.Modules.Invoicing.Core.Services;
+using FluentPOS.Modules.Invoicing.Core.Services.Confirmation;
 using FluentPOS.Shared.Core.IntegrationServices.Application;
 using FluentPOS.Shared.Core.IntegrationServices.Catalog;
 using FluentPOS.Shared.Core.IntegrationServices.Inventory;
@@ -20,11 +21,9 @@ using FluentPOS.Shared.Core.IntegrationServices.Shopify;
 using FluentPOS.Shared.Core.Wrapper;
 using FluentPOS.Shared.DTOs.Inventory;
 using FluentPOS.Shared.DTOs.Sales.Enums;
-using FluentPOS.Shared.DTOs.Sales.Orders;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Shopify = ShopifySharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,9 +40,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         IRequestHandler<MoveLocationCommand, Result<string>>,
         IRequestHandler<AssignWarehouseToOrderCommand, bool>,
         IRequestHandler<ConfirmOrderCommand, Result<string>>,
+        IRequestHandler<ReturnOrderCommand, Result<string>>,
         IRequestHandler<AcceptOrderCommand, Result<string>>,
         IRequestHandler<RejectOrderCommand, Result<string>>,
         IRequestHandler<ReQueueOrderCommand, Result<string>>,
+        IRequestHandler<UpdateOrderStatusCommand, Result<string>>,
         IRequestHandler<CityCorrectionOrderCommand, bool>
     {
         private readonly IEntityReferenceService _referenceService;
@@ -58,8 +59,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
         private readonly IWarehouseService _warehouseService;
         private readonly IShopifyOrderSyncJob _shopifyOrderSyncJob;
         private readonly IPostexService _postexService;
-
-
+        private readonly IOrderLogger _orderLogger;
+        private readonly IConfirmationService _confirmationService;
         public OrderCommandHandler(
             IStringLocalizer<OrderCommandHandler> localizer,
             ISalesDbContext salesContext,
@@ -72,7 +73,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             IShopifyOrderFulFillmentService shopifyOrderFulFillmentService,
             IWarehouseService warehouseService,
             IShopifyOrderSyncJob shopifyOrderSyncJob,
-            IPostexService postexService)
+            IPostexService postexService,
+            IOrderLogger orderLogger,
+            IConfirmationService confirmationService)
         {
             _localizer = localizer;
             _salesContext = salesContext;
@@ -86,6 +89,8 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             _warehouseService = warehouseService;
             _shopifyOrderSyncJob = shopifyOrderSyncJob;
             _postexService = postexService;
+            _orderLogger = orderLogger;
+            _confirmationService = confirmationService;
         }
 
 #pragma warning disable RCS1046 // Asynchronous method name should end with 'Async'.
@@ -104,13 +109,15 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             if (order.ShippingAddress != null && (!order.ShippingAddress.Latitude.HasValue || !order.ShippingAddress.Longitude.HasValue))
             {
                 var geoLocation = await _warehouseService.GetLatLongFromAdrressAsync(order.ShippingAddress.Address1, order.ShippingAddress.Address2, order.ShippingAddress.City, order.ShippingAddress.Zip, order.ShippingAddress.Country);
-                //var geoLocation = await _warehouseService.GetLatLongFromAdrressAsync(order.ShippingAddress.Address1, order.ShippingAddress.Address2, order.ShippingAddress.City, order.ShippingAddress.Country);
+
+                // var geoLocation = await _warehouseService.GetLatLongFromAdrressAsync(order.ShippingAddress.Address1, order.ShippingAddress.Address2, order.ShippingAddress.City, order.ShippingAddress.Country);
+
                 if (geoLocation != null)
                 {
-                    //decimal lat;
-                    //decimal.TryParse(geoLocation.Lat, out lat);
-                    //decimal lon;
-                    //decimal.TryParse(geoLocation.lng, out lon);
+                    // decimal lat;
+                    // decimal.TryParse(geoLocation.Lat, out lat);
+                    // decimal lon;
+                    // decimal.TryParse(geoLocation.lng, out lon);
                     order.ShippingAddress.Latitude = geoLocation.Lat;
                     order.ShippingAddress.Longitude = geoLocation.lng;
                 }
@@ -126,19 +133,69 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 
         public async Task<Result<string>> Handle(CancelledOrderCommand command, CancellationToken cancellationToken)
         {
-            var order = await _salesContext.Orders.SingleOrDefaultAsync(x => x.ShopifyId == command.ShopifyId);
+            var order = await _salesContext.Orders.Include(x => x.FulfillmentOrders).ThenInclude(x => x.FulfillmentOrderLineItems).SingleOrDefaultAsync(x => x.Id == command.Id);
             if (order == null)
             {
                 return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
             }
 
-            await _shopifyOrderService.CancelOrder(command.ShopifyId, command.Reason);
-            order.Status = Shared.DTOs.Sales.Enums.OrderStatus.Cancelled;
-            order.CancelledAt = DateTimeOffset.Now;
-            order.CancelReason = command.Reason;
+            foreach (var item in order.FulfillmentOrders)
+            {
+                if (item.Id == command.FulfillmentOrderId)
+                {
+                    if (item.OrderStatus == OrderStatus.Shipped)
+                    {
+                        return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Unable to cancel, Order already shippped."]));
+                    }
+
+                    if (item.OrderStatus == OrderStatus.AssignToOutlet ||
+                        item.OrderStatus == OrderStatus.Preparing ||
+                        item.OrderStatus == OrderStatus.ReadyToShip ||
+                        item.OrderStatus == OrderStatus.Verifying)
+                    {
+                        foreach (var inventoryItem in item.FulfillmentOrderLineItems)
+                        {
+                            if (inventoryItem.ProductId.HasValue)
+                            {
+                                var response = await _stockService.RecordTransaction(new StockTransactionDto
+                                {
+                                    IgnoreRackCheck = true,
+                                    inventoryItemId = inventoryItem.InventoryItemId.Value,
+                                    quantity = inventoryItem.Quantity.Value,
+                                    type = Shared.DTOs.Sales.Enums.OrderType.uncommitted,
+                                    productId = inventoryItem.ProductId.Value,
+                                    SKU = inventoryItem.SKU,
+                                    Rack = inventoryItem.Rack,
+                                    warehouseId = inventoryItem.WarehouseId.Value,
+                                    VariantId = inventoryItem.VariantId
+                                });
+                            }
+                        }
+                    }
+
+
+                    if (order.FulfillmentOrders.Count == 1)
+                    {
+                        await _shopifyOrderService.CancelOrder(order.ShopifyId.Value, command.Reason);
+                        order.Status = Shared.DTOs.Sales.Enums.OrderStatus.Cancelled;
+                        order.CancelledAt = DateTimeOffset.Now;
+                        order.CancelReason = command.Reason;
+
+                        item.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.Cancelled;
+                        item.CancelledAt = DateTimeOffset.Now;
+                    }
+                    else
+                    {
+                        await _shopifyOrderService.CancelFulfillmentOrder(item.ShopifyId.Value);
+                        item.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.Cancelled;
+                        item.CancelledAt = DateTimeOffset.Now;
+                        item.CancelReason = command.Reason;
+                    }
+                }
+            }
+
             _salesContext.Orders.Update(order);
             await _salesContext.SaveChangesAsync(cancellationToken);
-
             return await Result<string>.SuccessAsync("Order Cancelled", string.Format(_localizer["Order {0} Cancelled"], order.ShopifyId));
         }
 
@@ -171,18 +228,25 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
 
         public async Task<Result<string>> Handle(ApproveOrderCommand command, CancellationToken cancellationToken)
         {
-            var order = await _salesContext.Orders.SingleOrDefaultAsync(x => x.Id == command.Id);
+            var order = await _salesContext.Orders.Include(x => x.FulfillmentOrders).SingleOrDefaultAsync(x => x.Id == command.Id);
             if (order == null)
             {
                 return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
             }
 
-            order.Status = Shared.DTOs.Sales.Enums.OrderStatus.Approved;
-            order.ApprovedAt = DateTimeOffset.Now;
-            order.ApprovedBy = "test"; // TODO: set logged in user id.
+            foreach (var item in order.FulfillmentOrders)
+            {
+                if (item.Id == command.FulFillOrderId)
+                {
+                    item.OrderStatus = OrderStatus.Confirmed;
+                    order.ApprovedAt = DateTimeOffset.Now;
+                    order.ApprovedBy = "test"; // TODO: set logged in user id.
+                    order.SetNote(command.Reason);
+                }
+            }
             _salesContext.Orders.Update(order);
             await _salesContext.SaveChangesAsync(cancellationToken);
-
+            _shopifyOrderSyncJob.ProcessOrder();
             return await Result<string>.SuccessAsync("Order Approved", string.Format(_localizer["Order {0} Approved"], order.ShopifyId));
         }
 
@@ -319,11 +383,10 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             orderFulfillment.InternalOrderId = order.Id;
             fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip;
 
+            await _stockService.RecordTransaction(fulfilledStockList);
             _salesContext.Orders.Update(order);
             await _salesContext.OrderFulfillment.AddAsync(orderFulfillment);
             await _salesContext.SaveChangesAsync();
-
-            await _stockService.RecordTransaction(fulfilledStockList);
 
             return await Result<string>.SuccessAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
         }
@@ -398,6 +461,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             {
                 if (item.ShopifyId == command.FulfillmentOrderId)
                 {
+                    if (item.OrderStatus == OrderStatus.AssignToHeadOffice)
+                    {
+                        await _orderLogger.MarkAsIgnoreAsync(item.Id);
+                    }
+
                     item.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.ReQueueAfterReject;
                     foreach (var inventoryItem in item.FulfillmentOrderLineItems)
                     {
@@ -451,5 +519,95 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands
             return true;
         }
 
+        public async Task<Result<string>> Handle(UpdateOrderStatusCommand command, CancellationToken cancellationToken)
+        {
+            var order = await _salesContext.Orders.Include(x => x.FulfillmentOrders).ThenInclude(x => x.FulfillmentOrderDestination).SingleOrDefaultAsync(x => x.Id == command.OrderId);
+            if (order == null)
+            {
+                return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.OrderId));
+            }
+
+            foreach (var item in order.FulfillmentOrders)
+            {
+                if (item.Id == command.FulfillmentId)
+                {
+                    item.OrderStatus = command.Status;
+
+                    if (command.Status == OrderStatus.WAConfirmation)
+                    {
+                        var result = await _confirmationService.WhatsAppConfirmation(item);
+
+                        if (result == false)
+                        {
+                            item.OrderStatus = OrderStatus.AssignedToCSR;
+                        }
+                    }
+                }
+            }
+
+            _salesContext.Orders.Update(order);
+            await _salesContext.SaveChangesAsync(cancellationToken);
+
+            return await Result<string>.SuccessAsync("Order Approved", string.Format(_localizer["Order {0} Approved"], order.ShopifyId));
+        }
+
+        public async Task<Result<string>> Handle(ReturnOrderCommand command, CancellationToken cancellationToken)
+        {
+            var order = await _salesContext.Orders
+                .Include(x => x.LineItems)
+                .Include(x => x.FulfillmentOrders).ThenInclude(x => x.FulfillmentOrderLineItems)
+                .SingleOrDefaultAsync(x => x.Id == command.Id);
+            if (order == null)
+            {
+                return await Result<string>.ReturnErrorAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
+            }
+
+            var fulfillmentOrder = order.FulfillmentOrders.FirstOrDefault(x => x.ShopifyId == command.FulfillmentOrderId);
+
+            foreach (var item in order.LineItems)
+            {
+                var confirmedItem = command.LineItems.FirstOrDefault(x => x.Id == item.Id);
+                if (confirmedItem != null)
+                {
+                    item.ConfirmedQty = confirmedItem.ConfirmedQty;
+                    item.ConfirmedAt = DateTimeOffset.Now;
+                }
+            }
+
+            List<StockTransactionDto> fulfilledStockList = new List<StockTransactionDto>();
+            foreach (var item in fulfillmentOrder.FulfillmentOrderLineItems)
+            {
+                var confirmedItem = command.LineItems.FirstOrDefault(x => x.VariantId == item.VariantId);
+                if (confirmedItem != null)
+                {
+                    item.ConfirmedQty = confirmedItem.ConfirmedQty;
+                    item.ConfirmedAt = DateTimeOffset.Now;
+                    if (confirmedItem.Condition == "Saleable")
+                    {
+                        fulfilledStockList.Add(new StockTransactionDto
+                        {
+                            IgnoreRackCheck = true,
+                            inventoryItemId = item.InventoryItemId.Value,
+                            productId = item.ProductId.Value,
+                            quantity = item.Quantity.Value,
+                            Rack = item.Rack,
+                            SKU = item.SKU,
+                            type = OrderType.StockReturn,
+                            VariantId = item.VariantId,
+                            warehouseId = item.WarehouseId.Value
+                        });
+                    }
+                }
+            }
+
+            fulfillmentOrder.OrderStatus = Shared.DTOs.Sales.Enums.OrderStatus.Returned;
+            await _stockService.RecordTransaction(fulfilledStockList);
+
+            _salesContext.Orders.Update(order);
+            await _salesContext.SaveChangesAsync();
+
+
+            return await Result<string>.SuccessAsync(string.Format(_localizer["Order not found. Shopify Id: {0}"], command.ShopifyId));
+        }
     }
 }

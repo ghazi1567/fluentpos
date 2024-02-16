@@ -15,7 +15,8 @@ using FluentPOS.Shared.DTOs.Dtos.Logistics;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,8 +46,27 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
 
         public async Task<Result<long>> Handle(RegisterloadsheetCommand request, CancellationToken cancellationToken)
         {
-            var loadsheet = _mapper.Map<LoadSheetMain>(request);
 
+            if (request.Id == 0)
+            {
+                var loadsheet = _mapper.Map<LoadSheetMain>(request);
+                await _salesContext.LoadSheetMains.AddAsync(loadsheet);
+            }
+            else
+            {
+                var loadsheet = _mapper.Map<LoadSheetMain>(request);
+                var removedRows = request.Details.Where(x => x.IsDeleted).ToList();
+                if (removedRows.Count > 0)
+                {
+                    var toBeRemoveRows = _mapper.Map<List<LoadSheetDetail>>(removedRows);
+                    _salesContext.LoadSheetDetails.RemoveRange(toBeRemoveRows);
+                    loadsheet.Details = loadsheet.Details.Where(s => !toBeRemoveRows.Any(p => p.Id == s.Id)).ToList();
+                }
+
+                _salesContext.LoadSheetMains.Update(loadsheet);
+            }
+
+            await _salesContext.SaveChangesAsync();
             if (request.UpdateOrderStatus)
             {
                 var foIds = request.Details.Select(x => x.FulfillmentOrderId).ToList();
@@ -59,30 +79,29 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
                 _salesContext.FulfillmentOrders.UpdateRange(fulfillmentOrders);
             }
 
-            await _salesContext.LoadSheetMains.AddAsync(loadsheet);
-            await _salesContext.SaveChangesAsync();
 
-            var postexModel = new PostexLoadSheetModel
-            {
-                CityName = loadsheet.CityName,
-                ContactNumber = loadsheet.ContactNumber,
-                PickupAddress = loadsheet.PickupAddress,
-                TrackingNumbers = loadsheet.Details.Select(x => x.TrackingNumber).ToList()
-            };
-            var response = await _postexService.GenerateLoadsheetAsync(postexModel);
 
-            if (response.StatusCode == "200")
-            {
-                loadsheet.Status = "Generated";
-            }
-            else
-            {
-                loadsheet.Status = "Failed";
-                loadsheet.Note = response.StatusMessage;
-            }
+            //var postexModel = new PostexLoadSheetModel
+            //{
+            //    CityName = loadsheet.CityName,
+            //    ContactNumber = loadsheet.ContactNumber,
+            //    PickupAddress = loadsheet.PickupAddress,
+            //    TrackingNumbers = loadsheet.Details.Select(x => x.TrackingNumber).ToList()
+            //};
+            //var response = await _postexService.GenerateLoadsheetAsync(postexModel);
 
-            _salesContext.LoadSheetMains.Update(loadsheet);
-            await _salesContext.SaveChangesAsync();
+            //if (response.StatusCode == "200")
+            //{
+            //    loadsheet.Status = "Generated";
+            //}
+            //else
+            //{
+            //    loadsheet.Status = "Failed";
+            //    loadsheet.Note = response.StatusMessage;
+            //}
+
+            //_salesContext.LoadSheetMains.Update(loadsheet);
+            //await _salesContext.SaveChangesAsync();
 
             return await Result<long>.SuccessAsync(default(long), string.Format(_localizer["Loadsheet generated successfully"]));
         }
@@ -94,6 +113,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands
             if (loadsheet == null)
             {
                 return Result<long>.ReturnError(string.Format(_localizer["Loadsheet not found."]));
+            }
+
+            if (loadsheet.Status == "Generated")
+            {
+                return Result<long>.ReturnError(string.Format(_localizer["Loadsheet alreadt generated."]));
             }
 
             var postexModel = new PostexLoadSheetModel

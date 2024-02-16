@@ -11,10 +11,11 @@ import { ProductService } from "src/app/modules/admin/catalog/services/product.s
 import { Order } from "../../../models/order";
 import { SalesService } from "../../../services/sales.service";
 import { OrderStatus, OrderStatusMapping } from "src/app/core/enums/OrderStatus";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { OrdersService } from "../../../services/orders.service";
 import { WarehouseService } from "../../../services/warehouse.service";
 import { SplitOrderComponent } from "../split-order/split-order.component";
+import { DeleteDialogComponent } from "src/app/modules/admin/shared/components/delete-dialog/delete-dialog.component";
 
 @Component({
     selector: "app-order-detail",
@@ -28,13 +29,16 @@ export class OrderDetailComponent implements OnInit {
     products: Product[];
     displayedColumns: string[] = ["barcodeSymbology", "productName", "quantity", "price", "total"];
     public OrderStatusMapping = OrderStatusMapping;
-    constructor(private toastr: ToastrService,
+    constructor(
+        private toastr: ToastrService,
         private orderService: OrdersService,
         private productApi: ProductService,
         private warehouseService: WarehouseService,
         public dialog: MatDialog,
-        private route: ActivatedRoute) {
-        this.orderId = this.route.snapshot.params['id'];
+        private route: ActivatedRoute,
+        public router: Router
+    ) {
+        this.orderId = this.route.snapshot.params["id"];
     }
 
     ngOnInit(): void {
@@ -50,17 +54,23 @@ export class OrderDetailComponent implements OnInit {
 
     displayButton(status, button) {
         switch (button) {
-            case 'approve':
-                return OrderStatus.Pending == status || OrderStatus.PendingApproval == status;
+            case "approve":
+                return OrderStatus.Pending == status || OrderStatus.PendingApproval == status || OrderStatus.WAConfirmation == status || OrderStatus.WAFailed == status;
                 break;
-            case 'cancel':
-                return OrderStatus.Shipped != status;
+            case "cancel":
+                return OrderStatus.Shipped != status && OrderStatus.Cancelled != status;
                 break;
-            case 'acceptOrder':
+            case "acceptOrder":
                 return OrderStatus.AssignToOutlet == status;
                 break;
-            case 'confirmOrder':
+            case "rejectOrder":
+                return OrderStatus.AssignToOutlet == status;
+                break;
+            case "confirmOrder":
                 return OrderStatus.Preparing == status;
+                break;
+            case "reQueueOrder":
+                return OrderStatus.AssignToHeadOffice == status || OrderStatus.ReQueueAfterReject == status;
                 break;
 
             default:
@@ -69,21 +79,22 @@ export class OrderDetailComponent implements OnInit {
         return false;
     }
 
-    cancelOrder() {
+    cancelOrder(reason) {
         var model = {
             id: this.order.id,
             shopifyId: this.order.shopifyId,
-            reason: ''
-        }
-        this.orderService.cancelOrder(model).subscribe((res) => {
-            if (res.succeeded) {
-                this.toastr.success(res.messages[0]);
-            } else {
-
-            }
-        },
-            error => {
-                console.log('oops', error)
+            reason: reason,
+            fulfillmentOrderId: this.order.fulFillmentOrderId
+        };
+        this.orderService.cancelOrder(model).subscribe(
+            (res) => {
+                if (res.succeeded) {
+                    this.toastr.success(res.messages[0]);
+                } else {
+                }
+            },
+            (error) => {
+                console.log("oops", error);
                 this.toastr.error(error);
             }
         );
@@ -121,42 +132,43 @@ export class OrderDetailComponent implements OnInit {
             id: this.order.id,
             shopifyId: this.order.shopifyId,
             fulFillOrderId: fulFillOrder.shopifyId,
-            reason: ''
+            reason: ""
         };
 
-        this.orderService.fulFillOrder(model).subscribe((res) => {
-            if (res.succeeded) {
-                this.toastr.success(res.messages[0]);
-            }
-        },
-            error => {
-                console.log('oops', error)
+        this.orderService.fulFillOrder(model).subscribe(
+            (res) => {
+                if (res.succeeded) {
+                    this.toastr.success(res.messages[0]);
+                }
+            },
+            (error) => {
+                console.log("oops", error);
                 this.toastr.error(error);
             }
         );
     }
 
-    approveOrder() {
+    approveOrder(comments) {
         var model = {
             id: this.order.id,
             shopifyId: this.order.shopifyId,
-            reason: ''
-        }
-        this.orderService.approveOrder(model).subscribe((res) => {
-            if (res.succeeded) {
-                this.toastr.success(res.messages[0]);
-                this.getOrder();
-            } else {
-
-            }
-        },
-            error => {
-                console.log('oops', error)
+            reason: comments,
+            fulFillOrderId: this.order.internalFulFillmentOrderId
+        };
+        this.orderService.approveOrder(model).subscribe(
+            (res) => {
+                if (res.succeeded) {
+                    this.toastr.success(res.messages[0]);
+                    this.getOrder();
+                } else {
+                }
+            },
+            (error) => {
+                console.log("oops", error);
                 this.toastr.error(error);
             }
         );
     }
-
 
     splitOrderPopup() {
         const dialogRef = this.dialog.open(SplitOrderComponent, {
@@ -164,24 +176,26 @@ export class OrderDetailComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe((result) => {
             if (result) {
-
             }
         });
     }
 
     getLineItemDetail(item: any, field: string) {
-        var lineItem = this.order.lineItems.find(x => x.variant_id == item.variantId)
+        var lineItem = this.order.lineItems.find((x) => x.variant_id == item.variantId);
         return lineItem[field];
     }
 
     getWarehouses() {
-        this.warehouseService.getAll().subscribe(res => {
+        this.warehouseService.getAll().subscribe((res) => {
             this.warehouseData = res.data;
-        })
+        });
     }
 
     getLocationName(locationId) {
-        var location = this.warehouseData.find(x => x.shopifyId == locationId)
+        if (!this.warehouseData) {
+            return "";
+        }
+        var location = this.warehouseData.find((x) => x.shopifyId == locationId);
         return location.name;
     }
 
@@ -189,20 +203,78 @@ export class OrderDetailComponent implements OnInit {
         var model = {
             id: this.order.id,
             ShopifyId: this.order.ShopifyId,
-            FulfillmentOrderId: this.order.fulFillmentOrderId,
+            FulfillmentOrderId: this.order.fulFillmentOrderId
         };
-        this.orderService.acceptOrder(model).subscribe((res) => {
-            if (res.succeeded) {
-                this.toastr.success(res.messages[0]);
-                this.getOrder();
-            } else {
-
-            }
-        },
-            error => {
-                console.log('oops', error)
+        this.orderService.acceptOrder(model).subscribe(
+            (res) => {
+                if (res.succeeded) {
+                    this.toastr.success(res.messages[0]);
+                    this.getOrder();
+                } else {
+                }
+            },
+            (error) => {
+                console.log("oops", error);
                 this.toastr.error(error);
             }
         );
+    }
+    rejectOrder(comments) {
+        var model = {
+            id: this.order.id,
+            ShopifyId: this.order.ShopifyId,
+            FulfillmentOrderId: this.order.fulFillmentOrderId
+        };
+        this.orderService.requeueOrder(model).subscribe(
+            (res) => {
+                if (res.succeeded) {
+                    this.toastr.success(res.messages[0]);
+                    this.router.navigateByUrl(`admin/sales/orders`);
+                }
+            },
+            (error) => {
+                console.log("oops", error);
+                this.toastr.error(error);
+            }
+        );
+    }
+    openConfirmationDialog(button: string, showComments) {
+        const dialogRef = this.dialog.open(DeleteDialogComponent, {
+            data: {
+                message: `Are you sure, you want ${button} this order?`,
+                showComments: showComments || false,
+                commentLabel: "Comments",
+                confirmButtonLabel: button,
+                cancelButtonLabel: "Back",
+                commentRequired: false,
+                confirmColor: "primary",
+                event: button
+            }
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+            console.log(result);
+            if (result.confirmed == true) {
+                switch (button) {
+                    case "approve":
+                        this.approveOrder(result.comments);
+                        break;
+                    case "cancel":
+                        this.cancelOrder(result.comments);
+                        break;
+                    case "accept":
+                        this.acceptOrder();
+                        break;
+                    case "reject":
+                        this.rejectOrder(result.comments);
+                        break;
+                    case "reQueue":
+                        this.rejectOrder(result.comments);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 }

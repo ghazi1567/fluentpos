@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from "@nebular/theme";
 
-import { map, takeUntil } from "rxjs/operators";
+import { filter, map, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { LayoutService } from "src/app/core/utils";
+import { AuthService } from "src/app/core/services/auth.service";
 
 @Component({
     selector: "ngx-header",
@@ -46,8 +47,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private menuService: NbMenuService,
         private themeService: NbThemeService,
         private layoutService: LayoutService,
-        private breakpointService: NbMediaBreakpointsService
-    ) { }
+        private breakpointService: NbMediaBreakpointsService,
+        private authService: AuthService
+    ) {}
 
     ngOnInit() {
         this.currentTheme = this.themeService.currentTheme;
@@ -69,6 +71,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
             )
             .subscribe((themeName) => (this.currentTheme = themeName));
         this.toggleSidebar();
+
+        this.menuService
+            .onItemClick()
+            .pipe(
+                filter(({ tag }) => tag === "my-user-menu"),
+                map(({ item: { title } }) => title)
+            )
+            .subscribe((title) => {
+                if (title == "Log out") {
+                    this.authService.logout();
+                }
+            });
     }
 
     ngOnDestroy() {

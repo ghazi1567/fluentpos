@@ -21,5 +21,7 @@ namespace FluentPOS.Shared.Core.Interfaces
         public DbSet<RemoteClient> RemoteClients { get; set; }
 
         public DbSet<WebhookEvent> WebhookEvents { get; set; }
+
+        public DbSet<WhatsappEvent> WhatsappEvents { get; set; }
     }
 }

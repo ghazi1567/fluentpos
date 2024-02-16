@@ -9,7 +9,7 @@ using MediatR;
 
 namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 {
-    public class ScanLoadSheetOrderQuery : IRequest<Result<InternalFulfillmentOrderDto>>
+    public class ScanLoadSheetOrderQuery : IRequest<Result<OrderSummaryResponseDto>>
     {
         public string SearchText { get; set; }
 

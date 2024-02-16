@@ -44,5 +44,10 @@
     <ProjectReference Include="..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Files\Logs\Error\" />
+    <Folder Include="Files\Logs\Information\" />
+  </ItemGroup>
+
 </Project>
 

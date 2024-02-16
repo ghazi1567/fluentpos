@@ -11,7 +11,8 @@ import { PurchaseOrderService } from "../../services/purchase-order.service";
 import { ReportService } from "../../services/report.service";
 import { WarehouseService } from "../../services/warehouse.service";
 import { AgGridBaseComponent } from "src/app/core/shared/components/ag-grid-base/ag-grid-base.component";
-import { ColDef } from "ag-grid-community";
+import { ColDef, GridApi, GridOptions, IGetRowsParams } from "ag-grid-community";
+import { OrderParams } from "../../models/orderParams";
 
 @Component({
     selector: "app-stock-report",
@@ -20,7 +21,7 @@ import { ColDef } from "ag-grid-community";
 })
 export class StockReportComponent implements OnInit {
     orderColumns: TableColumn[];
-    orderParams: any;
+    orderParams = new OrderParams();
     searchString: string;
     productLookups: any[];
     filteredproducts: any[];
@@ -40,7 +41,14 @@ export class StockReportComponent implements OnInit {
         private warehouseService: WarehouseService
     ) { }
 
+    gridApi: GridApi;
+    enableServerSideFilter: boolean = true;
+    enableServerSideSorting: boolean = true;
+    rowModelType = "infinite";
+    pageSize = 10;
+
     ngOnInit(): void {
+
         this.initStockReportColumns();
     }
     loadLookups() {
@@ -76,12 +84,12 @@ export class StockReportComponent implements OnInit {
     };
     initStockReportColumns(): void {
         this.stockReportColumns = [
-            { headerName: "Product", field: "title", sortable: true, isShowable: true, width: 235, },
+            { headerName: "Product", field: "title", sortable: true, isShowable: true, width: 235, filter: false },
             { headerName: "SKU", field: "sku", sortable: true, isShowable: true, },
-            { headerName: "Warehouse", field: "warehouseName", sortable: true, isShowable: true, },
-            { headerName: "Committed", field: "committed", sortable: true, isShowable: true, aggFunc: 'sum', type: 'numericColumn', width: 120, },
-            { headerName: "Available", field: "availableQuantity", sortable: true, isShowable: true, aggFunc: 'sum', type: 'numericColumn', width: 120, },
-            { headerName: "On Hand", field: "onHand", sortable: true, isShowable: true, aggFunc: 'sum', type: 'numericColumn', width: 120, },
+            { headerName: "Warehouse", field: "warehouseName", sortable: true, isShowable: true, filter: false },
+            { headerName: "Committed", field: "committed", sortable: true, filter: 'agNumberColumnFilter', aggFunc: 'sum', type: 'numericColumn', width: 120, },
+            { headerName: "Available", field: "availableQuantity", sortable: true, filter: 'agNumberColumnFilter', aggFunc: 'sum', type: 'numericColumn', width: 120, },
+            { headerName: "On Hand", field: "onHand", sortable: true, filter: 'agNumberColumnFilter', aggFunc: 'sum', type: 'numericColumn', width: 120, },
             { headerName: "Rack", field: "rack", sortable: true, isShowable: true, width: 120, },
             { headerName: "Last Update", field: "lastUpdatedOn", sortable: true, isShowable: true, },
 
@@ -96,12 +104,35 @@ export class StockReportComponent implements OnInit {
         }
     }
 
+
     gridReady(event): void {
-        this.getStockReport();
+        var params = event.params;
+        var baseGrid = event.baseGrid;
+        this.gridApi = params.api;
+
+        var datasource = {
+            getRows: (params: IGetRowsParams) => {
+                var filterSortModel = baseGrid.setFilterSortModel(params);
+                console.log(filterSortModel);
+                var pageNumber = (params.startRow / this.pageSize) + 1;
+                this.orderParams.pageNumber = pageNumber;
+                this.orderParams.pageSize = this.pageSize;
+                this.orderParams.bypassCache = true;
+                this.orderParams.advanceFilters = filterSortModel.listOfFilters;
+                this.orderParams.sortModel = filterSortModel.listOfSort;
+
+                this.reportService
+                    .getStockReport(this.orderParams)
+                    .subscribe(res => {
+                        params.successCallback(res.data, res.totalCount)
+                    });
+            }
+        }
+        this.gridApi.setDatasource(datasource);
+        // this.getStockReport();
     }
 
     getStockReport() {
-        this.orderParams = {};
         this.reportService.getStockReport(this.orderParams).subscribe((result) => {
             this.stockReportData = result.data;
         });

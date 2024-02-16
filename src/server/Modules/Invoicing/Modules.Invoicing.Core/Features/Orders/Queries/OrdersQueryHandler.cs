@@ -25,9 +25,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
                 IRequestHandler<GetOrderByIdQuery, Result<InternalOrderDto>>,
                 IRequestHandler<GetFOByIdQuery, Result<OrderResponseDto>>,
                 IRequestHandler<GetOrderForProcessQuery, List<InternalFulfillmentOrderDto>>,
+                IRequestHandler<GetOrderForConfirmationQuery, List<InternalFulfillmentOrderDto>>,
                 IRequestHandler<GetOrderForConfirmQuery, Result<InternalOrderDto>>,
-                IRequestHandler<ScanLoadSheetOrderQuery, Result<InternalFulfillmentOrderDto>>,
-                IRequestHandler<GetCityCorrectionOrderQuery, Result<List<CityCorrectionOrderDto>>>
+                IRequestHandler<ScanLoadSheetOrderQuery, Result<OrderSummaryResponseDto>>,
+                IRequestHandler<GetCityCorrectionOrderQuery, Result<List<CityCorrectionOrderDto>>>,
+                IRequestHandler<GetOrderByTrackingNumberQuery, Result<OrderResponseDto>>
 
     {
         private readonly ISalesDbContext _context;
@@ -65,12 +67,17 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
                 fulfillmentOrderQueryable = fulfillmentOrderQueryable.Where(x => x.OrderStatus == request.Status.Value);
             }
 
+            if (request.WarehouseIds.Length > 0)
+            {
+                fulfillmentOrderQueryable = fulfillmentOrderQueryable.Where(x => x.WarehouseId.HasValue && request.WarehouseIds.Contains(x.WarehouseId.Value));
+            }
 
             var orders = await (from o in orderQueryable
                                 join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
                                 join a in addressesQueryable on o.ShippingAddressId equals a.Id
                                 join w in warehousesQueryable on fo.WarehouseId equals w.Id into ww
                                 from m in ww.DefaultIfEmpty()
+                                orderby o.ProcessedAt descending
                                 select new OrderResponseDto
                                 {
                                     Id = o.Id,
@@ -221,12 +228,21 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 
         }
 
+        public async Task<List<InternalFulfillmentOrderDto>> Handle(GetOrderForConfirmationQuery request, CancellationToken cancellationToken)
+        {
+            var orders = await _context.FulfillmentOrders.AsNoTracking()
+                .Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.Pending || x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.IVRFailed || x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.WAFailed)
+                .ToListAsync();
+
+            return _mapper.Map<List<InternalFulfillmentOrder>, List<InternalFulfillmentOrderDto>>(orders);
+        }
+
         public async Task<List<InternalFulfillmentOrderDto>> Handle(GetOrderForProcessQuery request, CancellationToken cancellationToken)
         {
             var orders = await _context.FulfillmentOrders.AsNoTracking()
                 .Include(x => x.FulfillmentOrderDestination)
                 .Include(x => x.FulfillmentOrderLineItems)
-                .Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.PendingApproval || x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.Pending || x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReQueueAfterReject)
+                .Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.Confirmed || x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReQueueAfterReject)
                 .ToListAsync();
 
             return _mapper.Map<List<InternalFulfillmentOrder>, List<InternalFulfillmentOrderDto>>(orders);
@@ -246,8 +262,13 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
                 var fulfillmentOrdersQueryable = _context.FulfillmentOrders
                                                         .AsNoTracking()
                                                         .AsQueryable();
+                if (request.WarehouseIds.Length > 0)
+                {
+                    fulfillmentOrdersQueryable = fulfillmentOrdersQueryable.Where(x => x.WarehouseId.HasValue && request.WarehouseIds.Contains(x.WarehouseId.Value));
+                }
 
                 fulfillmentOrder = await fulfillmentOrdersQueryable.Include(x => x.FulfillmentOrderLineItems).FirstOrDefaultAsync(x => x.Name == request.OrderNo);
+
 
                 if (fulfillmentOrder != null)
                 {
@@ -269,6 +290,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
                 if (order != null)
                 {
                     fulfillmentOrder = order.FulfillmentOrders.FirstOrDefault();
+                }
+
+                if (request.WarehouseIds.Length > 0 && (fulfillmentOrder.WarehouseId.HasValue && !request.WarehouseIds.Contains(fulfillmentOrder.WarehouseId.Value)))
+                {
+                    order = null;
                 }
             }
 
@@ -314,24 +340,49 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             return await Result<InternalOrderDto>.SuccessAsync(data: mappedData);
         }
 
-        public async Task<Result<InternalFulfillmentOrderDto>> Handle(ScanLoadSheetOrderQuery request, CancellationToken cancellationToken)
+        public async Task<Result<OrderSummaryResponseDto>> Handle(ScanLoadSheetOrderQuery request, CancellationToken cancellationToken)
         {
             bool isTrackingNumber = request.SearchText.All(char.IsDigit);
-            InternalFulfillmentOrder fulfillmentOrder = null;
-            var fulfillmentOrdersQueryable = _context.FulfillmentOrders
-                                                        .AsNoTracking()
-                                                        .Include(x => x.FulfillmentOrderDestination)
-                                                        .Include(x => x.FulfillmentOrderLineItems)
-                                                        .AsQueryable();
+            var orderQueryable = _context.Orders.AsQueryable();
+            var fulfillmentOrderQueryable = _context.FulfillmentOrders.AsQueryable();
+            var addressesQueryable = _context.Addresses.AsQueryable();
+            var warehousesQueryable = _context.Warehouses.AsQueryable();
 
             if (isTrackingNumber)
             {
-                fulfillmentOrder = await fulfillmentOrdersQueryable.FirstOrDefaultAsync(x => x.TrackingNumber == request.SearchText && x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip);
+                fulfillmentOrderQueryable = fulfillmentOrderQueryable.Where(x => x.TrackingNumber == request.SearchText && x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip);
             }
             else
             {
-                fulfillmentOrder = await fulfillmentOrdersQueryable.FirstOrDefaultAsync(x => x.Name == request.SearchText && x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip);
+                fulfillmentOrderQueryable = fulfillmentOrderQueryable.Where(x => x.Name == request.SearchText && x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip);
             }
+
+            var fulfillmentOrder = await (from o in orderQueryable
+                                join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
+                                join a in addressesQueryable on o.ShippingAddressId equals a.Id
+                                select new OrderSummaryResponseDto
+                                {
+                                    InternalOrderId = o.Id,
+                                    OrderId = o.ShopifyId.Value,
+                                    InternalFulFillmentOrderId = fo.Id,
+                                    FulFillmentOrderId = fo.ShopifyId.Value,
+                                    WarehouseId = fo.WarehouseId,
+                                    OrderNumber = fo.Name,
+                                    Address1 = a.Address1,
+                                    Address2 = a.Address2,
+                                    City = a.City,
+                                    Country = a.Country,
+                                    OrderType = o.OrderType,
+                                    PaymentMethod = o.PaymentGatewayNames,
+                                    Phone = o.Phone,
+                                    Province = a.Province,
+                                    Status = fo.OrderStatus,
+                                    TotalPrice = fo.TotalPrice,
+                                    TrackingCompany = fo.TrackingCompany,
+                                    TrackingNumber = fo.TrackingNumber,
+                                    TrackingStatus = fo.TrackingStatus,
+                                    LineitemCount = fo.FulfillmentOrderLineItems.Count()
+                                }).FirstOrDefaultAsync();
 
             if (fulfillmentOrder == null)
             {
@@ -342,10 +393,37 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             {
                 throw new SalesException(_localizer["Order is not assigned to selected outlet."], HttpStatusCode.NotFound);
             }
+            return await Result<OrderSummaryResponseDto>.SuccessAsync(data: fulfillmentOrder);
 
-            var mappedData = _mapper.Map<InternalFulfillmentOrder, InternalFulfillmentOrderDto>(fulfillmentOrder);
+            //InternalFulfillmentOrder fulfillmentOrder = null;
+            //var fulfillmentOrdersQueryable = _context.FulfillmentOrders
+            //                                            .AsNoTracking()
+            //                                            .Include(x => x.FulfillmentOrderDestination)
+            //                                            .Include(x => x.FulfillmentOrderLineItems)
+            //                                            .AsQueryable();
 
-            return await Result<InternalFulfillmentOrderDto>.SuccessAsync(data: mappedData);
+            //if (isTrackingNumber)
+            //{
+            //    fulfillmentOrder = await fulfillmentOrdersQueryable.FirstOrDefaultAsync(x => x.TrackingNumber == request.SearchText && x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip);
+            //}
+            //else
+            //{
+            //    fulfillmentOrder = await fulfillmentOrdersQueryable.FirstOrDefaultAsync(x => x.Name == request.SearchText && x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReadyToShip);
+            //}
+
+            //if (fulfillmentOrder == null)
+            //{
+            //    throw new SalesException(_localizer["Order Not Found! Please verify order confirmed or not."], HttpStatusCode.NotFound);
+            //}
+
+            //if (fulfillmentOrder.WarehouseId != request.WarehouseId)
+            //{
+            //    throw new SalesException(_localizer["Order is not assigned to selected outlet."], HttpStatusCode.NotFound);
+            //}
+
+            //var mappedData = _mapper.Map<InternalFulfillmentOrder, InternalFulfillmentOrderDto>(fulfillmentOrder);
+
+            //return await Result<InternalFulfillmentOrderDto>.SuccessAsync(data: mappedData);
         }
 
         public async Task<Result<OrderResponseDto>> Handle(GetFOByIdQuery request, CancellationToken cancellationToken)
@@ -354,6 +432,11 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             var fulfillmentOrderQueryable = _context.FulfillmentOrders.AsQueryable();
             var addressesQueryable = _context.Addresses.AsQueryable();
             var warehousesQueryable = _context.Warehouses.AsQueryable();
+
+            if (request.WarehouseIds.Length > 0)
+            {
+                fulfillmentOrderQueryable = fulfillmentOrderQueryable.Where(x => x.WarehouseId.HasValue && request.WarehouseIds.Contains(x.WarehouseId.Value));
+            }
 
             var order = await (from o in orderQueryable
                                join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
@@ -489,20 +572,20 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             var addressesQueryable = _context.Addresses.AsQueryable();
 
             var orders = await (from o in orderQueryable
-                               join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
-                               join a in addressesQueryable on o.ShippingAddressId equals a.Id
-                               where fo.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.CityCorrection
-                               select new CityCorrectionOrderDto
-                               {
-                                   Address = a.Address1,
-                                   City = a.City,
-                                   CorrectCity = string.Empty,
-                                   Country = a.Country,
-                                   FulfillmentOrderId = fo.Id,
-                                   Id = o.Id,
-                                   Name = $"{a.FirstName} {a.LastName}",
-                                   OrderNo = o.Name
-                               }).ToListAsync();
+                                join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
+                                join a in addressesQueryable on o.ShippingAddressId equals a.Id
+                                where fo.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.CityCorrection
+                                select new CityCorrectionOrderDto
+                                {
+                                    Address = a.Address1,
+                                    City = a.City,
+                                    CorrectCity = string.Empty,
+                                    Country = a.Country,
+                                    FulfillmentOrderId = fo.Id,
+                                    Id = o.Id,
+                                    Name = $"{a.FirstName} {a.LastName}",
+                                    OrderNo = o.Name
+                                }).ToListAsync();
 
             if (orders == null)
             {
@@ -510,6 +593,86 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
             }
 
             return await Result<List<CityCorrectionOrderDto>>.SuccessAsync(data: orders);
+        }
+
+        public async Task<Result<OrderResponseDto>> Handle(GetOrderByTrackingNumberQuery request, CancellationToken cancellationToken)
+        {
+            var orderQueryable = _context.Orders.AsQueryable();
+            var fulfillmentOrderQueryable = _context.FulfillmentOrders.AsQueryable();
+
+            var order = await (from o in orderQueryable
+                               join fo in fulfillmentOrderQueryable on o.Id equals fo.InternalOrderId
+                               where fo.TrackingNumber == request.TrackingNumber
+                               select new OrderResponseDto
+                               {
+                                   Id = o.Id,
+                                   InternalFulFillmentOrderId = fo.Id,
+                                   WarehouseId = fo.WarehouseId,
+                                   Name = fo.Name,
+                                   BranchId = o.BranchId,
+                                   CancelledAt = o.CancelledAt,
+                                   CancelReason = o.CancelReason,
+                                   ClosedAt = o.ClosedAt,
+                                   Confirmed = o.Confirmed,
+                                   CreatedAt = o.CreatedAt,
+                                   CurrentSubtotalPrice = o.CurrentSubtotalPrice,
+                                   CurrentTotalDiscounts = o.CurrentTotalDiscounts,
+                                   CurrentTotalPrice = o.CurrentTotalPrice,
+                                   CurrentTotalTax = o.CurrentTotalTax,
+                                   CustomerEmail = o.CustomerEmail,
+                                   CustomerName = o.CustomerName,
+                                   CustomerPhone = o.CustomerPhone,
+                                   Email = o.Email,
+                                   IpAddress = string.Empty,
+                                   LocationId = o.LocationId,
+                                   Note = o.Note,
+                                   Number = o.Number,
+                                   OrderNumber = o.OrderNumber,
+                                   OrderType = o.OrderType,
+                                   OrganizationId = o.OrganizationId,
+                                   PaymentMethod = o.PaymentGatewayNames,
+                                   Phone = o.Phone,
+                                   ProcessedAt = o.ProcessedAt,
+                                   ShopifyId = o.ShopifyId,
+                                   Status = fo.OrderStatus,
+                                   SubtotalPrice = fo.SubtotalPrice,
+                                   TotalDiscounts = fo.TotalDiscounts,
+                                   TotalPrice = fo.TotalPrice,
+                                   TotalTax = fo.TotalTax,
+                                   TaxesIncluded = o.TaxesIncluded,
+                                   TimeStamp = o.TimeStamp,
+                                   TotalLineItemsPrice = fo.TotalLineItemsPrice,
+                                   TotalOutstanding = fo.TotalOutstanding,
+                                   TotalShippingPrice = fo.TotalShippingPrice,
+                                   TotalTipReceived = o.TotalTipReceived,
+                                   TotalWeight = o.TotalWeight,
+                                   UpdatedAt = o.UpdatedAt,
+                                   AssignedLocationId = fo.AssignedLocationId,
+                                   FulFillmentOrderId = fo.ShopifyId,
+                                   FulFillmentOrderStatus = fo.Status,
+                                   TrackingCompany = fo.TrackingCompany,
+                                   TrackingNumber = fo.TrackingNumber,
+                                   TrackingStatus = fo.TrackingStatus,
+                               }).FirstOrDefaultAsync();
+
+            if (order == null)
+            {
+                throw new SalesException(_localizer["Order Not Found!"], HttpStatusCode.NotFound);
+            }
+
+            var lineItems = await _context.LineItems.Where(x => x.InternalOrderId == order.Id).ToListAsync();
+            var fullfillmentlineItems = await _context.FulfillmentOrderLineItems.Where(x => x.InternalFulfillmentOrderId == order.InternalFulFillmentOrderId).ToListAsync();
+
+            order.LineItems = _mapper.Map<List<OrderLineItemDto>>(lineItems);
+            order.FulfillmentOrderLineItems = _mapper.Map<List<InternalFulfillmentOrderLineItemDto>>(fullfillmentlineItems);
+            var ids = order.LineItems.Select(x => x.ProductId).ToList();
+            var productImages = await _productService.GetProductImages(ids);
+            foreach (var item in order.LineItems)
+            {
+                item.ImageUrl = productImages.Data.OrderBy(x => x.Position).FirstOrDefault(x => x.productId == item.ProductId)?.src;
+            }
+
+            return await Result<OrderResponseDto>.SuccessAsync(order);
         }
     }
 }

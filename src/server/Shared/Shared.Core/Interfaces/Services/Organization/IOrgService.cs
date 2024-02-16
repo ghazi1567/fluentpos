@@ -21,5 +21,7 @@ namespace FluentPOS.Shared.Core.Interfaces.Services.Organization
         Task<DepartmentDto> GetDepartmentByIdAsync(long id);
 
         Task<List<DepartmentDto>> GetAllDepartmentAsync();
+
+        Task<List<long>> GetUserWarehouse(Guid id);
     }
 }

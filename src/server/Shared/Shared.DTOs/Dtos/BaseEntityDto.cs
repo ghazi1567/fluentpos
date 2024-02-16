@@ -22,6 +22,8 @@ namespace FluentPOS.Shared.DTOs.Dtos
 
         public long? UserId { get; set; }
 
+        public string UserEmail { get; set; }
+
         public string IpAddress { get; set; }
     }
 }

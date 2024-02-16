@@ -31,15 +31,18 @@
       <nb-tab tabTitle="Shipped" tabId="6" badgeText="{{shippedOrderCount}}" badgeStatus="success">
         <app-shipped [(count)]="shippedOrderCount"></app-shipped>
       </nb-tab>
-      <nb-tab tabTitle="Delivered" tabId="0" badgeText="new" badgePosition="top right" badgeStatus="success">
-        <p>List of <strong>transactions</strong>.</p>
-      </nb-tab>
+
       <nb-tab tabTitle="Cancelled" tabId="2" badgeText="{{cancelledOrderData.length}}" badgeStatus="success">
         <div style="height: calc(100vh - 170px)" class="ag-theme-alpine">
           <app-ag-grid-base #AgGrid [rowData]="cancelledOrderData" [columnDefs]="orderColumns" [pagination]="true"
             (gridReadyComplete)="gridReady($event)" headerHeight="50" sideBar="false" paginationPageSize="100">
           </app-ag-grid-base>
         </div>
+      </nb-tab>
+      <nb-tab tabTitle="Sync" tabId="0">
+        <button nbButton status="primary" (click)="syncOrders();">
+          Sync New Orders
+        </button>
       </nb-tab>
     </nb-tabset>
 

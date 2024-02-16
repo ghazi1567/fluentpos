@@ -1,0 +1,74 @@
+<nb-card class="inline-form-card">
+    <nb-card-header>Update Shipment Status</nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-md-4">
+                <form [formGroup]="firstForm" (ngSubmit)="scanTrackingNumber()" class="step-container">
+                    <div class="row">
+                        <div class="input-group col-xs-2 col-md-12">
+                            <input
+                                nbInput
+                                type="text"
+                                placeholder="Enter Tracking Number"
+                                class="form-control"
+                                formControlName="trackingNumber"
+                                [ngClass]="{ 'form-control-danger': firstForm.invalid && (firstForm.dirty || firstForm.touched) }"
+                            />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-2 col-md-2 offset-md-5">
+                <button nbButton status="primary" [disabled]="scannedOrders.length == 0" (click)="UpdateOrder()">Update Status To Delivered</button>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card>
+    <nb-card-body>
+        <div class="invoice-box table-height" style="max-width: 1600px; width: 100%; overflow: auto; margin: 15px auto; padding: 0; font-size: 14px; line-height: 24px; color: #555">
+            <div class="product-grid">
+                <table cellpadding="0" cellspacing="0" style="width: 100%; line-height: inherit; text-align: left">
+                    <tbody>
+                        <tr class="heading" style="background: #f3f2f7">
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">Sr#</td>
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">Order Number</td>
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">CN#</td>
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">Tracking Company</td>
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">Payment Method</td>
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">COD Amount</td>
+                            <td style="padding: 5px; vertical-align: middle; font-weight: 600; color: #5e5873; font-size: 14px; padding: 10px">Action</td>
+                        </tr>
+                        <tr *ngFor="let item of scannedOrders; let i = index" class="details" style="border-bottom: 1px solid #e9ecef">
+                            <td style="padding: 10px; vertical-align: top; display: flex; align-items: center">
+                                {{ i }}
+                            </td>
+                            <td style="padding: 10px; vertical-align: top">
+                                {{ item.name }}
+                            </td>
+                            <td style="padding: 10px; vertical-align: top">
+                                {{ item.trackingNumber }}
+                            </td>
+                            <td style="padding: 10px; vertical-align: top">
+                                {{ item.trackingCompany }}
+                            </td>
+                            <td style="padding: 10px; vertical-align: top">
+                                {{ item.paymentMethod }}
+                            </td>
+                            <td style="padding: 10px; vertical-align: top">
+                                {{ item.totalPrice }}
+                            </td>
+
+                            <td style="padding: 10px; vertical-align: top">
+                                <button nbButton status="danger" style="margin-right: 10px" (click)="removeOrder(i)"><nb-icon icon="trash-2-outline"></nb-icon></button>
+
+                                <button nbButton status="info" (click)="viewOrder(item)"><nb-icon icon="eye-outline"></nb-icon></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

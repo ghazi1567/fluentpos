@@ -1,5 +1,4 @@
 ﻿using FluentPOS.Shared.Core.Domain;
-using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -37,5 +36,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public string Rack { get; set; }
 
         public long? ProductId { get; set; }
+
+        public long? InternalFulfillmentOrderId { get; set; }
     }
 }

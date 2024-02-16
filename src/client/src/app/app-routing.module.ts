@@ -10,6 +10,7 @@ import { AuthLayoutComponent } from "./layouts/auth-layout/auth-layout.component
 import { HomeLayoutComponent } from "./layouts/home-layout/home-layout.component";
 import { NgxAdminLayoutComponent } from "./layouts/ngx-admin-layout/ngx-admin-layout.component";
 import { PosLayoutComponent } from "./layouts/pos-layout/pos-layout.component";
+import { PrintLayoutComponent } from "./layouts/print-layout/print-layout.component";
 
 const routes: Routes = [
     {
@@ -51,6 +52,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         component: PosLayoutComponent,
         loadChildren: () => import("./modules/pos/pos.module").then((mod) => mod.PosModule)
+    },
+    {
+        path: "print",
+        canActivate: [AuthGuard],
+        component: PrintLayoutComponent,
+        loadChildren: () => import("./modules/admin/admin.module").then((mod) => mod.AdminModule),
     },
     {
         path: "access-denial",

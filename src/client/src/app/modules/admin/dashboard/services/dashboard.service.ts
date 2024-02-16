@@ -31,4 +31,7 @@ export class DashboardService extends BaseApiService {
     getWarehouses(): Observable<PaginatedResult<Department>> {
         return this.dptApi.getWarehouseLookup().pipe(map((response: PaginatedResult<Department>) => response));
     }
+    getUserWarehouse(id): Observable<PaginatedResult<any>> {
+        return this.dptApi.getUserWarehouse(id).pipe(map((response: PaginatedResult<any>) => response));
+    }
 }

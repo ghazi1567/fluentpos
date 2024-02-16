@@ -2,7 +2,7 @@ export interface UserBranch {
     userBranchs: UserBranchModel[];
 }
 export interface UserBranchModel {
-    userId: string;
+    identityUserId: string;
     active: boolean;
     selected: boolean;
     organizationId: string;

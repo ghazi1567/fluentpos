@@ -1,0 +1,25 @@
+tr.heading td {
+    padding: 5px;
+    vertical-align: middle;
+    font-weight: 600;
+    color: #5e5873;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.details {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.details td {
+    padding: 10px;
+    vertical-align: top;
+    align-items: center;
+}
+.details td.title {
+    display: flex;
+}
+
+.success-bg {
+    background-color: #d5f0d5;
+}

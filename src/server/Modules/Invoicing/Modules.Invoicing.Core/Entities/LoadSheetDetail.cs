@@ -18,7 +18,13 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
 
         public decimal TotalAmount { get; set; }
 
-        public long FulfillmentOrderId { get; set; }
+        public long InternalFulFillmentOrderId { get; set; }
+
+        public long FulFillmentOrderId { get; set; }
+
+        public long InternalOrderId { get; set; }
+
+        public long OrderId { get; set; }
 
     }
 }

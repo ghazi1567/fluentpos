@@ -1,0 +1,99 @@
+<nb-card>
+    <nb-card-body>
+        <nb-stepper #stepper [linear]="linearMode">
+            <nb-step [stepControl]="firstForm" label="Search Order">
+                <div class="col-md-6 offset-md-5">
+                    <form [formGroup]="firstForm" (ngSubmit)="onFirstSubmit()" class="step-container">
+                        <p class="lorem">Scan Tracking Number</p>
+                        <div class="input-group">
+                            <input
+                                nbInput
+                                type="text"
+                                placeholder="Tracking Number"
+                                class="form-control col-md-6"
+                                formControlName="orderNo"
+                                [ngClass]="{ 'form-control-danger': firstForm.invalid && (firstForm.dirty || firstForm.touched) }"
+                            />
+                        </div>
+                    </form>
+                </div>
+            </nb-step>
+            <nb-step [stepControl]="secondForm" label="Scan Products">
+                <div class="col-md-5 offset-md-5">
+                    <form [formGroup]="secondForm" (ngSubmit)="onSecondSubmit()" class="step-container">
+                        <p class="lorem">Scan order products...</p>
+                        <div class="input-group">
+                            <input
+                                nbInput
+                                type="text"
+                                placeholder="Scan product sku"
+                                class="form-control col-md-6"
+                                formControlName="barcode"
+                                [ngClass]="{ 'form-control-danger': secondForm.invalid && (secondForm.dirty || secondForm.touched) }"
+                            />
+                        </div>
+                    </form>
+                </div>
+            </nb-step>
+            <nb-step [stepControl]="secondForm" label="Completed">
+                <div class="step-container col-md-5 offset-md-5" [nbSpinner]="isSppiner" nbSpinnerStatus="success" nbSpinnerSize="giant">
+                    <div *ngIf="order && !isSppiner">
+                        <button nbButton nbButton size="small" status="info" (click)="returnOrder()">Return Order</button>
+                    </div>
+                </div>
+            </nb-step>
+        </nb-stepper>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="order">
+    <nb-card-header>
+        <font style="vertical-align: inherit; margin-bottom: 25px">
+            <font style="vertical-align: inherit; font-size: 14px; color: #7367f0; font-weight: 600; line-height: 35px"> Order {{ order.name }}</font>
+        </font>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="invoice-box table-height" style="max-width: 1600px; width: 100%; overflow: auto; margin: 15px auto; padding: 0; font-size: 14px; line-height: 24px; color: #555">
+            <div class="product-grid">
+                <table cellpadding="0" cellspacing="0" style="width: 100%; line-height: inherit; text-align: left">
+                    <tbody>
+                        <tr class="heading" style="background: #f3f2f7">
+                            <td>Product Name</td>
+                            <td>SKU</td>
+                            <td>QTY Ordered</td>
+                            <td>QTY Confirmed</td>
+                            <td>Condition</td>
+                        </tr>
+                        <tr *ngFor="let item of order.lineItems" class="details" [class.success-bg]="item.quantity == item.confirmedQty">
+                            <td class="title">
+                                <img src="{{ item.imageUrl }}" alt="img" class="me-2" style="width: 40px; height: 40px" />
+                                {{ item.name }}
+                            </td>
+                            <td>
+                                {{ item.sku }}
+                            </td>
+                            <td>
+                                {{ item.quantity }}
+                            </td>
+                            <td>
+                                {{ item.confirmedQty }}
+                            </td>
+                            <td style="position: relative">
+                                <nb-form-field>
+                                    <nb-icon nbPrefix icon="alert-circle-outline"></nb-icon>
+                                    <nb-select placeholder="Condition" [(ngModel)]="item.condition" [disabled]="item.quantity != item.confirmedQty">
+                                        <nb-option value="Saleable">Saleable</nb-option>
+                                        <nb-option value="Damage">Damage</nb-option>
+                                        <nb-option value="Quality Issue">Quality Issue</nb-option>
+                                        <nb-option value="Dirty">Dirty</nb-option>
+                                    </nb-select>
+                                </nb-form-field>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

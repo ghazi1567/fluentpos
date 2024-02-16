@@ -54,26 +54,26 @@ namespace FluentPOS.Modules.People.Infrastructure.Persistence
 
         private void AddCustomers()
         {
-            Task.Run(async () =>
-            {
-                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                if (!_db.Customers.Any())
-                {
-                    string customerData = await File.ReadAllTextAsync(path + @"/Persistence/SeedData/customers.json");
-                    var customers = _jsonSerializer.Deserialize<List<Customer>>(customerData);
+            //Task.Run(async () =>
+            //{
+            //    string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //    if (!_db.Customers.Any())
+            //    {
+            //        string customerData = await File.ReadAllTextAsync(path + @"/Persistence/SeedData/customers.json");
+            //        var customers = _jsonSerializer.Deserialize<List<Customer>>(customerData);
 
-                    if (customers != null)
-                    {
-                        foreach (var customer in customers)
-                        {
-                            await _db.Customers.AddAsync(customer);
-                        }
-                    }
+            //        if (customers != null)
+            //        {
+            //            foreach (var customer in customers)
+            //            {
+            //                await _db.Customers.AddAsync(customer);
+            //            }
+            //        }
 
-                    await _db.SaveChangesAsync();
-                    _logger.LogInformation(_localizer["Seeded Customers."]);
-                }
-            }).GetAwaiter().GetResult();
+            //        await _db.SaveChangesAsync();
+            //        _logger.LogInformation(_localizer["Seeded Customers."]);
+            //    }
+            //}).GetAwaiter().GetResult();
         }
     }
 }

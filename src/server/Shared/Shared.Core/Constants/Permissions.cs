@@ -204,15 +204,15 @@ namespace FluentPOS.Shared.Core.Constants
             public const string Create = "Permissions.EventLogs.Register";
         }
 
-        [DisplayName("Sales")]
-        [Description("Sales Permissions")]
-        public static class Sales
+        [DisplayName("Orders")]
+        [Description("Orders Permissions")]
+        public static class Orders
         {
-            public const string View = "Permissions.Sales.View";
-            public const string ViewAll = "Permissions.Sales.ViewAll";
-            public const string Register = "Permissions.Sales.Register";
-            public const string Update = "Permissions.Sales.Update";
-            public const string Remove = "Permissions.Sales.Remove";
+            public const string View = "Permissions.Orders.View";
+            public const string ViewAll = "Permissions.Orders.ViewAll";
+            public const string Register = "Permissions.Orders.Register";
+            public const string Update = "Permissions.Orders.Update";
+            public const string Remove = "Permissions.Orders.Remove";
         }
 
         [DisplayName("StockIn")]
@@ -401,6 +401,8 @@ namespace FluentPOS.Shared.Core.Constants
         [Description("Common Permissions")]
         public static class Common
         {
+            public const string View = "Permissions.Common.View";
+            public const string ViewAll = "Permissions.Common.ViewAll";
             public const string Lookup = "Permissions.Common.Lookup";
             public const string DashboardAttendanceStats = "Permissions.Common.DashboardAttendanceStats"; 
             public const string DashboardStats = "Permissions.Common.DashboardStats"; 

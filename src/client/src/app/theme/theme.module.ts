@@ -24,8 +24,7 @@ import {
     NbTabsetModule,
     NbStepperModule,
     NbSpinnerModule,
-    NbFormFieldModule,
-
+    NbFormFieldModule
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 import { NbSecurityModule } from "@nebular/security";
@@ -34,7 +33,8 @@ import { COSMIC_THEME } from "./styles/theme.cosmic";
 import { CORPORATE_THEME } from "./styles/theme.corporate";
 import { DARK_THEME } from "./styles/theme.dark";
 import { NbAuthModule, NbDummyAuthStrategy } from "@nebular/auth";
-import { FormsModule as ngFormsModule } from '@angular/forms';
+import { FormsModule as ngFormsModule } from "@angular/forms";
+import { MaterialModule } from "../core/material/material.module";
 
 const PIPES = [CapitalizePipe, PluralPipe, RoundPipe, TimingPipe, NumberWithCommasPipe];
 const COMPONENTS = [FooterComponent, HeaderComponent, SearchInputComponent, OneColumnLayoutComponent];
@@ -66,7 +66,7 @@ const NB_MODULES = [
 ];
 @NgModule({
     declarations: [...COMPONENTS, ...PIPES],
-    imports: [CommonModule, ...NB_MODULES],
+    imports: [CommonModule, ...NB_MODULES, MaterialModule],
     exports: [...PIPES, ...COMPONENTS, ...NB_MODULES]
 })
 export class ThemeModule {
@@ -81,22 +81,21 @@ export class ThemeModule {
                     [DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME]
                 ).providers,
                 ...NbAuthModule.forRoot({
-
                     strategies: [
                         NbDummyAuthStrategy.setup({
-                            name: 'email',
-                            delay: 3000,
-                        }),
+                            name: "email",
+                            delay: 3000
+                        })
                     ],
                     forms: {
                         login: {
-                            socialLinks: [],
+                            socialLinks: []
                         },
                         register: {
-                            socialLinks: [],
-                        },
-                    },
-                }).providers,
+                            socialLinks: []
+                        }
+                    }
+                }).providers
             ]
         };
     }

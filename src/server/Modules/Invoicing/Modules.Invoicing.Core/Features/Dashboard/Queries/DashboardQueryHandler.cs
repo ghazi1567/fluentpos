@@ -39,7 +39,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries
 
             var dashboardDto = new DashboardDto();
 
-            dashboardDto.pending = await queryable.Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.PendingApproval || x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.Pending).CountAsync();
+            dashboardDto.pending = await queryable.Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.Pending).CountAsync();
             dashboardDto.reQueued = await queryable.Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.ReQueueAfterReject).CountAsync();
             dashboardDto.assignedToOutlet = await queryable.Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.AssignToOutlet).CountAsync();
             dashboardDto.assignedToHeadOffice = await queryable.Where(x => x.OrderStatus == Shared.DTOs.Sales.Enums.OrderStatus.AssignToHeadOffice).CountAsync();

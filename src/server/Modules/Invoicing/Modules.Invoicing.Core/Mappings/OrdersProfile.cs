@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentPOS.Modules.Invoicing.Core.Dtos;
 using FluentPOS.Modules.Invoicing.Core.Entities;
 using FluentPOS.Modules.Invoicing.Core.Features.Orders.Commands;
+using FluentPOS.Modules.Invoicing.Core.Features.Sales.Commands;
 using FluentPOS.Modules.Invoicing.Core.Features.Sales.Queries;
 using FluentPOS.Modules.Invoicing.Core.Features.Warehouses.Commands;
 using FluentPOS.Shared.Core.Extensions;
@@ -109,6 +110,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Mappings
             CreateMap<LoadSheetMain, LoadSheetMainDto>().ReverseMap();
             CreateMap<LoadSheetDetail, LoadSheetDetailDto>().ReverseMap();
 
+            CreateMap<Invoice, InvoiceDto>().ReverseMap();
+            CreateMap<InvoiceDetail, InvoiceDetailDto>().ReverseMap();
+            CreateMap<RegisterInvoiceCommand, Invoice>().ReverseMap();
         }
     }
 }

@@ -6,10 +6,6 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using FluentPOS.Modules.Organization.Core.Abstractions;
 using FluentPOS.Modules.Organization.Core.Entities;
@@ -21,6 +17,10 @@ using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FluentPOS.Modules.Organization.Infrastructure.Persistence
 {
@@ -57,6 +57,7 @@ namespace FluentPOS.Modules.Organization.Infrastructure.Persistence
 
         public DbSet<JobHistory> JobHistory { get; set; }
 
+        public DbSet<StoreWarehouse> StoreWarehouses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

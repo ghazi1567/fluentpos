@@ -12,5 +12,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
         public long? FulfillmentOrderId { get; set; }
 
         public string LogDescription { get; set; }
+
+        public long WarehouseId { get; set; }
+
+        public bool Ignore { get; set; }
     }
 }

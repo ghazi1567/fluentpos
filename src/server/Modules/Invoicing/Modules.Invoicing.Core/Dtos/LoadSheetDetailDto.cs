@@ -18,5 +18,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Dtos
 
         public long FulfillmentOrderId { get; set; }
 
+        public bool IsDeleted { get; set; }
+
+        public bool IsNew { get; set; }
+
     }
 }

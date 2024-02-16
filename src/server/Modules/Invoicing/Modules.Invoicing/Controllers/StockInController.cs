@@ -13,7 +13,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
     internal sealed class StockInController : BaseController
     {
         [HttpGet]
-        [Authorize(Policy = Permissions.Sales.ViewAll)]
+        [Authorize(Policy = Permissions.Orders.ViewAll)]
         public async Task<IActionResult> GetAllAsync([FromQuery] GetPurchaseOrderQuery request)
         {
             var sales = await Mediator.Send(request);
@@ -23,28 +23,28 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
 
         [HttpGet("{id}")]
-        [Authorize(Policy = Permissions.Sales.View)]
+        [Authorize(Policy = Permissions.Orders.View)]
         public async Task<IActionResult> GetByIdAsync(long id)
         {
             return Ok(await Mediator.Send(new GetStockInByIdQuery { Id = id }));
         }
 
         [HttpPost]
-        [Authorize(Policy = Permissions.Sales.Register)]
+        [Authorize(Policy = Permissions.Orders.Register)]
         public async Task<IActionResult> RegisterPOAsync(RegisterStockInCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpPost("Approve")]
-        [Authorize(Policy = Permissions.Sales.Register)]
+        [Authorize(Policy = Permissions.Orders.Register)]
         public async Task<IActionResult> ApprovePOAsync(ApproveStockInCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = Permissions.Sales.Remove)]
+        [Authorize(Policy = Permissions.Orders.Remove)]
         public async Task<IActionResult> RemoveAsync(long id)
         {
             return Ok(await Mediator.Send(new RemoveStockInCommand(id)));
@@ -52,7 +52,7 @@ namespace FluentPOS.Modules.Invoicing.Controllers
 
 
         [HttpPut]
-        [Authorize(Policy = Permissions.Sales.Register)]
+        [Authorize(Policy = Permissions.Orders.Register)]
         public async Task<IActionResult> UpdatePOAsync(UpdateStockInCommand command)
         {
             return Ok(await Mediator.Send(command));

@@ -1,24 +1,30 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { NbMenuItem } from "@nebular/theme";
+import { BusyService } from "src/app/core/services/busy.service";
 
 @Component({
     selector: "app-ngx-admin-layout",
     styleUrls: ["./ngx-admin-layout.component.scss"],
     template: `
+        <div style="height: 2px; width: 100%;position:absolute;z-index:999999">
+            <mat-progress-bar *ngIf="busyService.isLoading | async" mode="indeterminate" color="primary"></mat-progress-bar>
+        </div>
         <ngx-one-column-layout>
             <nb-menu expanded="false" [items]="menu"></nb-menu>
             <router-outlet></router-outlet>
         </ngx-one-column-layout>
     `
 })
-export class NgxAdminLayoutComponent implements OnInit {
-    constructor() { }
+export class NgxAdminLayoutComponent implements OnInit, AfterContentChecked {
+    constructor(public busyService: BusyService, private cdref: ChangeDetectorRef) {}
     menu = MENU_ITEMS;
-    ngOnInit(): void { }
+    ngOnInit(): void {}
+    ngAfterContentChecked() {
+        this.cdref.detectChanges();
+    }
 }
 
 export const MENU_ITEMS: NbMenuItem[] = [
-
     {
         title: "Dashboard",
         icon: "home-outline",
@@ -31,7 +37,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
             {
                 title: "Products",
                 link: "catalog/products"
-            },
+            }
         ]
     },
     {
@@ -54,6 +60,18 @@ export const MENU_ITEMS: NbMenuItem[] = [
                 title: "Load Sheets",
                 link: "sales/load-sheets"
             },
+            {
+                title: "Return Order",
+                link: "sales/return-order"
+            },
+            {
+                title: "Logistics",
+                link: "sales/logistics"
+            },
+            {
+                title: "Reconciliation",
+                link: "sales/reconciliation"
+            }
         ]
     },
     {
@@ -71,7 +89,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
             {
                 title: "Stock Report",
                 link: "sales/stock-report"
-            },
+            }
         ]
     },
     {
@@ -81,7 +99,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
             {
                 title: "Store Config",
                 link: "org/store"
-            },
+            }
         ]
     },
     {
@@ -99,8 +117,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
             {
                 title: "Event Logs",
                 link: "event-logs"
-            },
+            }
         ]
-    },
-
+    }
 ];

@@ -67,9 +67,9 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
             ReferenceNumber = referenceNumber;
         }
 
-        public void SetNote(string note)
+        public void SetNote(string _note)
         {
-            Note = note;
+            Note = $"{Note} | {_note}";
         }
 
         /// <summary>
@@ -344,6 +344,7 @@ namespace FluentPOS.Modules.Invoicing.Core.Entities
                 item.SetOrderName(orderName);
                 item.SetOrderType(OrderType);
                 item.SetOrderStatus(Status);
+                item.SetOrderShopifyId(ShopifyId);
                 item.SetTotalQuantity();
 
                 // set line item price

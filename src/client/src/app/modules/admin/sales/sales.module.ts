@@ -38,6 +38,11 @@ import { CityCorrectionComponent } from './components/order/city-correction/city
 import { ReadyToShipComponent } from './components/order/ready-to-ship/ready-to-ship.component';
 import { ShippedComponent } from './components/order/shipped/shipped.component';
 import { AssignedToHeadofficeComponent } from './components/order/assigned-to-headoffice/assigned-to-headoffice.component';
+import { ReturnOrderComponent } from './components/order/return-order/return-order.component';
+import { LogisticsComponent } from './components/order/logistics/logistics.component';
+import { ReconciliationComponent } from './components/order/reconciliation/reconciliation.component';
+import { UploadInvoiceComponent } from './components/order/reconciliation/upload-invoice/upload-invoice.component';
+import { OrderPrintComponent } from './prints/order-print/order-print.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +79,12 @@ import { AssignedToHeadofficeComponent } from './components/order/assigned-to-he
     CityCorrectionComponent,
     ReadyToShipComponent,
     ShippedComponent,
-    AssignedToHeadofficeComponent
+    AssignedToHeadofficeComponent,
+    ReturnOrderComponent,
+    LogisticsComponent,
+    ReconciliationComponent,
+    UploadInvoiceComponent,
+    OrderPrintComponent
   ],
   imports: [
     CommonModule,

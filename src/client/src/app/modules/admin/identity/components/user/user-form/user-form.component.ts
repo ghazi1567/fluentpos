@@ -18,7 +18,6 @@ export class UserFormComponent implements OnInit {
     userForm: UntypedFormGroup;
     formTitle: string;
     editMode = false;
-    employeesLookup: Employee[];
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: User,
@@ -30,17 +29,11 @@ export class UserFormComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.loadLookups();
         this.initializeForm();
         console.log(this.userForm.value);
     }
 
-    loadLookups() {
-        let employeeParams = new SearchParams();
-        this.employeeService.getEmployeesLookup(employeeParams).subscribe((res) => {
-            this.employeesLookup = res.data;
-        });
-    }
+    
 
     initializeForm() {
         this.userForm = this.fb.group({

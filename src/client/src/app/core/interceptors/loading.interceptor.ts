@@ -9,16 +9,16 @@ import { AuthService } from "../services/auth.service";
 export class LoadingInterceptor implements HttpInterceptor {
     ignorePath: string[] = [""];
 
-    constructor(private busyService: BusyService, private authService: AuthService) { }
+    constructor(private busyService: BusyService, private authService: AuthService) {}
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         var pathName = request.url.endsWith(".json") ? "json" : new URL(request.url).pathname;
         if (!this.ignorePath.find((x) => x == pathName) && pathName != "json") {
             var branchId = this.authService.getBranchId;
             var storeId = this.authService.getStoreId;
-            if(storeId){
+            if (storeId) {
                 request = request.clone({
-                    headers: request.headers.set('store-id', storeId)
+                    headers: request.headers.set("store-id", storeId)
                 });
             }
             if (request.method.toLowerCase() === "post" || request.method.toLowerCase() === "put") {
@@ -30,7 +30,8 @@ export class LoadingInterceptor implements HttpInterceptor {
                     const foo = {};
                     foo["branchId"] = branchId;
                     foo["organizationId"] = this.authService.getOrganizationId;
-                    foo["userId"] = this.authService.getUserId;
+                    foo["warehouseIds"] = this.authService.getWarehouseIds;
+                    // foo["userId"] = this.authService.getUserId;
                     foo["ipAddress"] = this.authService.getIpAddress;
                     // foo["email"] = this.authService.getEmail;
                     request = request.clone({
@@ -39,7 +40,7 @@ export class LoadingInterceptor implements HttpInterceptor {
                 }
             }
             if (request.method.toLowerCase() === "get") {
-                if (!request.params.get('branchId')) {
+                if (!request.params.get("branchId")) {
                     request = request.clone({
                         params: request.params.set("branchId", branchId)
                     });
@@ -51,6 +52,14 @@ export class LoadingInterceptor implements HttpInterceptor {
                 request = request.clone({
                     params: request.params.set("userId", this.authService.getUserId)
                 });
+                var warehouseIds = this.authService.getWarehouseIds;
+                if (warehouseIds) {
+                    warehouseIds.forEach((x, index) => {
+                        request = request.clone({
+                            params: request.params.set("warehouseIds[" + index + "]", x)
+                        });
+                    });
+                } 
             }
         }
 

@@ -42,18 +42,9 @@ export class ProductComponent implements OnInit {
     pageSize = 10;
     enableServerSideFilter: boolean = true;
     enableServerSideSorting: boolean = true;
-    public paginationPageSize = 20;
-    public cacheBlockSize = 10;
 
     @ViewChild('myGrid') myGrid: AgGridAngular;
-
-    gridOptions: Partial<GridOptions>;
-    gridColumnApi;
-    columnDefs;
-    cacheOverflowSize;
-    maxConcurrentDatasourceRequests;
-    infiniteInitialRowCount;
-
+    
     constructor(
         public productService: ProductService,
         public dialog: MatDialog,
@@ -64,17 +55,6 @@ export class ProductComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.cacheOverflowSize = 2;
-        this.maxConcurrentDatasourceRequests = 2;
-        this.infiniteInitialRowCount = 2;
-
-        this.gridOptions = {
-            headerHeight: 45,
-            rowHeight: 30,
-            cacheBlockSize: 10,
-            paginationPageSize: 10,
-            rowModelType: 'infinite',
-        }
 
         // this.loadLookups();
 
@@ -137,25 +117,19 @@ export class ProductComponent implements OnInit {
     onGridReady(event): void {
         var params = event.params;
         var baseGrid = event.baseGrid;
-
-        // this.gridApi = event.params.api;
-        // this.getProducts();
         this.gridApi = params.api;
-        this.gridColumnApi = params.columnApi;
 
         var datasource = {
             getRows: (params: IGetRowsParams) => {
                 var filterSortModel = baseGrid.setFilterSortModel(params);
                 console.log(filterSortModel);
-                //  TODO: Call a service that fetches list of users
-                console.log("Fetching startRow " + params.startRow + " of " + params.endRow);
                 var pageNumber = (params.startRow / this.pageSize) + 1;
                 this.productParams.pageNumber = pageNumber;
                 this.productParams.pageSize = this.pageSize;
                 this.productParams.bypassCache = true;
                 this.productParams.advanceFilters = filterSortModel.listOfFilters;
                 this.productParams.sortModel = filterSortModel.listOfSort;
-                console.log(params);
+                
                 this.productService
                     .getProducts(this.productParams)
                     .subscribe(res => {
@@ -198,26 +172,4 @@ export class ProductComponent implements OnInit {
     onPaginationChanged($event) {
         console.log($event)
     }
-    getData(params): Observable<{ data; totalCount }> {
-        console.log(params);
-        this.productParams.pageNumber = params.request.startRow;
-        this.productParams.pageSize = this.pageSize;
-        this.productParams.bypassCache = true;
-        return this.productService.getProducts(this.productParams)
-    }
-
-    serverSideDatasource = () => {
-        getRows: (params: IServerSideGetRowsParams) => {
-            console.log(params)
-            this.productParams.pageNumber = params.request.startRow;
-            this.productParams.pageSize = this.paginationPageSize;
-            this.productParams.bypassCache = true;
-
-            this.productService
-                .getProducts(this.productParams)
-                .subscribe(res => {
-                    params.successCallback(res.data, res.totalCount)
-                });
-        }
-    };
 }
